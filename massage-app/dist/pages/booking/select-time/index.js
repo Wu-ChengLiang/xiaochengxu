@@ -1,1 +1,12 @@
-"use strict";const e=require("../../../taro.js"),t=()=>e.jsxRuntimeExports.jsx(e.View,{style:{padding:"20px",textAlign:"center"},children:e.jsxRuntimeExports.jsx(e.Text,{children:"\u9009\u62e9\u65f6\u95f4\u9875\u9762 - \u5f00\u53d1\u4e2d"})});var i={};Page(e.createPageConfig(t,"pages/booking/select-time/index",{root:{cn:[]}},i||{}));
+"use strict";
+const taro = require("../../../taro.js");
+const SelectTime = () => {
+  return /* @__PURE__ */ taro.jsx(taro.View, { style: { padding: "20px", textAlign: "center" }, children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "选择时间页面 - 开发中" }) });
+};
+var config = {
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(SelectTime, "pages/booking/select-time/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

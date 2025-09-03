@@ -1,1 +1,12 @@
-"use strict";const e=require("../../../taro.js"),t=()=>e.jsxRuntimeExports.jsx(e.View,{style:{padding:"20px",textAlign:"center"},children:e.jsxRuntimeExports.jsx(e.Text,{children:"\u95e8\u5e97\u8be6\u60c5\u9875\u9762 - \u5f00\u53d1\u4e2d"})});var r={};Page(e.createPageConfig(t,"pages/store/detail/index",{root:{cn:[]}},r||{}));
+"use strict";
+const taro = require("../../../taro.js");
+const StoreDetail = () => {
+  return /* @__PURE__ */ taro.jsx(taro.View, { style: { padding: "20px", textAlign: "center" }, children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "门店详情页面 - 开发中" }) });
+};
+var config = {
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(StoreDetail, "pages/store/detail/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

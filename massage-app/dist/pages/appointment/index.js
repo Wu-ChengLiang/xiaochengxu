@@ -1,1 +1,488 @@
-"use strict";var e=(e,s,t)=>new Promise((i,a)=>{var r=e=>{try{o(t.next(e))}catch(s){a(s)}},n=e=>{try{o(t.throw(e))}catch(s){a(s)}},o=e=>e.done?i(e.value):Promise.resolve(e.value).then(r,n);o((t=t.apply(e,s)).next())});const s=require("../../taro.js"),t=require("../../common.js"),i=require("../../vendors.js"),a=[{id:"therapist-001",storeId:"store-001",storeName:"\u4e0a\u6d77\u4e07\u8c61\u57ce\u5e97",name:"\u5218\u5409\u4f1a",avatar:t.mockImages.therapists.male[0],rating:5,ratingCount:328,expertise:["\u64c5\u957f","\u5934\u9888\u80a9\u75db","\u8db3\u7597+\u8e29\u80cc"],yearsOfExperience:8,serviceCount:1523,status:"available",distance:8.8},{id:"therapist-002",storeId:"store-001",storeName:"\u4e0a\u6d77\u4e07\u8c61\u57ce\u5e97",name:"\u8c22\u5c0f\u6e05",avatar:t.mockImages.therapists.female[0],rating:4.9,ratingCount:267,expertise:["\u64c5\u957f","\u7761\u7720\u8c03\u7406","\u8fd0\u52a8\u6392\u9178"],yearsOfExperience:6,serviceCount:982,status:"available",distance:8.8},{id:"therapist-003",storeId:"store-002",storeName:"\u957f\u5b81\u6765\u798f\u58eb",name:"\u5f20\u660e\u534e",avatar:t.mockImages.therapists.male[1],rating:4.8,ratingCount:195,expertise:["\u64c5\u957f","\u8170\u817f\u75bc\u75db","\u7ecf\u7edc\u758f\u901a"],yearsOfExperience:10,serviceCount:2156,status:"busy",distance:12.3},{id:"therapist-004",storeId:"store-002",storeName:"\u957f\u5b81\u6765\u798f\u58eb",name:"\u738b\u96c5\u7434",avatar:t.mockImages.therapists.female[1],rating:5,ratingCount:412,expertise:["\u64c5\u957f","\u80a9\u5468\u708e","\u4ea7\u540e\u6062\u590d"],yearsOfExperience:12,serviceCount:3421,status:"available",distance:14.2},{id:"therapist-005",storeId:"store-003",storeName:"\u9759\u5b89\u5927\u60a6\u57ce\u5e97",name:"\u674e\u5efa\u56fd",avatar:t.mockImages.therapists.male[2],rating:4.7,ratingCount:156,expertise:["\u64c5\u957f","\u5173\u8282\u8c03\u7406","\u810a\u67f1\u77eb\u6b63"],yearsOfExperience:15,serviceCount:4523,status:"available",distance:15.6},{id:"therapist-006",storeId:"store-004",storeName:"\u6d66\u4e1c\u6b63\u5927\u5e7f\u573a\u5e97",name:"\u9648\u79c0\u82f1",avatar:t.mockImages.therapists.female[0],rating:4.9,ratingCount:289,expertise:["\u64c5\u957f","\u6dcb\u5df4\u6392\u6bd2","\u9762\u90e8\u62a4\u7406"],yearsOfExperience:9,serviceCount:2134,status:"available",distance:18.9},{id:"therapist-007",storeId:"store-005",storeName:"\u5f90\u6c47\u65e5\u6708\u5149\u5e97",name:"\u8d75\u6587\u658c",avatar:t.mockImages.therapists.male[0],rating:4.8,ratingCount:178,expertise:["\u64c5\u957f","\u8fd0\u52a8\u635f\u4f24","\u7b4b\u819c\u653e\u677e"],yearsOfExperience:7,serviceCount:1678,status:"busy",distance:6.5},{id:"therapist-008",storeId:"store-005",storeName:"\u5f90\u6c47\u65e5\u6708\u5149\u5e97",name:"\u5b59\u96ea\u6885",avatar:t.mockImages.therapists.female[1],rating:5,ratingCount:523,expertise:["\u64c5\u957f","\u5168\u8eab\u63a8\u62ff","\u827e\u7078\u7406\u7597"],yearsOfExperience:11,serviceCount:3876,status:"available",distance:6.5}],r=e=>new Promise(s=>setTimeout(s,e));class n{getRecommendedTherapists(s=1,t=10){return e(this,null,function*(){yield r(300);const e=[...a].sort((e,s)=>s.rating!==e.rating?s.rating-e.rating:s.serviceCount-e.serviceCount),i=(s-1)*t,n=i+t,o=e.slice(i,n);return{list:o,total:e.length,page:s,pageSize:t,hasMore:n<e.length}})}getTherapistsByStore(s,t=1,i=10){return e(this,null,function*(){yield r(200);const e=a.filter(e=>e.storeId===s),n=(t-1)*i,o=n+i,c=e.slice(n,o);return{list:c,total:e.length,page:t,pageSize:i,hasMore:o<e.length}})}getTherapistDetail(s){return e(this,null,function*(){yield r(200);const e=a.find(e=>e.id===s);if(!e)throw new Error("\u63a8\u62ff\u5e08\u4e0d\u5b58\u5728");return e})}getTherapistsByExpertise(s,t=1,i=10){return e(this,null,function*(){yield r(300);const e=a.filter(e=>e.expertise.includes(s)),n=(t-1)*i,o=n+i,c=e.slice(n,o);return{list:c,total:e.length,page:t,pageSize:i,hasMore:o<e.length}})}searchTherapists(s,t=1,i=10){return e(this,null,function*(){yield r(300);const e=a.filter(e=>{var t;return e.name.includes(s)||e.expertise.some(e=>e.includes(s))||(null==(t=e.storeName)?void 0:t.includes(s))}),n=(t-1)*i,o=n+i,c=e.slice(n,o);return{list:c,total:e.length,page:t,pageSize:i,hasMore:o<e.length}})}}const o=new n,c="",l=({store:e,onClick:t,onBooking:a})=>{const r=e=>{switch(e){case"normal":return"\u5c31\u8fd1";case"busy":return"\u7e41\u5fd9";case"full":return"\u7206\u6ee1";default:return""}},n=e=>{switch(e){case"normal":return"status-normal";case"busy":return"status-busy";case"full":return"status-full";default:return""}};return s.jsxRuntimeExports.jsx(s.View,{className:"store-card",onClick:t,children:s.jsxRuntimeExports.jsxs(s.View,{className:"card-content",children:[s.jsxRuntimeExports.jsx(s.Image,{className:"store-image",src:e.images[0],mode:"aspectFill"}),s.jsxRuntimeExports.jsxs(s.View,{className:"store-info",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"store-name",children:e.name}),s.jsxRuntimeExports.jsxs(s.View,{className:"business-hours",children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"hours-text",children:[e.businessHours.start,"-",e.businessHours.end]}),s.jsxRuntimeExports.jsx(s.Text,{className:`status ${n(e.status)}`,children:r(e.status)})]}),s.jsxRuntimeExports.jsx(s.View,{className:"store-address",children:s.jsxRuntimeExports.jsx(s.Text,{className:"address-text",numberOfLines:1,children:e.address})}),s.jsxRuntimeExports.jsxs(s.View,{className:"store-footer",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"distance",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"icon",children:"\ud83d\udccd"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"distance-text",children:[e.distance,"km"]})]}),s.jsxRuntimeExports.jsx(i.AtButton,{className:"booking-btn",type:"primary",size:"small",onClick:a,children:"\u9884\u7ea6"})]})]})]})})},x="",m=({therapist:e,onClick:t,onBooking:a})=>s.jsxRuntimeExports.jsx(s.View,{className:"therapist-card",onClick:t,children:s.jsxRuntimeExports.jsxs(s.View,{className:"card-content",children:[s.jsxRuntimeExports.jsx(s.Image,{className:"therapist-avatar",src:e.avatar,mode:"aspectFill"}),s.jsxRuntimeExports.jsxs(s.View,{className:"therapist-info",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"info-header",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"therapist-name",children:e.name}),s.jsxRuntimeExports.jsxs(s.View,{className:"distance",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"icon",children:"\ud83d\udccd"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"distance-text",children:[e.distance,"km"]})]})]}),s.jsxRuntimeExports.jsx(s.View,{className:"expertise-tags",children:e.expertise.map((e,t)=>s.jsxRuntimeExports.jsx(s.Text,{className:"expertise-tag",children:e},t))}),s.jsxRuntimeExports.jsxs(s.View,{className:"therapist-footer",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"rating",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"icon",children:"\u2b50"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"rating-text",children:[e.rating,"\u5206"]}),s.jsxRuntimeExports.jsxs(s.Text,{className:"service-count",children:["\u670d\u52a1",e.serviceCount,"\u6b21"]})]}),s.jsxRuntimeExports.jsx(i.AtButton,{className:"booking-btn",type:"primary",size:"small",onClick:a,children:"\u9884\u7ea6"})]})]})]})}),u="",p=()=>{const[i,a]=s.reactExports.useState(!0),[r,n]=s.reactExports.useState([]),[c,x]=s.reactExports.useState([]),[u,p]=s.reactExports.useState({latitude:0,longitude:0}),d=[{id:1,image:t.bannerGoodnight,title:"\u665a\u5b89\u597d\u7720",subtitle:"\u6df1\u5ea6\u653e\u677e\u52a9\u7720\u670d\u52a1",link:""}];s.reactExports.useEffect(()=>{h()},[]);const h=()=>e(exports,null,function*(){try{a(!0);const e=yield t.getLocationService.getCurrentLocation();p(e);const s=yield t.storeService.getNearbyStores(e.latitude,e.longitude,1,2);n(s.list);const i=yield o.getRecommendedTherapists();x(i.list)}catch(e){console.error("\u52a0\u8f7d\u6570\u636e\u5931\u8d25:",e),s.Taro.showToast({title:"\u52a0\u8f7d\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5",icon:"none"})}finally{a(!1)}}),j=e=>{s.Taro.navigateTo({url:`/pages/appointment/store/index?id=${e.id}`})},g=e=>{s.Taro.navigateTo({url:`/pages/therapist/detail/index?id=${e.id}`})},E=(e,t)=>{e.stopPropagation(),s.Taro.navigateTo({url:`/pages/booking/confirm/index?type=${t.hasOwnProperty("storeId")?"therapist":"store"}&id=${t.id}`})},N=()=>{s.Taro.navigateTo({url:"/pages/store/list/index"})},R=()=>{s.Taro.showToast({title:"\u529f\u80fd\u5f00\u53d1\u4e2d",icon:"none"})},v=e=>{s.Taro.navigateTo({url:"/pages/promotion/index"})};return s.jsxRuntimeExports.jsxs(s.View,{className:"appointment-page",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"header",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"title",children:"\u75b2\u52b3\u9178\u75db\uff0c\u5230\u5e38\u4e50\u5bf9\u75c7\u63a8\u62ff"}),s.jsxRuntimeExports.jsxs(s.View,{className:"location",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"icon",children:"\ud83d\udccd"}),s.jsxRuntimeExports.jsx(s.Text,{className:"text",children:"\u6b63\u5728\u83b7\u53d6\u4f4d\u7f6e..."})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"banner-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u4f18\u60e0\u9884\u7ea6"}),s.jsxRuntimeExports.jsx(s.Swiper,{className:"banner-swiper",autoplay:!0,interval:3e3,indicatorDots:!0,indicatorActiveColor:"#D9455F",children:d.map(e=>s.jsxRuntimeExports.jsx(s.SwiperItem,{children:s.jsxRuntimeExports.jsx(s.View,{className:"banner-item",onClick:()=>v(),children:s.jsxRuntimeExports.jsx(s.Image,{className:"banner-image",src:e.image,mode:"aspectFill"})})},e.id))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"stores-section",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"section-header",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u95e8\u5e97\u9884\u7ea6"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"more-link",onClick:N,children:["\u66f4\u591a\u95e8\u5e97 ",">>"]})]}),s.jsxRuntimeExports.jsx(s.ScrollView,{scrollY:!0,className:"store-list",children:r.map(e=>s.jsxRuntimeExports.jsx(l,{store:e,onClick:()=>j(e),onBooking:s=>E(s,e)},e.id))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"therapists-section",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"section-header",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u63a8\u62ff\u5e08\u9884\u7ea6"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"more-link",onClick:R,children:["\u66f4\u591a\u75c7\u72b6 ",">>"]})]}),s.jsxRuntimeExports.jsx(s.ScrollView,{scrollY:!0,className:"therapist-list",children:c.map(e=>s.jsxRuntimeExports.jsx(m,{therapist:e,onClick:()=>g(e),onBooking:s=>E(s,e)},e.id))})]})]})};var d={};Page(s.createPageConfig(p,"pages/appointment/index",{root:{cn:[]}},d||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../taro.js");
+const common = require("../../common.js");
+const vendors = require("../../vendors.js");
+const mockTherapists = [{
+  id: "therapist-001",
+  storeId: "store-001",
+  storeName: "上海万象城店",
+  name: "刘吉会",
+  avatar: common.mockImages.therapists.male[0],
+  rating: 5,
+  ratingCount: 328,
+  expertise: ["擅长", "头颈肩痛", "足疗+踩背"],
+  yearsOfExperience: 8,
+  serviceCount: 1523,
+  status: "available",
+  distance: 8.8
+}, {
+  id: "therapist-002",
+  storeId: "store-001",
+  storeName: "上海万象城店",
+  name: "谢小清",
+  avatar: common.mockImages.therapists.female[0],
+  rating: 4.9,
+  ratingCount: 267,
+  expertise: ["擅长", "睡眠调理", "运动排酸"],
+  yearsOfExperience: 6,
+  serviceCount: 982,
+  status: "available",
+  distance: 8.8
+}, {
+  id: "therapist-003",
+  storeId: "store-002",
+  storeName: "长宁来福士",
+  name: "张明华",
+  avatar: common.mockImages.therapists.male[1],
+  rating: 4.8,
+  ratingCount: 195,
+  expertise: ["擅长", "腰腿疼痛", "经络疏通"],
+  yearsOfExperience: 10,
+  serviceCount: 2156,
+  status: "busy",
+  distance: 12.3
+}, {
+  id: "therapist-004",
+  storeId: "store-002",
+  storeName: "长宁来福士",
+  name: "王雅琴",
+  avatar: common.mockImages.therapists.female[1],
+  rating: 5,
+  ratingCount: 412,
+  expertise: ["擅长", "肩周炎", "产后恢复"],
+  yearsOfExperience: 12,
+  serviceCount: 3421,
+  status: "available",
+  distance: 14.2
+}, {
+  id: "therapist-005",
+  storeId: "store-003",
+  storeName: "静安大悦城店",
+  name: "李建国",
+  avatar: common.mockImages.therapists.male[2],
+  rating: 4.7,
+  ratingCount: 156,
+  expertise: ["擅长", "关节调理", "脊柱矫正"],
+  yearsOfExperience: 15,
+  serviceCount: 4523,
+  status: "available",
+  distance: 15.6
+}, {
+  id: "therapist-006",
+  storeId: "store-004",
+  storeName: "浦东正大广场店",
+  name: "陈秀英",
+  avatar: common.mockImages.therapists.female[0],
+  rating: 4.9,
+  ratingCount: 289,
+  expertise: ["擅长", "淋巴排毒", "面部护理"],
+  yearsOfExperience: 9,
+  serviceCount: 2134,
+  status: "available",
+  distance: 18.9
+}, {
+  id: "therapist-007",
+  storeId: "store-005",
+  storeName: "徐汇日月光店",
+  name: "赵文斌",
+  avatar: common.mockImages.therapists.male[0],
+  rating: 4.8,
+  ratingCount: 178,
+  expertise: ["擅长", "运动损伤", "筋膜放松"],
+  yearsOfExperience: 7,
+  serviceCount: 1678,
+  status: "busy",
+  distance: 6.5
+}, {
+  id: "therapist-008",
+  storeId: "store-005",
+  storeName: "徐汇日月光店",
+  name: "孙雪梅",
+  avatar: common.mockImages.therapists.female[1],
+  rating: 5,
+  ratingCount: 523,
+  expertise: ["擅长", "全身推拿", "艾灸理疗"],
+  yearsOfExperience: 11,
+  serviceCount: 3876,
+  status: "available",
+  distance: 6.5
+}];
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+class TherapistService {
+  // 获取推荐推拿师
+  getRecommendedTherapists(page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep(300);
+      const sortedTherapists = [...mockTherapists].sort((a, b) => {
+        if (b.rating !== a.rating) {
+          return b.rating - a.rating;
+        }
+        return b.serviceCount - a.serviceCount;
+      });
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = sortedTherapists.slice(start, end);
+      return {
+        list,
+        total: sortedTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < sortedTherapists.length
+      };
+    });
+  }
+  // 根据门店获取推拿师
+  getTherapistsByStore(storeId, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep(200);
+      const storeTherapists = mockTherapists.filter((t) => t.storeId === storeId);
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = storeTherapists.slice(start, end);
+      return {
+        list,
+        total: storeTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < storeTherapists.length
+      };
+    });
+  }
+  // 获取推拿师详情
+  getTherapistDetail(therapistId) {
+    return __async(this, null, function* () {
+      yield sleep(200);
+      const therapist = mockTherapists.find((t) => t.id === therapistId);
+      if (!therapist) {
+        throw new Error("推拿师不存在");
+      }
+      return therapist;
+    });
+  }
+  // 按擅长项目筛选推拿师
+  getTherapistsByExpertise(expertise, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep(300);
+      const filteredTherapists = mockTherapists.filter((therapist) => therapist.expertise.includes(expertise));
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = filteredTherapists.slice(start, end);
+      return {
+        list,
+        total: filteredTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < filteredTherapists.length
+      };
+    });
+  }
+  // 搜索推拿师
+  searchTherapists(keyword, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep(300);
+      const filteredTherapists = mockTherapists.filter((therapist) => {
+        var _a;
+        return therapist.name.includes(keyword) || therapist.expertise.some((e) => e.includes(keyword)) || ((_a = therapist.storeName) == null ? void 0 : _a.includes(keyword));
+      });
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = filteredTherapists.slice(start, end);
+      return {
+        list,
+        total: filteredTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < filteredTherapists.length
+      };
+    });
+  }
+}
+const therapistService = new TherapistService();
+const index$2 = "";
+const StoreCard = ({ store, onClick, onBooking }) => {
+  const getStatusText = (status) => {
+    switch (status) {
+      case "normal":
+        return "就近";
+      case "busy":
+        return "繁忙";
+      case "full":
+        return "爆满";
+      default:
+        return "";
+    }
+  };
+  const getStatusClass = (status) => {
+    switch (status) {
+      case "normal":
+        return "status-normal";
+      case "busy":
+        return "status-busy";
+      case "full":
+        return "status-full";
+      default:
+        return "";
+    }
+  };
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "store-card", onClick, children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-content", children: [
+    /* @__PURE__ */ taro.jsx(
+      taro.Image,
+      {
+        className: "store-image",
+        src: store.images[0],
+        mode: "aspectFill"
+      }
+    ),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-info", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: store.name }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "business-hours", children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "hours-text", children: [
+          store.businessHours.start,
+          "-",
+          store.businessHours.end
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: `status ${getStatusClass(store.status)}`, children: getStatusText(store.status) })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "store-address", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "address-text", numberOfLines: 1, children: store.address }) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-footer", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "distance", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "📍" }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "distance-text", children: [
+            store.distance,
+            "km"
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsx(
+          vendors.AtButton,
+          {
+            className: "booking-btn",
+            type: "primary",
+            size: "small",
+            onClick: onBooking,
+            children: "预约"
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+};
+const index$1 = "";
+const TherapistCard = ({ therapist, onClick, onBooking }) => {
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-card", onClick, children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-content", children: [
+    /* @__PURE__ */ taro.jsx(
+      taro.Image,
+      {
+        className: "therapist-avatar",
+        src: therapist.avatar,
+        mode: "aspectFill"
+      }
+    ),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-info", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-header", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: therapist.name }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "distance", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "📍" }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "distance-text", children: [
+            therapist.distance,
+            "km"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "expertise-tags", children: therapist.expertise.map(
+        (tag, index2) => /* @__PURE__ */ taro.jsx(taro.Text, { className: "expertise-tag", children: tag }, index2)
+      ) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-footer", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "rating", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "⭐" }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "rating-text", children: [
+            therapist.rating,
+            "分"
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-count", children: [
+            "服务",
+            therapist.serviceCount,
+            "次"
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsx(
+          vendors.AtButton,
+          {
+            className: "booking-btn",
+            type: "primary",
+            size: "small",
+            onClick: onBooking,
+            children: "预约"
+          }
+        )
+      ] })
+    ] })
+  ] }) });
+};
+const index = "";
+const Appointment = () => {
+  const [loading, setLoading] = taro.useState(true);
+  const [stores, setStores] = taro.useState([]);
+  const [therapists, setTherapists] = taro.useState([]);
+  const [userLocation, setUserLocation] = taro.useState({ latitude: 0, longitude: 0 });
+  const banners = [
+    {
+      id: 1,
+      image: common.bannerGoodnight,
+      title: "晚安好眠",
+      subtitle: "深度放松助眠服务",
+      link: ""
+    }
+  ];
+  taro.useEffect(() => {
+    loadData();
+  }, []);
+  const loadData = () => __async(exports, null, function* () {
+    try {
+      setLoading(true);
+      const location = yield common.getLocationService.getCurrentLocation();
+      setUserLocation(location);
+      const nearbyStores = yield common.storeService.getNearbyStores(
+        location.latitude,
+        location.longitude,
+        1,
+        2
+      );
+      setStores(nearbyStores.list);
+      const recommendedTherapists = yield therapistService.getRecommendedTherapists();
+      setTherapists(recommendedTherapists.list);
+    } catch (error) {
+      console.error("加载数据失败:", error);
+      taro.Taro.showToast({
+        title: "加载失败，请重试",
+        icon: "none"
+      });
+    } finally {
+      setLoading(false);
+    }
+  });
+  const handleStoreClick = (store) => {
+    taro.Taro.navigateTo({
+      url: `/pages/appointment/store/index?id=${store.id}`
+    });
+  };
+  const handleTherapistClick = (therapist) => {
+    taro.Taro.navigateTo({
+      url: `/pages/therapist/detail/index?id=${therapist.id}`
+    });
+  };
+  const handleBookingClick = (e, item) => {
+    e.stopPropagation();
+    taro.Taro.navigateTo({
+      url: `/pages/booking/confirm/index?type=${item.hasOwnProperty("storeId") ? "therapist" : "store"}&id=${item.id}`
+    });
+  };
+  const handleMoreStores = () => {
+    taro.Taro.showToast({
+      title: "功能开发中",
+      icon: "none"
+    });
+  };
+  const handleMoreSymptoms = () => {
+    taro.Taro.showToast({
+      title: "功能开发中",
+      icon: "none"
+    });
+  };
+  const handleBannerClick = (banner) => {
+    taro.Taro.navigateTo({
+      url: "/pages/promotion/index"
+    });
+  };
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "appointment-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "header", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "title", children: "疲劳酸痛，到常乐对症推拿" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "location", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "📍" }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "正在获取位置..." })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "banner-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "优惠预约" }),
+      /* @__PURE__ */ taro.jsx(
+        taro.Swiper,
+        {
+          className: "banner-swiper",
+          autoplay: true,
+          interval: 3e3,
+          indicatorDots: true,
+          indicatorActiveColor: "#D9455F",
+          children: banners.map(
+            (banner) => /* @__PURE__ */ taro.jsx(taro.SwiperItem, { children: /* @__PURE__ */ taro.jsx(taro.View, { className: "banner-item", onClick: () => handleBannerClick(), children: /* @__PURE__ */ taro.jsx(taro.Image, { className: "banner-image", src: banner.image, mode: "aspectFill" }) }) }, banner.id)
+          )
+        }
+      )
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "stores-section", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "section-header", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "门店预约" }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "more-link", onClick: handleMoreStores, children: [
+          "更多门店 ",
+          ">>"
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollY: true, className: "store-list", children: stores.map(
+        (store) => /* @__PURE__ */ taro.jsx(
+          StoreCard,
+          {
+            store,
+            onClick: () => handleStoreClick(store),
+            onBooking: (e) => handleBookingClick(e, store)
+          },
+          store.id
+        )
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapists-section", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "section-header", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "推拿师预约" }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "more-link", onClick: handleMoreSymptoms, children: [
+          "更多症状 ",
+          ">>"
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollY: true, className: "therapist-list", children: therapists.map(
+        (therapist) => /* @__PURE__ */ taro.jsx(
+          TherapistCard,
+          {
+            therapist,
+            onClick: () => handleTherapistClick(therapist),
+            onBooking: (e) => handleBookingClick(e, therapist)
+          },
+          therapist.id
+        )
+      ) })
+    ] })
+  ] });
+};
+var config = {
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+};
+Page(taro.createPageConfig(Appointment, "pages/appointment/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

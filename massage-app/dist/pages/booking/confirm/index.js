@@ -1,1 +1,12 @@
-"use strict";const e=require("../../../taro.js"),t=()=>e.jsxRuntimeExports.jsx(e.View,{style:{padding:"20px",textAlign:"center"},children:e.jsxRuntimeExports.jsx(e.Text,{children:"\u9884\u7ea6\u786e\u8ba4\u9875\u9762 - \u5f00\u53d1\u4e2d"})});var i={};Page(e.createPageConfig(t,"pages/booking/confirm/index",{root:{cn:[]}},i||{}));
+"use strict";
+const taro = require("../../../taro.js");
+const BookingConfirm = () => {
+  return /* @__PURE__ */ taro.jsx(taro.View, { style: { padding: "20px", textAlign: "center" }, children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "预约确认页面 - 开发中" }) });
+};
+var config = {
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(BookingConfirm, "pages/booking/confirm/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

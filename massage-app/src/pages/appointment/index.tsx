@@ -86,8 +86,9 @@ const Appointment: React.FC = () => {
   }
 
   const handleMoreStores = () => {
-    Taro.navigateTo({
-      url: '/pages/store/list/index'
+    Taro.showToast({
+      title: '功能开发中',
+      icon: 'none'
     })
   }
 
