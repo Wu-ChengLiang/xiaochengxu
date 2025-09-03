@@ -93,7 +93,7 @@
     overflow: hidden;
     
     .store-list {
-      max-height: 600px;
+      // 不设置固定高度，让内容自然展开
     }
   }
 
@@ -105,7 +105,7 @@
     overflow: hidden;
     
     .therapist-list {
-      max-height: 600px;
+      // 不设置固定高度，让内容自然展开
     }
   }
 }

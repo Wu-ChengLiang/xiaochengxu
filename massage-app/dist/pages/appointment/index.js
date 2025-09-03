@@ -445,7 +445,7 @@ const Appointment = () => {
           ">>"
         ] })
       ] }),
-      /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollY: true, className: "store-list", children: stores.map(
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "store-list", children: stores.map(
         (store) => /* @__PURE__ */ taro.jsx(
           StoreCard,
           {
@@ -465,7 +465,7 @@ const Appointment = () => {
           ">>"
         ] })
       ] }),
-      /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollY: true, className: "therapist-list", children: therapists.map(
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-list", children: therapists.map(
         (therapist) => /* @__PURE__ */ taro.jsx(
           TherapistCard,
           {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Taro from '@tarojs/taro'
-import { View, Text, Image, ScrollView, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Text, Image, Swiper, SwiperItem } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { getLocationService } from '@/services/location'
 import { storeService } from '@/services/store'
@@ -145,7 +145,7 @@ const Appointment: React.FC = () => {
             更多门店 {'>>'}
           </Text>
         </View>
-        <ScrollView scrollY className="store-list">
+        <View className="store-list">
           {stores.map((store) => (
             <StoreCard 
               key={store.id} 
@@ -154,7 +154,7 @@ const Appointment: React.FC = () => {
               onBooking={(e) => handleBookingClick(e, store)}
             />
           ))}
-        </ScrollView>
+        </View>
       </View>
       
       {/* 推拿师预约 */}
@@ -165,7 +165,7 @@ const Appointment: React.FC = () => {
             更多症状 {'>>'}
           </Text>
         </View>
-        <ScrollView scrollY className="therapist-list">
+        <View className="therapist-list">
           {therapists.map((therapist) => (
             <TherapistCard 
               key={therapist.id} 
@@ -174,7 +174,7 @@ const Appointment: React.FC = () => {
               onBooking={(e) => handleBookingClick(e, therapist)}
             />
           ))}
-        </ScrollView>
+        </View>
       </View>
     </View>
   )

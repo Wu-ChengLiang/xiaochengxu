@@ -7,12 +7,12 @@
     padding: 0;
     
     .store-image-wrapper {
-      width: 320rpx;
-      height: 320rpx;
+      width: 280rpx;
+      height: 280rpx;
       border-radius: 16rpx;  // 使用rpx单位
       overflow: hidden;
       flex-shrink: 0;
-      margin-right: 32rpx;
+      margin-right: 24rpx;
       // 关键：确保圆角生效
       position: relative;
       z-index: 1;
