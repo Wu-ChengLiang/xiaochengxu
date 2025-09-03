@@ -35,3 +35,6 @@ export const mockImages = {
     bannerGoodnight
   ]
 }
+
+// 导出单个图片供页面使用
+export { bannerGoodnight }

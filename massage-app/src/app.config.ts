@@ -3,6 +3,7 @@ export default {
     'pages/appointment/index',
     'pages/gift/index',
     'pages/mine/index',
+    'pages/appointment/store/index',
     'pages/store/list/index',
     'pages/store/detail/index',
     'pages/therapist/detail/index',

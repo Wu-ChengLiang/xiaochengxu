@@ -3,11 +3,13 @@
     "pages/appointment/index",
     "pages/gift/index",
     "pages/mine/index",
+    "pages/appointment/store/index",
     "pages/store/list/index",
     "pages/store/detail/index",
     "pages/therapist/detail/index",
     "pages/booking/confirm/index",
-    "pages/booking/select-time/index"
+    "pages/booking/select-time/index",
+    "pages/promotion/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -17,7 +19,7 @@
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#d4237a",
+    "selectedColor": "#D9455F",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [

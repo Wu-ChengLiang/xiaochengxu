@@ -1,8 +1,1 @@
-"use strict";
-const taro = require("../../../taro.js");
-const TherapistDetail = () => {
-  return /* @__PURE__ */ taro.jsx(taro.View, { style: { padding: "20px", textAlign: "center" }, children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "推拿师详情页面 - 开发中" }) });
-};
-var config = {};
-Page(taro.createPageConfig(TherapistDetail, "pages/therapist/detail/index", { root: { cn: [] } }, config || {}));
-//# sourceMappingURL=index.js.map
+"use strict";const e=require("../../../taro.js"),t=()=>e.jsxRuntimeExports.jsx(e.View,{style:{padding:"20px",textAlign:"center"},children:e.jsxRuntimeExports.jsx(e.Text,{children:"\u63a8\u62ff\u5e08\u8be6\u60c5\u9875\u9762 - \u5f00\u53d1\u4e2d"})});var i={};Page(e.createPageConfig(t,"pages/therapist/detail/index",{root:{cn:[]}},i||{}));

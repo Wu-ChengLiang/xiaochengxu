@@ -68,7 +68,7 @@ const Appointment: React.FC = () => {
 
   const handleStoreClick = (store: Store) => {
     Taro.navigateTo({
-      url: `/pages/store/detail/index?id=${store.id}`
+      url: `/pages/appointment/store/index?id=${store.id}`
     })
   }
 
