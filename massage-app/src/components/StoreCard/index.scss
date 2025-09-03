@@ -1,0 +1,103 @@
+.store-card {
+  margin-bottom: var(--spacing-md);
+  
+  .card-content {
+    display: flex;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    
+    .store-image {
+      width: 180px;
+      height: 140px;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      margin-right: var(--spacing-md);
+    }
+    
+    .store-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      .store-name {
+        font-size: 30px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-xs);
+      }
+      
+      .business-hours {
+        display: flex;
+        align-items: center;
+        margin-bottom: var(--spacing-xs);
+        
+        .hours-text {
+          font-size: 24px;
+          color: var(--text-secondary);
+          margin-right: var(--spacing-sm);
+        }
+        
+        .status {
+          font-size: 22px;
+          padding: 2px 12px;
+          border-radius: var(--radius-sm);
+          
+          &.status-normal {
+            background: #e6f7ff;
+            color: #1890ff;
+          }
+          
+          &.status-busy {
+            background: #fff7e6;
+            color: #faad14;
+          }
+          
+          &.status-full {
+            background: #ffebe6;
+            color: #f5222d;
+          }
+        }
+      }
+      
+      .store-address {
+        .address-text {
+          font-size: 24px;
+          color: var(--text-weak);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          display: block;
+          margin-bottom: var(--spacing-xs);
+        }
+      }
+      
+      .store-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .distance {
+          display: flex;
+          align-items: center;
+          
+          .distance-text {
+            font-size: 24px;
+            color: var(--text-weak);
+            margin-left: 4px;
+          }
+        }
+        
+        .booking-btn {
+          width: 120px;
+          height: 56px;
+          font-size: 28px;
+          background: var(--primary-color);
+          border-color: var(--primary-color);
+        }
+      }
+    }
+  }
+}

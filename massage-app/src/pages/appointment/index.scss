@@ -1,0 +1,132 @@
+.appointment-page {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  padding-bottom: 100px; // 留出 TabBar 空间
+
+  .header {
+    background: var(--bg-primary);
+    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+    
+    .title {
+      font-size: 36px;
+      font-weight: 500;
+      color: var(--primary-color);
+      display: block;
+      margin-bottom: var(--spacing-sm);
+    }
+    
+    .location {
+      display: flex;
+      align-items: center;
+      color: var(--text-weak);
+      font-size: 24px;
+      
+      .text {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    
+    .section-title {
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .more-link {
+      font-size: 26px;
+      color: var(--text-weak);
+    }
+  }
+
+  .banner-section {
+    background: var(--bg-primary);
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    
+    .section-title {
+      display: block;
+      font-size: 32px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .banner-swiper {
+      height: 300px;
+    }
+    
+    .banner-item {
+      position: relative;
+      height: 150px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      
+      .banner-image {
+        width: 100%;
+        height: 100%;
+      }
+      
+      .banner-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        padding: var(--spacing-lg);
+        background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, transparent 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        
+        .banner-title {
+          font-size: 32px;
+          color: #fff;
+          font-weight: 500;
+          margin-bottom: var(--spacing-xs);
+        }
+        
+        .banner-subtitle {
+          font-size: 28px;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: var(--spacing-md);
+        }
+        
+        .banner-btn {
+          width: 120px;
+          height: 56px;
+          background: var(--primary-color);
+          color: #fff;
+          border-radius: var(--radius-full);
+          font-size: 28px;
+          border: none;
+        }
+      }
+    }
+  }
+
+  .stores-section {
+    background: var(--bg-primary);
+    margin-bottom: var(--spacing-sm);
+    
+    .store-list {
+      padding: 0 var(--spacing-md) var(--spacing-md);
+      max-height: 600px;
+    }
+  }
+
+  .therapists-section {
+    background: var(--bg-primary);
+    
+    .therapist-list {
+      padding: 0 var(--spacing-md) var(--spacing-md);
+      max-height: 600px;
+    }
+  }
+}

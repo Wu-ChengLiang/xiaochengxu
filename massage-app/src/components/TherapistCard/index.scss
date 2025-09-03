@@ -1,0 +1,102 @@
+.therapist-card {
+  margin-bottom: var(--spacing-md);
+  
+  .card-content {
+    display: flex;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    
+    .therapist-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-right: var(--spacing-md);
+    }
+    
+    .therapist-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      .info-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-xs);
+        
+        .therapist-name {
+          font-size: 30px;
+          font-weight: 500;
+          color: var(--text-primary);
+        }
+        
+        .distance {
+          display: flex;
+          align-items: center;
+          
+          .distance-text {
+            font-size: 24px;
+            color: var(--text-weak);
+            margin-left: 4px;
+          }
+        }
+      }
+      
+      .expertise-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+        margin-bottom: var(--spacing-sm);
+        
+        .expertise-tag {
+          font-size: 22px;
+          color: var(--text-secondary);
+          background: var(--bg-secondary);
+          padding: 4px 12px;
+          border-radius: var(--radius-sm);
+          
+          &:first-child {
+            background: none;
+            color: var(--text-weak);
+            padding-left: 0;
+          }
+        }
+      }
+      
+      .therapist-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .rating {
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-xs);
+          
+          .rating-text {
+            font-size: 24px;
+            color: #faad14;
+            font-weight: 500;
+          }
+          
+          .service-count {
+            font-size: 22px;
+            color: var(--text-weak);
+          }
+        }
+        
+        .booking-btn {
+          width: 120px;
+          height: 56px;
+          font-size: 28px;
+          background: var(--primary-color);
+          border-color: var(--primary-color);
+        }
+      }
+    }
+  }
+}

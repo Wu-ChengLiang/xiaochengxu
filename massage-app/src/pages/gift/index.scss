@@ -1,0 +1,24 @@
+.gift-page {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .content {
+    text-align: center;
+    
+    .title {
+      display: block;
+      font-size: 36px;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .desc {
+      display: block;
+      font-size: 28px;
+      color: var(--text-secondary);
+    }
+  }
+}

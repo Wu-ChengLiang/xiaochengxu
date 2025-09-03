@@ -1,0 +1,9 @@
+TabBar 图标文件：
+- appointment.png
+- appointment-active.png
+- gift.png
+- gift-active.png
+- mine.png
+- mine-active.png
+
+实际项目中需要添加真实的图标文件。
