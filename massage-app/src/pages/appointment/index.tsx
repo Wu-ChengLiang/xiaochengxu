@@ -108,9 +108,8 @@ const Appointment: React.FC = () => {
 
   return (
     <View className="appointment-page">
-      {/* 头部标题区域 */}
+      {/* 头部位置区域 */}
       <View className="header">
-        <Text className="title">疲劳酸痛，到常乐对症推拿</Text>
         <View className="location">
           <Text className="icon">📍</Text>
           <Text className="text">正在获取位置...</Text>

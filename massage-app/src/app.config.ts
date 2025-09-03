@@ -8,9 +8,9 @@ export default {
   ],
   window: {
     backgroundTextStyle: 'light',
-    navigationBarBackgroundColor: '#fff',
-    navigationBarTitleText: '推拿预约',
-    navigationBarTextStyle: 'black'
+    navigationBarBackgroundColor: '#D9455F',
+    navigationBarTitleText: '疲劳酸痛，到常乐对症推拿',
+    navigationBarTextStyle: 'white'
   },
   tabBar: {
     color: '#999999',

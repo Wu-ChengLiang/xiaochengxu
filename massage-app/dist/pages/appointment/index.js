@@ -414,13 +414,10 @@ const Appointment = () => {
     });
   };
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "appointment-page", children: [
-    /* @__PURE__ */ taro.jsxs(taro.View, { className: "header", children: [
-      /* @__PURE__ */ taro.jsx(taro.Text, { className: "title", children: "疲劳酸痛，到常乐对症推拿" }),
-      /* @__PURE__ */ taro.jsxs(taro.View, { className: "location", children: [
-        /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "📍" }),
-        /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "正在获取位置..." })
-      ] })
-    ] }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "header", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "location", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "📍" }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "正在获取位置..." })
+    ] }) }),
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "banner-section", children: [
       /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "优惠预约" }),
       /* @__PURE__ */ taro.jsx(
@@ -479,6 +476,10 @@ const Appointment = () => {
     ] })
   ] });
 };
-var config = {};
+var config = {
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+};
 Page(taro.createPageConfig(Appointment, "pages/appointment/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

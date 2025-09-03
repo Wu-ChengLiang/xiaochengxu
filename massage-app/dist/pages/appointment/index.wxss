@@ -262,14 +262,7 @@
 }
 .appointment-page .header {
   background: var(--bg-primary);
-  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
-}
-.appointment-page .header .title {
-  font-size: 36rpx;
-  font-weight: 500;
-  color: var(--primary-color);
-  display: block;
-  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-md);
 }
 .appointment-page .header .location {
   display: -webkit-flex;
@@ -278,6 +271,9 @@
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   color: var(--text-weak);
   font-size: 24rpx;
 }

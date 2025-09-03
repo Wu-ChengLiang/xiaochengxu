@@ -5,19 +5,12 @@
 
   .header {
     background: var(--bg-primary);
-    padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
-    
-    .title {
-      font-size: 36px;
-      font-weight: 500;
-      color: var(--primary-color);
-      display: block;
-      margin-bottom: var(--spacing-sm);
-    }
+    padding: var(--spacing-md);
     
     .location {
       display: flex;
       align-items: center;
+      justify-content: center;
       color: var(--text-weak);
       font-size: 24px;
       
