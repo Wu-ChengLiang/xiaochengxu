@@ -45,5 +45,8 @@ export default {
     'scope.userLocation': {
       desc: '你的位置信息将用于计算附近门店距离'
     }
-  }
+  },
+  requiredPrivateInfos: [
+    'getLocation'
+  ]
 }

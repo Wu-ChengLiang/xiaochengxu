@@ -1,11 +1,12 @@
 import type { Store } from '@/types'
+import { mockImages } from './images'
 
 export const mockStores: Store[] = [
   {
     id: 'store-001',
     name: '上海万象城店',
     images: [
-      'https://img12.360buyimg.com/imagetools/jfs/t1/196436/38/33977/207376/64b1f4d6F0b8f8a52/2e7394a14dc985c5.jpg'
+      mockImages.stores[0]
     ],
     address: '闵行区吴中路1599号万象城L4-401',
     phone: '021-54881234',
@@ -24,7 +25,7 @@ export const mockStores: Store[] = [
     id: 'store-002',
     name: '长宁来福士',
     images: [
-      'https://img11.360buyimg.com/imagetools/jfs/t1/228270/14/11265/186451/64b1f577F7b0e8f15/7c1af0d7c2d1a4f1.jpg'
+      mockImages.stores[1]
     ],
     address: '长宁区长宁路1191号来福士广场B2-15',
     phone: '021-62881234',
@@ -43,7 +44,7 @@ export const mockStores: Store[] = [
     id: 'store-003',
     name: '静安大悦城店',
     images: [
-      'https://img14.360buyimg.com/imagetools/jfs/t1/209334/25/36644/162859/64b1f621F3a8b5e14/e5e5b4c1f4e8a2d1.jpg'
+      mockImages.stores[2]
     ],
     address: '静安区西藏北路198号大悦城南座3F-12',
     phone: '021-63351234',
@@ -62,7 +63,7 @@ export const mockStores: Store[] = [
     id: 'store-004',
     name: '浦东正大广场店',
     images: [
-      'https://img10.360buyimg.com/imagetools/jfs/t1/218641/4/35644/195268/64b1f6c4F1f9d2a3e/4c5e6a9f2b3d1e8f.jpg'
+      mockImages.stores[3]
     ],
     address: '浦东新区陆家嘴西路168号正大广场5F',
     phone: '021-50471234',
@@ -81,7 +82,7 @@ export const mockStores: Store[] = [
     id: 'store-005',
     name: '徐汇日月光店',
     images: [
-      'https://img13.360buyimg.com/imagetools/jfs/t1/134781/7/36789/178945/64b1f766F8e5a2f4d/3b6c4d7e1f2a8c9e.jpg'
+      mockImages.stores[4]
     ],
     address: '徐汇区漕宝路33号日月光中心B2-08',
     phone: '021-64381234',

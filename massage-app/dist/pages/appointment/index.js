@@ -44,7 +44,7 @@ const common = require("../../common.js");
 const mockStores = [{
   id: "store-001",
   name: "上海万象城店",
-  images: ["https://img12.360buyimg.com/imagetools/jfs/t1/196436/38/33977/207376/64b1f4d6F0b8f8a52/2e7394a14dc985c5.jpg"],
+  images: [common.mockImages.stores[0]],
   address: "闵行区吴中路1599号万象城L4-401",
   phone: "021-54881234",
   businessHours: {
@@ -60,7 +60,7 @@ const mockStores = [{
 }, {
   id: "store-002",
   name: "长宁来福士",
-  images: ["https://img11.360buyimg.com/imagetools/jfs/t1/228270/14/11265/186451/64b1f577F7b0e8f15/7c1af0d7c2d1a4f1.jpg"],
+  images: [common.mockImages.stores[1]],
   address: "长宁区长宁路1191号来福士广场B2-15",
   phone: "021-62881234",
   businessHours: {
@@ -76,7 +76,7 @@ const mockStores = [{
 }, {
   id: "store-003",
   name: "静安大悦城店",
-  images: ["https://img14.360buyimg.com/imagetools/jfs/t1/209334/25/36644/162859/64b1f621F3a8b5e14/e5e5b4c1f4e8a2d1.jpg"],
+  images: [common.mockImages.stores[2]],
   address: "静安区西藏北路198号大悦城南座3F-12",
   phone: "021-63351234",
   businessHours: {
@@ -92,7 +92,7 @@ const mockStores = [{
 }, {
   id: "store-004",
   name: "浦东正大广场店",
-  images: ["https://img10.360buyimg.com/imagetools/jfs/t1/218641/4/35644/195268/64b1f6c4F1f9d2a3e/4c5e6a9f2b3d1e8f.jpg"],
+  images: [common.mockImages.stores[3]],
   address: "浦东新区陆家嘴西路168号正大广场5F",
   phone: "021-50471234",
   businessHours: {
@@ -108,7 +108,7 @@ const mockStores = [{
 }, {
   id: "store-005",
   name: "徐汇日月光店",
-  images: ["https://img13.360buyimg.com/imagetools/jfs/t1/134781/7/36789/178945/64b1f766F8e5a2f4d/3b6c4d7e1f2a8c9e.jpg"],
+  images: [common.mockImages.stores[4]],
   address: "徐汇区漕宝路33号日月光中心B2-08",
   phone: "021-64381234",
   businessHours: {
@@ -195,7 +195,7 @@ const mockTherapists = [{
   storeId: "store-001",
   storeName: "上海万象城店",
   name: "刘吉会",
-  avatar: "https://img11.360buyimg.com/imagetools/jfs/t1/97196/6/43726/9820/64b1f94fF3c5e8d7a/5e8a2c4b9f7d1e3a.jpg",
+  avatar: common.mockImages.therapists.male[0],
   rating: 5,
   ratingCount: 328,
   expertise: ["擅长", "头颈肩痛", "足疗+踩背"],
@@ -208,7 +208,7 @@ const mockTherapists = [{
   storeId: "store-001",
   storeName: "上海万象城店",
   name: "谢小清",
-  avatar: "https://img12.360buyimg.com/imagetools/jfs/t1/224315/29/12865/8645/64b1f9f3F6a8c2d5e/7b4e5c9a2d3f1e8b.jpg",
+  avatar: common.mockImages.therapists.female[0],
   rating: 4.9,
   ratingCount: 267,
   expertise: ["擅长", "睡眠调理", "运动排酸"],
@@ -221,7 +221,7 @@ const mockTherapists = [{
   storeId: "store-002",
   storeName: "长宁来福士",
   name: "张明华",
-  avatar: "https://img14.360buyimg.com/imagetools/jfs/t1/217854/24/34789/10234/64b1fa97F9d7c3e5a/4c8a7b5e9f2d3a1e.jpg",
+  avatar: common.mockImages.therapists.male[1],
   rating: 4.8,
   ratingCount: 195,
   expertise: ["擅长", "腰腿疼痛", "经络疏通"],
@@ -234,7 +234,7 @@ const mockTherapists = [{
   storeId: "store-002",
   storeName: "长宁来福士",
   name: "王雅琴",
-  avatar: "https://img10.360buyimg.com/imagetools/jfs/t1/91487/15/41258/8956/64b1fb3bF8e5a7c4d/3d6b9e8a7f2c5d4e.jpg",
+  avatar: common.mockImages.therapists.female[1],
   rating: 5,
   ratingCount: 412,
   expertise: ["擅长", "肩周炎", "产后恢复"],
@@ -247,7 +247,7 @@ const mockTherapists = [{
   storeId: "store-003",
   storeName: "静安大悦城店",
   name: "李建国",
-  avatar: "https://img13.360buyimg.com/imagetools/jfs/t1/143567/31/38945/9458/64b1fbdfF7c9d5e3a/5a8b4e7c9d3f2a1e.jpg",
+  avatar: common.mockImages.therapists.male[2],
   rating: 4.7,
   ratingCount: 156,
   expertise: ["擅长", "关节调理", "脊柱矫正"],
@@ -260,7 +260,7 @@ const mockTherapists = [{
   storeId: "store-004",
   storeName: "浦东正大广场店",
   name: "陈秀英",
-  avatar: "https://img11.360buyimg.com/imagetools/jfs/t1/229456/18/13654/8745/64b1fc83F9a7d5e2c/8d5c3a7e4b9f2d1c.jpg",
+  avatar: common.mockImages.therapists.female[0],
   rating: 4.9,
   ratingCount: 289,
   expertise: ["擅长", "淋巴排毒", "面部护理"],
@@ -273,7 +273,7 @@ const mockTherapists = [{
   storeId: "store-005",
   storeName: "徐汇日月光店",
   name: "赵文斌",
-  avatar: "https://img14.360buyimg.com/imagetools/jfs/t1/87965/27/42365/9865/64b1fd27F8c6a4d5e/7b9e8c5d3a2f1e4b.jpg",
+  avatar: common.mockImages.therapists.male[0],
   rating: 4.8,
   ratingCount: 178,
   expertise: ["擅长", "运动损伤", "筋膜放松"],
@@ -286,7 +286,7 @@ const mockTherapists = [{
   storeId: "store-005",
   storeName: "徐汇日月光店",
   name: "孙雪梅",
-  avatar: "https://img12.360buyimg.com/imagetools/jfs/t1/198764/35/35678/8456/64b1fdcbF4a8c9d6e/6e7b5a8d9c3f2e1a.jpg",
+  avatar: common.mockImages.therapists.female[1],
   rating: 5,
   ratingCount: 523,
   expertise: ["擅长", "全身推拿", "艾灸理疗"],
@@ -515,9 +515,9 @@ const Appointment = () => {
   const banners = [
     {
       id: 1,
-      image: "https://img12.360buyimg.com/imagetools/jfs/t1/146010/18/29856/85367/64b24345F25d1a6f4/00e6674e8c3eac79.jpg",
-      title: "拯救上班族",
-      subtitle: "17:00-18:00享9.0折",
+      image: common.bannerGoodnight,
+      title: "晚安好眠",
+      subtitle: "深度放松助眠服务",
       link: ""
     }
   ];

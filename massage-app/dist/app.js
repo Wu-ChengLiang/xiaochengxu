@@ -55,7 +55,10 @@ var config = {
     "scope.userLocation": {
       "desc": "你的位置信息将用于计算附近门店距离"
     }
-  }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ]
 };
 taro.taroWindowProvider.__taroAppConfig = config;
 App(taro.createReactApp(App$1, taro.React, taro.index, config));

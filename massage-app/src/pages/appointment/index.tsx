@@ -10,6 +10,9 @@ import TherapistCard from '@/components/TherapistCard'
 import type { Store, Therapist } from '@/types'
 import './index.scss'
 
+// 导入本地图片
+import bannerGoodnight from '@/assets/images/banners/goodnight.jpg'
+
 const Appointment: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [stores, setStores] = useState<Store[]>([])
@@ -20,9 +23,9 @@ const Appointment: React.FC = () => {
   const banners = [
     {
       id: 1,
-      image: 'https://img12.360buyimg.com/imagetools/jfs/t1/146010/18/29856/85367/64b24345F25d1a6f4/00e6674e8c3eac79.jpg',
-      title: '拯救上班族',
-      subtitle: '17:00-18:00享9.0折',
+      image: bannerGoodnight,
+      title: '晚安好眠',
+      subtitle: '深度放松助眠服务',
       link: ''
     }
   ]
