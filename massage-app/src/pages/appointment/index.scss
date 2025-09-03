@@ -64,49 +64,13 @@
     
     .banner-item {
       position: relative;
-      height: 150px;
+      height: 300px;
       border-radius: var(--radius-md);
       overflow: hidden;
       
       .banner-image {
         width: 100%;
         height: 100%;
-      }
-      
-      .banner-content {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        padding: var(--spacing-lg);
-        background: linear-gradient(90deg, rgba(0,0,0,0.6) 0%, transparent 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        
-        .banner-title {
-          font-size: 32px;
-          color: #fff;
-          font-weight: 500;
-          margin-bottom: var(--spacing-xs);
-        }
-        
-        .banner-subtitle {
-          font-size: 28px;
-          color: rgba(255, 255, 255, 0.9);
-          margin-bottom: var(--spacing-md);
-        }
-        
-        .banner-btn {
-          width: 120px;
-          height: 56px;
-          background: var(--primary-color);
-          color: #fff;
-          border-radius: var(--radius-full);
-          font-size: 28px;
-          border: none;
-        }
       }
     }
   }

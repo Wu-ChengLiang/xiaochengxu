@@ -98,6 +98,13 @@ const Appointment: React.FC = () => {
     })
   }
 
+  const handleBannerClick = (banner: any) => {
+    // 跳转到优惠专区页面
+    Taro.navigateTo({
+      url: '/pages/promotion/index'
+    })
+  }
+
   return (
     <View className="appointment-page">
       {/* 头部标题区域 */}
@@ -121,13 +128,8 @@ const Appointment: React.FC = () => {
         >
           {banners.map((banner) => (
             <SwiperItem key={banner.id}>
-              <View className="banner-item">
+              <View className="banner-item" onClick={() => handleBannerClick(banner)}>
                 <Image className="banner-image" src={banner.image} mode="aspectFill" />
-                <View className="banner-content">
-                  <Text className="banner-title">{banner.title}</Text>
-                  <Text className="banner-subtitle">{banner.subtitle}</Text>
-                  <AtButton className="banner-btn" size="small">预约</AtButton>
-                </View>
               </View>
             </SwiperItem>
           ))}

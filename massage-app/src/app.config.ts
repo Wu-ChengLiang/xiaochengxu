@@ -7,7 +7,8 @@ export default {
     'pages/store/detail/index',
     'pages/therapist/detail/index',
     'pages/booking/confirm/index',
-    'pages/booking/select-time/index'
+    'pages/booking/select-time/index',
+    'pages/promotion/index'
   ],
   window: {
     backgroundTextStyle: 'light',
