@@ -20,11 +20,6 @@ var config = {
     "pages/gift/index",
     "pages/mine/index",
     "pages/appointment/store/index",
-    "pages/store/list/index",
-    "pages/store/detail/index",
-    "pages/therapist/detail/index",
-    "pages/booking/confirm/index",
-    "pages/booking/select-time/index",
     "pages/promotion/index"
   ],
   "window": {
