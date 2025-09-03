@@ -42,12 +42,12 @@ const Appointment: React.FC = () => {
       const location = await getLocationService.getCurrentLocation()
       setUserLocation(location)
       
-      // 获取附近门店
+      // 获取附近门店（只显示最近的2家）
       const nearbyStores = await storeService.getNearbyStores(
         location.latitude, 
         location.longitude, 
         1, 
-        10
+        2
       )
       setStores(nearbyStores.list)
       
