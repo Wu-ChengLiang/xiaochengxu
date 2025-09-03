@@ -40,11 +40,13 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick, onBooking }) => {
   return (
     <View className="store-card" onClick={onClick}>
       <View className="card-content">
-        <Image 
-          className="store-image" 
-          src={store.images[0]} 
-          mode="aspectFill"
-        />
+        <View className="store-image-wrapper">
+          <Image 
+            className="store-image" 
+            src={store.images[0]} 
+            mode="aspectFill"
+          />
+        </View>
         
         <View className="store-info">
           <Text className="store-name">{store.name}</Text>

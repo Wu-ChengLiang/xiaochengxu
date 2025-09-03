@@ -245,14 +245,14 @@ const StoreCard = ({ store, onClick, onBooking }) => {
     }
   };
   return /* @__PURE__ */ taro.jsx(taro.View, { className: "store-card", onClick, children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-content", children: [
-    /* @__PURE__ */ taro.jsx(
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "store-image-wrapper", children: /* @__PURE__ */ taro.jsx(
       taro.Image,
       {
         className: "store-image",
         src: store.images[0],
         mode: "aspectFill"
       }
-    ),
+    ) }),
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-info", children: [
       /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: store.name }),
       /* @__PURE__ */ taro.jsxs(taro.View, { className: "business-hours", children: [

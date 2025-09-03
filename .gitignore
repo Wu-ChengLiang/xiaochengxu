@@ -10,7 +10,7 @@ coverage/
 .nyc_output/
 
 # production
-dist/
+# dist/  # 注释掉，允许提交 dist
 build/
 *.zip
 

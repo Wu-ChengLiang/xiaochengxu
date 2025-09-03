@@ -55,10 +55,10 @@
 
   .banner-section {
     background: var(--bg-primary);
-    margin: var(--spacing-md);
-    padding: var(--spacing-md);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    margin: 24rpx;
+    padding: 32rpx;
+    border-radius: 24rpx;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
     
     .section-title {
       display: block;
@@ -87,26 +87,24 @@
 
   .stores-section {
     background: var(--bg-primary);
-    margin: var(--spacing-md);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    margin: 24rpx;
+    border-radius: 24rpx;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
     overflow: hidden;
     
     .store-list {
-      padding: 0 var(--spacing-md) var(--spacing-md);
       max-height: 600px;
     }
   }
 
   .therapists-section {
     background: var(--bg-primary);
-    margin: var(--spacing-md);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    margin: 24rpx;
+    border-radius: 24rpx;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
     overflow: hidden;
     
     .therapist-list {
-      padding: 0 var(--spacing-md) var(--spacing-md);
       max-height: 600px;
     }
   }
