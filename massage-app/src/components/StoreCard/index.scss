@@ -1,19 +1,18 @@
 .store-card {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   
   .card-content {
     display: flex;
-    background: var(--bg-primary);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-md);
-    box-shadow: var(--shadow-sm);
+    background: transparent;
+    padding: 0;
     
     .store-image {
-      width: 180px;
-      height: 140px;
+      width: 160px;
+      height: 160px;
       border-radius: var(--radius-md);
       flex-shrink: 0;
       margin-right: var(--spacing-md);
+      object-fit: cover;
     }
     
     .store-info {
@@ -23,8 +22,8 @@
       justify-content: space-between;
       
       .store-name {
-        font-size: 30px;
-        font-weight: 500;
+        font-size: 32px;
+        font-weight: 600;
         color: var(--text-primary);
         margin-bottom: var(--spacing-xs);
       }
@@ -46,18 +45,21 @@
           border-radius: var(--radius-sm);
           
           &.status-normal {
-            background: #e6f7ff;
-            color: #1890ff;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
           }
           
           &.status-busy {
             background: #fff7e6;
             color: #faad14;
+            border: 1px solid #faad14;
           }
           
           &.status-full {
-            background: #ffebe6;
-            color: #f5222d;
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
           }
         }
       }
@@ -96,6 +98,11 @@
           font-size: 28px;
           background: var(--primary-color);
           border-color: var(--primary-color);
+          border-radius: var(--radius-full);
+          
+          &::after {
+            border: none;
+          }
         }
       }
     }

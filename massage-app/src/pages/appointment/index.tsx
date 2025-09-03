@@ -124,7 +124,7 @@ const Appointment: React.FC = () => {
           autoplay
           interval={3000}
           indicatorDots
-          indicatorActiveColor="#d4237a"
+          indicatorActiveColor="#D9455F"
         >
           {banners.map((banner) => (
             <SwiperItem key={banner.id}>

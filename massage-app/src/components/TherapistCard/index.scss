@@ -1,12 +1,10 @@
 .therapist-card {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
   
   .card-content {
     display: flex;
-    background: var(--bg-primary);
-    border-radius: var(--radius-md);
-    padding: var(--spacing-md);
-    box-shadow: var(--shadow-sm);
+    background: transparent;
+    padding: 0;
     
     .therapist-avatar {
       width: 120px;
@@ -95,6 +93,11 @@
           font-size: 28px;
           background: var(--primary-color);
           border-color: var(--primary-color);
+          border-radius: var(--radius-full);
+          
+          &::after {
+            border: none;
+          }
         }
       }
     }
