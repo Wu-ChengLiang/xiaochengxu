@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
+import BookingButton from '@/components/BookingButton'
 import type { Store } from '@/types'
 import './index.scss'
 
@@ -71,14 +71,10 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick, onBooking }) => {
               <Text className="icon">📍</Text>
               <Text className="distance-text">{store.distance}km</Text>
             </View>
-            <AtButton 
-              className="booking-btn"
-              type="primary"
+            <BookingButton 
               size="small"
               onClick={onBooking}
-            >
-              预约
-            </AtButton>
+            />
           </View>
         </View>
       </View>

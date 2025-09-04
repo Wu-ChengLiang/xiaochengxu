@@ -101,18 +101,6 @@
           }
         }
         
-        .booking-btn {
-          width: 120px;
-          height: 56px;
-          font-size: 28px;
-          background: var(--primary-color);
-          border-color: var(--primary-color);
-          border-radius: var(--radius-full);
-          
-          &::after {
-            border: none;
-          }
-        }
       }
     }
   }
