@@ -1,3 +1,3 @@
 export default {
-  navigationBarTitleText: '推拿师预约'
+  navigationBarTitleText: '选择推拿师'
 }

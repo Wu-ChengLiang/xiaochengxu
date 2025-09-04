@@ -1,470 +1,4 @@
-@charset "UTF-8";.therapist-info {
-  background: #fff;
-  padding: 40rpx 32rpx;
-  margin-bottom: 20rpx;
-}
-.therapist-info .therapist-header {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: flex-start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  margin-bottom: 32rpx;
-}
-.therapist-info .therapist-header .avatar-wrapper {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 24rpx;
-  -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
-          flex-shrink: 0;
-}
-.therapist-info .therapist-header .avatar-wrapper .avatar {
-  width: 100%;
-  height: 100%;
-}
-.therapist-info .therapist-header .basic-info {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-}
-.therapist-info .therapist-header .basic-info .name-row {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 16rpx;
-}
-.therapist-info .therapist-header .basic-info .name-row .name {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #333;
-  margin-right: 16rpx;
-}
-.therapist-info .therapist-header .basic-info .name-row .level {
-  background: #a40035;
-  color: #fff;
-  font-size: 24rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
-  font-weight: 500;
-}
-.therapist-info .therapist-header .basic-info .stats-row {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-.therapist-info .therapist-header .basic-info .stats-row .rating .rating-score {
-  font-size: 28rpx;
-  color: #666;
-}
-.therapist-info .therapist-header .basic-info .stats-row .divider {
-  margin: 0 16rpx;
-  color: #ddd;
-  font-size: 24rpx;
-}
-.therapist-info .therapist-header .basic-info .stats-row .sales .sales-text {
-  font-size: 28rpx;
-  color: #666;
-}
-.therapist-info .description-section .description {
-  font-size: 28rpx;
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 16rpx;
-}
-.therapist-info .description-section .description.collapsed {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-.therapist-info .description-section .description.expanded {
-  display: block;
-}
-.therapist-info .description-section .expand-toggle {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: flex-end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
-  cursor: pointer;
-}
-.therapist-info .description-section .expand-toggle .expand-text {
-  font-size: 28rpx;
-  color: #a40035;
-  margin-right: 8rpx;
-}
-.therapist-info .description-section .expand-toggle .expand-icon {
-  font-size: 20rpx;
-  color: #a40035;
-  -webkit-transition: -webkit-transform 0.2s ease;
-  transition: -webkit-transform 0.2s ease;
-  transition: transform 0.2s ease;
-  transition: transform 0.2s ease, -webkit-transform 0.2s ease;
-}
-.therapist-info .description-section .expand-toggle .expand-icon.up {
-  -webkit-transform: rotate(180deg);
-      -ms-transform: rotate(180deg);
-          transform: rotate(180deg);
-}
-.therapist-info .description-section .expand-toggle .expand-icon.down {
-  -webkit-transform: rotate(0deg);
-      -ms-transform: rotate(0deg);
-          transform: rotate(0deg);
-}
-.therapist-info .description-section .symptom-button {
-  width: 120rpx;
-  height: 60rpx;
-  background: #a40035;
-  border-radius: 30rpx;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  margin-left: 16rpx;
-  -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
-          flex-shrink: 0;
-}
-.therapist-info .description-section .symptom-button .button-text {
-  color: #fff;
-  font-size: 28rpx;
-}
-.therapist-info .description-section .symptom-button:active {
-  opacity: 0.8;
-}
-.store-info {
-  background: #fff;
-  padding: 32rpx;
-  margin-bottom: 20rpx;
-}
-.store-info .store-header {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-align-items: flex-start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-}
-.store-info .store-header .store-details {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-}
-.store-info .store-header .store-details .name-row {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 16rpx;
-}
-.store-info .store-header .store-details .name-row .store-name {
-  font-size: 36rpx;
-  font-weight: 600;
-  color: #333;
-  margin-right: 16rpx;
-}
-.store-info .store-header .store-details .name-row .distance {
-  font-size: 28rpx;
-  color: #666;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
-.store-info .store-header .store-details .name-row .distance::before {
-  content: "📍 ";
-  margin-right: 4rpx;
-}
-.store-info .store-header .store-details .hours-row {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 16rpx;
-}
-.store-info .store-header .store-details .hours-row .business-hours {
-  font-size: 28rpx;
-  color: #666;
-  margin-right: 16rpx;
-}
-.store-info .store-header .store-details .hours-row .status {
-  font-size: 24rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-}
-.store-info .store-header .store-details .hours-row .status.status-normal {
-  background: rgba(164, 0, 53, 0.15);
-  color: #a40035;
-  border: 1rpx solid #a40035;
-}
-.store-info .store-header .store-details .hours-row .status.status-busy {
-  background: #FFF7E6;
-  color: #FAAD14;
-  border: 1rpx solid #FAAD14;
-}
-.store-info .store-header .store-details .hours-row .status.status-full {
-  background: #F5F5F5;
-  color: #666;
-  border: 1rpx solid #DDD;
-}
-.store-info .store-header .store-details .address {
-  font-size: 28rpx;
-  color: #999;
-  line-height: 1.4;
-}
-.store-info .store-header .action-buttons {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  gap: 16rpx;
-  margin-left: 32rpx;
-}
-.store-info .store-header .action-buttons .action-btn {
-  width: 80rpx;
-  height: 80rpx;
-  border: 2rpx solid #a40035;
-  border-radius: 50%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  font-size: 32rpx;
-  background: #fff;
-}
-.store-info .store-header .action-buttons .action-btn:active {
-  background: rgba(164, 0, 53, 0.15);
-}.booking-selector {
-  background: #fff;
-  margin-bottom: 20rpx;
-}
-.booking-selector .section-title {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-  padding: 32rpx 32rpx 24rpx;
-}
-.booking-selector .service-section {
-  border-bottom: 2rpx solid #f5f5f5;
-  padding-bottom: 24rpx;
-}
-.booking-selector .service-section .service-tabs {
-  padding: 0 32rpx;
-  white-space: nowrap;
-}
-.booking-selector .service-section .service-tabs .service-tab {
-  display: inline-block;
-  min-width: 240rpx;
-  padding: 24rpx 20rpx;
-  margin-right: 20rpx;
-  border: 2rpx solid #e8e8e8;
-  border-radius: 24rpx;
-  text-align: center;
-  background: #fff;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-}
-.booking-selector .service-section .service-tabs .service-tab.active {
-  border-color: #a40035;
-  background: #a40035;
-}
-.booking-selector .service-section .service-tabs .service-tab.active .service-name {
-  color: #fff;
-  font-weight: 600;
-}
-.booking-selector .service-section .service-tabs .service-tab.active .service-info .price {
-  color: #fff;
-}
-.booking-selector .service-section .service-tabs .service-tab.active .service-info .service-duration {
-  color: rgba(255, 255, 255, 0.9);
-}
-.booking-selector .service-section .service-tabs .service-tab .service-name {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 12rpx;
-  display: block;
-}
-.booking-selector .service-section .service-tabs .service-tab .service-info {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  gap: 16rpx;
-}
-.booking-selector .service-section .service-tabs .service-tab .service-info .service-duration {
-  font-size: 24rpx;
-  color: #666;
-}
-.booking-selector .service-section .service-tabs .service-tab .service-info .price {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #333;
-}
-.booking-selector .service-section .service-tabs .service-tab:last-child {
-  margin-right: 32rpx;
-}
-.booking-selector .datetime-section {
-  padding-top: 24rpx;
-}
-.booking-selector .datetime-section .date-tabs {
-  padding: 0 32rpx 24rpx;
-  white-space: nowrap;
-}
-.booking-selector .datetime-section .date-tabs .date-tab {
-  display: inline-block;
-  min-width: 120rpx;
-  padding: 20rpx 16rpx;
-  margin-right: 20rpx;
-  text-align: center;
-  background: transparent;
-  border: none;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-}
-.booking-selector .datetime-section .date-tabs .date-tab.active .date-display {
-  color: #a40035;
-  font-weight: 600;
-}
-.booking-selector .datetime-section .date-tabs .date-tab.active .week-day {
-  color: #a40035;
-}
-.booking-selector .datetime-section .date-tabs .date-tab .date-display {
-  font-size: 28rpx;
-  color: #333;
-  display: block;
-  margin-bottom: 4rpx;
-  font-weight: 500;
-}
-.booking-selector .datetime-section .date-tabs .date-tab .week-day {
-  font-size: 24rpx;
-  color: #666;
-}
-.booking-selector .datetime-section .date-tabs .date-tab:last-child {
-  margin-right: 32rpx;
-}
-.booking-selector .datetime-section .time-grid-container {
-  height: 400rpx;
-  padding: 0 32rpx;
-}
-.booking-selector .datetime-section .time-grid-wrapper {
-  padding-bottom: 32rpx;
-}
-.booking-selector .datetime-section .time-row {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 16rpx;
-}
-.booking-selector .datetime-section .time-row .hour-label {
-  width: 80rpx;
-  font-size: 28rpx;
-  color: #333;
-  font-weight: 500;
-}
-.booking-selector .datetime-section .time-row .time-slots {
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8rpx;
-}
-.booking-selector .datetime-section .time-row .time-slot {
-  height: 64rpx;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  border-radius: 12rpx;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
-}
-.booking-selector .datetime-section .time-row .time-slot.available {
-  background: #f8f8f8;
-  border: 2rpx solid #e8e8e8;
-}
-.booking-selector .datetime-section .time-row .time-slot.available .time-text {
-  color: #666;
-}
-.booking-selector .datetime-section .time-row .time-slot.available:active {
-  background: rgba(164, 0, 53, 0.15);
-  border-color: #a40035;
-}
-.booking-selector .datetime-section .time-row .time-slot.selected {
-  background: #a40035;
-  border: 2rpx solid #a40035;
-}
-.booking-selector .datetime-section .time-row .time-slot.selected .time-text {
-  color: #fff;
-  font-weight: 500;
-}
-.booking-selector .datetime-section .time-row .time-slot.disabled {
-  background: #f5f5f5;
-  border: 2rpx solid #e0e0e0;
-}
-.booking-selector .datetime-section .time-row .time-slot.disabled .time-text {
-  color: #ccc;
-}
-.booking-selector .datetime-section .time-row .time-slot .time-text {
-  font-size: 24rpx;
-}.therapist-booking-page {
+.therapist-selection-page {
   height: 100vh;
   background-color: #f5f5f5;
   display: -webkit-flex;
@@ -476,13 +10,146 @@
   overflow: hidden;
   position: relative;
 }
-.therapist-booking-page .main-content {
+.therapist-selection-page .main-content {
   -webkit-flex: 1;
       -ms-flex: 1;
           flex: 1;
   overflow-y: auto;
+  padding: 20rpx;
 }
-.therapist-booking-page .loading, .therapist-booking-page .error {
+.therapist-selection-page .store-header {
+  background: white;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+}
+.therapist-selection-page .store-header .store-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+.therapist-selection-page .store-header .selected-time {
+  font-size: 28rpx;
+  color: #666;
+}
+.therapist-selection-page .therapists-list .therapist-card {
+  background: white;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 30rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-avatar Image {
+  width: 100%;
+  height: 100%;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .name-rating {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 15rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .name-rating .name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-right: 20rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .name-rating .rating {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .name-rating .rating .rating-score {
+  font-size: 24rpx;
+  color: #ff6b35;
+  margin-right: 10rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .name-rating .rating .rating-count {
+  font-size: 24rpx;
+  color: #999;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .expertise {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+  margin-bottom: 15rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .expertise .skill-tag {
+  background: #f0f8ff;
+  color: #1890ff;
+  font-size: 22rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  margin-right: 16rpx;
+  margin-bottom: 8rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-size: 24rpx;
+  color: #666;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .years {
+  margin-right: 30rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .service-count {
+  margin-right: 30rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .status {
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .status.available {
+  background: #f6ffed;
+  color: #52c41a;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .status.busy {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+.therapist-selection-page .therapists-list .therapist-card .therapist-info .experience .status.rest {
+  background: #f5f5f5;
+  color: #999;
+}
+.therapist-selection-page .therapists-list .therapist-card .arrow {
+  font-size: 32rpx;
+  color: #ccc;
+}
+.therapist-selection-page .loading, .therapist-selection-page .error {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
