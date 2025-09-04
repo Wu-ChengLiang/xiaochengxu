@@ -35,9 +35,8 @@ const TherapistBookingPage: React.FC = () => {
   const [selectedService, setSelectedService] = useState<any>(null)
   
   // 待处理操作状态（用于撤销功能）
-  const [pendingItem, setPendingItem] = useState<CartItem | null>(null)
-  const [pendingAction, setPendingAction] = useState<'add' | 'update' | null>(null)
-  const [pendingIndex, setPendingIndex] = useState<number>(-1)
+  const [sessionStartIndex, setSessionStartIndex] = useState<number>(-1) // 记录本次会话开始时的购物车长度
+  const [isAutoExpanded, setIsAutoExpanded] = useState(false) // 是否是自动展开的购物车
   
   // BookingSelector 组件引用
   const bookingSelectorRef = useRef<BookingSelectorHandle>(null)
@@ -82,6 +81,12 @@ const TherapistBookingPage: React.FC = () => {
   const handleTimeSelect = (date: string, time: string) => {
     if (!selectedService || !therapist) return
 
+    // 如果是新的会话，记录开始位置
+    if (sessionStartIndex === -1) {
+      setSessionStartIndex(cartItems.length)
+      setIsAutoExpanded(true)
+    }
+
     const newItem: CartItem = {
       serviceId: selectedService.id,
       serviceName: selectedService.name,
@@ -100,7 +105,7 @@ const TherapistBookingPage: React.FC = () => {
     )
 
     if (existingIndex >= 0) {
-      // 直接替换现有预约，不记录撤销操作
+      // 替换现有预约
       const newItems = [...cartItems]
       newItems[existingIndex] = newItem
       setCartItems(newItems)
@@ -110,11 +115,6 @@ const TherapistBookingPage: React.FC = () => {
         icon: 'success'
       })
     } else {
-      // 记录新增操作（只有新增才能撤销）
-      setPendingItem(newItem)
-      setPendingAction('add')
-      setPendingIndex(cartItems.length)
-      
       // 添加新预约
       setCartItems([...cartItems, newItem])
       
@@ -127,42 +127,41 @@ const TherapistBookingPage: React.FC = () => {
 
   // 撤销操作（点击遮罩时）
   const handleCartMaskClick = () => {
-    if (pendingAction === 'add' && pendingIndex >= 0) {
-      // 撤销新增：移除最后添加的项
-      const newItems = [...cartItems]
-      newItems.splice(pendingIndex, 1)
+    if (isAutoExpanded && sessionStartIndex >= 0) {
+      // 撤销本次会话中所有新增的项
+      const newItems = cartItems.slice(0, sessionStartIndex)
       setCartItems(newItems)
       
       // 清除选中的时间
       bookingSelectorRef.current?.clearSelectedTime()
       
-      Taro.showToast({
-        title: '已取消预约',
-        icon: 'none'
-      })
+      const removedCount = cartItems.length - sessionStartIndex
+      if (removedCount > 0) {
+        Taro.showToast({
+          title: `已取消${removedCount}项预约`,
+          icon: 'none'
+        })
+      }
     }
     
-    // 清除待处理状态
-    setPendingItem(null)
-    setPendingAction(null)
-    setPendingIndex(-1)
+    // 重置会话状态
+    setSessionStartIndex(-1)
+    setIsAutoExpanded(false)
   }
 
   // 确认操作（点击"继续预约"时）
   const handleCartContinue = () => {
-    // 确认操作，清除待处理状态
-    setPendingItem(null)
-    setPendingAction(null)
-    setPendingIndex(-1)
+    // 确认操作，重置会话状态，允许继续添加
+    setSessionStartIndex(-1)
+    setIsAutoExpanded(false)
   }
 
   const handleCheckout = () => {
     if (cartItems.length === 0) return
 
-    // 清除待处理状态
-    setPendingItem(null)
-    setPendingAction(null)
-    setPendingIndex(-1)
+    // 清除会话状态
+    setSessionStartIndex(-1)
+    setIsAutoExpanded(false)
 
     // 导航到预约确认页面
     const params = {
@@ -212,7 +211,7 @@ const TherapistBookingPage: React.FC = () => {
         onCheckout={handleCheckout}
         onMaskClick={handleCartMaskClick}
         onContinue={handleCartContinue}
-        hasPendingAction={pendingAction !== null}
+        hasPendingAction={isAutoExpanded && sessionStartIndex >= 0}
       />
     </View>
   )
