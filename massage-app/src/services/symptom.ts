@@ -1,4 +1,5 @@
 import { symptomCategories, symptomServices, getTherapistSymptomServices } from '../mock/data/symptoms'
+import { mockTherapists } from '../mock/data/therapists'
 
 // 模拟网络延迟
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -39,19 +40,20 @@ export const symptomService = {
       throw new Error('门店ID不能为空')
     }
     
-    // 模拟获取门店所有推拿师的服务
-    // 实际应该根据门店ID获取所有推拿师，然后汇总他们的服务
+    // 根据门店ID获取该门店的所有推拿师
+    const storeTherapists = mockTherapists.filter(t => t.storeId === storeId)
+    
+    // 汇总所有推拿师的服务
     const allServices: any[] = []
     
-    // 模拟数据：假设该门店有多个推拿师，每个推拿师有自己的服务
-    const mockTherapistIds = ['therapist-001', 'therapist-002']
-    
-    mockTherapistIds.forEach(therapistId => {
-      const services = getTherapistSymptomServices(therapistId)
+    storeTherapists.forEach(therapist => {
+      const services = getTherapistSymptomServices(therapist.id)
       services.forEach(service => {
         allServices.push({
           ...service,
-          therapistId // 添加推拿师ID以便展示时分组
+          therapistId: therapist.id, // 添加推拿师ID以便展示时分组
+          therapistName: therapist.name, // 添加推拿师名称
+          therapistAvatar: therapist.avatar // 添加推拿师头像
         })
       })
     })
