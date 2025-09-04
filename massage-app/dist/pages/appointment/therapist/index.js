@@ -555,7 +555,8 @@ const TherapistBookingPage = () => {
       discountPrice: selectedService.discountPrice,
       date,
       time,
-      therapistName: therapist.name
+      therapistName: therapist.name,
+      therapistAvatar: therapist.avatar
     };
     const existingIndex = cartItems.findIndex(
       (item) => item.date === date && item.time === time
@@ -618,7 +619,10 @@ const TherapistBookingPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约"
+  "navigationBarTitleText": "推拿师预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

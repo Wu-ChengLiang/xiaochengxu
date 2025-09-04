@@ -82,7 +82,8 @@ const TherapistBookingPage: React.FC = () => {
       discountPrice: selectedService.discountPrice,
       date,
       time,
-      therapistName: therapist.name
+      therapistName: therapist.name,
+      therapistAvatar: therapist.avatar
     }
 
     // 检查是否已存在相同时间段的预约

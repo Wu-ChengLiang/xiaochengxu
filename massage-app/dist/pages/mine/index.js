@@ -7,6 +7,10 @@ const Mine = () => {
     /* @__PURE__ */ taro.jsx(taro.Text, { className: "desc", children: "功能开发中..." })
   ] }) });
 };
-var config = {};
+var config = {
+  "usingComponents": {
+    "comp": "../../comp"
+  }
+};
 Page(taro.createPageConfig(Mine, "pages/mine/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
