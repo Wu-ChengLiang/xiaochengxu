@@ -337,7 +337,7 @@ BookingSelector.displayName = "BookingSelector";
 const index = "";
 const TherapistBookingPage = () => {
   const router = taro.taroExports.useRouter();
-  const { therapistId, storeId } = router.params;
+  const { therapistId, storeId, storeName } = router.params;
   const [therapist, setTherapist] = taro.useState(null);
   const [store, setStore] = taro.useState(null);
   const [loading, setLoading] = taro.useState(true);
@@ -361,14 +361,14 @@ const TherapistBookingPage = () => {
     try {
       setLoading(true);
       setError("");
-      const [therapistData, storeData] = yield Promise.all(
+      const [therapistRes, storeRes] = yield Promise.all(
         [
           common.therapistService.getTherapistDetail(therapistId),
           common.storeService.getStoreDetail(storeId)
         ]
       );
-      setTherapist(therapistData);
-      setStore(storeData);
+      setTherapist(therapistRes.data);
+      setStore(storeRes.data);
     } catch (err) {
       console.error("Failed to load data:", err);
       setError("加载数据失败，请重试");
@@ -452,7 +452,14 @@ const TherapistBookingPage = () => {
   }
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-booking-page", children: [
     /* @__PURE__ */ taro.jsxs(taro.ScrollView, { className: "main-content", scrollY: true, children: [
-      /* @__PURE__ */ taro.jsx(TherapistInfo, { therapist }),
+      /* @__PURE__ */ taro.jsx(
+        TherapistInfo,
+        {
+          therapist,
+          storeId,
+          storeName
+        }
+      ),
       /* @__PURE__ */ taro.jsx(StoreInfo, { store }),
       /* @__PURE__ */ taro.jsx(
         BookingSelector,
@@ -478,10 +485,7 @@ const TherapistBookingPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "推拿师预约"
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

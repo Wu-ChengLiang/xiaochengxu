@@ -41,7 +41,7 @@ class StoreService {
   }
   
   // 获取门店详情
-  async getStoreDetail(storeId: string): Promise<Store | null> {
+  async getStoreDetail(storeId: string) {
     await sleep(200)
     
     const store = mockStores.find(s => s.id === storeId)
@@ -49,7 +49,11 @@ class StoreService {
       throw new Error('门店不存在')
     }
     
-    return store
+    return {
+      code: 200,
+      data: store,
+      message: 'success'
+    }
   }
   
   // 搜索门店

@@ -59,7 +59,7 @@ class TherapistService {
   }
   
   // 获取推拿师详情
-  async getTherapistDetail(therapistId: string): Promise<Therapist | null> {
+  async getTherapistDetail(therapistId: string) {
     await sleep(200)
     
     const therapist = mockTherapists.find(t => t.id === therapistId)
@@ -67,7 +67,11 @@ class TherapistService {
       throw new Error('推拿师不存在')
     }
     
-    return therapist
+    return {
+      code: 200,
+      data: therapist,
+      message: 'success'
+    }
   }
   
   // 按擅长项目筛选推拿师

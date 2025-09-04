@@ -384,10 +384,6 @@ const Appointment = () => {
     )
   ] });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Appointment, "pages/appointment/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
