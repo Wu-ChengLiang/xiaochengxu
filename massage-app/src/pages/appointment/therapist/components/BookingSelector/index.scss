@@ -38,12 +38,14 @@
             font-weight: 600;
           }
 
-          .price {
-            color: #fff;
-          }
+          .service-info {
+            .price {
+              color: #fff;
+            }
 
-          .service-duration {
-            color: rgba(255, 255, 255, 0.9);
+            .service-duration {
+              color: rgba(255, 255, 255, 0.9);
+            }
           }
         }
 
@@ -54,20 +56,15 @@
           display: block;
         }
 
-        .service-price {
-          margin-bottom: 8rpx;
+        .service-info {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16rpx;
 
-          .discount-price {
-            font-size: 32rpx;
-            font-weight: 600;
-            color: #333;
-            margin-right: 12rpx;
-          }
-
-          .original-price {
+          .service-duration {
             font-size: 24rpx;
-            color: #999;
-            text-decoration: line-through;
+            color: #666;
           }
 
           .price {
@@ -75,11 +72,6 @@
             font-weight: 600;
             color: #333;
           }
-        }
-
-        .service-duration {
-          font-size: 24rpx;
-          color: #666;
         }
 
         &:last-child {

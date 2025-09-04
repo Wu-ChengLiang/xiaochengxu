@@ -108,10 +108,10 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
               onClick={() => handleServiceSelect(service)}
             >
               <Text className="service-name">{service.name}</Text>
-              <View className="service-price">
+              <View className="service-info">
+                <Text className="service-duration">{service.duration}分钟</Text>
                 <Text className="price">¥{service.discountPrice || service.price}</Text>
               </View>
-              <Text className="service-duration">{service.duration}分钟</Text>
             </View>
           ))}
         </ScrollView>
