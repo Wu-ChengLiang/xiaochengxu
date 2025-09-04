@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useImperativeHandle, forwardRef } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import './index.scss'
 
@@ -21,15 +21,26 @@ interface BookingSelectorProps {
   onTimeSelect: (date: string, time: string) => void
 }
 
-const BookingSelector: React.FC<BookingSelectorProps> = ({ 
+export interface BookingSelectorHandle {
+  clearSelectedTime: () => void
+}
+
+const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(({ 
   services, 
   onServiceSelect, 
   onTimeSelect 
-}) => {
+}, ref) => {
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
+
+  // 暴露方法给父组件
+  useImperativeHandle(ref, () => ({
+    clearSelectedTime: () => {
+      setSelectedTime('')
+    }
+  }), [])
 
   // 生成日期列表（今天+接下来4天）
   const generateDateList = () => {
@@ -218,6 +229,8 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
       )}
     </View>
   )
-}
+})
+
+BookingSelector.displayName = 'BookingSelector'
 
 export default BookingSelector

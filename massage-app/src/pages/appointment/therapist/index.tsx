@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
-import BookingSelector from './components/BookingSelector'
+import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
 import ShoppingCart from './components/ShoppingCart'
 import type { Therapist, Store } from '@/types'
 import './index.scss'
@@ -38,6 +38,9 @@ const TherapistBookingPage: React.FC = () => {
   const [pendingItem, setPendingItem] = useState<CartItem | null>(null)
   const [pendingAction, setPendingAction] = useState<'add' | 'update' | null>(null)
   const [pendingIndex, setPendingIndex] = useState<number>(-1)
+  
+  // BookingSelector 组件引用
+  const bookingSelectorRef = useRef<BookingSelectorHandle>(null)
 
   // Mock 服务数据
   const mockServices = [
@@ -97,12 +100,7 @@ const TherapistBookingPage: React.FC = () => {
     )
 
     if (existingIndex >= 0) {
-      // 记录更新操作
-      setPendingItem(cartItems[existingIndex]) // 保存原始项
-      setPendingAction('update')
-      setPendingIndex(existingIndex)
-      
-      // 替换现有预约
+      // 直接替换现有预约，不记录撤销操作
       const newItems = [...cartItems]
       newItems[existingIndex] = newItem
       setCartItems(newItems)
@@ -112,7 +110,7 @@ const TherapistBookingPage: React.FC = () => {
         icon: 'success'
       })
     } else {
-      // 记录新增操作
+      // 记录新增操作（只有新增才能撤销）
       setPendingItem(newItem)
       setPendingAction('add')
       setPendingIndex(cartItems.length)
@@ -135,18 +133,11 @@ const TherapistBookingPage: React.FC = () => {
       newItems.splice(pendingIndex, 1)
       setCartItems(newItems)
       
-      Taro.showToast({
-        title: '已取消预约',
-        icon: 'none'
-      })
-    } else if (pendingAction === 'update' && pendingItem && pendingIndex >= 0) {
-      // 撤销更新：恢复原始项
-      const newItems = [...cartItems]
-      newItems[pendingIndex] = pendingItem
-      setCartItems(newItems)
+      // 清除选中的时间
+      bookingSelectorRef.current?.clearSelectedTime()
       
       Taro.showToast({
-        title: '已恢复原预约',
+        title: '已取消预约',
         icon: 'none'
       })
     }
@@ -209,6 +200,7 @@ const TherapistBookingPage: React.FC = () => {
         <TherapistInfo therapist={therapist} />
         <StoreInfo store={store} />
         <BookingSelector 
+          ref={bookingSelectorRef}
           services={mockServices}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
