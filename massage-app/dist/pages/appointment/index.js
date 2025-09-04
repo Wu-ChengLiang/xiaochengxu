@@ -219,7 +219,7 @@ class TherapistService {
 }
 const therapistService = new TherapistService();
 const index$3 = "";
-const StoreCard = ({ store, onClick, onBooking }) => {
+const StoreCard = ({ store, onClick }) => {
   const getStatusText = (status) => {
     switch (status) {
       case "normal":
@@ -275,8 +275,7 @@ const StoreCard = ({ store, onClick, onBooking }) => {
         /* @__PURE__ */ taro.jsx(
           common.BookingButton,
           {
-            size: "small",
-            onClick: onBooking
+            size: "small"
           }
         )
       ] })
@@ -462,12 +461,6 @@ const Appointment = () => {
       url: `/pages/therapist/detail/index?id=${therapist.id}`
     });
   };
-  const handleBookingClick = (e, item) => {
-    e.stopPropagation();
-    taro.Taro.navigateTo({
-      url: `/pages/booking/confirm/index?type=${item.hasOwnProperty("storeId") ? "therapist" : "store"}&id=${item.id}`
-    });
-  };
   const handleMoreStores = () => {
     setShowStoreSheet(true);
   };
@@ -517,8 +510,7 @@ const Appointment = () => {
           StoreCard,
           {
             store,
-            onClick: () => handleStoreClick(store),
-            onBooking: (e) => handleBookingClick(e, store)
+            onClick: () => handleStoreClick(store)
           },
           store.id
         )
@@ -579,10 +571,6 @@ const Appointment = () => {
                 store,
                 onClick: () => {
                   handleStoreClick(store);
-                  setShowStoreSheet(false);
-                },
-                onBooking: (e) => {
-                  handleBookingClick(e, store);
                   setShowStoreSheet(false);
                 }
               },
