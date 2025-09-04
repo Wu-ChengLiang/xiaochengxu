@@ -1,1 +1,251 @@
-"use strict";var e=(e,s,t)=>new Promise((i,a)=>{var n=e=>{try{r(t.next(e))}catch(s){a(s)}},o=e=>{try{r(t.throw(e))}catch(s){a(s)}},r=e=>e.done?i(e.value):Promise.resolve(e.value).then(n,o);r((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),i=require("../../../common.js"),a="",n=()=>{const a=s.taroExports.useRouter(),{id:n}=a.params,[o,r]=s.reactExports.useState(null),[l,x]=s.reactExports.useState(""),[c,m]=s.reactExports.useState(""),[u,d]=s.reactExports.useState([]),[p,j]=s.reactExports.useState(!0);s.reactExports.useEffect(()=>{h(),E()},[n]);const h=()=>e(exports,null,function*(){try{const e=yield i.storeService.getStoreDetail(n);r(e)}catch(e){s.Taro.showToast({title:"\u52a0\u8f7d\u5931\u8d25",icon:"none"})}finally{j(!1)}}),E=()=>{const e=[],s=["\u5468\u65e5","\u5468\u4e00","\u5468\u4e8c","\u5468\u4e09","\u5468\u56db","\u5468\u4e94","\u5468\u516d"];for(let t=0;t<7;t++){const i=new Date;i.setDate(i.getDate()+t);const a=`${i.getMonth()+1}\u6708${i.getDate()}\u65e5`,n=s[i.getDay()],o=[{time:"10:00",points:8,duration:0,available:t>0},{time:"11:00",points:9,duration:10,available:!0},{time:"12:00",points:10,duration:20,available:!0},{time:"14:00",points:10,duration:0,available:!0},{time:"15:00",points:9,duration:10,available:!0},{time:"16:00",points:8,duration:20,available:2!==t},{time:"17:00",points:8,duration:30,available:!0},{time:"18:00",points:9,duration:0,available:!0},{time:"19:00",points:10,duration:0,available:!0},{time:"20:00",points:10,duration:10,available:!0}];e.push({date:a,weekday:n,slots:o})}d(e),e.length>1&&x(e[1].date)},R=e=>{x(e),m("")},N=e=>{m(e)},w=()=>{(null==o?void 0:o.phone)&&s.Taro.makePhoneCall({phoneNumber:o.phone})},v=()=>{(null==o?void 0:o.location)&&s.Taro.openLocation({latitude:o.location.latitude,longitude:o.location.longitude,name:o.name,address:o.address})},b=()=>{c?s.Taro.navigateTo({url:`/pages/booking/confirm/index?type=store&id=${n}&date=${l}&time=${c}`}):s.Taro.showToast({title:"\u8bf7\u9009\u62e9\u9884\u7ea6\u65f6\u95f4",icon:"none"})},T=()=>{const e=u.find(e=>e.date===l);return(null==e?void 0:e.slots)||[]};return o?s.jsxRuntimeExports.jsxs(s.View,{className:"store-appointment-page",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"store-header",children:[s.jsxRuntimeExports.jsx(s.Image,{className:"store-image",src:o.images[0],mode:"aspectFill"}),s.jsxRuntimeExports.jsxs(s.View,{className:"store-actions",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"action-text",children:"\u4e00\u5ba2\u4e00\u6362"}),s.jsxRuntimeExports.jsx(s.Text,{className:"action-text",children:"\u5e72\u51c0\u6574\u6d01"})]})]}),s.jsxRuntimeExports.jsx(s.View,{className:"store-info",children:s.jsxRuntimeExports.jsxs(s.View,{className:"info-header",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"store-details",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"name-row",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"store-name",children:o.name}),s.jsxRuntimeExports.jsxs(s.Text,{className:"distance",children:[o.distance||9,"km"]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"hours-row",children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"business-hours",children:[o.businessHours.start,"-",o.businessHours.end]}),s.jsxRuntimeExports.jsxs(s.View,{className:`status ${o.status}`,children:["normal"===o.status&&"\u5c31\u8fd1","busy"===o.status&&"\u7e41\u5fd9","full"===o.status&&"\u7206\u6ee1"]})]}),s.jsxRuntimeExports.jsx(s.Text,{className:"address",children:o.address})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"action-buttons",children:[s.jsxRuntimeExports.jsx(s.View,{className:"action-btn",onClick:w,children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"phone",size:"24",color:"#D9455F"})}),s.jsxRuntimeExports.jsx(s.View,{className:"action-btn",onClick:v,children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"map-pin",size:"24",color:"#D9455F"})})]})]})}),s.jsxRuntimeExports.jsxs(s.View,{className:"appointment-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u9884\u7ea6\u65f6\u95f4"}),s.jsxRuntimeExports.jsxs(s.View,{className:"promotion-tips",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"tip-item main",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"discount",children:"9.5\u6298"}),s.jsxRuntimeExports.jsxs(s.View,{className:"tip-content",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"tip-title",children:"\u63d0\u524d30\u5206\u949f"}),s.jsxRuntimeExports.jsx(s.Text,{className:"tip-desc",children:"10:00\u5f00\u59cb"})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"tip-item",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"discount",children:"9.0\u6298"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"tip-desc",children:["\u9519\u5cf0\u9884\u7ea6",s.jsxRuntimeExports.jsx("br",{}),"\u70b9\u51fb\u524d\u5f80"]})]})]}),s.jsxRuntimeExports.jsx(s.ScrollView,{scrollX:!0,className:"date-selector",children:u.map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:"date-item "+(l===e.date?"active":""),onClick:()=>R(e.date),children:[s.jsxRuntimeExports.jsx(s.Text,{className:"date",children:e.date}),s.jsxRuntimeExports.jsx(s.Text,{className:"weekday",children:e.weekday})]},e.date))}),s.jsxRuntimeExports.jsx(s.View,{className:"time-slots",children:T().map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:`time-slot ${e.available?"":"disabled"} ${c===e.time?"active":""}`,onClick:()=>e.available&&N(e.time),children:[s.jsxRuntimeExports.jsxs(s.View,{className:"time-info",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"time",children:e.time}),s.jsxRuntimeExports.jsxs(s.Text,{className:"points",children:[e.points,"\u70b9"]})]}),e.duration>0&&s.jsxRuntimeExports.jsxs(s.Text,{className:"duration",children:[e.duration,"\u5206"]})]},e.time))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"bottom-bar",children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"selected-time",children:["\u9884\u7ea6\u65f6\u95f4\uff1a",l," ",c||"\u8bf7\u9009\u62e9\u65f6\u95f4"]}),s.jsxRuntimeExports.jsx(t.AtButton,{className:"submit-btn",type:"primary",onClick:b,disabled:!c,children:"\u9009\u75c7\u72b6"})]})]}):null};var o={navigationBarTitleText:"\u95e8\u5e97\u9884\u7ea6"};Page(s.createPageConfig(n,"pages/appointment/store/index",{root:{cn:[]}},o||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const StoreAppointmentPage = () => {
+  const router = taro.taroExports.useRouter();
+  const { id } = router.params;
+  const [store, setStore] = taro.useState(null);
+  const [selectedDate, setSelectedDate] = taro.useState("");
+  const [selectedTime, setSelectedTime] = taro.useState("");
+  const [timeSlots, setTimeSlots] = taro.useState([]);
+  const [loading, setLoading] = taro.useState(true);
+  taro.useEffect(() => {
+    loadStoreData();
+    generateTimeSlots();
+  }, [id]);
+  const loadStoreData = () => __async(exports, null, function* () {
+    try {
+      const storeData = yield common.storeService.getStoreDetail(id);
+      setStore(storeData);
+    } catch (error) {
+      taro.Taro.showToast({
+        title: "加载失败",
+        icon: "none"
+      });
+    } finally {
+      setLoading(false);
+    }
+  });
+  const generateTimeSlots = () => {
+    const slots = [];
+    const weekdays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+    for (let i = 0; i < 7; i++) {
+      const date = /* @__PURE__ */ new Date();
+      date.setDate(date.getDate() + i);
+      const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+      const weekday = weekdays[date.getDay()];
+      const daySlots = [
+        { time: "10:00", points: 8, duration: 0, available: i > 0 },
+        { time: "11:00", points: 9, duration: 10, available: true },
+        { time: "12:00", points: 10, duration: 20, available: true },
+        { time: "14:00", points: 10, duration: 0, available: true },
+        { time: "15:00", points: 9, duration: 10, available: true },
+        { time: "16:00", points: 8, duration: 20, available: i !== 2 },
+        { time: "17:00", points: 8, duration: 30, available: true },
+        { time: "18:00", points: 9, duration: 0, available: true },
+        { time: "19:00", points: 10, duration: 0, available: true },
+        { time: "20:00", points: 10, duration: 10, available: true }
+      ];
+      slots.push({
+        date: dateStr,
+        weekday,
+        slots: daySlots
+      });
+    }
+    setTimeSlots(slots);
+    if (slots.length > 1) {
+      setSelectedDate(slots[1].date);
+    }
+  };
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+    setSelectedTime("");
+  };
+  const handleTimeSelect = (time) => {
+    setSelectedTime(time);
+  };
+  const handleCallStore = () => {
+    if (store == null ? void 0 : store.phone) {
+      taro.Taro.makePhoneCall({
+        phoneNumber: store.phone
+      });
+    }
+  };
+  const handleShowLocation = () => {
+    if (store == null ? void 0 : store.location) {
+      taro.Taro.openLocation({
+        latitude: store.location.latitude,
+        longitude: store.location.longitude,
+        name: store.name,
+        address: store.address
+      });
+    }
+  };
+  const handleSubmit = () => {
+    if (!selectedTime) {
+      taro.Taro.showToast({
+        title: "请选择预约时间",
+        icon: "none"
+      });
+      return;
+    }
+    taro.Taro.navigateTo({
+      url: `/pages/booking/confirm/index?type=store&id=${id}&date=${selectedDate}&time=${selectedTime}`
+    });
+  };
+  const getCurrentTimeSlot = () => {
+    const current = timeSlots.find((slot) => slot.date === selectedDate);
+    return (current == null ? void 0 : current.slots) || [];
+  };
+  if (!store)
+    return null;
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-appointment-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-header", children: [
+      /* @__PURE__ */ taro.jsx(
+        taro.Image,
+        {
+          className: "store-image",
+          src: store.images[0],
+          mode: "aspectFill"
+        }
+      ),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-actions", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "action-text", children: "一客一换" }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "action-text", children: "干净整洁" })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "store-info", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-header", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-details", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "name-row", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: store.name }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "distance", children: [
+            store.distance || 9,
+            "km"
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "hours-row", children: [
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "business-hours", children: [
+            store.businessHours.start,
+            "-",
+            store.businessHours.end
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: `status ${store.status}`, children: [
+            store.status === "normal" && "就近",
+            store.status === "busy" && "繁忙",
+            store.status === "full" && "爆满"
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "address", children: store.address })
+      ] }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "action-buttons", children: [
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "action-btn", onClick: handleCallStore, children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "phone", size: "24", color: "#D9455F" }) }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "action-btn", onClick: handleShowLocation, children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "map-pin", size: "24", color: "#D9455F" }) })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "appointment-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "预约时间" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "promotion-tips", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-item main", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "discount", children: "9.5折" }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-content", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "tip-title", children: "提前30分钟" }),
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "tip-desc", children: "10:00开始" })
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-item", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "discount", children: "9.0折" }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "tip-desc", children: [
+            "错峰预约",
+            /* @__PURE__ */ taro.jsx("br", {}),
+            "点击前往"
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollX: true, className: "date-selector", children: timeSlots.map(
+        (slot) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `date-item ${selectedDate === slot.date ? "active" : ""}`,
+            onClick: () => handleDateSelect(slot.date),
+            children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "date", children: slot.date }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "weekday", children: slot.weekday })
+            ]
+          },
+          slot.date
+        )
+      ) }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "time-slots", children: getCurrentTimeSlot().map(
+        (slot) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `time-slot ${!slot.available ? "disabled" : ""} ${selectedTime === slot.time ? "active" : ""}`,
+            onClick: () => slot.available && handleTimeSelect(slot.time),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "time-info", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "time", children: slot.time }),
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "points", children: [
+                  slot.points,
+                  "点"
+                ] })
+              ] }),
+              slot.duration > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "duration", children: [
+                slot.duration,
+                "分"
+              ] })
+            ]
+          },
+          slot.time
+        )
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "bottom-bar", children: [
+      /* @__PURE__ */ taro.jsxs(taro.Text, { className: "selected-time", children: [
+        "预约时间：",
+        selectedDate,
+        " ",
+        selectedTime || "请选择时间"
+      ] }),
+      /* @__PURE__ */ taro.jsx(
+        vendors.AtButton,
+        {
+          className: "submit-btn",
+          type: "primary",
+          onClick: handleSubmit,
+          disabled: !selectedTime,
+          children: "选症状"
+        }
+      )
+    ] })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "门店预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(StoreAppointmentPage, "pages/appointment/store/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

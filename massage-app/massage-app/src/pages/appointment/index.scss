@@ -14,33 +14,8 @@
       color: var(--text-weak);
       font-size: 24px;
       
-      .icon {
-        margin-right: 4px;
-      }
-      
       .text {
         margin-left: 4px;
-        
-        &.loading {
-          color: #666;
-        }
-        
-        &.success {
-          color: #52c41a;
-        }
-        
-        &.error {
-          color: #ff4d4f;
-        }
-      }
-      
-      .retry-btn {
-        margin-left: 8px;
-        color: var(--primary-color);
-        font-size: 22px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background-color: rgba(217, 69, 95, 0.1);
       }
     }
   }
@@ -124,65 +99,6 @@
     
     .therapist-list {
       // 不设置固定高度，让内容自然展开
-    }
-  }
-  
-  // 更多门店弹出层样式
-  .store-sheet-header {
-    padding: 24rpx 32rpx;
-    background: #fff;
-    
-    .city-selector {
-      display: inline-flex;
-      align-items: center;
-      margin-bottom: 20rpx;
-      
-      .city-name {
-        font-size: 32rpx;
-        font-weight: 500;
-        color: var(--text-primary);
-        margin-right: 8rpx;
-      }
-      
-      .city-arrow {
-        font-size: 20rpx;
-        color: var(--text-secondary);
-      }
-    }
-    
-    .search-box {
-      display: flex;
-      align-items: center;
-      background: #fff;
-      border-radius: var(--radius-full);
-      padding: 16rpx 24rpx;
-      
-      .search-icon {
-        margin-right: 12rpx;
-      }
-      
-      .search-input {
-        flex: 1;
-        font-size: 28rpx;
-        color: var(--text-primary);
-        
-        &::placeholder {
-          color: var(--text-weak);
-        }
-      }
-    }
-  }
-  
-  .store-sheet-list {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: env(safe-area-inset-bottom);
-    
-    // 覆盖 StoreCard 的部分样式，使其在弹出层中更紧凑
-    .store-card {
-      &:first-child {
-        padding-top: 24rpx;
-      }
     }
   }
 }

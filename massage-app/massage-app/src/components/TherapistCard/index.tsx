@@ -1,15 +1,16 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import BookingButton from '@/components/BookingButton'
+import { AtButton } from 'taro-ui'
 import type { Therapist } from '@/types'
 import './index.scss'
 
 interface TherapistCardProps {
   therapist: Therapist
   onClick?: () => void
+  onBooking?: (e: any) => void
 }
 
-const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => {
+const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick, onBooking }) => {
   return (
     <View className="therapist-card" onClick={onClick}>
       <View className="card-content">
@@ -44,9 +45,14 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
                 服务{therapist.serviceCount}次
               </Text>
             </View>
-            <BookingButton 
+            <AtButton 
+              className="booking-btn"
+              type="primary"
               size="small"
-            />
+              onClick={onBooking}
+            >
+              预约
+            </AtButton>
           </View>
         </View>
       </View>

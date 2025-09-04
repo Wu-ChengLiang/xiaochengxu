@@ -19,12 +19,10 @@ class LocationService {
         })
       }
       
-      // 获取位置，设置超时时间
+      // 获取位置
       const res = await Taro.getLocation({
         type: 'gcj02', // 返回可用于 openLocation 的坐标
-        isHighAccuracy: true, // 开启高精度
-        highAccuracyExpireTime: 8000, // 高精度定位超时时间8秒
-        timeout: 10000 // 总超时时间10秒
+        isHighAccuracy: true // 开启高精度
       })
       
       return {
@@ -34,14 +32,11 @@ class LocationService {
     } catch (error) {
       console.error('获取位置失败:', error)
       
-      // 处理不同类型的错误
-      const errorMsg = error?.errMsg || ''
-      
-      if (errorMsg.includes('auth deny')) {
-        // 用户拒绝授权
+      // 如果用户拒绝授权，使用默认位置（上海市中心）
+      if (error?.errMsg?.includes('auth deny')) {
         Taro.showModal({
-          title: '位置授权',
-          content: '需要获取您的位置信息来推荐附近门店，请在设置中允许位置权限',
+          title: '提示',
+          content: '需要获取您的位置信息来推荐附近门店',
           confirmText: '去设置',
           success: (res) => {
             if (res.confirm) {
@@ -49,21 +44,15 @@ class LocationService {
             }
           }
         })
-      } else if (errorMsg.includes('timeout') || errorMsg.includes('fail')) {
-        // 定位超时或失败
-        console.warn('定位超时或失败，使用默认位置')
-        Taro.showToast({
-          title: '定位失败，使用默认位置',
-          icon: 'none',
-          duration: 2000
-        })
+        
+        // 返回默认位置
+        return {
+          latitude: 31.2304,
+          longitude: 121.4737
+        }
       }
       
-      // 返回默认位置（上海市中心）
-      return {
-        latitude: 31.2304,
-        longitude: 121.4737
-      }
+      throw error
     }
   }
   

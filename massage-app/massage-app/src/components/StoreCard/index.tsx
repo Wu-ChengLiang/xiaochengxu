@@ -1,15 +1,16 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import BookingButton from '@/components/BookingButton'
+import { AtButton } from 'taro-ui'
 import type { Store } from '@/types'
 import './index.scss'
 
 interface StoreCardProps {
   store: Store
   onClick?: () => void
+  onBooking?: (e: any) => void
 }
 
-const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
+const StoreCard: React.FC<StoreCardProps> = ({ store, onClick, onBooking }) => {
   const getStatusText = (status: Store['status']) => {
     switch (status) {
       case 'normal':
@@ -70,9 +71,14 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
               <Text className="icon">📍</Text>
               <Text className="distance-text">{store.distance}km</Text>
             </View>
-            <BookingButton 
+            <AtButton 
+              className="booking-btn"
+              type="primary"
               size="small"
-            />
+              onClick={onBooking}
+            >
+              预约
+            </AtButton>
           </View>
         </View>
       </View>

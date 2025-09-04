@@ -8,9 +8,9 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#D9455F",
-    "navigationBarTitleText": "疲劳酸痛，到常乐对症推拿",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "推拿预约",
+    "navigationBarTextStyle": "black"
   },
   "tabBar": {
     "color": "#999999",
