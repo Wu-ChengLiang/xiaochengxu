@@ -7,10 +7,6 @@ const Gift = () => {
     /* @__PURE__ */ taro.jsx(taro.Text, { className: "desc", children: "功能开发中..." })
   ] }) });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Gift, "pages/gift/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
