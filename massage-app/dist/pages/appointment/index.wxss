@@ -281,7 +281,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-primary);
+  background: #fff;
   border-radius: 24rpx 24rpx 0 0;
   -webkit-transform: translateY(100%);
       -ms-transform: translateY(100%);
@@ -460,7 +460,7 @@
 }
 .appointment-page .store-sheet-header {
   padding: 24rpx 32rpx;
-  background: #f8f8f8;
+  background: #fff;
 }
 .appointment-page .store-sheet-header .city-selector {
   display: -webkit-inline-flex;
