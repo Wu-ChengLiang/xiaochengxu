@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { View, Text, Image } from '@tarojs/components'
+import Taro from '@tarojs/taro'
 import type { Therapist } from '@/types'
 import './index.scss'
 
 interface TherapistInfoProps {
   therapist: Therapist
+  storeId?: string
+  storeName?: string
 }
 
-const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
+const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist, storeId, storeName }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   
   // 模拟扩展的推拿师信息（实际应该从 therapist 对象获取）
@@ -21,6 +24,22 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded)
+  }
+
+  // 跳转到症状调理页面
+  const handleSymptomSelection = () => {
+    const params = {
+      therapistId: therapist.id,
+      therapistName: therapist.name,
+      storeId: storeId || '',
+      storeName: storeName || ''
+    }
+
+    Taro.navigateTo({
+      url: `/pages/appointment/symptom/index?${Object.entries(params)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&')}`
+    })
   }
 
   return (
@@ -49,6 +68,10 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
               <Text className="sales-text">销量{therapistDetail.salesCount}单</Text>
             </View>
           </View>
+        </View>
+        
+        <View className="symptom-button" onClick={handleSymptomSelection}>
+          <Text className="button-text">选症状</Text>
         </View>
       </View>
       

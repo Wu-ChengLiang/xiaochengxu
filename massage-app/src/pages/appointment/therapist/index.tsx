@@ -23,7 +23,7 @@ interface CartItem {
 
 const TherapistBookingPage: React.FC = () => {
   const router = useRouter()
-  const { therapistId, storeId } = router.params
+  const { therapistId, storeId, storeName } = router.params
   
   const [therapist, setTherapist] = useState<Therapist | null>(null)
   const [store, setStore] = useState<Store | null>(null)
@@ -190,7 +190,11 @@ const TherapistBookingPage: React.FC = () => {
   return (
     <View className="therapist-booking-page">
       <ScrollView className="main-content" scrollY>
-        <TherapistInfo therapist={therapist} />
+        <TherapistInfo 
+          therapist={therapist} 
+          storeId={storeId as string}
+          storeName={storeName as string}
+        />
         <StoreInfo store={store} />
         <BookingSelector 
           ref={bookingSelectorRef}

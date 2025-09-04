@@ -71,8 +71,21 @@ const StoreAppointmentPage: React.FC = () => {
 
     // 跳转到症状选择页面
     const timeString = `${selectedHour.replace('点', '')}:${selectedMinute.replace('分', '')}`
+    
+    // 需要先选择推拿师，然后进入症状调理页面
+    // 这里暂时跳转到推拿师选择页面，由用户选择推拿师后再进入症状调理
+    const params = {
+      storeId: id,
+      storeName: store?.name || '',
+      selectedDate,
+      selectedTime: timeString,
+      from: 'store'
+    }
+    
     Taro.navigateTo({
-      url: `/pages/booking/symptoms/index?type=store&id=${id}&date=${selectedDate}&time=${timeString}`
+      url: `/pages/appointment/therapist/index?${Object.entries(params)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&')}`
     })
   }
 

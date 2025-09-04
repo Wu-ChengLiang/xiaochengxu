@@ -38,7 +38,7 @@ var __async = (__this, __arguments, generator) => {
 const taro = require("../../../taro.js");
 const common = require("../../../common.js");
 const index$3 = "";
-const TherapistInfo = ({ therapist }) => {
+const TherapistInfo = ({ therapist, storeId, storeName }) => {
   const [isExpanded, setIsExpanded] = taro.useState(false);
   const therapistDetail = __spreadValues({
     level: "LV4",
@@ -48,6 +48,17 @@ const TherapistInfo = ({ therapist }) => {
   }, therapist);
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+  };
+  const handleSymptomSelection = () => {
+    const params = {
+      therapistId: therapist.id,
+      therapistName: therapist.name,
+      storeId: storeId || "",
+      storeName: storeName || ""
+    };
+    taro.Taro.navigateTo({
+      url: `/pages/appointment/symptom/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
+    });
   };
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-info", children: [
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-header", children: [
@@ -76,7 +87,8 @@ const TherapistInfo = ({ therapist }) => {
             "单"
           ] }) })
         ] })
-      ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "symptom-button", onClick: handleSymptomSelection, children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "button-text", children: "选症状" }) })
     ] }),
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "description-section", children: [
       /* @__PURE__ */ taro.jsx(taro.Text, { className: `description ${isExpanded ? "expanded" : "collapsed"}`, children: therapistDetail.description }),
@@ -466,7 +478,10 @@ const TherapistBookingPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约"
+  "navigationBarTitleText": "推拿师预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

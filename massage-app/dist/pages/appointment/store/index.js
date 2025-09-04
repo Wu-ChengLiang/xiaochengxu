@@ -171,8 +171,15 @@ const StoreAppointmentPage = () => {
       return;
     }
     const timeString = `${selectedHour.replace("点", "")}:${selectedMinute.replace("分", "")}`;
+    const params = {
+      storeId: id,
+      storeName: (store == null ? void 0 : store.name) || "",
+      selectedDate,
+      selectedTime: timeString,
+      from: "store"
+    };
     taro.Taro.navigateTo({
-      url: `/pages/booking/symptoms/index?type=store&id=${id}&date=${selectedDate}&time=${timeString}`
+      url: `/pages/appointment/therapist/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
     });
   };
   const getFormattedDateTime = () => {
@@ -263,7 +270,10 @@ const StoreAppointmentPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "门店预约"
+  "navigationBarTitleText": "门店预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(StoreAppointmentPage, "pages/appointment/store/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

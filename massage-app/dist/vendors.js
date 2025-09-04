@@ -1,5 +1,59 @@
 "use strict";
 const taro = require("./taro.js");
+var classnames$1 = { exports: {} };
+(function(module2) {
+  (function() {
+    var hasOwn = {}.hasOwnProperty;
+    function classNames2() {
+      var classes = "";
+      for (var i = 0; i < arguments.length; i++) {
+        var arg = arguments[i];
+        if (arg) {
+          classes = appendClass(classes, parseValue2(arg));
+        }
+      }
+      return classes;
+    }
+    function parseValue2(arg) {
+      if (typeof arg === "string" || typeof arg === "number") {
+        return arg;
+      }
+      if (typeof arg !== "object") {
+        return "";
+      }
+      if (Array.isArray(arg)) {
+        return classNames2.apply(null, arg);
+      }
+      if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes("[native code]")) {
+        return arg.toString();
+      }
+      var classes = "";
+      for (var key in arg) {
+        if (hasOwn.call(arg, key) && arg[key]) {
+          classes = appendClass(classes, key);
+        }
+      }
+      return classes;
+    }
+    function appendClass(value, newClass) {
+      if (!newClass) {
+        return value;
+      }
+      if (value) {
+        return value + " " + newClass;
+      }
+      return value + newClass;
+    }
+    if (module2.exports) {
+      classNames2.default = classNames2;
+      module2.exports = classNames2;
+    } else {
+      taro.taroWindowProvider.classNames = classNames2;
+    }
+  })();
+})(classnames$1);
+var classnamesExports = classnames$1.exports;
+const classNames = /* @__PURE__ */ taro.getDefaultExportFromCjs(classnamesExports);
 var extendStatics = function(d, b) {
   extendStatics = Object.setPrototypeOf || {
     __proto__: []
@@ -191,7 +245,7 @@ function createCommonjsModule(fn, module2) {
     exports: {}
   }, fn(module2, module2.exports), module2.exports;
 }
-var classnames$1 = createCommonjsModule(function(module2) {
+var classnames = createCommonjsModule(function(module2) {
   /*!
     Copyright (c) 2017 Jed Watson.
     Licensed under the MIT License (MIT), see
@@ -951,7 +1005,7 @@ var AtActionSheetBody = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtActionSheetBody2.prototype.render = function() {
-      var rootClass = classnames$1("at-action-sheet__body", this.props.className);
+      var rootClass = classnames("at-action-sheet__body", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootClass
       }, this.props.children);
@@ -978,7 +1032,7 @@ var AtActionSheetFooter = (
       return _this;
     }
     AtActionSheetFooter2.prototype.render = function() {
-      var rootClass = classnames$1("at-action-sheet__footer", this.props.className);
+      var rootClass = classnames("at-action-sheet__footer", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         onClick: this.handleClick,
         className: rootClass
@@ -998,7 +1052,7 @@ var AtActionSheetHeader = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtActionSheetHeader2.prototype.render = function() {
-      var rootClass = classnames$1("at-action-sheet__header", this.props.className);
+      var rootClass = classnames("at-action-sheet__header", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootClass
       }, this.props.children);
@@ -1050,7 +1104,7 @@ var AtActionSheet = (
     AtActionSheet2.prototype.render = function() {
       var _a2 = this.props, title = _a2.title, cancelText = _a2.cancelText, className = _a2.className;
       var _isOpened = this.state._isOpened;
-      var rootClass = classnames$1("at-action-sheet", {
+      var rootClass = classnames("at-action-sheet", {
         "at-action-sheet--active": _isOpened
       }, className);
       return taro.react_production_min.createElement(taro.View, {
@@ -1094,7 +1148,7 @@ var AtActionSheetItem = (
       return _this;
     }
     AtActionSheetItem2.prototype.render = function() {
-      var rootClass = classnames$1("at-action-sheet__item", this.props.className);
+      var rootClass = classnames("at-action-sheet__item", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootClass,
         onClick: this.handleClick
@@ -1329,7 +1383,7 @@ var AtActivityIndicator = (
     }
     AtActivityIndicator2.prototype.render = function() {
       var _a2 = this.props, color = _a2.color, size = _a2.size, mode = _a2.mode, content = _a2.content, isOpened = _a2.isOpened;
-      var rootClass = classnames$1("at-activity-indicator", {
+      var rootClass = classnames("at-activity-indicator", {
         "at-activity-indicator--center": mode === "center",
         "at-activity-indicator--isopened": isOpened
       }, this.props.className);
@@ -1404,7 +1458,7 @@ var AtAvatar = (
         }, letter);
       }
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, this.props.className),
+        className: classnames(rootClassName, classObject, this.props.className),
         style: customStyle
       }, elem);
     };
@@ -1451,7 +1505,7 @@ var AtBadge = (
       var rootClassName = ["at-badge"];
       var val = this.formatValue(value, maxValue);
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, this.props.className),
+        className: classnames(rootClassName, this.props.className),
         style: customStyle
       }, this.props.children, dot ? taro.react_production_min.createElement(taro.View, {
         className: "at-badge__dot"
@@ -1558,7 +1612,7 @@ var AtButton = (
         onContact: this.onContact.bind(this)
       });
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, this.props.className),
+        className: classnames(rootClassName, classObject, this.props.className),
         style: customStyle,
         onClick: this.onClick.bind(this)
       }, isWEB && !disabled && webButton, isWEAPP && !disabled && button, isALIPAY && !disabled && button, loadingComponent, taro.react_production_min.createElement(taro.View, {
@@ -1624,10 +1678,10 @@ var AtCard = (
     AtCard2.prototype.render = function() {
       var _a2;
       var _b = this.props, title = _b.title, note = _b.note, extra = _b.extra, extraStyle = _b.extraStyle, thumb = _b.thumb, isFull = _b.isFull, icon = _b.icon, renderIcon = _b.renderIcon;
-      var rootClass = classnames$1("at-card", {
+      var rootClass = classnames("at-card", {
         "at-card--full": isFull
       }, this.props.className);
-      var iconClass = classnames$1((_a2 = {
+      var iconClass = classnames((_a2 = {
         "at-icon": true
       }, _a2["at-icon-".concat(icon && icon.value)] = icon && icon.value, _a2["at-card__header-icon"] = true, _a2));
       var iconStyle = {
@@ -1707,13 +1761,13 @@ var AtCheckbox = (
     AtCheckbox2.prototype.render = function() {
       var _this = this;
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, options = _a2.options, selectedList = _a2.selectedList;
-      var rootCls = classnames$1("at-checkbox", className);
+      var rootCls = classnames("at-checkbox", className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootCls,
         style: customStyle
       }, options.map(function(option, idx) {
         var value = option.value, disabled = option.disabled, label = option.label, desc = option.desc;
-        var optionCls = classnames$1("at-checkbox__option", {
+        var optionCls = classnames("at-checkbox__option", {
           "at-checkbox__option--disabled": disabled,
           "at-checkbox__option--selected": selectedList.includes(value)
         });
@@ -1763,7 +1817,7 @@ var AtList = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtList2.prototype.render = function() {
-      var rootClass = classnames$1("at-list", {
+      var rootClass = classnames("at-list", {
         "at-list--no-border": !this.props.hasBorder
       }, this.props.className);
       return taro.react_production_min.createElement(taro.View, {
@@ -1803,7 +1857,7 @@ var AtListItem = (
     AtListItem2.prototype.render = function() {
       var _a2 = this.props, note = _a2.note, arrow = _a2.arrow, thumb = _a2.thumb, iconInfo = _a2.iconInfo, disabled = _a2.disabled, isSwitch = _a2.isSwitch, hasBorder = _a2.hasBorder, extraThumb = _a2.extraThumb, switchColor = _a2.switchColor, switchIsCheck = _a2.switchIsCheck, icon = _a2.icon;
       var _b = this.props, extraText = _b.extraText, title = _b.title;
-      var rootClass = classnames$1("at-list__item", {
+      var rootClass = classnames("at-list__item", {
         "at-list__item--thumb": thumb,
         "at-list__item--multiple": note,
         "at-list__item--disabled": disabled,
@@ -1816,7 +1870,7 @@ var AtListItem = (
             className: "item-icon"
           }, icon);
         } else if (iconInfo === null || iconInfo === void 0 ? void 0 : iconInfo.value) {
-          var iconClass = classnames$1(iconInfo && iconInfo.prefixClass || "at-icon", (_a3 = {}, _a3["".concat(iconInfo && iconInfo.prefixClass || "at-icon", "-").concat(iconInfo && iconInfo.value)] = iconInfo && iconInfo.value, _a3), iconInfo && iconInfo.className);
+          var iconClass = classnames(iconInfo && iconInfo.prefixClass || "at-icon", (_a3 = {}, _a3["".concat(iconInfo && iconInfo.prefixClass || "at-icon", "-").concat(iconInfo && iconInfo.value)] = iconInfo && iconInfo.value, _a3), iconInfo && iconInfo.className);
           return taro.react_production_min.createElement(taro.View, {
             className: "at-list__item-icon item-icon"
           }, taro.react_production_min.createElement(taro.Text, {
@@ -1991,7 +2045,7 @@ var AtDrawer = (
         "at-drawer--left": !right
       };
       return _show ? taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, this.props.className)
+        className: classnames(rootClassName, classObject, this.props.className)
       }, taro.react_production_min.createElement(taro.View, {
         className: "at-drawer__mask",
         style: maskStyle,
@@ -2068,7 +2122,7 @@ var AtFloatLayout = (
     AtFloatLayout2.prototype.render = function() {
       var _isOpened = this.state._isOpened;
       var _a2 = this.props, title = _a2.title, scrollY = _a2.scrollY, scrollX = _a2.scrollX, scrollTop2 = _a2.scrollTop, scrollLeft = _a2.scrollLeft, upperThreshold = _a2.upperThreshold, lowerThreshold = _a2.lowerThreshold, scrollWithAnimation = _a2.scrollWithAnimation;
-      var rootClass = classnames$1("at-float-layout", {
+      var rootClass = classnames("at-float-layout", {
         "at-float-layout--active": _isOpened
       }, this.props.className);
       return taro.react_production_min.createElement(taro.View, {
@@ -2142,7 +2196,7 @@ var AtForm = (
     };
     AtForm2.prototype.render = function() {
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, reportSubmit = _a2.reportSubmit;
-      var rootCls = classnames$1("at-form", className);
+      var rootCls = classnames("at-form", className);
       return taro.react_production_min.createElement(taro.Form, {
         className: rootCls,
         style: customStyle,
@@ -2366,11 +2420,11 @@ var AtGrid = (
         return null;
       }
       var gridGroup = chunk_1(data, columnNum);
-      var bodyClass = classnames$1(["at-grid__flex-item", "at-grid-item", "at-grid-item--".concat(mode)], {
+      var bodyClass = classnames(["at-grid__flex-item", "at-grid-item", "at-grid-item--".concat(mode)], {
         "at-grid-item--no-border": !hasBorder
       });
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-grid", this.props.className)
+        className: classnames("at-grid", this.props.className)
       }, gridGroup.map(function(item, i) {
         return taro.react_production_min.createElement(taro.View, {
           className: "at-grid__flex",
@@ -2379,7 +2433,7 @@ var AtGrid = (
           var _a3;
           return taro.react_production_min.createElement(taro.View, {
             key: "at-grid-item-".concat(index),
-            className: classnames$1(bodyClass, {
+            className: classnames(bodyClass, {
               "at-grid-item--last": index === columnNum - 1
             }),
             onClick: _this.handleClick.bind(_this, childItem, index, i),
@@ -2397,7 +2451,7 @@ var AtGrid = (
             src: childItem.image,
             mode: "scaleToFill"
           }), childItem.iconInfo && !childItem.image && taro.react_production_min.createElement(taro.Text, {
-            className: classnames$1(childItem.iconInfo.prefixClass || "at-icon", (_a3 = {}, _a3["".concat(childItem.iconInfo.prefixClass || "at-icon", "-").concat(childItem.iconInfo.value)] = childItem.iconInfo.value, _a3), childItem.iconInfo.className),
+            className: classnames(childItem.iconInfo.prefixClass || "at-icon", (_a3 = {}, _a3["".concat(childItem.iconInfo.prefixClass || "at-icon", "-").concat(childItem.iconInfo.value)] = childItem.iconInfo.value, _a3), childItem.iconInfo.className),
             style: mergeStyle(
               {
                 color: childItem.iconInfo.color,
@@ -2457,7 +2511,7 @@ var AtIcon = (
       };
       var iconName = value ? "".concat(prefixClass, "-").concat(value) : "";
       return taro.react_production_min.createElement(taro.Text, {
-        className: classnames$1(prefixClass, iconName, className),
+        className: classnames(prefixClass, iconName, className),
         style: mergeStyle(rootStyle, customStyle),
         onClick: this.handleClick.bind(this)
       });
@@ -2560,17 +2614,17 @@ var AtInput = (
     AtInput2.prototype.render = function() {
       var _a2 = this.props, className = _a2.className, customStyle = _a2.customStyle, name = _a2.name, cursorSpacing = _a2.cursorSpacing, confirmType = _a2.confirmType, cursor = _a2.cursor, selectionStart = _a2.selectionStart, selectionEnd = _a2.selectionEnd, adjustPosition = _a2.adjustPosition, border = _a2.border, title = _a2.title, error2 = _a2.error, clear = _a2.clear, placeholder = _a2.placeholder, placeholderStyle = _a2.placeholderStyle, placeholderClass = _a2.placeholderClass, _b = _a2.autoFocus, autoFocus = _b === void 0 ? false : _b, _c = _a2.focus, focus = _c === void 0 ? false : _c, value = _a2.value, required = _a2.required;
       var _d = getInputProps(this.props), type = _d.type, maxLength = _d.maxLength, disabled = _d.disabled, password = _d.password;
-      var rootCls = classnames$1("at-input", {
+      var rootCls = classnames("at-input", {
         "at-input--without-border": !border
       }, className);
-      var containerCls = classnames$1("at-input__container", {
+      var containerCls = classnames("at-input__container", {
         "at-input--error": error2,
         "at-input--disabled": disabled
       });
-      var overlayCls = classnames$1("at-input__overlay", {
+      var overlayCls = classnames("at-input__overlay", {
         "at-input__overlay--hidden": !disabled
       });
-      var placeholderCls = classnames$1("placeholder", placeholderClass);
+      var placeholderCls = classnames("placeholder", placeholderClass);
       var id = name && {
         id: name
       };
@@ -2830,13 +2884,13 @@ var AtInputNumber = (
         width: width ? "".concat(pxTransform(width)) : ""
       };
       var inputValue = Number(this.handleValue(value));
-      var rootCls = classnames$1("at-input-number", {
+      var rootCls = classnames("at-input-number", {
         "at-input-number--lg": size === "large"
       }, className);
-      var minusBtnCls = classnames$1("at-input-number__btn", {
+      var minusBtnCls = classnames("at-input-number__btn", {
         "at-input-number--disabled": inputValue <= min || disabled
       });
-      var plusBtnCls = classnames$1("at-input-number__btn", {
+      var plusBtnCls = classnames("at-input-number__btn", {
         "at-input-number--disabled": inputValue >= max || disabled
       });
       return taro.react_production_min.createElement(taro.View, {
@@ -2905,7 +2959,7 @@ var AtModalAction = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtModalAction2.prototype.render = function() {
-      var rootClass = classnames$1("at-modal__footer", {
+      var rootClass = classnames("at-modal__footer", {
         "at-modal__footer--simple": this.props.isSimple
       }, this.props.className);
       return taro.react_production_min.createElement(taro.View, {
@@ -2931,7 +2985,7 @@ var AtModalContent = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtModalContent2.prototype.render = function() {
-      var rootClass = classnames$1("at-modal__content", this.props.className);
+      var rootClass = classnames("at-modal__content", this.props.className);
       return taro.react_production_min.createElement(taro.ScrollView, {
         scrollY: true,
         className: rootClass
@@ -2948,7 +3002,7 @@ var AtModalHeader = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtModalHeader2.prototype.render = function() {
-      var rootClass = classnames$1("at-modal__header", this.props.className);
+      var rootClass = classnames("at-modal__header", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootClass
       }, this.props.children);
@@ -3008,7 +3062,7 @@ var AtModal = (
     AtModal2.prototype.render = function() {
       var _a2 = this.state, _isOpened = _a2._isOpened, isWEB = _a2.isWEB;
       var _b = this.props, title = _b.title, content = _b.content, cancelText = _b.cancelText, confirmText = _b.confirmText;
-      var rootClass = classnames$1("at-modal", {
+      var rootClass = classnames("at-modal", {
         "at-modal--active": _isOpened
       }, this.props.className);
       if (title || content) {
@@ -3098,17 +3152,17 @@ var AtNavBar = (
       var leftIconInfo = leftIconType instanceof Object ? __assign(__assign({}, defaultIconInfo), leftIconType) : __assign(__assign({}, defaultIconInfo), {
         value: leftIconType
       });
-      var leftIconClass = classnames$1(leftIconInfo.prefixClass, (_a2 = {}, _a2["".concat(leftIconInfo.prefixClass, "-").concat(leftIconInfo.value)] = leftIconInfo.value, _a2), leftIconInfo.className);
+      var leftIconClass = classnames(leftIconInfo.prefixClass, (_a2 = {}, _a2["".concat(leftIconInfo.prefixClass, "-").concat(leftIconInfo.value)] = leftIconInfo.value, _a2), leftIconInfo.className);
       var rightFirstIconInfo = rightFirstIconType instanceof Object ? __assign(__assign({}, defaultIconInfo), rightFirstIconType) : __assign(__assign({}, defaultIconInfo), {
         value: rightFirstIconType
       });
-      var rightFirstIconClass = classnames$1(rightFirstIconInfo.prefixClass, (_b = {}, _b["".concat(rightFirstIconInfo.prefixClass, "-").concat(rightFirstIconInfo.value)] = rightFirstIconInfo.value, _b), rightFirstIconInfo.className);
+      var rightFirstIconClass = classnames(rightFirstIconInfo.prefixClass, (_b = {}, _b["".concat(rightFirstIconInfo.prefixClass, "-").concat(rightFirstIconInfo.value)] = rightFirstIconInfo.value, _b), rightFirstIconInfo.className);
       var rightSecondIconInfo = rightSecondIconType instanceof Object ? __assign(__assign({}, defaultIconInfo), rightSecondIconType) : __assign(__assign({}, defaultIconInfo), {
         value: rightSecondIconType
       });
-      var rightSecondIconClass = classnames$1(rightSecondIconInfo.prefixClass, (_c = {}, _c["".concat(rightSecondIconInfo.prefixClass, "-").concat(rightSecondIconInfo.value)] = rightSecondIconInfo.value, _c), rightSecondIconInfo.className);
+      var rightSecondIconClass = classnames(rightSecondIconInfo.prefixClass, (_c = {}, _c["".concat(rightSecondIconInfo.prefixClass, "-").concat(rightSecondIconInfo.value)] = rightSecondIconInfo.value, _c), rightSecondIconInfo.className);
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-nav-bar": true,
           "at-nav-bar--fixed": fixed,
           "at-nav-bar--no-border": !border
@@ -3132,7 +3186,7 @@ var AtNavBar = (
       }, title || this.props.children), taro.react_production_min.createElement(taro.View, {
         className: "at-nav-bar__right-view"
       }, taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-nav-bar__container": true,
           "at-nav-bar__container--hide": !rightSecondIconType
         }),
@@ -3145,7 +3199,7 @@ var AtNavBar = (
           fontSize: "".concat(pxTransform(parseInt(rightSecondIconInfo.size.toString()) * 2))
         }, rightSecondIconInfo.customStyle)
       })), taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-nav-bar__container": true,
           "at-nav-bar__container--hide": !rightFirstIconType
         }),
@@ -3323,7 +3377,7 @@ var AtNoticebar = (
       if (icon)
         iconClass.push("at-icon-".concat(icon));
       return show && taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, className),
+        className: classnames(rootClassName, classObject, className),
         style: customStyle
       }, close && taro.react_production_min.createElement(taro.View, {
         className: "at-noticebar__close",
@@ -3335,13 +3389,13 @@ var AtNoticebar = (
       }, icon && taro.react_production_min.createElement(taro.View, {
         className: "at-noticebar__content-icon"
       }, taro.react_production_min.createElement(taro.Text, {
-        className: classnames$1(iconClass, iconClass)
+        className: classnames(iconClass, iconClass)
       })), taro.react_production_min.createElement(taro.View, {
         className: "at-noticebar__content-text"
       }, taro.react_production_min.createElement(taro.View, {
         id: animElemId,
         animation: animationData,
-        className: classnames$1(innerClassName),
+        className: classnames(innerClassName),
         style
       }, this.props.children))), showMore && taro.react_production_min.createElement(taro.View, {
         className: "at-noticebar__more",
@@ -3465,7 +3519,7 @@ var AtPagination = (
         "at-pagination--icon": icon
       };
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, this.props.className),
+        className: classnames(rootClassName, classObject, this.props.className),
         style: customStyle
       }, taro.react_production_min.createElement(taro.View, {
         className: "at-pagination__btn-prev"
@@ -3535,8 +3589,8 @@ var AtProgress = (
       } else if (percent > 100) {
         percent = 100;
       }
-      var rootClass = classnames$1("at-progress", (_a2 = {}, _a2["at-progress--".concat(status)] = !!status, _a2), this.props.className);
-      var iconClass = classnames$1("at-icon", {
+      var rootClass = classnames("at-progress", (_a2 = {}, _a2["at-progress--".concat(status)] = !!status, _a2), this.props.className);
+      var iconClass = classnames("at-icon", {
         "at-icon-close-circle": status === "error",
         "at-icon-check-circle": status === "success"
       });
@@ -3586,13 +3640,13 @@ var AtRadio = (
       var _this = this;
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, options = _a2.options, value = _a2.value;
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-radio", className),
+        className: classnames("at-radio", className),
         style: customStyle
       }, options.map(function(option) {
         return taro.react_production_min.createElement(taro.View, {
           key: option.value,
           onClick: _this.handleClick.bind(_this, option),
-          className: classnames$1({
+          className: classnames({
             "at-radio__option": true,
             "at-radio__option--disabled": option.disabled
           })
@@ -3603,7 +3657,7 @@ var AtRadio = (
         }, taro.react_production_min.createElement(taro.View, {
           className: "at-radio__title"
         }, option.label), taro.react_production_min.createElement(taro.View, {
-          className: classnames$1({
+          className: classnames({
             "at-radio__icon": true,
             "at-radio__icon--checked": value === option.value
           })
@@ -3665,7 +3719,7 @@ var AtRate = (
         }
       }
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-rate", className),
+        className: classnames("at-rate", className),
         style: customStyle
       }, classNameArr.map(function(cls, i2) {
         return taro.react_production_min.createElement(taro.View, {
@@ -3734,7 +3788,7 @@ var AtSegmentedControl = (
         borderColor: selectedColor,
         backgroundColor: selectedColor
       };
-      var rootCls = classnames$1("at-segmented-control", {
+      var rootCls = classnames("at-segmented-control", {
         "at-segmented-control--disabled": disabled
       }, className);
       return taro.react_production_min.createElement(taro.View, {
@@ -3742,7 +3796,7 @@ var AtSegmentedControl = (
         style: mergeStyle(rootStyle, customStyle)
       }, values.map(function(value, i) {
         return taro.react_production_min.createElement(taro.View, {
-          className: classnames$1("at-segmented-control__item", {
+          className: classnames("at-segmented-control__item", {
             "at-segmented-control__item--active": current === i
           }),
           style: current === i ? selectedItemStyle : itemStyle,
@@ -3792,10 +3846,10 @@ var AtSwitch = (
     }
     AtSwitch2.prototype.render = function() {
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, disabled = _a2.disabled, border = _a2.border, title = _a2.title, checked = _a2.checked, color = _a2.color;
-      var rootCls = classnames$1("at-switch", {
+      var rootCls = classnames("at-switch", {
         "at-switch--without-border": !border
       }, className);
-      var containerCls = classnames$1("at-switch__container", {
+      var containerCls = classnames("at-switch__container", {
         "at-switch--disabled": disabled
       });
       return taro.react_production_min.createElement(taro.View, {
@@ -3866,7 +3920,7 @@ var AtTabBar = (
         height: "".concat(iconSize, "px")
       };
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-tab-bar": true,
           "at-tab-bar--fixed": fixed
           // 'at-tab-bar--ipx': isIPhoneX
@@ -3875,7 +3929,7 @@ var AtTabBar = (
       }, tabList.map(function(item, i) {
         var _a3;
         return taro.react_production_min.createElement(taro.View, {
-          className: classnames$1("at-tab-bar__item", {
+          className: classnames("at-tab-bar__item", {
             "at-tab-bar__item--active": current === i
           }),
           style: current === i ? selectedStyle : defaultStyle,
@@ -3888,7 +3942,7 @@ var AtTabBar = (
         }, taro.react_production_min.createElement(taro.View, {
           className: "at-tab-bar__icon"
         }, taro.react_production_min.createElement(taro.Text, {
-          className: classnames$1("".concat(item.iconPrefixClass || "at-icon"), (_a3 = {}, _a3["".concat(item.iconPrefixClass || "at-icon", "-").concat(item.selectedIconType)] = current === i && item.selectedIconType, _a3["".concat(item.iconPrefixClass || "at-icon", "-").concat(item.iconType)] = !(current === i && item.selectedIconType), _a3)),
+          className: classnames("".concat(item.iconPrefixClass || "at-icon"), (_a3 = {}, _a3["".concat(item.iconPrefixClass || "at-icon", "-").concat(item.selectedIconType)] = current === i && item.selectedIconType, _a3["".concat(item.iconPrefixClass || "at-icon", "-").concat(item.iconType)] = !(current === i && item.selectedIconType), _a3)),
           style: {
             color: current === i ? selectedColor : color,
             fontSize: iconSize ? "".concat(iconSize, "px") : ""
@@ -3900,14 +3954,14 @@ var AtTabBar = (
         }, taro.react_production_min.createElement(taro.View, {
           className: "at-tab-bar__icon"
         }, taro.react_production_min.createElement(taro.Image, {
-          className: classnames$1("at-tab-bar__inner-img", {
+          className: classnames("at-tab-bar__inner-img", {
             "at-tab-bar__inner-img--inactive": current !== i
           }),
           mode: "widthFix",
           src: item.selectedImage || item.image,
           style: imgStyle
         }), taro.react_production_min.createElement(taro.Image, {
-          className: classnames$1("at-tab-bar__inner-img", {
+          className: classnames("at-tab-bar__inner-img", {
             "at-tab-bar__inner-img--inactive": current === i
           }),
           mode: "widthFix",
@@ -4080,7 +4134,7 @@ var AtTabs = (
         bodyStyle.transition = "unset";
       }
       var tabItems = tabList.map(function(item, idx) {
-        var itemCls = classnames$1({
+        var itemCls = classnames({
           "at-tabs__item": true,
           "at-tabs__item--active": current === idx
         });
@@ -4093,7 +4147,7 @@ var AtTabs = (
           className: "at-tabs__item-underline"
         }));
       });
-      var rootCls = classnames$1((_a2 = {
+      var rootCls = classnames((_a2 = {
         "at-tabs": true,
         "at-tabs--scroll": scroll
       }, _a2["at-tabs--".concat(tabDirection)] = true, _a2["at-tabs--".concat(ENV$3)] = true, _a2), className);
@@ -4165,7 +4219,7 @@ var AtTabsPane = (
     AtTabsPane2.prototype.render = function() {
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, tabDirection = _a2.tabDirection, index = _a2.index, current = _a2.current;
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-tabs-pane": true,
           "at-tabs-pane--vertical": tabDirection === "vertical",
           "at-tabs-pane--active": index === current,
@@ -4220,7 +4274,7 @@ var AtTag = (
       var rootClassName = ["at-tag"];
       var classObject = (_a2 = {}, _a2["at-tag--".concat(SIZE_CLASS[size])] = SIZE_CLASS[size], _a2["at-tag--".concat(type)] = TYPE_CLASS[type], _a2["at-tag--disabled"] = disabled, _a2["at-tag--active"] = active, _a2["at-tag--circle"] = circle, _a2);
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, classObject, this.props.className),
+        className: classnames(rootClassName, classObject, this.props.className),
         style: customStyle,
         onClick: this.onClick.bind(this)
       }, this.props.children);
@@ -4282,10 +4336,10 @@ var AtTextarea = (
       var _maxLength = parseInt(maxLength.toString());
       var actualMaxLength = getMaxLength(_maxLength, textOverflowForbidden);
       var textareaStyle = height ? "height:".concat(pxTransform(Number(height))) : "";
-      var rootCls = classnames$1("at-textarea", "at-textarea--".concat(ENV$2), {
+      var rootCls = classnames("at-textarea", "at-textarea--".concat(ENV$2), {
         "at-textarea--error": _maxLength < value.length
       }, className);
-      var placeholderCls = classnames$1("placeholder", placeholderClass);
+      var placeholderCls = classnames("placeholder", placeholderClass);
       return taro.react_production_min.createElement(taro.View, {
         className: rootCls,
         style: customStyle
@@ -4381,7 +4435,7 @@ var AtTimeline = (
       var itemElems = items.map(function(item, index) {
         var _a3;
         var _b = item.title, title = _b === void 0 ? "" : _b, color = item.color, icon = item.icon, _c = item.content, content = _c === void 0 ? [] : _c;
-        var iconClass = classnames$1((_a3 = {
+        var iconClass = classnames((_a3 = {
           "at-icon": true
         }, _a3["at-icon-".concat(icon)] = icon, _a3));
         var itemRootClassName = ["at-timeline-item"];
@@ -4397,7 +4451,7 @@ var AtTimeline = (
           onClickItem === null || onClickItem === void 0 ? void 0 : onClickItem(index2, e);
         };
         return taro.react_production_min.createElement(taro.View, {
-          className: classnames$1(itemRootClassName),
+          className: classnames(itemRootClassName),
           key: "at-timeline-item-".concat(index),
           onClick: function(e) {
             return handleItemClick(index, e);
@@ -4405,7 +4459,7 @@ var AtTimeline = (
         }, taro.react_production_min.createElement(taro.View, {
           className: "at-timeline-item__tail"
         }), taro.react_production_min.createElement(taro.View, {
-          className: classnames$1(dotClass)
+          className: classnames(dotClass)
         }, icon && taro.react_production_min.createElement(taro.Text, {
           className: iconClass
         })), taro.react_production_min.createElement(taro.View, {
@@ -4420,7 +4474,7 @@ var AtTimeline = (
         })));
       });
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1(rootClassName, rootClassObject, this.props.className),
+        className: classnames(rootClassName, rootClassObject, this.props.className),
         style: customStyle
       }, itemElems);
     };
@@ -4525,13 +4579,13 @@ var AtToast = (
       var _c = this.props, customStyle = _c.customStyle, text = _c.text, icon = _c.icon, status = _c.status, image = _c.image, hasMask = _c.hasMask;
       var realImg = image || statusImg[status] || null;
       var isRenderIcon = !!(icon && !(image || statusImg[status]));
-      var bodyClass = classnames$1("toast-body", (_a2 = {
+      var bodyClass = classnames("toast-body", (_a2 = {
         "at-toast__body--custom-image": image,
         "toast-body--text": !realImg && !icon
       }, _a2["at-toast__body--".concat(status)] = !!status, _a2));
-      var iconClass = classnames$1("at-icon", (_b = {}, _b["at-icon-".concat(icon)] = icon, _b));
+      var iconClass = classnames("at-icon", (_b = {}, _b["at-icon-".concat(icon)] = icon, _b));
       return _isOpened ? taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-toast", this.props.className)
+        className: classnames("at-toast", this.props.className)
       }, hasMask && taro.react_production_min.createElement(taro.View, {
         className: "at-toast__overlay"
       }), taro.react_production_min.createElement(taro.View, {
@@ -4630,16 +4684,16 @@ var AtAccordion = (
       var _a2;
       var _b = this.props, customStyle = _b.customStyle, className = _b.className, title = _b.title, icon = _b.icon, hasBorder = _b.hasBorder, open = _b.open, note = _b.note;
       var wrapperHeight = this.state.wrapperHeight;
-      var rootCls = classnames$1("at-accordion", className);
+      var rootCls = classnames("at-accordion", className);
       var prefixClass = icon && icon.prefixClass || "at-icon";
-      var iconCls = classnames$1((_a2 = {}, _a2[prefixClass] = true, _a2["".concat(prefixClass, "-").concat(icon && icon.value)] = icon && icon.value, _a2["at-accordion__icon"] = true, _a2));
-      var headerCls = classnames$1("at-accordion__header", {
+      var iconCls = classnames((_a2 = {}, _a2[prefixClass] = true, _a2["".concat(prefixClass, "-").concat(icon && icon.value)] = icon && icon.value, _a2["at-accordion__icon"] = true, _a2));
+      var headerCls = classnames("at-accordion__header", {
         "at-accordion__header--noborder": !hasBorder
       });
-      var arrowCls = classnames$1("at-accordion__arrow", {
+      var arrowCls = classnames("at-accordion__arrow", {
         "at-accordion__arrow--folded": !!open
       });
-      var contentCls = classnames$1("at-accordion__content", {
+      var contentCls = classnames("at-accordion__content", {
         "at-accordion__content--inactive": !open && this.isCompleted || this.startOpen
       });
       var iconStyle = {
@@ -4748,7 +4802,7 @@ var AtSlider = (
       var _value = this.state._value;
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, min = _a2.min, max = _a2.max, step = _a2.step, disabled = _a2.disabled, activeColor = _a2.activeColor, backgroundColor = _a2.backgroundColor, blockSize = _a2.blockSize, blockColor = _a2.blockColor, showValue = _a2.showValue;
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-slider": true,
           "at-slider--disabled": disabled
         }, className),
@@ -4812,7 +4866,7 @@ var AtSwipeActionOptions = (
       return _super !== null && _super.apply(this, arguments) || this;
     }
     AtSwipeActionOptions2.prototype.render = function() {
-      var rootClass = classnames$1("at-swipe-action__options", this.props.className);
+      var rootClass = classnames("at-swipe-action__options", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         id: "swipeActionOptions-".concat(this.props.componentId),
         className: rootClass,
@@ -4962,7 +5016,7 @@ var AtSwipeAction = (
       var _this = this;
       var _a2 = this.state, componentId = _a2.componentId, maxOffsetSize = _a2.maxOffsetSize, eleWidth = _a2.eleWidth, offsetSize = _a2.offsetSize;
       var _b = this.props, options = _b.options, disabled = _b.disabled;
-      var rootClass = classnames$1("at-swipe-action", this.props.className);
+      var rootClass = classnames("at-swipe-action", this.props.className);
       return taro.react_production_min.createElement(taro.View, {
         id: "swipeAction-".concat(componentId),
         className: rootClass,
@@ -4998,7 +5052,7 @@ var AtSwipeAction = (
           onClick: function(e) {
             return _this.handleClick(item, key, e);
           },
-          className: classnames$1("at-swipe-action__option", item.className)
+          className: classnames("at-swipe-action__option", item.className)
         }, taro.react_production_min.createElement(taro.Text, {
           className: "option__text"
         }, item.text));
@@ -5078,7 +5132,7 @@ var AtSearchBar = (
       var _a2 = this.props, value = _a2.value, placeholder = _a2.placeholder, maxLength = _a2.maxLength, fixed = _a2.fixed, disabled = _a2.disabled, showActionButton = _a2.showActionButton, _b = _a2.actionName, actionName = _b === void 0 ? "搜索" : _b, inputType = _a2.inputType, className = _a2.className, customStyle = _a2.customStyle, enableNative = _a2.enableNative;
       var isFocus = this.state.isFocus;
       var fontSize = 14;
-      var rootCls = classnames$1("at-search-bar", {
+      var rootCls = classnames("at-search-bar", {
         "at-search-bar--fixed": fixed
       }, className);
       var placeholderWrapStyle = {};
@@ -5214,7 +5268,7 @@ var AtLoadMore = (
         }, noMoreText);
       }
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-load-more", className),
+        className: classnames("at-load-more", className),
         style: customStyle
       }, component);
     };
@@ -5262,7 +5316,7 @@ var AtDivider = (
         backgroundColor: lineColor
       };
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-divider", className),
+        className: classnames("at-divider", className),
         style: mergeStyle(rootStyle, customStyle)
       }, taro.react_production_min.createElement(taro.View, {
         className: "at-divider__content",
@@ -5418,7 +5472,7 @@ var AtCountdown = (
       var _a2 = this.props, className = _a2.className, customStyle = _a2.customStyle, _b = _a2.format, format = _b === void 0 ? defaultFormat : _b, isCard = _a2.isCard, isShowDay = _a2.isShowDay, isShowHour = _a2.isShowHour, isShowMinute = _a2.isShowMinute;
       var _c = this.state, _day = _c._day, _hours = _c._hours, _minutes = _c._minutes, _seconds = _c._seconds;
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1({
+        className: classnames({
           "at-countdown": true,
           "at-countdown--card": isCard
         }, className),
@@ -5481,13 +5535,13 @@ var AtSteps = (
       var _this = this;
       var _a2 = this.props, customStyle = _a2.customStyle, className = _a2.className, items = _a2.items, current = _a2.current;
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("at-steps", className),
+        className: classnames("at-steps", className),
         style: customStyle
       }, !!items && items.map(function(item, i) {
         var _a3;
         return taro.react_production_min.createElement(taro.View, {
           key: item.title,
-          className: classnames$1({
+          className: classnames({
             "at-steps__item": true,
             "at-steps__item--active": i === current,
             "at-steps__item--inactive": i !== current
@@ -5498,7 +5552,7 @@ var AtSteps = (
         }, i !== 0 && taro.react_production_min.createElement(taro.View, {
           className: "at-steps__left-line"
         }), item.status ? taro.react_production_min.createElement(taro.View, {
-          className: classnames$1({
+          className: classnames({
             "at-icon": true,
             "at-icon-check-circle": item.status === "success",
             "at-icon-close-circle": item.status === "error",
@@ -5509,7 +5563,7 @@ var AtSteps = (
         }) : taro.react_production_min.createElement(taro.View, {
           className: "at-steps__circular"
         }, item.icon ? taro.react_production_min.createElement(taro.Text, {
-          className: classnames$1("at-icon", (_a3 = {}, _a3["at-icon-".concat(item.icon.value)] = item.icon.value, _a3["at-steps__circle-icon"] = true, _a3))
+          className: classnames("at-icon", (_a3 = {}, _a3["at-icon-".concat(item.icon.value)] = item.icon.value, _a3["at-steps__circle-icon"] = true, _a3))
         }) : taro.react_production_min.createElement(taro.Text, {
           className: "at-steps__num"
         }, i + 1)), i !== items.length - 1 && taro.react_production_min.createElement(taro.View, {
@@ -5557,11 +5611,11 @@ var AtCurtain = (
     AtCurtain2.prototype.render = function() {
       var _a2;
       var _b = this.props, className = _b.className, customStyle = _b.customStyle, isOpened = _b.isOpened, closeBtnPosition = _b.closeBtnPosition;
-      var curtainClass = classnames$1({
+      var curtainClass = classnames({
         "at-curtain": true,
         "at-curtain--closed": !isOpened
       }, className);
-      var btnCloseClass = classnames$1((_a2 = {
+      var btnCloseClass = classnames((_a2 = {
         "at-curtain__btn-close": true
       }, _a2["at-curtain__btn-close--".concat(closeBtnPosition)] = closeBtnPosition, _a2));
       return taro.react_production_min.createElement(taro.View, {
@@ -5650,7 +5704,7 @@ var AtMessage = (
     AtMessage2.prototype.render = function() {
       var _a2 = this.props, className = _a2.className, customStyle = _a2.customStyle;
       var _b = this.state, _message = _b._message, _isOpened = _b._isOpened, _type = _b._type;
-      var rootCls = classnames$1({
+      var rootCls = classnames({
         "at-message": true,
         "at-message--show": _isOpened,
         "at-message--hidden": !_isOpened
@@ -5758,7 +5812,7 @@ var AtImagePicker = (
       var _a2 = this.props, className = _a2.className, customStyle = _a2.customStyle, files = _a2.files, mode = _a2.mode, _b = _a2.length, length = _b === void 0 ? 4 : _b, _c = _a2.showAddBtn, showAddBtn = _c === void 0 ? true : _c;
       var rowLength = length <= 0 ? 1 : length;
       var matrix = generateMatrix(files, rowLength, showAddBtn);
-      var rootCls = classnames$1("at-image-picker", className);
+      var rootCls = classnames("at-image-picker", className);
       return taro.react_production_min.createElement(taro.View, {
         className: rootCls,
         style: customStyle
@@ -5922,7 +5976,7 @@ var AtRange = (
     };
     AtRange2.prototype.render = function() {
       var _a2 = this.props, className = _a2.className, customStyle = _a2.customStyle, _b = _a2.sliderStyle, sliderStyle = _b === void 0 ? {} : _b, _c = _a2.railStyle, railStyle = _c === void 0 ? {} : _c, _d = _a2.trackStyle, trackStyle = _d === void 0 ? {} : _d, blockSize = _a2.blockSize, disabled = _a2.disabled;
-      var rootCls = classnames$1("at-range", {
+      var rootCls = classnames("at-range", {
         "at-range--disabled": disabled
       }, className);
       var _e = this.state, aX = _e.aX, bX = _e.bX;
@@ -6183,12 +6237,12 @@ var AtIndexes = (
       var toastStyle = {
         minWidth: pxTransform(100)
       };
-      var rootCls = classnames$1("at-indexes", className);
+      var rootCls = classnames("at-indexes", className);
       var menuList = list.map(function(dataList, i) {
         var key = dataList.key;
         var targetView = "at-indexes__list-".concat(key);
         return taro.react_production_min.createElement(taro.View, {
-          className: classnames$1("at-indexes__menu-item", {
+          className: classnames("at-indexes__menu-item", {
             "at-indexes__menu-item--active": currentIndex === i
           }),
           key,
@@ -7221,7 +7275,7 @@ var AtCalendarList = (
           key: "list-item-".concat(item.value),
           onClick: _this.handleClick.bind(_this, item),
           onLongPress: _this.handleLongClick.bind(_this, item),
-          className: classnames$1("flex__item", "flex__item--".concat(MAP[item.type]), {
+          className: classnames("flex__item", "flex__item--".concat(MAP[item.type]), {
             "flex__item--today": item.isToday,
             "flex__item--active": item.isActive,
             "flex__item--selected": item.isSelected,
@@ -7436,7 +7490,7 @@ var AtCalendarBody = (
       var listGroup = _a2.listGroup;
       if (!isSwiper) {
         return taro.react_production_min.createElement(taro.View, {
-          className: classnames$1("main", "at-calendar-slider__main", "at-calendar-slider__main--".concat("weapp"))
+          className: classnames("main", "at-calendar-slider__main", "at-calendar-slider__main--".concat("weapp"))
         }, taro.react_production_min.createElement(AtCalendarHeader, null), taro.react_production_min.createElement(taro.View, {
           className: "main__body body"
         }, taro.react_production_min.createElement(taro.View, {
@@ -7448,12 +7502,12 @@ var AtCalendarBody = (
         }))));
       }
       return taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("main", "at-calendar-slider__main", "at-calendar-slider__main--".concat("weapp"))
+        className: classnames("main", "at-calendar-slider__main", "at-calendar-slider__main--".concat("weapp"))
       }, taro.react_production_min.createElement(AtCalendarHeader, null), taro.react_production_min.createElement(taro.Swiper, {
         circular: true,
         current: 1,
         skipHiddenItemLayout: true,
-        className: classnames$1("main__body"),
+        className: classnames("main__body"),
         onChange: this.handleChange,
         vertical: this.props.isVertical,
         onAnimationFinish: this.handleAnimateFinish,
@@ -7493,7 +7547,7 @@ var AtCalendarController = (
       return taro.react_production_min.createElement(taro.View, {
         className: "at-calendar__controller controller"
       }, hideArrow ? null : taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("controller__arrow controller__arrow--left", {
+        className: classnames("controller__arrow controller__arrow--left", {
           "controller__arrow--disabled": isMinMonth
         }),
         onClick: this.props.onPreMonth.bind(this, isMinMonth)
@@ -7507,7 +7561,7 @@ var AtCalendarController = (
       }, taro.react_production_min.createElement(taro.Text, {
         className: "controller__info"
       }, dayjsDate.format(monthFormat))), hideArrow ? null : taro.react_production_min.createElement(taro.View, {
-        className: classnames$1("controller__arrow controller__arrow--right", {
+        className: classnames("controller__arrow controller__arrow--right", {
           "controller__arrow--disabled": isMaxMonth
         }),
         onClick: this.props.onNextMonth.bind(this, isMaxMonth)
@@ -7712,7 +7766,7 @@ var defaultProps = {
     var _a2 = this.state, generateDate = _a2.generateDate, selectedDate = _a2.selectedDate;
     var _b = this.props, validDates = _b.validDates, marks = _b.marks, format = _b.format, minDate = _b.minDate, maxDate = _b.maxDate, isSwiper = _b.isSwiper, className = _b.className, hideArrow = _b.hideArrow, isVertical = _b.isVertical, monthFormat = _b.monthFormat, selectedDates = _b.selectedDates;
     return taro.react_production_min.createElement(taro.View, {
-      className: classnames$1("at-calendar", className)
+      className: classnames("at-calendar", className)
     }, taro.react_production_min.createElement(AtCalendarController, {
       minDate,
       maxDate,
@@ -7756,7 +7810,7 @@ var AtFab = (
     AtFab2.prototype.render = function() {
       var _a2;
       var _b = this.props, size = _b.size, className = _b.className, children = _b.children;
-      var rootClass = classnames$1("at-fab", className, (_a2 = {}, _a2["at-fab--".concat(size)] = size, _a2));
+      var rootClass = classnames("at-fab", className, (_a2 = {}, _a2["at-fab--".concat(size)] = size, _a2));
       return taro.react_production_min.createElement(taro.View, {
         className: rootClass,
         onClick: this.onClick.bind(this)
@@ -8090,60 +8144,6 @@ var dayjs_min = { exports: {} };
 })(dayjs_min);
 var dayjs_minExports = dayjs_min.exports;
 const dayjs = /* @__PURE__ */ taro.getDefaultExportFromCjs(dayjs_minExports);
-var classnames = { exports: {} };
-(function(module2) {
-  (function() {
-    var hasOwn = {}.hasOwnProperty;
-    function classNames2() {
-      var classes = "";
-      for (var i = 0; i < arguments.length; i++) {
-        var arg = arguments[i];
-        if (arg) {
-          classes = appendClass(classes, parseValue2(arg));
-        }
-      }
-      return classes;
-    }
-    function parseValue2(arg) {
-      if (typeof arg === "string" || typeof arg === "number") {
-        return arg;
-      }
-      if (typeof arg !== "object") {
-        return "";
-      }
-      if (Array.isArray(arg)) {
-        return classNames2.apply(null, arg);
-      }
-      if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes("[native code]")) {
-        return arg.toString();
-      }
-      var classes = "";
-      for (var key in arg) {
-        if (hasOwn.call(arg, key) && arg[key]) {
-          classes = appendClass(classes, key);
-        }
-      }
-      return classes;
-    }
-    function appendClass(value, newClass) {
-      if (!newClass) {
-        return value;
-      }
-      if (value) {
-        return value + " " + newClass;
-      }
-      return value + newClass;
-    }
-    if (module2.exports) {
-      classNames2.default = classNames2;
-      module2.exports = classNames2;
-    } else {
-      taro.taroWindowProvider.classNames = classNames2;
-    }
-  })();
-})(classnames);
-var classnamesExports = classnames.exports;
-const classNames = /* @__PURE__ */ taro.getDefaultExportFromCjs(classnamesExports);
 exports.AtButton = AtButton;
 exports.AtIcon = AtIcon;
 exports.AtTabs = AtTabs;
