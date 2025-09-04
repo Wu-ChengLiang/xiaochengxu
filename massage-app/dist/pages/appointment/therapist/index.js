@@ -165,6 +165,7 @@ const BookingSelector = ({
   onTimeSelect
 }) => {
   const [selectedServiceId, setSelectedServiceId] = taro.useState("");
+  const [selectedService, setSelectedService] = taro.useState(null);
   const [selectedDate, setSelectedDate] = taro.useState("");
   const [selectedTime, setSelectedTime] = taro.useState("");
   const generateDateList = () => {
@@ -185,36 +186,72 @@ const BookingSelector = ({
     }
     return dates;
   };
-  const generateTimeSlots = () => {
-    const slots = [];
+  const generateTimeGrid = () => {
+    const grid = [];
     for (let hour = 9; hour <= 21; hour++) {
+      const hourSlots = [];
       for (let minute = 0; minute < 60; minute += 10) {
         const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
         const available = Math.random() > 0.3;
-        slots.push({
+        hourSlots.push({
           time,
           available
         });
       }
+      grid.push({
+        hour: `${hour}:00`,
+        slots: hourSlots
+      });
     }
-    return slots;
+    return grid;
+  };
+  const isTimeSlotSelected = (time) => {
+    if (!selectedTime || !selectedService)
+      return false;
+    const startTime = selectedTime;
+    const duration = selectedService.duration;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(startTime);
+    const currentMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + duration;
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes;
   };
   const handleServiceSelect = (service) => {
     setSelectedServiceId(service.id);
+    setSelectedService(service);
     onServiceSelect(service);
+    setSelectedTime("");
   };
   const handleDateSelect = (dateKey) => {
     setSelectedDate(dateKey);
     setSelectedTime("");
   };
   const handleTimeSelect = (time, available) => {
-    if (!available || !selectedDate)
+    if (!available || !selectedDate || !selectedService)
       return;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + selectedService.duration;
+    if (endMinutes > 22 * 60) {
+      return;
+    }
     setSelectedTime(time);
     onTimeSelect(selectedDate, time);
+    setTimeout(() => {
+      const cartBtn = taro.taroDocumentProvider.querySelector(".checkout-btn:not(.disabled)");
+      if (cartBtn) {
+        cartBtn.click();
+      }
+    }, 300);
   };
   const dateList = generateDateList();
-  const timeSlots = generateTimeSlots();
+  const timeGrid = generateTimeGrid();
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "booking-selector", children: [
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-section", children: [
       /* @__PURE__ */ taro.jsx(taro.View, { className: "section-title", children: "选择服务" }),
@@ -257,16 +294,24 @@ const BookingSelector = ({
           date.key
         )
       ) }),
-      selectedDate && /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "time-grid-container", scrollY: true, children: /* @__PURE__ */ taro.jsx(taro.View, { className: "time-grid", children: timeSlots.map(
-        (slot, index2) => /* @__PURE__ */ taro.jsx(
-          taro.View,
-          {
-            className: `time-slot ${slot.available ? selectedTime === slot.time ? "selected" : "available" : "disabled"}`,
-            onClick: () => handleTimeSelect(slot.time, slot.available),
-            children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "time-text", children: slot.time })
-          },
-          index2
-        )
+      selectedDate && /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "time-grid-container", scrollY: true, children: /* @__PURE__ */ taro.jsx(taro.View, { className: "time-grid-wrapper", children: timeGrid.map(
+        (row, rowIndex) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "time-row", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "hour-label", children: row.hour }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "time-slots", children: row.slots.map(
+            (slot, slotIndex) => /* @__PURE__ */ taro.jsx(
+              taro.View,
+              {
+                className: `time-slot ${slot.available ? isTimeSlotSelected(slot.time) ? "selected" : "available" : "disabled"}`,
+                onClick: () => handleTimeSelect(slot.time, slot.available),
+                children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "time-text", children: [
+                  ":",
+                  slot.time.split(":")[1]
+                ] })
+              },
+              slotIndex
+            )
+          ) })
+        ] }, rowIndex)
       ) }) })
     ] })
   ] });
