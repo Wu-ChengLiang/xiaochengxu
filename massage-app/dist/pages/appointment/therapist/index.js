@@ -345,7 +345,7 @@ const ShoppingCart = ({
           if (prev <= 1) {
             clearInterval(timerRef.current);
             taro.Taro.showToast({
-              title: "预约已超时，请重新选择",
+              title: "支付超时了呦，快快重新下单吧~",
               icon: "none"
             });
             setIsExpanded(false);

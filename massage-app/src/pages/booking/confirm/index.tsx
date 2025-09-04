@@ -58,8 +58,8 @@ const OrderConfirmPage: React.FC = () => {
           if (prev <= 1) {
             clearInterval(timerRef.current)
             Taro.showModal({
-              title: '订单已超时',
-              content: '请重新选择预约时间',
+              title: '支付超时了呦',
+              content: '快快重新下单吧~',
               showCancel: false,
               success: () => {
                 Taro.navigateBack()

@@ -51,7 +51,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             clearInterval(timerRef.current)
             // 时间到，可以触发重置逻辑
             Taro.showToast({
-              title: '预约已超时，请重新选择',
+              title: '支付超时了呦，快快重新下单吧~',
               icon: 'none'
             })
             setIsExpanded(false)
