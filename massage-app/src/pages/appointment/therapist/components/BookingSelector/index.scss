@@ -130,22 +130,39 @@
     }
 
     .time-grid-container {
-      height: 320rpx;
+      height: 400rpx;
       padding: 0 32rpx;
     }
 
-    .time-grid {
+    .time-grid-wrapper {
       padding-bottom: 32rpx;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16rpx;
+    }
 
+    .time-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16rpx;
+      
+      .hour-label {
+        width: 80rpx;
+        font-size: 28rpx;
+        color: #333;
+        font-weight: 500;
+      }
+      
+      .time-slots {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8rpx;
+      }
+      
       .time-slot {
-        height: 80rpx;
+        height: 64rpx;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 20rpx;
+        border-radius: 12rpx;
         transition: all 0.2s ease;
 
         &.available {
@@ -153,7 +170,7 @@
           border: 2rpx solid #e8e8e8;
 
           .time-text {
-            color: #333;
+            color: #666;
           }
 
           &:active {
@@ -168,7 +185,7 @@
 
           .time-text {
             color: #fff;
-            font-weight: 600;
+            font-weight: 500;
           }
         }
 
@@ -182,7 +199,7 @@
         }
 
         .time-text {
-          font-size: 28rpx;
+          font-size: 24rpx;
         }
       }
     }

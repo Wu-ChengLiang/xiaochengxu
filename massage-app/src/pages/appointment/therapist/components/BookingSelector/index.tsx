@@ -27,6 +27,7 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
   onTimeSelect 
 }) => {
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
 
@@ -54,29 +55,57 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
     return dates
   }
 
-  // 生成时间段列表（9:00-21:00，每10分钟一个时段）
-  const generateTimeSlots = (): TimeSlot[] => {
-    const slots: TimeSlot[] = []
+  // 生成时间网格数据（按小时分组）
+  const generateTimeGrid = () => {
+    const grid = []
     
     for (let hour = 9; hour <= 21; hour++) {
+      const hourSlots = []
       for (let minute = 0; minute < 60; minute += 10) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
         // 模拟可用性（实际应该从后端获取）
         const available = Math.random() > 0.3 // 70%的时段可用
         
-        slots.push({
+        hourSlots.push({
           time,
           available
         })
       }
+      grid.push({
+        hour: `${hour}:00`,
+        slots: hourSlots
+      })
     }
     
-    return slots
+    return grid
+  }
+
+  // 判断某个时间槽是否被选中
+  const isTimeSlotSelected = (time: string) => {
+    if (!selectedTime || !selectedService) return false
+    
+    const startTime = selectedTime
+    const duration = selectedService.duration
+    
+    // 将时间转换为分钟数进行计算
+    const timeToMinutes = (timeStr: string) => {
+      const [hour, minute] = timeStr.split(':').map(Number)
+      return hour * 60 + minute
+    }
+    
+    const startMinutes = timeToMinutes(startTime)
+    const currentMinutes = timeToMinutes(time)
+    const endMinutes = startMinutes + duration
+    
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes
   }
 
   const handleServiceSelect = (service: Service) => {
     setSelectedServiceId(service.id)
+    setSelectedService(service)
     onServiceSelect(service)
+    // 重置时间选择
+    setSelectedTime('')
   }
 
   const handleDateSelect = (dateKey: string) => {
@@ -86,14 +115,36 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
   }
 
   const handleTimeSelect = (time: string, available: boolean) => {
-    if (!available || !selectedDate) return
+    if (!available || !selectedDate || !selectedService) return
+    
+    // 检查选择的时间段是否足够
+    const timeToMinutes = (timeStr: string) => {
+      const [hour, minute] = timeStr.split(':').map(Number)
+      return hour * 60 + minute
+    }
+    
+    const startMinutes = timeToMinutes(time)
+    const endMinutes = startMinutes + selectedService.duration
+    
+    // 检查是否超过营业时间
+    if (endMinutes > 22 * 60) { // 22:00
+      return
+    }
     
     setSelectedTime(time)
     onTimeSelect(selectedDate, time)
+    
+    // 自动弹出购物车
+    setTimeout(() => {
+      const cartBtn = document.querySelector('.checkout-btn:not(.disabled)')
+      if (cartBtn) {
+        (cartBtn as HTMLElement).click()
+      }
+    }, 300)
   }
 
   const dateList = generateDateList()
-  const timeSlots = generateTimeSlots()
+  const timeGrid = generateTimeGrid()
 
   return (
     <View className="booking-selector">
@@ -137,20 +188,27 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
           {/* 时间段选择 */}
           {selectedDate && (
             <ScrollView className="time-grid-container" scrollY>
-              <View className="time-grid">
-                {timeSlots.map((slot, index) => (
-                  <View
-                    key={index}
-                    className={`time-slot ${
-                      slot.available 
-                        ? selectedTime === slot.time 
-                          ? 'selected' 
-                          : 'available'
-                        : 'disabled'
-                    }`}
-                    onClick={() => handleTimeSelect(slot.time, slot.available)}
-                  >
-                    <Text className="time-text">{slot.time}</Text>
+              <View className="time-grid-wrapper">
+                {timeGrid.map((row, rowIndex) => (
+                  <View key={rowIndex} className="time-row">
+                    <Text className="hour-label">{row.hour}</Text>
+                    <View className="time-slots">
+                      {row.slots.map((slot, slotIndex) => (
+                        <View
+                          key={slotIndex}
+                          className={`time-slot ${
+                            slot.available 
+                              ? isTimeSlotSelected(slot.time)
+                                ? 'selected' 
+                                : 'available'
+                              : 'disabled'
+                          }`}
+                          onClick={() => handleTimeSelect(slot.time, slot.available)}
+                        >
+                          <Text className="time-text">:{slot.time.split(':')[1]}</Text>
+                        </View>
+                      ))}
+                    </View>
                   </View>
                 ))}
               </View>
