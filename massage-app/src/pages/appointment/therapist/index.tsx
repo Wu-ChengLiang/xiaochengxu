@@ -157,6 +157,7 @@ const TherapistBookingPage: React.FC = () => {
       </ScrollView>
       <ShoppingCart 
         items={cartItems}
+        therapist={therapist}
         onCheckout={handleCheckout}
       />
     </View>
