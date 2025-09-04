@@ -54,9 +54,9 @@
           border-radius: var(--radius-sm);
           
           &.status-normal {
-            background: var(--primary-light);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
+            background: rgba(164, 0, 53, 0.15);
+            color: #a40035;
+            border: 1px solid #a40035;
           }
           
           &.status-busy {

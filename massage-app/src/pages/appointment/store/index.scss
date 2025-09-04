@@ -79,9 +79,9 @@
             border-radius: var(--radius-full);
             
             &.normal {
-              background: var(--primary-light);
-              color: var(--primary-color);
-              border: 1px solid var(--primary-color);
+              background: rgba(164, 0, 53, 0.15);
+              color: #a40035;
+              border: 1px solid #a40035;
             }
             
             &.busy {
@@ -113,7 +113,7 @@
         .action-btn {
           width: 88px;
           height: 88px;
-          border: 2px solid var(--primary-color);
+          border: 2px solid #a40035;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -141,7 +141,7 @@
       
       .tip-item {
         flex: 1;
-        background: var(--primary-color);
+        background: #a40035;
         color: #fff;
         border-radius: var(--radius-lg);
         padding: var(--spacing-md);
@@ -202,15 +202,15 @@
         }
         
         &.active {
-          background: var(--primary-light);
+          background: rgba(164, 0, 53, 0.15);
           
           .date {
-            color: var(--primary-color);
+            color: #a40035;
             font-weight: 600;
           }
           
           .weekday {
-            color: var(--primary-color);
+            color: #a40035;
           }
         }
       }
@@ -249,12 +249,12 @@
           top: 8px;
           right: 12px;
           font-size: 20px;
-          color: var(--primary-color);
+          color: #a40035;
           font-weight: 600;
         }
         
         &.active {
-          background: var(--primary-color);
+          background: #a40035;
           
           .time, .points {
             color: #fff;
@@ -298,7 +298,7 @@
       width: 200px;
       height: 80px;
       font-size: 32px;
-      background: var(--primary-color);
+      background: #a40035;
       border: none;
       
       &::after {

@@ -53,9 +53,9 @@
           border-radius: 12rpx;
           
           &.status-normal {
-            background: var(--primary-light);
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
+            background: rgba(164, 0, 53, 0.15);
+            color: #a40035;
+            border: 1px solid #a40035;
           }
           
           &.status-busy {
@@ -88,7 +88,7 @@
       .action-btn {
         width: 80rpx;
         height: 80rpx;
-        border: 2rpx solid var(--primary-color);
+        border: 2rpx solid #a40035;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -97,7 +97,7 @@
         background: #fff;
         
         &:active {
-          background: var(--primary-light);
+          background: rgba(164, 0, 53, 0.15);
         }
       }
     }
