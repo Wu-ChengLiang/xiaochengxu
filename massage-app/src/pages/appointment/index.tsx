@@ -106,9 +106,9 @@ const Appointment: React.FC = () => {
   }
 
   const handleTherapistClick = (therapist: Therapist) => {
-    // 跳转到症状调理页面，传递门店ID以获取该门店的所有推拿师
+    // 跳转到推拿师预约页面
     Taro.navigateTo({
-      url: `/pages/appointment/symptom/index?storeId=${therapist.storeId}&from=therapist`
+      url: `/pages/appointment/therapist/index?therapistId=${therapist.id}&storeId=${therapist.storeId}`
     })
   }
 
