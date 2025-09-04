@@ -40,7 +40,7 @@
         }
 
         .level {
-          background: #D9455F;
+          background: var(--primary-color);
           color: #fff;
           font-size: 24rpx;
           padding: 4rpx 12rpx;
@@ -103,13 +103,13 @@
 
       .expand-text {
         font-size: 28rpx;
-        color: #D9455F;
+        color: var(--primary-color);
         margin-right: 8rpx;
       }
 
       .expand-icon {
         font-size: 20rpx;
-        color: #D9455F;
+        color: var(--primary-color);
         transition: transform 0.2s ease;
 
         &.up {

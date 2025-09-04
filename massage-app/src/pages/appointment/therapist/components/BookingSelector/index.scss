@@ -30,8 +30,8 @@
         transition: all 0.2s ease;
 
         &.active {
-          border-color: #D9455F;
-          background: #D9455F;
+          border-color: var(--primary-color);
+          background: var(--primary-color);
 
           .service-name {
             color: #fff;
@@ -101,12 +101,12 @@
 
         &.active {
           .date-display {
-            color: #D9455F;
+            color: var(--primary-color);
             font-weight: 600;
           }
           
           .week-day {
-            color: #D9455F;
+            color: var(--primary-color);
           }
         }
 
@@ -157,14 +157,14 @@
           }
 
           &:active {
-            background: rgba(217, 69, 95, 0.1);
-            border-color: #D9455F;
+            background: var(--primary-light);
+            border-color: var(--primary-color);
           }
         }
 
         &.selected {
-          background: #D9455F;
-          border: 2rpx solid #D9455F;
+          background: var(--primary-color);
+          border: 2rpx solid var(--primary-color);
 
           .time-text {
             color: #fff;

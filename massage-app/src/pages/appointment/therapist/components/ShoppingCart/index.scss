@@ -29,9 +29,9 @@
         
         .savings {
           font-size: 24rpx;
-          color: #D9455F;
+          color: var(--primary-color);
           margin-right: 16rpx;
-          background: rgba(217, 69, 95, 0.1);
+          background: var(--primary-light);
           padding: 4rpx 8rpx;
           border-radius: 8rpx;
         }
@@ -39,13 +39,13 @@
         .total-price {
           font-size: 36rpx;
           font-weight: 600;
-          color: #D9455F;
+          color: var(--primary-color);
         }
       }
     }
     
     .checkout-btn {
-      background: #D9455F;
+      background: var(--primary-color);
       color: #fff;
       padding: 24rpx 48rpx;
       border-radius: 48rpx;
@@ -99,7 +99,7 @@
         .discount-price {
           font-size: 28rpx;
           font-weight: 600;
-          color: #D9455F;
+          color: var(--primary-color);
           margin-right: 12rpx;
         }
         

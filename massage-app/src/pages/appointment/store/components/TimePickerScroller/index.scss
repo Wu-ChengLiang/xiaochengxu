@@ -17,7 +17,7 @@
       font-weight: 500;
       
       &.today {
-        color: #D9455F;
+        color: var(--primary-color);
         font-weight: 600;
       }
     }
