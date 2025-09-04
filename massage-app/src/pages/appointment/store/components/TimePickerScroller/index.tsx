@@ -1,0 +1,137 @@
+import React, { useState, useEffect } from 'react'
+import { View, Text, PickerView, PickerViewColumn } from '@tarojs/components'
+import dayjs from 'dayjs'
+import './index.scss'
+
+interface TimePickerScrollerProps {
+  onTimeChange: (date: string, hour: string, minute: string) => void
+  defaultValue?: {
+    date: number
+    hour: number
+    minute: number
+  }
+}
+
+interface TimeSlot {
+  date: string
+  weekday: string
+  fullDate: string
+  dateObj: Date
+}
+
+const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({ 
+  onTimeChange, 
+  defaultValue = { date: 2, hour: 10, minute: 0 } // 默认选中今天，10点，00分
+}) => {
+  const [dateList, setDateList] = useState<TimeSlot[]>([])
+  const [hourList, setHourList] = useState<string[]>([])
+  const [minuteList, setMinuteList] = useState<string[]>([])
+  
+  const [selectedIndices, setSelectedIndices] = useState([
+    defaultValue.date, 
+    defaultValue.hour, 
+    defaultValue.minute
+  ])
+
+  useEffect(() => {
+    initializeLists()
+  }, [])
+
+  useEffect(() => {
+    // 当选择改变时，通知父组件
+    if (dateList.length > 0 && hourList.length > 0 && minuteList.length > 0) {
+      const selectedDate = dateList[selectedIndices[0]]
+      const selectedHour = hourList[selectedIndices[1]]
+      const selectedMinute = minuteList[selectedIndices[2]]
+      
+      onTimeChange(
+        selectedDate.fullDate,
+        selectedHour,
+        selectedMinute
+      )
+    }
+  }, [selectedIndices, dateList, hourList, minuteList])
+
+  const initializeLists = () => {
+    // 生成日期列表 (前2天 + 今天 + 后2天)
+    const dates: TimeSlot[] = []
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    
+    for (let i = -2; i <= 2; i++) {
+      const date = dayjs().add(i, 'day')
+      const isToday = i === 0
+      
+      dates.push({
+        date: isToday ? '今天' : `${date.month() + 1}月${date.date()}日`,
+        weekday: isToday ? '' : weekdays[date.day()],
+        fullDate: date.format('YYYY-MM-DD'),
+        dateObj: date.toDate()
+      })
+    }
+    setDateList(dates)
+
+    // 生成小时列表 (8点-22点)
+    const hours: string[] = []
+    for (let i = 8; i <= 22; i++) {
+      hours.push(`${i}点`)
+    }
+    setHourList(hours)
+
+    // 生成分钟列表 (00, 10, 20, 30, 40, 50)
+    const minutes: string[] = []
+    for (let i = 0; i < 60; i += 10) {
+      minutes.push(`${i.toString().padStart(2, '0')}分`)
+    }
+    setMinuteList(minutes)
+  }
+
+  const handleChange = (e: any) => {
+    const { value } = e.detail
+    setSelectedIndices(value)
+  }
+
+  return (
+    <View className="time-picker-scroller">
+      <PickerView
+        indicatorStyle="height: 50px; background-color: rgba(0,0,0,0.05);"
+        style={{ width: '100%', height: '200px' }}
+        value={selectedIndices}
+        onChange={handleChange}
+      >
+        {/* 日期列 */}
+        <PickerViewColumn>
+          {dateList.map((item, index) => (
+            <View key={index} className="picker-item date-item">
+              <Text className={`date-text ${item.date === '今天' ? 'today' : ''}`}>
+                {item.date}
+              </Text>
+              {item.weekday && (
+                <Text className="weekday-text">{item.weekday}</Text>
+              )}
+            </View>
+          ))}
+        </PickerViewColumn>
+
+        {/* 小时列 */}
+        <PickerViewColumn>
+          {hourList.map((hour, index) => (
+            <View key={index} className="picker-item hour-item">
+              <Text className="hour-text">{hour}</Text>
+            </View>
+          ))}
+        </PickerViewColumn>
+
+        {/* 分钟列 */}
+        <PickerViewColumn>
+          {minuteList.map((minute, index) => (
+            <View key={index} className="picker-item minute-item">
+              <Text className="minute-text">{minute}</Text>
+            </View>
+          ))}
+        </PickerViewColumn>
+      </PickerView>
+    </View>
+  )
+}
+
+export default TimePickerScroller

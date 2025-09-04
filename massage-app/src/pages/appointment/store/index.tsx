@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
-import { View, Text, Image, ScrollView } from '@tarojs/components'
-import { AtButton, AtIcon } from 'taro-ui'
+import { View, Text, Image } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
 import { storeService } from '@/services/store'
+import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
 import './index.scss'
 
-interface TimeSlot {
-  date: string
-  weekday: string
-  slots: {
-    time: string
-    points: number
-    duration: number
-    available: boolean
-  }[]
-}
 
 const StoreAppointmentPage: React.FC = () => {
   const router = useRouter()
   const { id } = router.params
   const [store, setStore] = useState<Store | null>(null)
   const [selectedDate, setSelectedDate] = useState('')
-  const [selectedTime, setSelectedTime] = useState('')
-  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([])
+  const [selectedHour, setSelectedHour] = useState('')
+  const [selectedMinute, setSelectedMinute] = useState('')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     loadStoreData()
-    generateTimeSlots()
   }, [id])
 
   const loadStoreData = async () => {
@@ -45,53 +35,10 @@ const StoreAppointmentPage: React.FC = () => {
     }
   }
 
-  const generateTimeSlots = () => {
-    // 生成未来7天的时间段
-    const slots: TimeSlot[] = []
-    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    
-    for (let i = 0; i < 7; i++) {
-      const date = new Date()
-      date.setDate(date.getDate() + i)
-      
-      const dateStr = `${date.getMonth() + 1}月${date.getDate()}日`
-      const weekday = weekdays[date.getDay()]
-      
-      // 为每天生成时间段
-      const daySlots = [
-        { time: '10:00', points: 8, duration: 0, available: i > 0 },
-        { time: '11:00', points: 9, duration: 10, available: true },
-        { time: '12:00', points: 10, duration: 20, available: true },
-        { time: '14:00', points: 10, duration: 0, available: true },
-        { time: '15:00', points: 9, duration: 10, available: true },
-        { time: '16:00', points: 8, duration: 20, available: i !== 2 },
-        { time: '17:00', points: 8, duration: 30, available: true },
-        { time: '18:00', points: 9, duration: 0, available: true },
-        { time: '19:00', points: 10, duration: 0, available: true },
-        { time: '20:00', points: 10, duration: 10, available: true }
-      ]
-      
-      slots.push({
-        date: dateStr,
-        weekday: weekday,
-        slots: daySlots
-      })
-    }
-    
-    setTimeSlots(slots)
-    // 默认选择明天
-    if (slots.length > 1) {
-      setSelectedDate(slots[1].date)
-    }
-  }
-
-  const handleDateSelect = (date: string) => {
+  const handleTimeChange = (date: string, hour: string, minute: string) => {
     setSelectedDate(date)
-    setSelectedTime('')
-  }
-
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time)
+    setSelectedHour(hour)
+    setSelectedMinute(minute)
   }
 
   const handleCallStore = () => {
@@ -114,7 +61,7 @@ const StoreAppointmentPage: React.FC = () => {
   }
 
   const handleSubmit = () => {
-    if (!selectedTime) {
+    if (!selectedHour || !selectedMinute) {
       Taro.showToast({
         title: '请选择预约时间',
         icon: 'none'
@@ -122,15 +69,23 @@ const StoreAppointmentPage: React.FC = () => {
       return
     }
 
-    // 跳转到预约确认页面
+    // 跳转到症状选择页面
+    const timeString = `${selectedHour.replace('点', '')}:${selectedMinute.replace('分', '')}`
     Taro.navigateTo({
-      url: `/pages/booking/confirm/index?type=store&id=${id}&date=${selectedDate}&time=${selectedTime}`
+      url: `/pages/booking/symptoms/index?type=store&id=${id}&date=${selectedDate}&time=${timeString}`
     })
   }
 
-  const getCurrentTimeSlot = () => {
-    const current = timeSlots.find(slot => slot.date === selectedDate)
-    return current?.slots || []
+  const getFormattedDateTime = () => {
+    if (!selectedDate || !selectedHour || !selectedMinute) {
+      return '请选择时间'
+    }
+    
+    const dateText = selectedDate === new Date().toISOString().split('T')[0] ? '今天' : selectedDate
+    const hourText = selectedHour.replace('点', '')
+    const minuteText = selectedMinute.replace('分', '')
+    
+    return `${dateText} ${hourText}:${minuteText}`
   }
 
   if (!store) return null
@@ -168,14 +123,14 @@ const StoreAppointmentPage: React.FC = () => {
                 {store.status === 'full' && '爆满'}
               </View>
             </View>
-            <Text className="address">{store.address}</Text>
+            <Text className="address">{store.address} (电影院门口)</Text>
           </View>
           <View className="action-buttons">
             <View className="action-btn" onClick={handleCallStore}>
-              <AtIcon value="phone" size="24" color="#D9455F" />
+              📞
             </View>
             <View className="action-btn" onClick={handleShowLocation}>
-              <AtIcon value="map-pin" size="24" color="#D9455F" />
+              📍
             </View>
           </View>
         </View>
@@ -196,54 +151,25 @@ const StoreAppointmentPage: React.FC = () => {
           </View>
           <View className="tip-item">
             <Text className="discount">9.0折</Text>
-            <Text className="tip-desc">错峰预约<br />点击前往</Text>
+            <Text className="tip-desc">错峰预约</Text>
+            <Text className="tip-desc">点击前往</Text>
           </View>
         </View>
 
-        {/* 日期选择 */}
-        <ScrollView scrollX className="date-selector">
-          {timeSlots.map(slot => (
-            <View
-              key={slot.date}
-              className={`date-item ${selectedDate === slot.date ? 'active' : ''}`}
-              onClick={() => handleDateSelect(slot.date)}
-            >
-              <Text className="date">{slot.date}</Text>
-              <Text className="weekday">{slot.weekday}</Text>
-            </View>
-          ))}
-        </ScrollView>
-
-        {/* 时间段选择 */}
-        <View className="time-slots">
-          {getCurrentTimeSlot().map(slot => (
-            <View
-              key={slot.time}
-              className={`time-slot ${!slot.available ? 'disabled' : ''} ${selectedTime === slot.time ? 'active' : ''}`}
-              onClick={() => slot.available && handleTimeSelect(slot.time)}
-            >
-              <View className="time-info">
-                <Text className="time">{slot.time}</Text>
-                <Text className="points">{slot.points}点</Text>
-              </View>
-              {slot.duration > 0 && (
-                <Text className="duration">{slot.duration}分</Text>
-              )}
-            </View>
-          ))}
-        </View>
+        {/* 三列时间选择器 */}
+        <TimePickerScroller onTimeChange={handleTimeChange} />
       </View>
 
       {/* 底部预约栏 */}
       <View className="bottom-bar">
         <Text className="selected-time">
-          预约时间：{selectedDate} {selectedTime || '请选择时间'}
+          预约时间: {getFormattedDateTime()}
         </Text>
         <AtButton 
           className="submit-btn"
           type="primary"
           onClick={handleSubmit}
-          disabled={!selectedTime}
+          disabled={!selectedHour || !selectedMinute}
         >
           选症状
         </AtButton>

@@ -1,0 +1,59 @@
+.time-picker-scroller {
+  width: 100%;
+  
+  .picker-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 0 10px;
+  }
+
+  .date-item {
+    .date-text {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+      
+      &.today {
+        color: #D9455F;
+        font-weight: 600;
+      }
+    }
+    
+    .weekday-text {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px;
+    }
+  }
+
+  .hour-item {
+    .hour-text {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+  }
+
+  .minute-item {
+    .minute-text {
+      font-size: 16px;
+      color: #333;
+      font-weight: 500;
+    }
+  }
+}
+
+// 选中项的样式会由系统的 indicatorStyle 控制
+// 这里添加一些自定义样式来增强视觉效果
+:global {
+  .taro_picker_view {
+    .taro_picker_view_column {
+      .taro_picker_view_item {
+        transition: all 0.2s ease;
+      }
+    }
+  }
+}

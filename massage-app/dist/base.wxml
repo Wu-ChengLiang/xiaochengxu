@@ -81,6 +81,18 @@
   </picker>
 </template>
 
+<template name="tmpl_0_57">
+  <picker-view value="{{i.p6}}" indicator-style="{{i.p2}}" indicator-class="{{i.p1}}" mask-style="{{i.p4}}" mask-class="{{i.p3}}" bindchange="eh" name="{{i.p5}}" immediate-change="{{xs.b(i.p0,false)}}" bindpickstart="eh" bindpickend="eh" style="{{i.st}}" class="{{i.cl}}" bindtap="eh"  id="{{i.uid||i.sid}}" data-sid="{{i.sid}}">
+    <template is="{{xs.a(c, item.nn, l)}}" data="{{i:item,c:c+1,l:xs.f(l,item.nn)}}" wx:for="{{i.cn}}" wx:key="sid" />
+  </picker-view>
+</template>
+
+<template name="tmpl_0_58">
+  <picker-view-column name="{{i.p0}}" style="{{i.st}}" class="{{i.cl}}" bindtap="eh"  id="{{i.uid||i.sid}}" data-sid="{{i.sid}}">
+    <template is="{{xs.a(c, item.nn, l)}}" data="{{i:item,c:c+1,l:xs.f(l,item.nn)}}" wx:for="{{i.cn}}" wx:key="sid" />
+  </picker-view-column>
+</template>
+
 <template name="tmpl_0_68">
   <slider min="{{xs.b(i.p7,0)}}" max="{{xs.b(i.p6,100)}}" step="{{xs.b(i.p11,1)}}" disabled="{{i.p5}}" value="{{xs.b(i.p12,0)}}" activeColor="{{i.p0||'#1aad19'}}" backgroundColor="{{i.p1||'#e9e9e9'}}" block-size="{{xs.b(i.p3,28)}}" block-color="{{i.p2||'#ffffff'}}" show-value="{{xs.b(i.p10,!1)}}" bindchange="eh" bindchanging="eh" name="{{i.p8}}" color="{{i.p4||'#e9e9e9'}}" selected-color="{{i.p9||'#1aad19'}}" style="{{i.st}}" class="{{i.cl}}" bindtap="eh"  id="{{i.uid||i.sid}}" data-sid="{{i.sid}}"></slider>
 </template>
