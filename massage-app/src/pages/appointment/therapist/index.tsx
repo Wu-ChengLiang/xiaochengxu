@@ -135,13 +135,7 @@ const TherapistBookingPage: React.FC = () => {
       // 清除选中的时间
       bookingSelectorRef.current?.clearSelectedTime()
       
-      const removedCount = cartItems.length - sessionStartIndex
-      if (removedCount > 0) {
-        Taro.showToast({
-          title: `已取消${removedCount}项预约`,
-          icon: 'none'
-        })
-      }
+      // 静默撤销，不显示提示
     }
     
     // 重置会话状态
