@@ -129,8 +129,8 @@ const StoreAppointmentPage = () => {
   }, [id]);
   const loadStoreData = () => __async(exports, null, function* () {
     try {
-      const storeData = yield common.storeService.getStoreDetail(id);
-      setStore(storeData);
+      const storeRes = yield common.storeService.getStoreDetail(id);
+      setStore(storeRes.data);
     } catch (error) {
       taro.Taro.showToast({
         title: "加载失败",

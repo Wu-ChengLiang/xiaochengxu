@@ -23,8 +23,8 @@ const StoreAppointmentPage: React.FC = () => {
 
   const loadStoreData = async () => {
     try {
-      const storeData = await storeService.getStoreDetail(id!)
-      setStore(storeData)
+      const storeRes = await storeService.getStoreDetail(id!)
+      setStore(storeRes.data)
     } catch (error) {
       Taro.showToast({
         title: '加载失败',
