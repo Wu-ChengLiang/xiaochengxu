@@ -1,0 +1,105 @@
+.store-info {
+  background: #fff;
+  padding: 32rpx;
+  margin-bottom: 20rpx;
+  
+  .store-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    
+    .store-details {
+      flex: 1;
+      
+      .name-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16rpx;
+        
+        .store-name {
+          font-size: 36rpx;
+          font-weight: 600;
+          color: #333;
+          margin-right: 16rpx;
+        }
+        
+        .distance {
+          font-size: 28rpx;
+          color: #666;
+          display: flex;
+          align-items: center;
+          
+          &::before {
+            content: '📍 ';
+            margin-right: 4rpx;
+          }
+        }
+      }
+      
+      .hours-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16rpx;
+        
+        .business-hours {
+          font-size: 28rpx;
+          color: #666;
+          margin-right: 16rpx;
+        }
+        
+        .status {
+          font-size: 24rpx;
+          padding: 4rpx 12rpx;
+          border-radius: 12rpx;
+          
+          &.status-normal {
+            background: rgba(217, 69, 95, 0.1);
+            color: #D9455F;
+            border: 1px solid #D9455F;
+          }
+          
+          &.status-busy {
+            background: #FFF7E6;
+            color: #FAAD14;
+            border: 1px solid #FAAD14;
+          }
+          
+          &.status-full {
+            background: #F5F5F5;
+            color: #666;
+            border: 1px solid #DDD;
+          }
+        }
+      }
+      
+      .address {
+        font-size: 28rpx;
+        color: #999;
+        line-height: 1.4;
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16rpx;
+      margin-left: 32rpx;
+      
+      .action-btn {
+        width: 80rpx;
+        height: 80rpx;
+        border: 2rpx solid #D9455F;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32rpx;
+        background: #fff;
+        
+        &:active {
+          background: rgba(217, 69, 95, 0.1);
+        }
+      }
+    }
+  }
+}

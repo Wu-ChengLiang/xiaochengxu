@@ -107,7 +107,15 @@ const Appointment: React.FC = () => {
 
   const handleTherapistClick = (therapist: Therapist) => {
     Taro.navigateTo({
-      url: `/pages/therapist/detail/index?id=${therapist.id}`
+      url: `/pages/appointment/therapist/index?therapistId=${therapist.id}&storeId=${therapist.storeId}`
+    })
+  }
+
+  const handleBookingClick = (e: any, therapist: Therapist) => {
+    e.stopPropagation()
+    // 直接跳转到推拿师预约页面
+    Taro.navigateTo({
+      url: `/pages/appointment/therapist/index?therapistId=${therapist.id}&storeId=${therapist.storeId}`
     })
   }
 
