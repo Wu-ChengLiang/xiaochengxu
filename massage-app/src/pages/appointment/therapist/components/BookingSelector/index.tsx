@@ -120,8 +120,6 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
       {/* 日期时间选择 */}
       {selectedServiceId && (
         <View className="datetime-section">
-          <View className="section-title">选择时间</View>
-          
           {/* 日期选择 */}
           <ScrollView className="date-tabs" scrollX>
             {dateList.map(date => (
