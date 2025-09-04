@@ -21,7 +21,8 @@ var config = {
     "pages/mine/index",
     "pages/appointment/store/index",
     "pages/appointment/therapist/index",
-    "pages/promotion/index"
+    "pages/promotion/index",
+    "pages/booking/confirm/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

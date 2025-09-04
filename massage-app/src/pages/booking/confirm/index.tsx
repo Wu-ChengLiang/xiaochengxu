@@ -206,10 +206,10 @@ const OrderConfirmPage: React.FC = () => {
         <Text className="policy-title">退单说明</Text>
         <View className="policy-list">
           <View className="policy-item">
-            • 下单15分钟内或距订单开始时间>6小时退单，退100%
+            • 下单15分钟内或距订单开始时间&gt;6小时退单，退100%
           </View>
           <View className="policy-item">
-            • 距订单开始前<6小时退单，退实付金额90%
+            • 距订单开始前&lt;6小时退单，退实付金额90%
           </View>
           <View className="policy-item">
             • 订单时间开始后退单，退实付金额80%

@@ -178,10 +178,7 @@ const PromotionPage = () => {
 var config = {
   "navigationBarTitleText": "优惠专区",
   "navigationBarBackgroundColor": "#d4237a",
-  "navigationBarTextStyle": "white",
-  "usingComponents": {
-    "comp": "../../comp"
-  }
+  "navigationBarTextStyle": "white"
 };
 Page(taro.createPageConfig(PromotionPage, "pages/promotion/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
