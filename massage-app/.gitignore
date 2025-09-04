@@ -1,10 +1,34 @@
-# Dependencies
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Production
+# testing
+coverage/
+.nyc_output/
+
+# production
 # dist/  # 注释掉，允许提交 dist
+build/
+*.zip
 
-# IDE
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.eslintcache
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Editor directories and files
 .idea/
 .vscode/
 *.swp
@@ -12,31 +36,17 @@ node_modules/
 *~
 
 # OS
-.DS_Store
+Thumbs.db
 
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Test coverage
-coverage/
-
-# Environment variables
-.env.local
-.env.*.local
-
-# Temporary files
+# Taro
 .temp/
-.tmp/
+.rn_temp/
+deploy_versions/
 
-# TypeScript cache
-*.tsbuildinfo
+# mini program
+project.config.json
+project.private.config.json
+project.swan.json
+project.tt.json
+project.qq.json
+project.quickapp.json
