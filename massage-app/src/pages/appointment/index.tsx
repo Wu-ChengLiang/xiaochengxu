@@ -111,13 +111,6 @@ const Appointment: React.FC = () => {
     })
   }
 
-  const handleBookingClick = (e: any, therapist: Therapist) => {
-    e.stopPropagation()
-    // 直接跳转到推拿师预约页面
-    Taro.navigateTo({
-      url: `/pages/appointment/therapist/index?therapistId=${therapist.id}&storeId=${therapist.storeId}`
-    })
-  }
 
 
   const handleMoreStores = () => {
@@ -206,7 +199,6 @@ const Appointment: React.FC = () => {
               key={therapist.id} 
               therapist={therapist}
               onClick={() => handleTherapistClick(therapist)}
-              onBooking={(e) => handleBookingClick(e, therapist)}
             />
           ))}
         </View>

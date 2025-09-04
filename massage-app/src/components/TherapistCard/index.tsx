@@ -7,10 +7,9 @@ import './index.scss'
 interface TherapistCardProps {
   therapist: Therapist
   onClick?: () => void
-  onBooking?: (e: any) => void
 }
 
-const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick, onBooking }) => {
+const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => {
   return (
     <View className="therapist-card" onClick={onClick}>
       <View className="card-content">
@@ -47,7 +46,6 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick, onBoo
             </View>
             <BookingButton 
               size="small"
-              onClick={onBooking}
             />
           </View>
         </View>

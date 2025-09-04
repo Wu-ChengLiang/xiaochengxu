@@ -7,22 +7,9 @@
   border-radius: 50rpx;
   font-weight: 500;
   transition: all 0.2s ease;
-  cursor: pointer;
+  // 移除点击效果，因为现在是装饰性组件
+  pointer-events: none;
   
-  &:active {
-    transform: scale(0.95);
-    opacity: 0.9;
-  }
-  
-  &.disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    
-    &:active {
-      transform: none;
-      opacity: 1;
-    }
-  }
   
   // 小尺寸
   &-small {
