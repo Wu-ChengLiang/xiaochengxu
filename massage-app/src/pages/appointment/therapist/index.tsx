@@ -99,13 +99,13 @@ const TherapistBookingPage: React.FC = () => {
       therapistAvatar: therapist.avatar
     }
 
-    // 检查是否已存在相同时间段的预约
+    // 检查是否已存在相同时间段的预约（在整个购物车中）
     const existingIndex = cartItems.findIndex(
       item => item.date === date && item.time === time
     )
 
     if (existingIndex >= 0) {
-      // 替换现有预约
+      // 无论是否在当前会话中，都直接替换
       const newItems = [...cartItems]
       newItems[existingIndex] = newItem
       setCartItems(newItems)
