@@ -33,6 +33,11 @@ const TherapistBookingPage: React.FC = () => {
   // 预约选择状态
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [selectedService, setSelectedService] = useState<any>(null)
+  
+  // 待处理操作状态（用于撤销功能）
+  const [pendingItem, setPendingItem] = useState<CartItem | null>(null)
+  const [pendingAction, setPendingAction] = useState<'add' | 'update' | null>(null)
+  const [pendingIndex, setPendingIndex] = useState<number>(-1)
 
   // Mock 服务数据
   const mockServices = [
@@ -92,6 +97,11 @@ const TherapistBookingPage: React.FC = () => {
     )
 
     if (existingIndex >= 0) {
+      // 记录更新操作
+      setPendingItem(cartItems[existingIndex]) // 保存原始项
+      setPendingAction('update')
+      setPendingIndex(existingIndex)
+      
       // 替换现有预约
       const newItems = [...cartItems]
       newItems[existingIndex] = newItem
@@ -102,6 +112,11 @@ const TherapistBookingPage: React.FC = () => {
         icon: 'success'
       })
     } else {
+      // 记录新增操作
+      setPendingItem(newItem)
+      setPendingAction('add')
+      setPendingIndex(cartItems.length)
+      
       // 添加新预约
       setCartItems([...cartItems, newItem])
       
@@ -112,8 +127,51 @@ const TherapistBookingPage: React.FC = () => {
     }
   }
 
+  // 撤销操作（点击遮罩时）
+  const handleCartMaskClick = () => {
+    if (pendingAction === 'add' && pendingIndex >= 0) {
+      // 撤销新增：移除最后添加的项
+      const newItems = [...cartItems]
+      newItems.splice(pendingIndex, 1)
+      setCartItems(newItems)
+      
+      Taro.showToast({
+        title: '已取消预约',
+        icon: 'none'
+      })
+    } else if (pendingAction === 'update' && pendingItem && pendingIndex >= 0) {
+      // 撤销更新：恢复原始项
+      const newItems = [...cartItems]
+      newItems[pendingIndex] = pendingItem
+      setCartItems(newItems)
+      
+      Taro.showToast({
+        title: '已恢复原预约',
+        icon: 'none'
+      })
+    }
+    
+    // 清除待处理状态
+    setPendingItem(null)
+    setPendingAction(null)
+    setPendingIndex(-1)
+  }
+
+  // 确认操作（点击"继续预约"时）
+  const handleCartContinue = () => {
+    // 确认操作，清除待处理状态
+    setPendingItem(null)
+    setPendingAction(null)
+    setPendingIndex(-1)
+  }
+
   const handleCheckout = () => {
     if (cartItems.length === 0) return
+
+    // 清除待处理状态
+    setPendingItem(null)
+    setPendingAction(null)
+    setPendingIndex(-1)
 
     // 导航到预约确认页面
     const params = {
@@ -160,6 +218,9 @@ const TherapistBookingPage: React.FC = () => {
         items={cartItems}
         therapist={therapist}
         onCheckout={handleCheckout}
+        onMaskClick={handleCartMaskClick}
+        onContinue={handleCartContinue}
+        hasPendingAction={pendingAction !== null}
       />
     </View>
   )

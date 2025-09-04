@@ -19,9 +19,19 @@ interface ShoppingCartProps {
   items: CartItem[]
   therapist?: any
   onCheckout: () => void
+  onMaskClick?: () => void
+  onContinue?: () => void
+  hasPendingAction?: boolean
 }
 
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, therapist, onCheckout }) => {
+const ShoppingCart: React.FC<ShoppingCartProps> = ({ 
+  items, 
+  therapist, 
+  onCheckout,
+  onMaskClick,
+  onContinue,
+  hasPendingAction = false
+}) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [countdown, setCountdown] = useState(180) // 3分钟 = 180秒
   const timerRef = useRef<any>(null)
@@ -98,6 +108,18 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, therapist, onCheckou
   }
 
   const handleMaskClick = () => {
+    // 如果有待处理操作且提供了撤销函数，执行撤销
+    if (onMaskClick && hasPendingAction) {
+      onMaskClick()
+    }
+    setIsExpanded(false)
+  }
+
+  const handleContinue = () => {
+    // 执行继续预约操作
+    if (onContinue) {
+      onContinue()
+    }
     setIsExpanded(false)
   }
 
@@ -142,7 +164,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, therapist, onCheckou
         <View className="cart-expanded">
           <View className="expanded-header">
             <Text className="title">已选推拿师({items.length})位</Text>
-            <Text className="action" onClick={handleMaskClick}>继续预约</Text>
+            <Text className="action" onClick={handleContinue}>继续预约</Text>
           </View>
 
           {/* 服务详情 */}

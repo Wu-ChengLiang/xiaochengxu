@@ -317,7 +317,14 @@ const BookingSelector = ({
   ] });
 };
 const index$1 = "";
-const ShoppingCart = ({ items, therapist, onCheckout }) => {
+const ShoppingCart = ({
+  items,
+  therapist,
+  onCheckout,
+  onMaskClick,
+  onContinue,
+  hasPendingAction = false
+}) => {
   const [isExpanded, setIsExpanded] = taro.useState(false);
   const [countdown, setCountdown] = taro.useState(180);
   const timerRef = taro.useRef(null);
@@ -379,6 +386,15 @@ const ShoppingCart = ({ items, therapist, onCheckout }) => {
     setIsExpanded(true);
   };
   const handleMaskClick = () => {
+    if (onMaskClick && hasPendingAction) {
+      onMaskClick();
+    }
+    setIsExpanded(false);
+  };
+  const handleContinue = () => {
+    if (onContinue) {
+      onContinue();
+    }
     setIsExpanded(false);
   };
   const handleConfirmCheckout = () => {
@@ -413,7 +429,7 @@ const ShoppingCart = ({ items, therapist, onCheckout }) => {
           items.length,
           ")位"
         ] }),
-        /* @__PURE__ */ taro.jsx(taro.Text, { className: "action", onClick: handleMaskClick, children: "继续预约" })
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "action", onClick: handleContinue, children: "继续预约" })
       ] }),
       /* @__PURE__ */ taro.jsx(taro.View, { className: "service-list", children: items.map(
         (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-item", children: [
@@ -512,6 +528,9 @@ const TherapistBookingPage = () => {
   const [error, setError] = taro.useState("");
   const [cartItems, setCartItems] = taro.useState([]);
   const [selectedService, setSelectedService] = taro.useState(null);
+  const [pendingItem, setPendingItem] = taro.useState(null);
+  const [pendingAction, setPendingAction] = taro.useState(null);
+  const [pendingIndex, setPendingIndex] = taro.useState(-1);
   const mockServices = [
     { id: "1", name: "肩颈调理", duration: 60, price: 128, discountPrice: 98 },
     { id: "2", name: "全身推拿", duration: 90, price: 198, discountPrice: 158 },
@@ -562,6 +581,9 @@ const TherapistBookingPage = () => {
       (item) => item.date === date && item.time === time
     );
     if (existingIndex >= 0) {
+      setPendingItem(cartItems[existingIndex]);
+      setPendingAction("update");
+      setPendingIndex(existingIndex);
       const newItems = [...cartItems];
       newItems[existingIndex] = newItem;
       setCartItems(newItems);
@@ -570,6 +592,9 @@ const TherapistBookingPage = () => {
         icon: "success"
       });
     } else {
+      setPendingItem(newItem);
+      setPendingAction("add");
+      setPendingIndex(cartItems.length);
       setCartItems([...cartItems, newItem]);
       taro.Taro.showToast({
         title: "已添加到购物车",
@@ -577,9 +602,39 @@ const TherapistBookingPage = () => {
       });
     }
   };
+  const handleCartMaskClick = () => {
+    if (pendingAction === "add" && pendingIndex >= 0) {
+      const newItems = [...cartItems];
+      newItems.splice(pendingIndex, 1);
+      setCartItems(newItems);
+      taro.Taro.showToast({
+        title: "已取消预约",
+        icon: "none"
+      });
+    } else if (pendingAction === "update" && pendingItem && pendingIndex >= 0) {
+      const newItems = [...cartItems];
+      newItems[pendingIndex] = pendingItem;
+      setCartItems(newItems);
+      taro.Taro.showToast({
+        title: "已恢复原预约",
+        icon: "none"
+      });
+    }
+    setPendingItem(null);
+    setPendingAction(null);
+    setPendingIndex(-1);
+  };
+  const handleCartContinue = () => {
+    setPendingItem(null);
+    setPendingAction(null);
+    setPendingIndex(-1);
+  };
   const handleCheckout = () => {
     if (cartItems.length === 0)
       return;
+    setPendingItem(null);
+    setPendingAction(null);
+    setPendingIndex(-1);
     const params = {
       therapistId,
       storeId,
@@ -613,13 +668,19 @@ const TherapistBookingPage = () => {
       {
         items: cartItems,
         therapist,
-        onCheckout: handleCheckout
+        onCheckout: handleCheckout,
+        onMaskClick: handleCartMaskClick,
+        onContinue: handleCartContinue,
+        hasPendingAction: pendingAction !== null
       }
     )
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约"
+  "navigationBarTitleText": "推拿师预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

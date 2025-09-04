@@ -220,7 +220,10 @@ const OrderConfirmPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单确认"
+  "navigationBarTitleText": "订单确认",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(OrderConfirmPage, "pages/booking/confirm/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
