@@ -7,10 +7,9 @@ import './index.scss'
 interface StoreCardProps {
   store: Store
   onClick?: () => void
-  onBooking?: (e: any) => void
 }
 
-const StoreCard: React.FC<StoreCardProps> = ({ store, onClick, onBooking }) => {
+const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
   const getStatusText = (status: Store['status']) => {
     switch (status) {
       case 'normal':
@@ -73,7 +72,6 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick, onBooking }) => {
             </View>
             <BookingButton 
               size="small"
-              onClick={onBooking}
             />
           </View>
         </View>

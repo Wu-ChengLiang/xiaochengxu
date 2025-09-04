@@ -111,12 +111,6 @@ const Appointment: React.FC = () => {
     })
   }
 
-  const handleBookingClick = (e: any, item: Store | Therapist) => {
-    e.stopPropagation()
-    Taro.navigateTo({
-      url: `/pages/booking/confirm/index?type=${item.hasOwnProperty('storeId') ? 'therapist' : 'store'}&id=${item.id}`
-    })
-  }
 
   const handleMoreStores = () => {
     setShowStoreSheet(true)
@@ -185,7 +179,6 @@ const Appointment: React.FC = () => {
               key={store.id} 
               store={store} 
               onClick={() => handleStoreClick(store)}
-              onBooking={(e) => handleBookingClick(e, store)}
             />
           ))}
         </View>
@@ -249,10 +242,6 @@ const Appointment: React.FC = () => {
                 store={store} 
                 onClick={() => {
                   handleStoreClick(store)
-                  setShowStoreSheet(false)
-                }}
-                onBooking={(e) => {
-                  handleBookingClick(e, store)
                   setShowStoreSheet(false)
                 }}
               />
