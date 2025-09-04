@@ -20,10 +20,6 @@ interface ShoppingCartProps {
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onCheckout }) => {
-  if (items.length === 0) {
-    return null
-  }
-
   // 计算总价
   const totalOriginalPrice = items.reduce((sum, item) => sum + item.price, 0)
   const totalDiscountPrice = items.reduce((sum, item) => sum + (item.discountPrice || item.price), 0)
@@ -65,7 +61,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onCheckout }) => {
             {totalSavings > 0 && (
               <Text className="savings">已省 ¥{totalSavings.toFixed(2)}</Text>
             )}
-            <Text className="total-price">¥{totalDiscountPrice.toFixed(2)}</Text>
+            <Text className="total-price">¥{items.length > 0 ? totalDiscountPrice.toFixed(2) : '0'}</Text>
           </View>
         </View>
         
@@ -75,8 +71,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onCheckout }) => {
       </View>
 
       {/* 展开显示选中的服务详情 */}
-      <View className="cart-items">
-        {items.map((item, index) => (
+      {items.length > 0 && (
+        <View className="cart-items">
+          {items.map((item, index) => (
           <View key={index} className="cart-item">
             <View className="item-info">
               <Text className="service-name">{item.serviceName}</Text>
@@ -95,8 +92,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ items, onCheckout }) => {
               )}
             </View>
           </View>
-        ))}
-      </View>
+          ))}
+        </View>
+      )}
     </View>
   )
 }

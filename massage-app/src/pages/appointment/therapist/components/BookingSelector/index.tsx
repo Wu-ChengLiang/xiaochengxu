@@ -54,19 +54,21 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
     return dates
   }
 
-  // 生成时间段列表（9:00-21:00，每小时一个时段）
+  // 生成时间段列表（9:00-21:00，每10分钟一个时段）
   const generateTimeSlots = (): TimeSlot[] => {
     const slots: TimeSlot[] = []
     
     for (let hour = 9; hour <= 21; hour++) {
-      const time = `${hour.toString().padStart(2, '0')}:00`
-      // 模拟可用性（实际应该从后端获取）
-      const available = Math.random() > 0.3 // 70%的时段可用
-      
-      slots.push({
-        time,
-        available
-      })
+      for (let minute = 0; minute < 60; minute += 10) {
+        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+        // 模拟可用性（实际应该从后端获取）
+        const available = Math.random() > 0.3 // 70%的时段可用
+        
+        slots.push({
+          time,
+          available
+        })
+      }
     }
     
     return slots
@@ -107,14 +109,7 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
             >
               <Text className="service-name">{service.name}</Text>
               <View className="service-price">
-                {service.discountPrice ? (
-                  <>
-                    <Text className="discount-price">¥{service.discountPrice}</Text>
-                    <Text className="original-price">¥{service.price}</Text>
-                  </>
-                ) : (
-                  <Text className="price">¥{service.price}</Text>
-                )}
+                <Text className="price">¥{service.discountPrice || service.price}</Text>
               </View>
               <Text className="service-duration">{service.duration}分钟</Text>
             </View>
@@ -143,23 +138,25 @@ const BookingSelector: React.FC<BookingSelectorProps> = ({
 
           {/* 时间段选择 */}
           {selectedDate && (
-            <View className="time-grid">
-              {timeSlots.map((slot, index) => (
-                <View
-                  key={index}
-                  className={`time-slot ${
-                    slot.available 
-                      ? selectedTime === slot.time 
-                        ? 'selected' 
-                        : 'available'
-                      : 'disabled'
-                  }`}
-                  onClick={() => handleTimeSelect(slot.time, slot.available)}
-                >
-                  <Text className="time-text">{slot.time}</Text>
-                </View>
-              ))}
-            </View>
+            <ScrollView className="time-grid-container" scrollY>
+              <View className="time-grid">
+                {timeSlots.map((slot, index) => (
+                  <View
+                    key={index}
+                    className={`time-slot ${
+                      slot.available 
+                        ? selectedTime === slot.time 
+                          ? 'selected' 
+                          : 'available'
+                        : 'disabled'
+                    }`}
+                    onClick={() => handleTimeSelect(slot.time, slot.available)}
+                  >
+                    <Text className="time-text">{slot.time}</Text>
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
           )}
         </View>
       )}

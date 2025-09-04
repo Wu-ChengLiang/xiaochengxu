@@ -31,16 +31,19 @@
 
         &.active {
           border-color: #D9455F;
-          background: rgba(217, 69, 95, 0.05);
+          background: #D9455F;
 
           .service-name {
-            color: #D9455F;
+            color: #fff;
             font-weight: 600;
           }
 
-          .discount-price,
           .price {
-            color: #D9455F;
+            color: #fff;
+          }
+
+          .service-duration {
+            color: rgba(255, 255, 255, 0.9);
           }
         }
 
@@ -132,8 +135,13 @@
       }
     }
 
+    .time-grid-container {
+      height: 320rpx;
+      padding: 0 32rpx;
+    }
+
     .time-grid {
-      padding: 0 32rpx 32rpx;
+      padding-bottom: 32rpx;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16rpx;

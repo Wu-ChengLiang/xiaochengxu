@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taro, { useRouter } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
 import TherapistInfo from './components/TherapistInfo'
@@ -146,13 +146,15 @@ const TherapistBookingPage: React.FC = () => {
 
   return (
     <View className="therapist-booking-page">
-      <TherapistInfo therapist={therapist} />
-      <StoreInfo store={store} />
-      <BookingSelector 
-        services={mockServices}
-        onServiceSelect={handleServiceSelect}
-        onTimeSelect={handleTimeSelect}
-      />
+      <ScrollView className="main-content" scrollY>
+        <TherapistInfo therapist={therapist} />
+        <StoreInfo store={store} />
+        <BookingSelector 
+          services={mockServices}
+          onServiceSelect={handleServiceSelect}
+          onTimeSelect={handleTimeSelect}
+        />
+      </ScrollView>
       <ShoppingCart 
         items={cartItems}
         onCheckout={handleCheckout}
