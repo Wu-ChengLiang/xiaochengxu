@@ -99,10 +99,6 @@ const StoreAppointmentPage: React.FC = () => {
           src={store.images[0]} 
           mode="aspectFill"
         />
-        <View className="store-actions">
-          <Text className="action-text">一客一换</Text>
-          <Text className="action-text">干净整洁</Text>
-        </View>
       </View>
 
       {/* 门店基本信息 */}

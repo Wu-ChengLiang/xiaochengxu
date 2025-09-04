@@ -21,17 +21,13 @@ interface TimeSlot {
 
 const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({ 
   onTimeChange, 
-  defaultValue = { date: 2, hour: 10, minute: 0 } // 默认选中今天，10点，00分
+  defaultValue
 }) => {
   const [dateList, setDateList] = useState<TimeSlot[]>([])
   const [hourList, setHourList] = useState<string[]>([])
   const [minuteList, setMinuteList] = useState<string[]>([])
   
-  const [selectedIndices, setSelectedIndices] = useState([
-    defaultValue.date, 
-    defaultValue.hour, 
-    defaultValue.minute
-  ])
+  const [selectedIndices, setSelectedIndices] = useState([2, 2, 0]) // 临时默认值，会在初始化后更新
 
   useEffect(() => {
     initializeLists()
@@ -70,9 +66,9 @@ const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({
     }
     setDateList(dates)
 
-    // 生成小时列表 (8点-22点)
+    // 生成小时列表 (9点-21点)
     const hours: string[] = []
-    for (let i = 8; i <= 22; i++) {
+    for (let i = 9; i <= 21; i++) {
       hours.push(`${i}点`)
     }
     setHourList(hours)
@@ -83,6 +79,36 @@ const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({
       minutes.push(`${i.toString().padStart(2, '0')}分`)
     }
     setMinuteList(minutes)
+
+    // 计算默认选择的时间（当前时间的下一个整点）
+    const now = dayjs()
+    const currentHour = now.hour()
+    const nextHour = currentHour + 1
+
+    // 默认选择计算
+    let defaultDateIndex = 2 // 今天的索引
+    let defaultHourIndex = 1 // 默认10点的索引 (9点是索引0，10点是索引1)
+    let defaultMinuteIndex = 0 // 默认00分
+
+    // 如果下一个整点在营业时间内 (9-21点)
+    if (nextHour >= 9 && nextHour <= 21) {
+      // 在今天选择下一个整点
+      defaultHourIndex = nextHour - 9 // 小时数组的索引 (9点对应索引0)
+    } else if (nextHour > 21) {
+      // 如果下一个整点超过21点，选择明天9点
+      defaultDateIndex = 3 // 明天的索引
+      defaultHourIndex = 0 // 9点的索引
+    } else {
+      // 如果当前时间早于9点，选择今天9点
+      defaultHourIndex = 0 // 9点的索引
+    }
+
+    // 使用传入的defaultValue或计算出的默认值
+    const finalIndices = defaultValue 
+      ? [defaultValue.date, defaultValue.hour, defaultValue.minute]
+      : [defaultDateIndex, defaultHourIndex, defaultMinuteIndex]
+
+    setSelectedIndices(finalIndices)
   }
 
   const handleChange = (e: any) => {
