@@ -179,7 +179,7 @@ const StoreAppointmentPage = () => {
       from: "store"
     };
     taro.Taro.navigateTo({
-      url: `/pages/appointment/therapist/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
+      url: `/pages/appointment/symptom/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
     });
   };
   const getFormattedDateTime = () => {

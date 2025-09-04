@@ -4,7 +4,6 @@ export default {
     'pages/gift/index',
     'pages/mine/index',
     'pages/appointment/store/index',
-    'pages/appointment/therapist/index',
     'pages/appointment/symptom/index',
     'pages/promotion/index',
     'pages/booking/confirm/index'

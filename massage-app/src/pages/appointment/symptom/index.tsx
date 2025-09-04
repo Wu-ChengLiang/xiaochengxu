@@ -4,7 +4,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import TherapistHeader from '../../../components/TherapistHeader'
 import SymptomCategoryTabs from '../../../components/SymptomCategoryTabs'
 import SymptomServiceList from '../../../components/SymptomServiceList'
-import ShoppingCart from '../therapist/components/ShoppingCart'
+import ShoppingCart from './components/ShoppingCart'
 import { symptomService } from '../../../services/symptom'
 import { therapistService } from '../../../services/therapist'
 import './index.scss'
@@ -23,23 +23,23 @@ interface CartItem {
 
 const SymptomPage = () => {
   const router = useRouter()
-  const { therapistId, therapistName, storeId, storeName } = router.params
+  const { storeId, storeName, selectedDate, selectedTime } = router.params
 
-  const [therapist, setTherapist] = useState<any>(null)
+  const [therapists, setTherapists] = useState<any[]>([])
   const [categories, setCategories] = useState<any[]>([])
   const [services, setServices] = useState<any[]>([])
   const [activeCategoryId, setActiveCategoryId] = useState('')
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 获取推拿师信息
+  // 获取该门店的所有推拿师
   useEffect(() => {
-    if (therapistId) {
-      therapistService.getTherapistDetail(therapistId as string).then(res => {
-        setTherapist(res.data)
+    if (storeId) {
+      therapistService.getTherapistsByStore(storeId as string).then(res => {
+        setTherapists(res.list)
       })
     }
-  }, [therapistId])
+  }, [storeId])
 
   // 获取症状分类
   useEffect(() => {
@@ -51,16 +51,16 @@ const SymptomPage = () => {
     })
   }, [])
 
-  // 获取服务列表
+  // 获取该门店所有推拿师的服务列表
   useEffect(() => {
-    if (therapistId) {
+    if (storeId) {
       setLoading(true)
-      symptomService.getTherapistSymptomServices(therapistId as string).then(res => {
+      symptomService.getStoreSymptomServices(storeId as string).then(res => {
         setServices(res.data)
         setLoading(false)
       })
     }
-  }, [therapistId])
+  }, [storeId])
 
   // 根据分类筛选服务
   const filteredServices = useMemo(() => {
@@ -73,7 +73,8 @@ const SymptomPage = () => {
   }, [cartItems])
 
   // 添加到购物车
-  const handleAddToCart = (service: any) => {
+  const handleAddToCart = (service: any, therapistId: string) => {
+    const therapist = therapists.find(t => t.id === therapistId)
     if (!therapist) return
 
     const newItem: CartItem = {
@@ -82,8 +83,8 @@ const SymptomPage = () => {
       duration: service.duration,
       price: service.price,
       discountPrice: service.discountPrice,
-      date: new Date().toISOString(),
-      time: '待选择',
+      date: selectedDate as string || new Date().toISOString().split('T')[0],
+      time: selectedTime as string || '待选择',
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }
@@ -96,12 +97,6 @@ const SymptomPage = () => {
     })
   }
 
-  // 查看推拿师详情
-  const handleViewDetail = () => {
-    Taro.navigateTo({
-      url: `/pages/appointment/therapist/index?id=${therapistId}&storeId=${storeId}&storeName=${storeName}`
-    })
-  }
 
   // 去结算
   const handleCheckout = () => {
@@ -115,8 +110,6 @@ const SymptomPage = () => {
 
     const params = {
       items: JSON.stringify(cartItems),
-      therapistId,
-      therapistName,
       storeId,
       storeName,
       from: 'symptom'
@@ -129,23 +122,12 @@ const SymptomPage = () => {
     })
   }
 
-  if (!therapist) {
+  if (loading) {
     return <View className="symptom-page loading">加载中...</View>
   }
 
   return (
     <View className="symptom-page">
-      {/* 推拿师信息头部 */}
-      <TherapistHeader
-        therapist={{
-          id: therapist.id,
-          name: therapist.name,
-          avatar: therapist.avatar,
-          level: therapist.level || 3,
-          rating: therapist.rating
-        }}
-        onDetailClick={handleViewDetail}
-      />
 
       {/* 主内容区 */}
       <View className="symptom-content">
@@ -156,9 +138,10 @@ const SymptomPage = () => {
           onChange={setActiveCategoryId}
         />
 
-        {/* 右侧服务列表 */}
+        {/* 右侧服务列表 - 按推拿师分组展示 */}
         <SymptomServiceList
           services={filteredServices}
+          therapists={therapists}
           onAddToCart={handleAddToCart}
           cartServiceIds={cartServiceIds}
         />
@@ -167,7 +150,6 @@ const SymptomPage = () => {
       {/* 底部购物车 */}
       <ShoppingCart
         items={cartItems}
-        therapist={therapist}
         onCheckout={handleCheckout}
       />
     </View>

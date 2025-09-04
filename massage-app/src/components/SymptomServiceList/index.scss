@@ -6,5 +6,61 @@
   .service-list-content {
     padding: 16px;
     padding-bottom: 80px; // 为底部购物车留出空间
+
+    .therapist-group {
+      margin-bottom: 40rpx;
+
+      .therapist-header {
+        background: white;
+        padding: 24rpx;
+        border-radius: 16rpx 16rpx 0 0;
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rpx;
+
+        .therapist-avatar {
+          width: 88rpx;
+          height: 88rpx;
+          border-radius: 50%;
+          margin-right: 20rpx;
+        }
+
+        .therapist-info {
+          flex: 1;
+
+          .therapist-name {
+            font-size: 32rpx;
+            font-weight: bold;
+            color: #333;
+            margin-right: 16rpx;
+          }
+
+          .therapist-level {
+            display: inline-block;
+            background: #a40035;
+            color: white;
+            font-size: 20rpx;
+            padding: 4rpx 12rpx;
+            border-radius: 8rpx;
+          }
+        }
+
+        .therapist-rating {
+          text-align: right;
+
+          .rating-score {
+            font-size: 28rpx;
+            color: #ff6b35;
+            display: block;
+            margin-bottom: 8rpx;
+          }
+
+          .view-details {
+            font-size: 24rpx;
+            color: #666;
+          }
+        }
+      }
+    }
   }
 }
