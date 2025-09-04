@@ -1,0 +1,47 @@
+.symptom-category-tabs {
+  width: 180px;
+  height: 100%;
+  background: #f8f8f8;
+
+  .category-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    padding: 0 16px;
+    transition: all 0.3s;
+
+    .category-name {
+      font-size: 28px;
+      color: #666;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    &.active {
+      background: #fff;
+
+      .category-name {
+        color: #333;
+        font-weight: 500;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 32px;
+        background: #ff6b6b;
+        border-radius: 0 3px 3px 0;
+      }
+    }
+
+    &:active {
+      opacity: 0.8;
+    }
+  }
+}

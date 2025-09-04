@@ -13216,6 +13216,7 @@ exports.taroExports = taroExports;
 exports.taroWindowProvider = taroWindowProvider;
 exports.useEffect = useEffect;
 exports.useImperativeHandle = useImperativeHandle;
+exports.useMemo = useMemo;
 exports.useRef = useRef;
 exports.useState = useState;
 //# sourceMappingURL=taro.js.map
