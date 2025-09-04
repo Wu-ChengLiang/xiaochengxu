@@ -218,7 +218,7 @@ class TherapistService {
   }
 }
 const therapistService = new TherapistService();
-const index$2 = "";
+const index$3 = "";
 const StoreCard = ({ store, onClick, onBooking }) => {
   const getStatusText = (status) => {
     switch (status) {
@@ -286,7 +286,7 @@ const StoreCard = ({ store, onClick, onBooking }) => {
     ] })
   ] }) });
 };
-const index$1 = "";
+const index$2 = "";
 const TherapistCard = ({ therapist, onClick, onBooking }) => {
   return /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-card", onClick, children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-content", children: [
     /* @__PURE__ */ taro.jsx(
@@ -338,12 +338,66 @@ const TherapistCard = ({ therapist, onClick, onBooking }) => {
     ] })
   ] }) });
 };
+const index$1 = "";
+const BottomSheet = ({
+  visible,
+  title,
+  onClose,
+  children,
+  height = "70%"
+}) => {
+  const [animating, setAnimating] = taro.useState(false);
+  const [internalVisible, setInternalVisible] = taro.useState(false);
+  taro.useEffect(() => {
+    if (visible) {
+      setInternalVisible(true);
+      setTimeout(() => setAnimating(true), 50);
+    } else {
+      setAnimating(false);
+      setTimeout(() => setInternalVisible(false), 300);
+    }
+  }, [visible]);
+  const handleMaskClick = () => {
+    onClose();
+  };
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
+  if (!internalVisible)
+    return null;
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "bottom-sheet", onClick: handleMaskClick, children: [
+    /* @__PURE__ */ taro.jsx(
+      taro.View,
+      {
+        className: `bottom-sheet-mask ${animating ? "active" : ""}`
+      }
+    ),
+    /* @__PURE__ */ taro.jsxs(
+      taro.View,
+      {
+        className: `bottom-sheet-content ${animating ? "active" : ""}`,
+        style: { height },
+        onClick: handleContentClick,
+        children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "sheet-header", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "sheet-title", children: title }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "close-btn", onClick: onClose, children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "close", size: "20", color: "#999" }) })
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "sheet-body", children })
+        ]
+      }
+    )
+  ] });
+};
 const index = "";
 const Appointment = () => {
   const [loading, setLoading] = taro.useState(true);
   const [stores, setStores] = taro.useState([]);
+  const [allStores, setAllStores] = taro.useState([]);
   const [therapists, setTherapists] = taro.useState([]);
   const [userLocation, setUserLocation] = taro.useState({ latitude: 0, longitude: 0 });
+  const [showStoreSheet, setShowStoreSheet] = taro.useState(false);
+  const [searchValue, setSearchValue] = taro.useState("");
   const banners = [
     {
       id: 1,
@@ -368,6 +422,14 @@ const Appointment = () => {
         2
       );
       setStores(nearbyStores.list);
+      const allStoresData = yield common.storeService.getNearbyStores(
+        location.latitude,
+        location.longitude,
+        1,
+        20
+        // 获取更多数据
+      );
+      setAllStores(allStoresData.list);
       const recommendedTherapists = yield therapistService.getRecommendedTherapists();
       setTherapists(recommendedTherapists.list);
     } catch (error) {
@@ -397,10 +459,7 @@ const Appointment = () => {
     });
   };
   const handleMoreStores = () => {
-    taro.Taro.showToast({
-      title: "功能开发中",
-      icon: "none"
-    });
+    setShowStoreSheet(true);
   };
   const handleMoreSymptoms = () => {
     taro.Taro.showToast({
@@ -473,13 +532,57 @@ const Appointment = () => {
           therapist.id
         )
       ) })
-    ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(
+      BottomSheet,
+      {
+        visible: showStoreSheet,
+        title: "更多门店",
+        onClose: () => setShowStoreSheet(false),
+        height: "80%",
+        children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-sheet-header", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "city-selector", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "city-name", children: "上海市" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "city-arrow", children: "▼" })
+            ] }),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "search-box", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "search-icon", children: "🔍" }),
+              /* @__PURE__ */ taro.jsx(
+                taro.Input,
+                {
+                  className: "search-input",
+                  placeholder: "搜索门店",
+                  value: searchValue,
+                  onInput: (e) => setSearchValue(e.detail.value)
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "store-sheet-list", children: allStores.filter(
+            (store) => searchValue === "" || store.name.includes(searchValue) || store.address.includes(searchValue)
+          ).map(
+            (store) => /* @__PURE__ */ taro.jsx(
+              StoreCard,
+              {
+                store,
+                onClick: () => {
+                  handleStoreClick(store);
+                  setShowStoreSheet(false);
+                },
+                onBooking: (e) => {
+                  handleBookingClick(e, store);
+                  setShowStoreSheet(false);
+                }
+              },
+              store.id
+            )
+          ) })
+        ]
+      }
+    )
   ] });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Appointment, "pages/appointment/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

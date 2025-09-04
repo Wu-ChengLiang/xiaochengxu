@@ -242,10 +242,7 @@ const StoreAppointmentPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "门店预约",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "门店预约"
 };
 Page(taro.createPageConfig(StoreAppointmentPage, "pages/appointment/store/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

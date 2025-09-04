@@ -254,6 +254,108 @@
 }
 .therapist-card .card-content .therapist-info .therapist-footer .booking-btn::after {
   border: none;
+}.bottom-sheet {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+}
+.bottom-sheet .bottom-sheet-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+}
+.bottom-sheet .bottom-sheet-mask.active {
+  opacity: 1;
+}
+.bottom-sheet .bottom-sheet-content {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-primary);
+  border-radius: 24rpx 24rpx 0 0;
+  -webkit-transform: translateY(100%);
+      -ms-transform: translateY(100%);
+          transform: translateY(100%);
+  -webkit-transition: -webkit-transform 0.3s ease;
+  transition: -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.bottom-sheet .bottom-sheet-content.active {
+  -webkit-transform: translateY(0);
+      -ms-transform: translateY(0);
+          transform: translateY(0);
+}
+.bottom-sheet .bottom-sheet-content .sheet-header {
+  position: relative;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  height: 120rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+.bottom-sheet .bottom-sheet-content .sheet-header .sheet-title {
+  font-size: 36rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.bottom-sheet .bottom-sheet-content .sheet-header .close-btn {
+  position: absolute;
+  right: 32rpx;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+  width: 80rpx;
+  height: 80rpx;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  border-radius: 50%;
+  background: #f5f5f5;
+}
+.bottom-sheet .bottom-sheet-content .sheet-body {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  overflow: hidden;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
 }
 .appointment-page {
   min-height: 100vh;
@@ -355,4 +457,73 @@
   -webkit-box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
           box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.08);
   overflow: hidden;
+}
+.appointment-page .store-sheet-header {
+  padding: 24rpx 32rpx;
+  background: #f8f8f8;
+}
+.appointment-page .store-sheet-header .city-selector {
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-bottom: 20rpx;
+}
+.appointment-page .store-sheet-header .city-selector .city-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-right: 8rpx;
+}
+.appointment-page .store-sheet-header .city-selector .city-arrow {
+  font-size: 20rpx;
+  color: var(--text-secondary);
+}
+.appointment-page .store-sheet-header .search-box {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: #fff;
+  border-radius: var(--radius-full);
+  padding: 16rpx 24rpx;
+}
+.appointment-page .store-sheet-header .search-box .search-icon {
+  margin-right: 12rpx;
+}
+.appointment-page .store-sheet-header .search-box .search-input {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+.appointment-page .store-sheet-header .search-box .search-input::-webkit-input-placeholder {
+  color: var(--text-weak);
+}
+.appointment-page .store-sheet-header .search-box .search-input::-moz-placeholder {
+  color: var(--text-weak);
+}
+.appointment-page .store-sheet-header .search-box .search-input:-ms-input-placeholder {
+  color: var(--text-weak);
+}
+.appointment-page .store-sheet-header .search-box .search-input::-ms-input-placeholder {
+  color: var(--text-weak);
+}
+.appointment-page .store-sheet-header .search-box .search-input::placeholder {
+  color: var(--text-weak);
+}
+.appointment-page .store-sheet-list {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.appointment-page .store-sheet-list .store-card:first-child {
+  padding-top: 24rpx;
 }
