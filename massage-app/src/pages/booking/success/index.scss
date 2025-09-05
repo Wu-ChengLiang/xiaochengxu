@@ -1,0 +1,168 @@
+.success-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #999;
+    font-size: 28px;
+  }
+
+  .success-header {
+    background: linear-gradient(135deg, #a40035 0%, #d91e5a 100%);
+    padding: 80px 0 60px;
+    text-align: center;
+    color: #fff;
+
+    .success-icon-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      
+      .at-icon {
+        color: #fff !important;
+      }
+    }
+
+    .success-title {
+      font-size: 36px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .success-subtitle {
+      font-size: 28px;
+      opacity: 0.9;
+    }
+  }
+
+  .order-info {
+    margin-top: -40px;
+    padding: 0 24px 24px;
+
+    .info-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        
+        &:not(:last-child) {
+          border-bottom: 1px solid #f0f0f0;
+        }
+
+        .label {
+          font-size: 28px;
+          color: #666;
+        }
+
+        .value {
+          font-size: 28px;
+          color: #333;
+          
+          &.price {
+            color: #a40035;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .qrcode-section {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 24px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+      .qrcode-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 30px;
+      }
+
+      .qrcode-image {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto 20px;
+      }
+
+      .qrcode-no {
+        font-size: 24px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .qrcode-tip {
+        font-size: 24px;
+        color: #999;
+      }
+    }
+  }
+
+  .action-buttons {
+    padding: 24px;
+    
+    .button-group {
+      display: flex;
+      gap: 24px;
+
+      .button {
+        flex: 1;
+        height: 88px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 44px;
+        font-size: 32px;
+        font-weight: bold;
+
+        &.primary {
+          background: #a40035;
+          color: #fff;
+        }
+
+        &.secondary {
+          background: #fff;
+          color: #a40035;
+          border: 2px solid #a40035;
+        }
+
+        &:active {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  .tips {
+    padding: 24px;
+    
+    .tips-title {
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    .tips-list {
+      .tips-item {
+        font-size: 24px;
+        color: #666;
+        line-height: 40px;
+        display: block;
+      }
+    }
+  }
+}

@@ -9,8 +9,8 @@ const Mine: React.FC = () => {
   const menuItems = [
     {
       icon: 'file-generic',
-      title: '项目订单',
-      path: '/pages/mine/orders/index',
+      title: '我的订单',
+      path: '/pages/order/list/index',
       arrow: true
     },
     {

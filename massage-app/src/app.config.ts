@@ -8,6 +8,9 @@ export default {
     'pages/appointment/symptom/index',
     'pages/promotion/index',
     'pages/booking/confirm/index',
+    'pages/booking/success/index',
+    'pages/order/list/index',
+    'pages/order/detail/index',
     'pages/mine/about/index'
   ],
   window: {

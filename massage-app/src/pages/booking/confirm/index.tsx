@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
+import { orderService, CreateOrderParams } from '@/services/order'
 import './index.scss'
 
 interface CartItem {
@@ -138,31 +139,101 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const handlePayment = async () => {
-    // 创建订单
-    const orderNo = `ORD${Date.now()}`
-    
-    Taro.showLoading({
-      title: '正在支付...'
-    })
-    
-    // Mock 支付流程
-    setTimeout(() => {
+    if (cartItems.length === 0 || !therapistInfo || !storeInfo) {
+      Taro.showToast({
+        title: '订单信息不完整',
+        icon: 'none'
+      })
+      return
+    }
+
+    try {
+      Taro.showLoading({
+        title: '创建订单...'
+      })
+
+      // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
+      const firstItem = cartItems[0]
+      const orderParams: CreateOrderParams = {
+        therapistId: params.therapistId,
+        storeId: params.storeId,
+        serviceId: firstItem.serviceId,
+        serviceName: firstItem.serviceName,
+        duration: firstItem.duration,
+        price: firstItem.price,
+        discountPrice: firstItem.discountPrice,
+        appointmentDate: firstItem.date,
+        appointmentTime: firstItem.time,
+        therapistName: firstItem.therapistName,
+        therapistAvatar: firstItem.therapistAvatar || therapistInfo.avatar
+      }
+
+      // 创建订单
+      const order = await orderService.createOrder(orderParams)
+      
+      Taro.hideLoading()
+      Taro.showLoading({
+        title: '正在支付...'
+      })
+
+      // 获取支付参数
+      const paymentParams = await orderService.getPaymentParams(order.orderNo)
+      
       Taro.hideLoading()
       
-      // Mock 支付成功
-      Taro.showToast({
-        title: '支付成功',
-        icon: 'success',
-        duration: 1500
-      })
-      
-      setTimeout(() => {
-        // 跳转到支付成功页面
-        Taro.redirectTo({
-          url: `/pages/booking/success/index?orderNo=${orderNo}`
+      // 调用微信支付（Mock环境直接模拟成功）
+      if (process.env.NODE_ENV === 'development') {
+        // 开发环境Mock支付成功
+        await orderService.updateOrderStatus(order.orderNo, 'paid')
+        
+        Taro.showToast({
+          title: '支付成功',
+          icon: 'success',
+          duration: 1500
         })
-      }, 1500)
-    }, 2000)
+        
+        setTimeout(() => {
+          Taro.redirectTo({
+            url: `/pages/booking/success/index?orderNo=${order.orderNo}`
+          })
+        }, 1500)
+      } else {
+        // 生产环境调用真实支付
+        Taro.requestPayment({
+          ...paymentParams,
+          success: async () => {
+            // 更新订单状态为已支付
+            await orderService.updateOrderStatus(order.orderNo, 'paid')
+            
+            Taro.showToast({
+              title: '支付成功',
+              icon: 'success',
+              duration: 1500
+            })
+            
+            setTimeout(() => {
+              Taro.redirectTo({
+                url: `/pages/booking/success/index?orderNo=${order.orderNo}`
+              })
+            }, 1500)
+          },
+          fail: (err) => {
+            if (err.errMsg !== 'requestPayment:fail cancel') {
+              Taro.showToast({
+                title: '支付失败',
+                icon: 'none'
+              })
+            }
+          }
+        })
+      }
+    } catch (error) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: error.message || '订单创建失败',
+        icon: 'none'
+      })
+    }
   }
 
   if (loading) {
