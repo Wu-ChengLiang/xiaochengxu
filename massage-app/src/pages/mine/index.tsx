@@ -19,25 +19,25 @@ const Mine: React.FC = () => {
       path: '/pages/mine/gift-orders/index',
       arrow: true
     },
-    {
-      icon: 'money',
-      title: '我的券包',
-      path: '/pages/mine/coupons/index',
-      badge: '3',
-      arrow: true
-    },
-    {
-      icon: 'gift',
-      title: '邀请有奖',
-      path: '/pages/mine/invite/index',
-      arrow: true
-    },
-    {
-      icon: 'phone',
-      title: '联系客服',
-      path: '/pages/mine/contact/index',
-      arrow: true
-    },
+    // {
+    //   icon: 'money',
+    //   title: '我的券包',
+    //   path: '/pages/mine/coupons/index',
+    //   badge: '3',
+    //   arrow: true
+    // },
+    // {
+    //   icon: 'gift',
+    //   title: '邀请有奖',
+    //   path: '/pages/mine/invite/index',
+    //   arrow: true
+    // },
+    // {
+    //   icon: 'phone',
+    //   title: '联系客服',
+    //   path: '/pages/mine/contact/index',
+    //   arrow: true
+    // },
     {
       icon: 'help',
       title: '关于我们',
