@@ -155,14 +155,20 @@ const StoreInfo = ({ store }) => {
   ] }) });
 };
 const index$2 = "";
-const BookingSelector = ({
+const BookingSelector = taro.forwardRef(({
   services,
   onServiceSelect,
   onTimeSelect
-}) => {
+}, ref) => {
   const [selectedServiceId, setSelectedServiceId] = taro.useState("");
   const [selectedDate, setSelectedDate] = taro.useState("");
   const [selectedTime, setSelectedTime] = taro.useState("");
+  taro.useImperativeHandle(ref, () => ({
+    clearSelectedTime: () => {
+      setSelectedDate("");
+      setSelectedTime("");
+    }
+  }));
   const generateDateList = () => {
     const dates = [];
     const today = /* @__PURE__ */ new Date();
@@ -272,7 +278,8 @@ const BookingSelector = ({
       ) })
     ] })
   ] });
-};
+});
+BookingSelector.displayName = "BookingSelector";
 const index$1 = "";
 const ShoppingCart = ({ items, onCheckout }) => {
   if (items.length === 0) {
@@ -357,13 +364,16 @@ const ShoppingCart = ({ items, onCheckout }) => {
 const index = "";
 const TherapistBookingPage = () => {
   const router = taro.taroExports.useRouter();
-  const { therapistId, storeId } = router.params;
+  const { therapistId, storeId, storeName } = router.params;
   const [therapist, setTherapist] = taro.useState(null);
   const [store, setStore] = taro.useState(null);
   const [loading, setLoading] = taro.useState(true);
   const [error, setError] = taro.useState("");
   const [cartItems, setCartItems] = taro.useState([]);
   const [selectedService, setSelectedService] = taro.useState(null);
+  const [sessionStartIndex, setSessionStartIndex] = taro.useState(-1);
+  const [isAutoExpanded, setIsAutoExpanded] = taro.useState(false);
+  const bookingSelectorRef = taro.useRef(null);
   const mockServices = [
     { id: "1", name: "肩颈调理", duration: 60, price: 128, discountPrice: 98 },
     { id: "2", name: "全身推拿", duration: 90, price: 198, discountPrice: 158 },
@@ -399,6 +409,10 @@ const TherapistBookingPage = () => {
   const handleTimeSelect = (date, time) => {
     if (!selectedService || !therapist)
       return;
+    if (sessionStartIndex === -1) {
+      setSessionStartIndex(cartItems.length);
+      setIsAutoExpanded(true);
+    }
     const newItem = {
       serviceId: selectedService.id,
       serviceName: selectedService.name,
@@ -407,7 +421,8 @@ const TherapistBookingPage = () => {
       discountPrice: selectedService.discountPrice,
       date,
       time,
-      therapistName: therapist.name
+      therapistName: therapist.name,
+      therapistAvatar: therapist.avatar
     };
     const existingIndex = cartItems.findIndex(
       (item) => item.date === date && item.time === time
@@ -428,9 +443,25 @@ const TherapistBookingPage = () => {
       });
     }
   };
+  const handleCartMaskClick = () => {
+    var _a;
+    if (isAutoExpanded && sessionStartIndex >= 0) {
+      const newItems = cartItems.slice(0, sessionStartIndex);
+      setCartItems(newItems);
+      (_a = bookingSelectorRef.current) == null ? void 0 : _a.clearSelectedTime();
+    }
+    setSessionStartIndex(-1);
+    setIsAutoExpanded(false);
+  };
+  const handleCartContinue = () => {
+    setSessionStartIndex(-1);
+    setIsAutoExpanded(false);
+  };
   const handleCheckout = () => {
     if (cartItems.length === 0)
       return;
+    setSessionStartIndex(-1);
+    setIsAutoExpanded(false);
     const params = {
       therapistId,
       storeId,
@@ -447,21 +478,35 @@ const TherapistBookingPage = () => {
     return /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-booking-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "error", children: error || "数据加载失败" }) });
   }
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-booking-page", children: [
-    /* @__PURE__ */ taro.jsx(TherapistInfo, { therapist }),
-    /* @__PURE__ */ taro.jsx(StoreInfo, { store }),
-    /* @__PURE__ */ taro.jsx(
-      BookingSelector,
-      {
-        services: mockServices,
-        onServiceSelect: handleServiceSelect,
-        onTimeSelect: handleTimeSelect
-      }
-    ),
+    /* @__PURE__ */ taro.jsxs(taro.ScrollView, { className: "main-content", scrollY: true, children: [
+      /* @__PURE__ */ taro.jsx(
+        TherapistInfo,
+        {
+          therapist,
+          storeId,
+          storeName
+        }
+      ),
+      /* @__PURE__ */ taro.jsx(StoreInfo, { store }),
+      /* @__PURE__ */ taro.jsx(
+        BookingSelector,
+        {
+          ref: bookingSelectorRef,
+          services: mockServices,
+          onServiceSelect: handleServiceSelect,
+          onTimeSelect: handleTimeSelect
+        }
+      )
+    ] }),
     /* @__PURE__ */ taro.jsx(
       ShoppingCart,
       {
         items: cartItems,
-        onCheckout: handleCheckout
+        therapist,
+        onCheckout: handleCheckout,
+        onMaskClick: handleCartMaskClick,
+        onContinue: handleCartContinue,
+        hasPendingAction: isAutoExpanded && sessionStartIndex >= 0
       }
     )
   ] });
