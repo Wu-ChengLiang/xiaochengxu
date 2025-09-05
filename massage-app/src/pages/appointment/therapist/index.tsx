@@ -60,12 +60,12 @@ const TherapistBookingPage: React.FC = () => {
       setLoading(true)
       setError('')
 
-      const [therapistData, storeData] = await Promise.all([
+      const [therapistRes, storeData] = await Promise.all([
         therapistService.getTherapistDetail(therapistId),
         storeService.getStoreDetail(storeId)
       ])
 
-      setTherapist(therapistData)
+      setTherapist(therapistRes.data)
       setStore(storeData)
     } catch (err) {
       console.error('Failed to load data:', err)

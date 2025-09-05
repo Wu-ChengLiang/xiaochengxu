@@ -547,13 +547,13 @@ const TherapistBookingPage = () => {
     try {
       setLoading(true);
       setError("");
-      const [therapistData, storeData] = yield Promise.all(
+      const [therapistRes, storeData] = yield Promise.all(
         [
           common.therapistService.getTherapistDetail(therapistId),
           common.storeService.getStoreDetail(storeId)
         ]
       );
-      setTherapist(therapistData);
+      setTherapist(therapistRes.data);
       setStore(storeData);
     } catch (err) {
       console.error("Failed to load data:", err);
@@ -664,7 +664,10 @@ const TherapistBookingPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约"
+  "navigationBarTitleText": "推拿师预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
