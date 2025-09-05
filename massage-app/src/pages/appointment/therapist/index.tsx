@@ -24,7 +24,7 @@ interface CartItem {
 
 const TherapistBookingPage: React.FC = () => {
   const router = useRouter()
-  const { therapistId, storeId, storeName } = router.params
+  const { therapistId, storeId } = router.params
   
   const [therapist, setTherapist] = useState<Therapist | null>(null)
   const [store, setStore] = useState<Store | null>(null)
@@ -60,13 +60,13 @@ const TherapistBookingPage: React.FC = () => {
       setLoading(true)
       setError('')
 
-      const [therapistRes, storeRes] = await Promise.all([
+      const [therapistData, storeData] = await Promise.all([
         therapistService.getTherapistDetail(therapistId),
         storeService.getStoreDetail(storeId)
       ])
 
-      setTherapist(therapistRes.data)
-      setStore(storeRes.data)
+      setTherapist(therapistData)
+      setStore(storeData)
     } catch (err) {
       console.error('Failed to load data:', err)
       setError('加载数据失败，请重试')
@@ -191,11 +191,7 @@ const TherapistBookingPage: React.FC = () => {
   return (
     <View className="therapist-booking-page">
       <ScrollView className="main-content" scrollY>
-        <TherapistInfo 
-          therapist={therapist} 
-          storeId={storeId as string}
-          storeName={storeName as string}
-        />
+        <TherapistInfo therapist={therapist} />
         <StoreInfo store={store} />
         <BookingSelector 
           ref={bookingSelectorRef}

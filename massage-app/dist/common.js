@@ -57,6 +57,206 @@ const mockImages = {
   // 优惠活动banner
   banners: [bannerGoodnight]
 };
+const mockTherapists = [{
+  id: "therapist-001",
+  storeId: "store-001",
+  storeName: "上海万象城店",
+  name: "刘吉会",
+  avatar: mockImages.therapists.male[0],
+  rating: 5,
+  ratingCount: 328,
+  expertise: ["擅长", "头颈肩痛", "足疗+踩背"],
+  yearsOfExperience: 8,
+  serviceCount: 1523,
+  status: "available",
+  distance: 8.8
+}, {
+  id: "therapist-002",
+  storeId: "store-001",
+  storeName: "上海万象城店",
+  name: "谢小清",
+  avatar: mockImages.therapists.female[0],
+  rating: 4.9,
+  ratingCount: 267,
+  expertise: ["擅长", "睡眠调理", "运动排酸"],
+  yearsOfExperience: 6,
+  serviceCount: 982,
+  status: "available",
+  distance: 8.8
+}, {
+  id: "therapist-003",
+  storeId: "store-002",
+  storeName: "长宁来福士",
+  name: "张明华",
+  avatar: mockImages.therapists.male[1],
+  rating: 4.8,
+  ratingCount: 195,
+  expertise: ["擅长", "腰腿疼痛", "经络疏通"],
+  yearsOfExperience: 10,
+  serviceCount: 2156,
+  status: "busy",
+  distance: 12.3
+}, {
+  id: "therapist-004",
+  storeId: "store-002",
+  storeName: "长宁来福士",
+  name: "王雅琴",
+  avatar: mockImages.therapists.female[1],
+  rating: 5,
+  ratingCount: 412,
+  expertise: ["擅长", "肩周炎", "产后恢复"],
+  yearsOfExperience: 12,
+  serviceCount: 3421,
+  status: "available",
+  distance: 14.2
+}, {
+  id: "therapist-005",
+  storeId: "store-003",
+  storeName: "静安大悦城店",
+  name: "李建国",
+  avatar: mockImages.therapists.male[2],
+  rating: 4.7,
+  ratingCount: 156,
+  expertise: ["擅长", "关节调理", "脊柱矫正"],
+  yearsOfExperience: 15,
+  serviceCount: 4523,
+  status: "available",
+  distance: 15.6
+}, {
+  id: "therapist-006",
+  storeId: "store-004",
+  storeName: "浦东正大广场店",
+  name: "陈秀英",
+  avatar: mockImages.therapists.female[0],
+  rating: 4.9,
+  ratingCount: 289,
+  expertise: ["擅长", "淋巴排毒", "面部护理"],
+  yearsOfExperience: 9,
+  serviceCount: 2134,
+  status: "available",
+  distance: 18.9
+}, {
+  id: "therapist-007",
+  storeId: "store-005",
+  storeName: "徐汇日月光店",
+  name: "赵文斌",
+  avatar: mockImages.therapists.male[0],
+  rating: 4.8,
+  ratingCount: 178,
+  expertise: ["擅长", "运动损伤", "筋膜放松"],
+  yearsOfExperience: 7,
+  serviceCount: 1678,
+  status: "busy",
+  distance: 6.5
+}, {
+  id: "therapist-008",
+  storeId: "store-005",
+  storeName: "徐汇日月光店",
+  name: "孙雪梅",
+  avatar: mockImages.therapists.female[1],
+  rating: 5,
+  ratingCount: 523,
+  expertise: ["擅长", "全身推拿", "艾灸理疗"],
+  yearsOfExperience: 11,
+  serviceCount: 3876,
+  status: "available",
+  distance: 6.5
+}];
+const sleep$1 = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+class TherapistService {
+  // 获取推荐推拿师
+  getRecommendedTherapists(page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep$1(300);
+      const sortedTherapists = [...mockTherapists].sort((a, b) => {
+        if (b.rating !== a.rating) {
+          return b.rating - a.rating;
+        }
+        return b.serviceCount - a.serviceCount;
+      });
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = sortedTherapists.slice(start, end);
+      return {
+        list,
+        total: sortedTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < sortedTherapists.length
+      };
+    });
+  }
+  // 根据门店获取推拿师
+  getTherapistsByStore(storeId, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep$1(200);
+      const storeTherapists = mockTherapists.filter((t) => t.storeId === storeId);
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = storeTherapists.slice(start, end);
+      return {
+        list,
+        total: storeTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < storeTherapists.length
+      };
+    });
+  }
+  // 获取推拿师详情
+  getTherapistDetail(therapistId) {
+    return __async(this, null, function* () {
+      yield sleep$1(200);
+      const therapist = mockTherapists.find((t) => t.id === therapistId);
+      if (!therapist) {
+        throw new Error("推拿师不存在");
+      }
+      return {
+        code: 200,
+        data: therapist,
+        message: "success"
+      };
+    });
+  }
+  // 按擅长项目筛选推拿师
+  getTherapistsByExpertise(expertise, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep$1(300);
+      const filteredTherapists = mockTherapists.filter((therapist) => therapist.expertise.includes(expertise));
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = filteredTherapists.slice(start, end);
+      return {
+        list,
+        total: filteredTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < filteredTherapists.length
+      };
+    });
+  }
+  // 搜索推拿师
+  searchTherapists(keyword, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      yield sleep$1(300);
+      const filteredTherapists = mockTherapists.filter((therapist) => {
+        var _a;
+        return therapist.name.includes(keyword) || therapist.expertise.some((e) => e.includes(keyword)) || ((_a = therapist.storeName) == null ? void 0 : _a.includes(keyword));
+      });
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const list = filteredTherapists.slice(start, end);
+      return {
+        list,
+        total: filteredTherapists.length,
+        page,
+        pageSize,
+        hasMore: end < filteredTherapists.length
+      };
+    });
+  }
+}
+const therapistService = new TherapistService();
 const mockStores = [{
   id: "store-001",
   name: "上海万象城店",
@@ -203,12 +403,12 @@ class LocationService {
   }
 }
 const getLocationService = new LocationService();
-const sleep$1 = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 class StoreService {
   // 获取附近门店
   getNearbyStores(latitude, longitude, page = 1, pageSize = 10) {
     return __async(this, null, function* () {
-      yield sleep$1(300);
+      yield sleep(300);
       const storesWithDistance = mockStores.map((store) => __spreadProps(__spreadValues({}, store), {
         distance: getLocationService.calculateDistance(latitude, longitude, store.location.latitude, store.location.longitude)
       })).sort((a, b) => a.distance - b.distance);
@@ -227,7 +427,7 @@ class StoreService {
   // 获取门店详情
   getStoreDetail(storeId) {
     return __async(this, null, function* () {
-      yield sleep$1(200);
+      yield sleep(200);
       const store = mockStores.find((s) => s.id === storeId);
       if (!store) {
         throw new Error("门店不存在");
@@ -242,7 +442,7 @@ class StoreService {
   // 搜索门店
   searchStores(keyword, page = 1, pageSize = 10) {
     return __async(this, null, function* () {
-      yield sleep$1(300);
+      yield sleep(300);
       const filteredStores = mockStores.filter((store) => store.name.includes(keyword) || store.address.includes(keyword));
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
@@ -259,7 +459,7 @@ class StoreService {
   // 根据状态筛选门店
   getStoresByStatus(status, page = 1, pageSize = 10) {
     return __async(this, null, function* () {
-      yield sleep$1(200);
+      yield sleep(200);
       const filteredStores = mockStores.filter((store) => store.status === status);
       const start = (page - 1) * pageSize;
       const end = start + pageSize;
@@ -275,206 +475,6 @@ class StoreService {
   }
 }
 const storeService = new StoreService();
-const mockTherapists = [{
-  id: "therapist-001",
-  storeId: "store-001",
-  storeName: "上海万象城店",
-  name: "刘吉会",
-  avatar: mockImages.therapists.male[0],
-  rating: 5,
-  ratingCount: 328,
-  expertise: ["擅长", "头颈肩痛", "足疗+踩背"],
-  yearsOfExperience: 8,
-  serviceCount: 1523,
-  status: "available",
-  distance: 8.8
-}, {
-  id: "therapist-002",
-  storeId: "store-001",
-  storeName: "上海万象城店",
-  name: "谢小清",
-  avatar: mockImages.therapists.female[0],
-  rating: 4.9,
-  ratingCount: 267,
-  expertise: ["擅长", "睡眠调理", "运动排酸"],
-  yearsOfExperience: 6,
-  serviceCount: 982,
-  status: "available",
-  distance: 8.8
-}, {
-  id: "therapist-003",
-  storeId: "store-002",
-  storeName: "长宁来福士",
-  name: "张明华",
-  avatar: mockImages.therapists.male[1],
-  rating: 4.8,
-  ratingCount: 195,
-  expertise: ["擅长", "腰腿疼痛", "经络疏通"],
-  yearsOfExperience: 10,
-  serviceCount: 2156,
-  status: "busy",
-  distance: 12.3
-}, {
-  id: "therapist-004",
-  storeId: "store-002",
-  storeName: "长宁来福士",
-  name: "王雅琴",
-  avatar: mockImages.therapists.female[1],
-  rating: 5,
-  ratingCount: 412,
-  expertise: ["擅长", "肩周炎", "产后恢复"],
-  yearsOfExperience: 12,
-  serviceCount: 3421,
-  status: "available",
-  distance: 14.2
-}, {
-  id: "therapist-005",
-  storeId: "store-003",
-  storeName: "静安大悦城店",
-  name: "李建国",
-  avatar: mockImages.therapists.male[2],
-  rating: 4.7,
-  ratingCount: 156,
-  expertise: ["擅长", "关节调理", "脊柱矫正"],
-  yearsOfExperience: 15,
-  serviceCount: 4523,
-  status: "available",
-  distance: 15.6
-}, {
-  id: "therapist-006",
-  storeId: "store-004",
-  storeName: "浦东正大广场店",
-  name: "陈秀英",
-  avatar: mockImages.therapists.female[0],
-  rating: 4.9,
-  ratingCount: 289,
-  expertise: ["擅长", "淋巴排毒", "面部护理"],
-  yearsOfExperience: 9,
-  serviceCount: 2134,
-  status: "available",
-  distance: 18.9
-}, {
-  id: "therapist-007",
-  storeId: "store-005",
-  storeName: "徐汇日月光店",
-  name: "赵文斌",
-  avatar: mockImages.therapists.male[0],
-  rating: 4.8,
-  ratingCount: 178,
-  expertise: ["擅长", "运动损伤", "筋膜放松"],
-  yearsOfExperience: 7,
-  serviceCount: 1678,
-  status: "busy",
-  distance: 6.5
-}, {
-  id: "therapist-008",
-  storeId: "store-005",
-  storeName: "徐汇日月光店",
-  name: "孙雪梅",
-  avatar: mockImages.therapists.female[1],
-  rating: 5,
-  ratingCount: 523,
-  expertise: ["擅长", "全身推拿", "艾灸理疗"],
-  yearsOfExperience: 11,
-  serviceCount: 3876,
-  status: "available",
-  distance: 6.5
-}];
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-class TherapistService {
-  // 获取推荐推拿师
-  getRecommendedTherapists(page = 1, pageSize = 10) {
-    return __async(this, null, function* () {
-      yield sleep(300);
-      const sortedTherapists = [...mockTherapists].sort((a, b) => {
-        if (b.rating !== a.rating) {
-          return b.rating - a.rating;
-        }
-        return b.serviceCount - a.serviceCount;
-      });
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const list = sortedTherapists.slice(start, end);
-      return {
-        list,
-        total: sortedTherapists.length,
-        page,
-        pageSize,
-        hasMore: end < sortedTherapists.length
-      };
-    });
-  }
-  // 根据门店获取推拿师
-  getTherapistsByStore(storeId, page = 1, pageSize = 10) {
-    return __async(this, null, function* () {
-      yield sleep(200);
-      const storeTherapists = mockTherapists.filter((t) => t.storeId === storeId);
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const list = storeTherapists.slice(start, end);
-      return {
-        list,
-        total: storeTherapists.length,
-        page,
-        pageSize,
-        hasMore: end < storeTherapists.length
-      };
-    });
-  }
-  // 获取推拿师详情
-  getTherapistDetail(therapistId) {
-    return __async(this, null, function* () {
-      yield sleep(200);
-      const therapist = mockTherapists.find((t) => t.id === therapistId);
-      if (!therapist) {
-        throw new Error("推拿师不存在");
-      }
-      return {
-        code: 200,
-        data: therapist,
-        message: "success"
-      };
-    });
-  }
-  // 按擅长项目筛选推拿师
-  getTherapistsByExpertise(expertise, page = 1, pageSize = 10) {
-    return __async(this, null, function* () {
-      yield sleep(300);
-      const filteredTherapists = mockTherapists.filter((therapist) => therapist.expertise.includes(expertise));
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const list = filteredTherapists.slice(start, end);
-      return {
-        list,
-        total: filteredTherapists.length,
-        page,
-        pageSize,
-        hasMore: end < filteredTherapists.length
-      };
-    });
-  }
-  // 搜索推拿师
-  searchTherapists(keyword, page = 1, pageSize = 10) {
-    return __async(this, null, function* () {
-      yield sleep(300);
-      const filteredTherapists = mockTherapists.filter((therapist) => {
-        var _a;
-        return therapist.name.includes(keyword) || therapist.expertise.some((e) => e.includes(keyword)) || ((_a = therapist.storeName) == null ? void 0 : _a.includes(keyword));
-      });
-      const start = (page - 1) * pageSize;
-      const end = start + pageSize;
-      const list = filteredTherapists.slice(start, end);
-      return {
-        list,
-        total: filteredTherapists.length,
-        page,
-        pageSize,
-        hasMore: end < filteredTherapists.length
-      };
-    });
-  }
-}
-const therapistService = new TherapistService();
 const index = "";
 const BookingButton = ({
   size = "medium",

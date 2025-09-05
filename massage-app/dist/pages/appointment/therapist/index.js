@@ -140,11 +140,15 @@ const StoreInfo = ({ store }) => {
         ] })
       ] }),
       /* @__PURE__ */ taro.jsxs(taro.View, { className: "hours-row", children: [
-        /* @__PURE__ */ taro.jsx(taro.Text, { className: "business-hours", children: store.businessHours ? `${store.businessHours.start}-${store.businessHours.end}` : "营业时间未知" }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "business-hours", children: [
+          store.businessHours.start,
+          "-",
+          store.businessHours.end
+        ] }),
         /* @__PURE__ */ taro.jsx(taro.View, { className: `status ${getStatusClass(store.status)}`, children: getStatusText(store.status) })
       ] }),
       /* @__PURE__ */ taro.jsxs(taro.Text, { className: "address", children: [
-        store.address || "地址未知",
+        store.address,
         " (电影院门口)"
       ] })
     ] }),
@@ -161,14 +165,14 @@ const BookingSelector = taro.forwardRef(({
   onTimeSelect
 }, ref) => {
   const [selectedServiceId, setSelectedServiceId] = taro.useState("");
+  const [selectedService, setSelectedService] = taro.useState(null);
   const [selectedDate, setSelectedDate] = taro.useState("");
   const [selectedTime, setSelectedTime] = taro.useState("");
   taro.useImperativeHandle(ref, () => ({
     clearSelectedTime: () => {
-      setSelectedDate("");
       setSelectedTime("");
     }
-  }));
+  }), []);
   const generateDateList = () => {
     const dates = [];
     const today = /* @__PURE__ */ new Date();
@@ -187,34 +191,72 @@ const BookingSelector = taro.forwardRef(({
     }
     return dates;
   };
-  const generateTimeSlots = () => {
-    const slots = [];
+  const generateTimeGrid = () => {
+    const grid = [];
     for (let hour = 9; hour <= 21; hour++) {
-      const time = `${hour.toString().padStart(2, "0")}:00`;
-      const available = Math.random() > 0.3;
-      slots.push({
-        time,
-        available
+      const hourSlots = [];
+      for (let minute = 0; minute < 60; minute += 10) {
+        const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        const available = Math.random() > 0.3;
+        hourSlots.push({
+          time,
+          available
+        });
+      }
+      grid.push({
+        hour: `${hour}:00`,
+        slots: hourSlots
       });
     }
-    return slots;
+    return grid;
+  };
+  const isTimeSlotSelected = (time) => {
+    if (!selectedTime || !selectedService)
+      return false;
+    const startTime = selectedTime;
+    const duration = selectedService.duration;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(startTime);
+    const currentMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + duration;
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes;
   };
   const handleServiceSelect = (service) => {
     setSelectedServiceId(service.id);
+    setSelectedService(service);
     onServiceSelect(service);
+    setSelectedTime("");
   };
   const handleDateSelect = (dateKey) => {
     setSelectedDate(dateKey);
     setSelectedTime("");
   };
   const handleTimeSelect = (time, available) => {
-    if (!available || !selectedDate)
+    if (!available || !selectedDate || !selectedService)
       return;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + selectedService.duration;
+    if (endMinutes > 22 * 60) {
+      return;
+    }
     setSelectedTime(time);
     onTimeSelect(selectedDate, time);
+    setTimeout(() => {
+      const cartBtn = taro.taroDocumentProvider.querySelector(".checkout-btn:not(.disabled)");
+      if (cartBtn) {
+        cartBtn.click();
+      }
+    }, 300);
   };
   const dateList = generateDateList();
-  const timeSlots = generateTimeSlots();
+  const timeGrid = generateTimeGrid();
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "booking-selector", children: [
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-section", children: [
       /* @__PURE__ */ taro.jsx(taro.View, { className: "section-title", children: "选择服务" }),
@@ -226,22 +268,15 @@ const BookingSelector = taro.forwardRef(({
             onClick: () => handleServiceSelect(service),
             children: [
               /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: service.name }),
-              /* @__PURE__ */ taro.jsx(taro.View, { className: "service-price", children: service.discountPrice ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
-                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
-                  "¥",
-                  service.discountPrice
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-info", children: [
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-duration", children: [
+                  service.duration,
+                  "分钟"
                 ] }),
-                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
                   "¥",
-                  service.price
+                  service.discountPrice || service.price
                 ] })
-              ] }) : /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
-                "¥",
-                service.price
-              ] }) }),
-              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-duration", children: [
-                service.duration,
-                "分钟"
               ] })
             ]
           },
@@ -250,7 +285,6 @@ const BookingSelector = taro.forwardRef(({
       ) })
     ] }),
     selectedServiceId && /* @__PURE__ */ taro.jsxs(taro.View, { className: "datetime-section", children: [
-      /* @__PURE__ */ taro.jsx(taro.View, { className: "section-title", children: "选择时间" }),
       /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "date-tabs", scrollX: true, children: dateList.map(
         (date) => /* @__PURE__ */ taro.jsxs(
           taro.View,
@@ -265,29 +299,77 @@ const BookingSelector = taro.forwardRef(({
           date.key
         )
       ) }),
-      selectedDate && /* @__PURE__ */ taro.jsx(taro.View, { className: "time-grid", children: timeSlots.map(
-        (slot, index2) => /* @__PURE__ */ taro.jsx(
-          taro.View,
-          {
-            className: `time-slot ${slot.available ? selectedTime === slot.time ? "selected" : "available" : "disabled"}`,
-            onClick: () => handleTimeSelect(slot.time, slot.available),
-            children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "time-text", children: slot.time })
-          },
-          index2
-        )
-      ) })
+      selectedDate && /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "time-grid-container", scrollY: true, children: /* @__PURE__ */ taro.jsx(taro.View, { className: "time-grid-wrapper", children: timeGrid.map(
+        (row, rowIndex) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "time-row", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "hour-label", children: row.hour }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "time-slots", children: row.slots.map(
+            (slot, slotIndex) => /* @__PURE__ */ taro.jsx(
+              taro.View,
+              {
+                className: `time-slot ${slot.available ? isTimeSlotSelected(slot.time) ? "selected" : "available" : "disabled"}`,
+                onClick: () => handleTimeSelect(slot.time, slot.available),
+                children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "time-text", children: [
+                  ":",
+                  slot.time.split(":")[1]
+                ] })
+              },
+              slotIndex
+            )
+          ) })
+        ] }, rowIndex)
+      ) }) })
     ] })
   ] });
 });
 BookingSelector.displayName = "BookingSelector";
 const index$1 = "";
-const ShoppingCart = ({ items, onCheckout }) => {
-  if (items.length === 0) {
-    return null;
-  }
+const ShoppingCart = ({
+  items,
+  therapist,
+  onCheckout,
+  onMaskClick,
+  onContinue,
+  hasPendingAction = false
+}) => {
+  const [isExpanded, setIsExpanded] = taro.useState(false);
+  const [countdown, setCountdown] = taro.useState(180);
+  const timerRef = taro.useRef(null);
   const totalOriginalPrice = items.reduce((sum, item) => sum + item.price, 0);
   const totalDiscountPrice = items.reduce((sum, item) => sum + (item.discountPrice || item.price), 0);
   const totalSavings = totalOriginalPrice - totalDiscountPrice;
+  const hasItems = items.length > 0;
+  taro.useEffect(() => {
+    if (hasItems && isExpanded) {
+      timerRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            taro.Taro.showToast({
+              title: "支付超时了呦，快快重新下单吧~",
+              icon: "none"
+            });
+            setIsExpanded(false);
+            return 180;
+          }
+          return prev - 1;
+        });
+      }, 1e3);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [hasItems, isExpanded]);
+  const formatCountdown = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
     const today = /* @__PURE__ */ new Date();
@@ -299,72 +381,153 @@ const ShoppingCart = ({ items, onCheckout }) => {
     const day = date.getDate();
     return `${month}月${day}日`;
   };
-  const handleCheckout = () => {
-    if (items.length === 0) {
+  const handleCheckoutClick = () => {
+    if (!hasItems) {
       taro.Taro.showToast({
         title: "请先选择服务",
         icon: "none"
       });
       return;
     }
+    setIsExpanded(true);
+  };
+  const handleMaskClick = () => {
+    if (onMaskClick && hasPendingAction) {
+      onMaskClick();
+    }
+    setIsExpanded(false);
+  };
+  const handleContinue = () => {
+    if (onContinue) {
+      onContinue();
+    }
+    setIsExpanded(false);
+  };
+  const handleConfirmCheckout = () => {
     onCheckout();
   };
-  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "shopping-cart", children: [
-    /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-header", children: [
-      /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-info", children: [
-        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "item-count", children: [
-          "已选 ",
-          items.length,
-          " 项服务"
+  return /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+    isExpanded && /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-mask", onClick: handleMaskClick }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "shopping-cart", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-bar", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-info", children: hasItems ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥",
+          totalDiscountPrice
         ] }),
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
-          totalSavings > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "savings", children: [
-            "已省 ¥",
-            totalSavings.toFixed(2)
+        totalSavings > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "savings", children: [
+          "已优惠¥",
+          totalSavings
+        ] })
+      ] }) : /* @__PURE__ */ taro.jsx(taro.Text, { className: "empty-text", children: "请选择服务项目" }) }),
+      /* @__PURE__ */ taro.jsx(
+        taro.View,
+        {
+          className: `checkout-btn ${!hasItems ? "disabled" : ""}`,
+          onClick: handleCheckoutClick,
+          children: "去结算"
+        }
+      )
+    ] }) }),
+    isExpanded && /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-expanded", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "expanded-header", children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "title", children: [
+          "已选推拿师(",
+          items.length,
+          ")位"
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "action", onClick: handleContinue, children: "继续预约" })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "service-list", children: items.map(
+        (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-item", children: [
+          /* @__PURE__ */ taro.jsx(
+            taro.Image,
+            {
+              className: "therapist-avatar",
+              src: item.therapistAvatar || (therapist == null ? void 0 : therapist.avatar) || ""
+            }
+          ),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-info", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-header", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: item.therapistName }),
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "duration", children: [
+                item.duration,
+                "分钟"
+              ] })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-detail", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: item.serviceName }) }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-time", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "time-text", children: [
+              formatDate(item.date),
+              " ",
+              item.time,
+              " 至 ",
+              // 计算结束时间
+              (() => {
+                const [hour, minute] = item.time.split(":").map(Number);
+                const endMinute = minute + item.duration;
+                const endHour = hour + Math.floor(endMinute / 60);
+                const finalMinute = endMinute % 60;
+                return `${endHour}:${finalMinute.toString().padStart(2, "0")}`;
+              })()
+            ] }) })
           ] }),
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "price-info", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
             "¥",
-            totalDiscountPrice.toFixed(2)
+            item.discountPrice || item.price
+          ] }) })
+        ] }, index2)
+      ) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-section", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "可选增值项目" }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-list", children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-item", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-name", children: "刮痧20分钟" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-price", children: "¥ 99" })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "addon-action", children: "+" })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-item", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-name", children: "加钟20分钟" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-price", children: "¥ 99" })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "addon-action", children: "+" })
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ taro.jsx(taro.View, { className: "checkout-btn", onClick: handleCheckout, children: "立即预约" })
-    ] }),
-    /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-items", children: items.map(
-      (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-item", children: [
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "item-info", children: [
-          /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: item.serviceName }),
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-details", children: [
-            item.duration,
-            "分钟 · ",
-            item.therapistName,
-            " · ",
-            formatDate(item.date),
-            " ",
-            item.time
-          ] })
-        ] }),
-        /* @__PURE__ */ taro.jsx(taro.View, { className: "item-price", children: item.discountPrice ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
-            "¥",
-            item.discountPrice
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "checkout-section", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-summary", children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-icon", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "🛒" }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "badge", children: "1" })
           ] }),
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
-            "¥",
-            item.price
-          ] })
-        ] }) : /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
-          "¥",
-          item.price
-        ] }) })
-      ] }, index2)
-    ) })
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-detail", children: [
+            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "final-price", children: [
+              "¥ ",
+              totalDiscountPrice
+            ] }),
+            totalOriginalPrice > totalDiscountPrice && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
+              "¥ ",
+              totalOriginalPrice
+            ] })
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "discount-tip", children: "已享受最大优惠减20元" })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "checkout-footer", children: [
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "countdown", children: [
+            "支付倒计时: ",
+            formatCountdown(countdown)
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "confirm-btn", onClick: handleConfirmCheckout, children: "去结算" })
+        ] })
+      ] })
+    ] })
   ] });
 };
 const index = "";
 const TherapistBookingPage = () => {
   const router = taro.taroExports.useRouter();
-  const { therapistId, storeId, storeName } = router.params;
+  const { therapistId, storeId } = router.params;
   const [therapist, setTherapist] = taro.useState(null);
   const [store, setStore] = taro.useState(null);
   const [loading, setLoading] = taro.useState(true);
@@ -388,14 +551,14 @@ const TherapistBookingPage = () => {
     try {
       setLoading(true);
       setError("");
-      const [therapistRes, storeRes] = yield Promise.all(
+      const [therapistData, storeData] = yield Promise.all(
         [
           common.therapistService.getTherapistDetail(therapistId),
           common.storeService.getStoreDetail(storeId)
         ]
       );
-      setTherapist(therapistRes.data);
-      setStore(storeRes.data);
+      setTherapist(therapistData);
+      setStore(storeData);
     } catch (err) {
       console.error("Failed to load data:", err);
       setError("加载数据失败，请重试");
@@ -479,14 +642,7 @@ const TherapistBookingPage = () => {
   }
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-booking-page", children: [
     /* @__PURE__ */ taro.jsxs(taro.ScrollView, { className: "main-content", scrollY: true, children: [
-      /* @__PURE__ */ taro.jsx(
-        TherapistInfo,
-        {
-          therapist,
-          storeId,
-          storeName
-        }
-      ),
+      /* @__PURE__ */ taro.jsx(TherapistInfo, { therapist }),
       /* @__PURE__ */ taro.jsx(StoreInfo, { store }),
       /* @__PURE__ */ taro.jsx(
         BookingSelector,
