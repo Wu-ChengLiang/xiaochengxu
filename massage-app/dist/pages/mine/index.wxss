@@ -1,27 +1,120 @@
 .mine-page {
   min-height: 100vh;
   background-color: var(--bg-secondary);
+}
+.mine-page .header-section {
+  padding: 32rpx 32rpx 0;
+  background-color: var(--bg-primary);
+}
+.mine-page .header-section .user-card {
+  background: -webkit-linear-gradient(315deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  border-radius: 16rpx;
+  padding: 40rpx 32rpx;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.mine-page .header-section .user-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.05);
+  -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+.mine-page .header-section .user-card .user-info {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  gap: 24rpx;
+  margin-bottom: 32rpx;
 }
-.mine-page .content {
-  text-align: center;
+.mine-page .header-section .user-card .user-info .avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
 }
-.mine-page .content .title {
-  display: block;
+.mine-page .header-section .user-card .user-info .phone {
   font-size: 36rpx;
-  color: var(--text-primary);
-  margin-bottom: var(--spacing-md);
+  font-weight: 500;
 }
-.mine-page .content .desc {
-  display: block;
+.mine-page .header-section .user-card .balance-info {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   font-size: 28rpx;
-  color: var(--text-secondary);
+}
+.mine-page .header-section .user-card .balance-info .balance-label {
+  opacity: 0.9;
+}
+.mine-page .header-section .user-card .balance-info .balance-amount {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-right: 8rpx;
+}
+.mine-page .menu-section {
+  margin-top: 24rpx;
+  background-color: var(--bg-primary);
+}
+.mine-page .menu-section .menu-item {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  padding: 32rpx;
+  border-bottom: 1rpx solid var(--border-color);
+}
+.mine-page .menu-section .menu-item:active {
+  background-color: var(--bg-secondary);
+}
+.mine-page .menu-section .menu-item:last-child {
+  border-bottom: none;
+}
+.mine-page .menu-section .menu-item .menu-left {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 24rpx;
+}
+.mine-page .menu-section .menu-item .menu-left .menu-title {
+  font-size: 32rpx;
+  color: var(--text-primary);
+}
+.mine-page .menu-section .menu-item .menu-right {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 16rpx;
+}
+.mine-page .menu-section .menu-item .menu-right .badge {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  min-width: 40rpx;
+  text-align: center;
 }

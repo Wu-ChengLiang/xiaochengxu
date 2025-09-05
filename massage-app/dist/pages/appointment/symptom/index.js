@@ -615,10 +615,7 @@ const SymptomPage = () => {
 var config = {
   "navigationBarTitleText": "推拿师预约",
   "navigationBarTextStyle": "black",
-  "navigationBarBackgroundColor": "#ffffff",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarBackgroundColor": "#ffffff"
 };
 Page(taro.createPageConfig(SymptomPage, "pages/appointment/symptom/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

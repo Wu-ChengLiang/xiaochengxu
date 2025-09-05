@@ -7,7 +7,8 @@ export default {
     'pages/appointment/therapist/index',
     'pages/appointment/symptom/index',
     'pages/promotion/index',
-    'pages/booking/confirm/index'
+    'pages/booking/confirm/index',
+    'pages/mine/about/index'
   ],
   window: {
     backgroundTextStyle: 'light',

@@ -664,10 +664,7 @@ const TherapistBookingPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "推拿师预约",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "推拿师预约"
 };
 Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
