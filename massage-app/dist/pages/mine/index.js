@@ -1,1 +1,12 @@
-"use strict";const e=require("../../taro.js"),s="",t=()=>e.jsxRuntimeExports.jsx(e.View,{className:"mine-page",children:e.jsxRuntimeExports.jsxs(e.View,{className:"content",children:[e.jsxRuntimeExports.jsx(e.Text,{className:"title",children:"\u6211\u7684\u9875\u9762"}),e.jsxRuntimeExports.jsx(e.Text,{className:"desc",children:"\u529f\u80fd\u5f00\u53d1\u4e2d..."})]})});var i={};Page(e.createPageConfig(t,"pages/mine/index",{root:{cn:[]}},i||{}));
+"use strict";
+const taro = require("../../taro.js");
+const index = "";
+const Mine = () => {
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "mine-page", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "content", children: [
+    /* @__PURE__ */ taro.jsx(taro.Text, { className: "title", children: "我的页面" }),
+    /* @__PURE__ */ taro.jsx(taro.Text, { className: "desc", children: "功能开发中..." })
+  ] }) });
+};
+var config = {};
+Page(taro.createPageConfig(Mine, "pages/mine/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map
