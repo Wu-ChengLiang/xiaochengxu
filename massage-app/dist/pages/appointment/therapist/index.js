@@ -140,11 +140,7 @@ const StoreInfo = ({ store }) => {
         ] })
       ] }),
       /* @__PURE__ */ taro.jsxs(taro.View, { className: "hours-row", children: [
-        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "business-hours", children: [
-          store.businessHours.start,
-          "-",
-          store.businessHours.end
-        ] }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "business-hours", children: store.businessHours ? `${store.businessHours.start}-${store.businessHours.end}` : "营业时间未知" }),
         /* @__PURE__ */ taro.jsx(taro.View, { className: `status ${getStatusClass(store.status)}`, children: getStatusText(store.status) })
       ] }),
       /* @__PURE__ */ taro.jsxs(taro.Text, { className: "address", children: [

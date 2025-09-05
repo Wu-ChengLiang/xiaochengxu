@@ -65,7 +65,7 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
           
           <View className="hours-row">
             <Text className="business-hours">
-              {store.businessHours.start}-{store.businessHours.end}
+              {store.businessHours ? `${store.businessHours.start}-${store.businessHours.end}` : '营业时间未知'}
             </Text>
             <View className={`status ${getStatusClass(store.status)}`}>
               {getStatusText(store.status)}
