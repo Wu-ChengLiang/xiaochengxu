@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import Taro from '@tarojs/taro'
+import LogoImg from '@/assets/icons/logo.png'
 import './index.scss'
 
 const Mine: React.FC = () => {
@@ -64,7 +65,7 @@ const Mine: React.FC = () => {
           <View className="user-info">
             <Image 
               className="avatar" 
-              src={require('../../../assets/icons/logo.png')}
+              src={LogoImg}
               mode="aspectFill"
             />
             <Text className="phone">193****9506</Text>
