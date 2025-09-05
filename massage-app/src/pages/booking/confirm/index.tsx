@@ -218,11 +218,21 @@ const OrderConfirmPage: React.FC = () => {
             }, 1500)
           },
           fail: (err) => {
+            console.error('支付失败:', err)
             if (err.errMsg !== 'requestPayment:fail cancel') {
-              Taro.showToast({
-                title: '支付失败',
-                icon: 'none'
-              })
+              // 如果是缺少total_fee的错误，给出更明确的提示
+              if (err.errMsg && err.errMsg.includes('total_fee')) {
+                Taro.showToast({
+                  title: '支付参数错误：缺少金额信息',
+                  icon: 'none',
+                  duration: 2500
+                })
+              } else {
+                Taro.showToast({
+                  title: '支付失败',
+                  icon: 'none'
+                })
+              }
             }
           }
         })

@@ -53,6 +53,15 @@ export interface PaymentParams {
   paySign: string
 }
 
+// 微信支付请求参数（后端需要的参数）
+export interface WxPayRequestParams {
+  orderNo: string
+  total_fee: number  // 订单金额，单位为分
+  body: string       // 商品描述
+  openid?: string    // 用户openid
+  spbill_create_ip?: string  // 用户IP
+}
+
 class OrderService {
   // 创建订单
   async createOrder(params: CreateOrderParams): Promise<OrderData> {
@@ -95,7 +104,20 @@ class OrderService {
   async getPaymentParams(orderNo: string): Promise<PaymentParams> {
     await sleep(300)
     
+    // 获取订单信息
+    const order = await this.getOrderDetail(orderNo)
+    
+    // 在实际场景中，这里应该调用后端接口，传递订单号和金额等信息
+    // 后端会返回微信支付所需的参数
+    // const response = await api.getWxPayParams({
+    //   orderNo: orderNo,
+    //   total_fee: order.totalAmount * 100, // 微信支付金额单位为分
+    //   body: order.serviceName,
+    //   ...
+    // })
+    
     // Mock 微信支付参数
+    console.log('获取支付参数，订单金额:', order.totalAmount)
     return {
       timeStamp: String(Math.floor(Date.now() / 1000)),
       nonceStr: Math.random().toString(36).substr(2, 15),
