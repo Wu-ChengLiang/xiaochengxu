@@ -52,7 +52,7 @@ const Mine = () => {
           taro.Image,
           {
             className: "avatar",
-            src: "https://via.placeholder.com/120x120?text=Avatar",
+            src: require("../../../assets/icons/logo.png"),
             mode: "aspectFill"
           }
         ),
