@@ -19,6 +19,7 @@ export default defineConfig<'vite'>({
   },
   copy: {
     patterns: [
+      { from: 'src/assets/images/', to: 'dist/assets/images/' }
     ],
     options: {
     }
