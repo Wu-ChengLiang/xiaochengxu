@@ -1,0 +1,242 @@
+.product-detail-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120px;
+
+  .loading,
+  .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #999;
+    font-size: 28px;
+  }
+
+  // 商品轮播图
+  .product-swiper {
+    width: 100%;
+    height: 750px;
+    background: #fff;
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // 商品信息
+  .product-info {
+    background: #fff;
+    padding: 24px;
+    margin-top: 2px;
+
+    .price-section {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: 16px;
+
+      .price-row {
+        display: flex;
+        align-items: baseline;
+
+        .price {
+          font-size: 48px;
+          color: #a40035;
+          font-weight: bold;
+        }
+
+        .original-price {
+          font-size: 28px;
+          color: #999;
+          text-decoration: line-through;
+          margin-left: 16px;
+        }
+      }
+
+      .unit {
+        font-size: 26px;
+        color: #666;
+        margin-left: 8px;
+      }
+    }
+
+    .product-name {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .product-desc {
+      font-size: 28px;
+      color: #666;
+      line-height: 1.6;
+    }
+  }
+
+  // 商品特色
+  .features-section {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .features-list {
+      .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+
+        .feature-dot {
+          width: 8px;
+          height: 8px;
+          background: #a40035;
+          border-radius: 50%;
+          margin-right: 12px;
+        }
+
+        .feature-text {
+          font-size: 28px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  // 规格参数
+  .specs-section {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .specs-list {
+      .spec-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        .spec-label {
+          font-size: 28px;
+          color: #666;
+        }
+
+        .spec-value {
+          font-size: 28px;
+          color: #333;
+          max-width: 60%;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  // 数量选择
+  .quantity-section {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+
+      .quantity-btn {
+        width: 60px;
+        height: 60px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &:active {
+          background: #f5f5f5;
+        }
+      }
+
+      .quantity-value {
+        font-size: 32px;
+        color: #333;
+        margin: 0 30px;
+        min-width: 60px;
+        text-align: center;
+      }
+    }
+  }
+
+  // 底部操作栏
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 20px 24px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 16px;
+
+    .action-btn {
+      flex: 1;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 44px;
+      font-size: 32px;
+      font-weight: bold;
+      border: none;
+
+      &.cart-btn {
+        background: #fff;
+        color: #333;
+        border: 2px solid #ddd;
+      }
+
+      &.buy-btn {
+        background: #a40035;
+        color: #fff;
+      }
+
+      &:active {
+        opacity: 0.8;
+      }
+
+      .at-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+}

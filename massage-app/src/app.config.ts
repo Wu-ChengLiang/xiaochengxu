@@ -11,6 +11,8 @@ export default {
     'pages/booking/success/index',
     'pages/order/list/index',
     'pages/order/detail/index',
+    'pages/gift/card-detail/index',
+    'pages/gift/product-detail/index',
     'pages/mine/about/index'
   ],
   window: {

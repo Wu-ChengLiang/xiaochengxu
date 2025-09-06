@@ -1,0 +1,147 @@
+.card-detail-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120px;
+
+  .loading,
+  .empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #999;
+    font-size: 28px;
+  }
+
+  // 礼卡展示区
+  .card-display {
+    padding: 24px;
+    background: #fff;
+
+    .card-image {
+      width: 100%;
+      height: 400px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // 礼卡信息
+  .card-info {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+
+    .card-name {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .card-desc {
+      font-size: 28px;
+      color: #666;
+      line-height: 1.6;
+    }
+  }
+
+  // 特色功能
+  .features-section {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .features-list {
+      .feature-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+
+        .at-icon {
+          margin-right: 12px;
+        }
+
+        .feature-text {
+          font-size: 28px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  // 使用须知
+  .terms-section {
+    background: #fff;
+    padding: 24px;
+    margin-top: 16px;
+
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .terms-text {
+      font-size: 26px;
+      color: #999;
+      line-height: 1.6;
+    }
+  }
+
+  // 底部操作栏
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 20px 24px;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 16px;
+
+    .action-btn {
+      flex: 1;
+      height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 44px;
+      font-size: 32px;
+      font-weight: bold;
+      border: none;
+
+      &.gift-btn {
+        background: #fff;
+        color: #a40035;
+        border: 2px solid #a40035;
+      }
+
+      &.purchase-btn {
+        background: #a40035;
+        color: #fff;
+      }
+
+      &:active {
+        opacity: 0.8;
+      }
+
+      .at-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+}
