@@ -35,7 +35,7 @@ const Gift: React.FC = () => {
               <Image 
                 className="card-image" 
                 src={card.image}
-                mode="aspectFill"
+                mode="scaleToFill"
               />
             </View>
           ))}
