@@ -22,9 +22,8 @@ const CardDetail: React.FC = () => {
   }, [id])
 
   const handlePurchase = () => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    Taro.navigateTo({
+      url: '/pages/gift/purchase/index'
     })
   }
 
