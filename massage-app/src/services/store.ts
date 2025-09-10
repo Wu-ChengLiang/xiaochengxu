@@ -1,97 +1,104 @@
-import { mockStores } from '@/mock/data/stores'
-import { getLocationService } from './location'
+import { http } from '@/utils/request'
+import { config } from '@/config'
 import type { Store, PageData } from '@/types'
 
-// 模拟网络延迟
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+// 如果配置为使用 Mock，则导入 Mock 服务
+const mockStoreService = config.useMock ? require('./store-mock').storeService : null
 
-class StoreService {
-  // 获取附近门店
+class StoreApiService {
+  /**
+   * 获取附近门店
+   */
   async getNearbyStores(
     latitude: number,
     longitude: number,
     page: number = 1,
     pageSize: number = 10
   ): Promise<PageData<Store>> {
-    await sleep(300) // 模拟网络延迟
-    
-    // 计算每个门店的距离并排序
-    const storesWithDistance = mockStores.map(store => ({
-      ...store,
-      distance: getLocationService.calculateDistance(
-        latitude,
-        longitude,
-        store.location.latitude,
-        store.location.longitude
-      )
-    })).sort((a, b) => a.distance - b.distance)
-    
-    // 分页处理
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const list = storesWithDistance.slice(start, end)
-    
-    return {
-      list,
-      total: storesWithDistance.length,
+    // 如果配置使用 Mock，则调用 Mock 服务
+    if (config.useMock && mockStoreService) {
+      return mockStoreService.getNearbyStores(latitude, longitude, page, pageSize)
+    }
+
+    const response = await http.get<PageData<Store>>('/api/stores/nearby', {
+      lat: latitude,
+      lng: longitude,
       page,
-      pageSize,
-      hasMore: end < storesWithDistance.length
-    }
+      pageSize
+    })
+
+    return response.data
   }
-  
-  // 获取门店详情
-  async getStoreDetail(storeId: string) {
-    await sleep(200)
-    
-    const store = mockStores.find(s => s.id === storeId)
-    if (!store) {
-      throw new Error('门店不存在')
+
+  /**
+   * 获取门店详情
+   */
+  async getStoreDetail(storeId: string): Promise<{ code: number; data: Store; message: string }> {
+    // 如果配置使用 Mock，则调用 Mock 服务
+    if (config.useMock && mockStoreService) {
+      return mockStoreService.getStoreDetail(storeId)
     }
+
+    const response = await http.get<Store>(`/api/stores/${storeId}`)
     
     return {
-      code: 200,
-      data: store,
-      message: 'success'
+      code: response.code,
+      data: response.data,
+      message: response.message
     }
   }
-  
-  // 搜索门店
-  async searchStores(keyword: string, page: number = 1, pageSize: number = 10): Promise<PageData<Store>> {
-    await sleep(300)
-    
-    const filteredStores = mockStores.filter(store => 
-      store.name.includes(keyword) || 
-      store.address.includes(keyword)
-    )
-    
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const list = filteredStores.slice(start, end)
-    
-    return {
-      list,
-      total: filteredStores.length,
+
+  /**
+   * 搜索门店
+   */
+  async searchStores(
+    keyword: string, 
+    page: number = 1, 
+    pageSize: number = 10
+  ): Promise<PageData<Store>> {
+    // 如果配置使用 Mock，则调用 Mock 服务
+    if (config.useMock && mockStoreService) {
+      return mockStoreService.searchStores(keyword, page, pageSize)
+    }
+
+    const response = await http.get<PageData<Store>>('/api/stores/search', {
+      keyword,
       page,
-      pageSize,
-      hasMore: end < filteredStores.length
-    }
+      pageSize
+    })
+
+    return response.data
   }
-  
-  // 根据状态筛选门店
+
+  /**
+   * 根据状态筛选门店
+   */
   async getStoresByStatus(
     status: Store['status'],
     page: number = 1,
     pageSize: number = 10
   ): Promise<PageData<Store>> {
-    await sleep(200)
+    // 如果配置使用 Mock，则调用 Mock 服务
+    if (config.useMock && mockStoreService) {
+      return mockStoreService.getStoresByStatus(status, page, pageSize)
+    }
+
+    // 真实 API 暂未实现此接口，先返回所有门店然后过滤
+    const response = await http.get<PageData<Store>>('/api/stores/nearby', {
+      lat: 31.23, // 使用默认位置
+      lng: 121.47,
+      page: 1,
+      pageSize: 100 // 获取足够多的数据进行过滤
+    })
+
+    // 在前端过滤状态
+    const filteredStores = response.data.list.filter(store => store.status === status)
     
-    const filteredStores = mockStores.filter(store => store.status === status)
-    
+    // 手动分页
     const start = (page - 1) * pageSize
     const end = start + pageSize
     const list = filteredStores.slice(start, end)
-    
+
     return {
       list,
       total: filteredStores.length,
@@ -102,4 +109,4 @@ class StoreService {
   }
 }
 
-export const storeService = new StoreService()
+export const storeService = new StoreApiService()
