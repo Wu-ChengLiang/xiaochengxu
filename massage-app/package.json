@@ -11,6 +11,8 @@
   },
   "scripts": {
     "build:weapp": "taro build --type weapp",
+    "build:weapp:min": "NODE_ENV=production taro build --type weapp --minify",
+    "build:weapp:dev": "taro build --type weapp --sourcemap=false --minify=false",
     "build:h5": "taro build --type h5",
     "dev:weapp": "npm run build:weapp -- --watch",
     "dev:h5": "npm run build:h5 -- --watch",
