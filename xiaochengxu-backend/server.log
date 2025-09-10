@@ -1,0 +1,125 @@
+
+> xiaochengxu-backend@1.0.0 dev
+> nodemon --exec ts-node src/app.ts
+
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): src/**/*[39m
+[33m[nodemon] watching extensions: ts[39m
+[32m[nodemon] starting `ts-node src/app.ts`[39m
+[dotenv@17.2.2] injecting env (3) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859
+    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/modules/store/store.dto.ts(7,85): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+src/modules/store/store.dto.ts(8,97): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+src/modules/store/store.dto.ts(16,85): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+src/modules/store/store.dto.ts(17,97): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+
+    at createTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859:12)
+    at reportTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:863:19)
+    at getOutput (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1077:36)
+    at Object.compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1433:41)
+    at Module.m._compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1617:30)
+    at node:internal/modules/cjs/loader:1895:10
+    at Object.require.extensions.<computed> [as .ts] (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  diagnosticCodes: [ 2769, 2769, 2769, 2769 ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/app.ts`[39m
+[dotenv@17.2.2] injecting env (3) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859
+    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/modules/store/store.dto.ts(16,85): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+src/modules/store/store.dto.ts(17,97): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(def: number | undefined): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type 'number'.
+  Overload 2 of 2, '(def: () => number): ZodDefault<ZodOptional<ZodPipe<ZodPipe<ZodString, ZodTransform<number, string>>, ZodNumber>>>', gave the following error.
+    Argument of type 'string' is not assignable to parameter of type '() => number'.
+
+    at createTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859:12)
+    at reportTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:863:19)
+    at getOutput (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1077:36)
+    at Object.compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1433:41)
+    at Module.m._compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1617:30)
+    at node:internal/modules/cjs/loader:1895:10
+    at Object.require.extensions.<computed> [as .ts] (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  diagnosticCodes: [ 2769, 2769 ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/app.ts`[39m
+[dotenv@17.2.2] injecting env (3) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  enable debug logging with { debug: true }
+/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859
+    return new TSError(diagnosticText, diagnosticCodes, diagnostics);
+           ^
+TSError: ⨯ Unable to compile TypeScript:
+src/common/middleware/error.ts(15,24): error TS2339: Property 'errors' does not exist on type 'ZodError<unknown>'.
+src/common/middleware/error.ts(15,35): error TS7006: Parameter 'e' implicitly has an 'any' type.
+
+    at createTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:859:12)
+    at reportTSError (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:863:19)
+    at getOutput (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1077:36)
+    at Object.compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1433:41)
+    at Module.m._compile (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1617:30)
+    at node:internal/modules/cjs/loader:1895:10
+    at Object.require.extensions.<computed> [as .ts] (/home/chengliang/workspace/xiaochengxu/xiaochengxu-backend/node_modules/ts-node/src/index.ts:1621:12)
+    at Module.load (node:internal/modules/cjs/loader:1465:32)
+    at Function._load (node:internal/modules/cjs/loader:1282:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14) {
+  diagnosticCodes: [ 2339, 7006 ]
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/app.ts`[39m
+[dotenv@17.2.2] injecting env (3) from .env -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Database connection failed: [Error: SQLITE_CANTOPEN: unable to open database file] {
+  errno: 14,
+  code: 'SQLITE_CANTOPEN'
+}
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `ts-node src/app.ts`[39m
+[dotenv@17.2.2] injecting env (3) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Database connected successfully
+Server is running on port 3000
+Environment: development
+query: SELECT "StoreEntity"."id" AS "StoreEntity_id", "StoreEntity"."name" AS "StoreEntity_name", "StoreEntity"."address" AS "StoreEntity_address", "StoreEntity"."phone" AS "StoreEntity_phone", "StoreEntity"."business_hours" AS "StoreEntity_business_hours", "StoreEntity"."status" AS "StoreEntity_status", "StoreEntity"."manager_name" AS "StoreEntity_manager_name", "StoreEntity"."created_at" AS "StoreEntity_created_at", "StoreEntity"."updated_at" AS "StoreEntity_updated_at" FROM "stores" "StoreEntity" WHERE (("StoreEntity"."id" != 0)) ORDER BY "StoreEntity"."id" ASC
+query: SELECT "StoreEntity"."id" AS "StoreEntity_id", "StoreEntity"."name" AS "StoreEntity_name", "StoreEntity"."address" AS "StoreEntity_address", "StoreEntity"."phone" AS "StoreEntity_phone", "StoreEntity"."business_hours" AS "StoreEntity_business_hours", "StoreEntity"."status" AS "StoreEntity_status", "StoreEntity"."manager_name" AS "StoreEntity_manager_name", "StoreEntity"."created_at" AS "StoreEntity_created_at", "StoreEntity"."updated_at" AS "StoreEntity_updated_at" FROM "stores" "StoreEntity" WHERE (("StoreEntity"."id" = 1)) LIMIT 1
+query: SELECT COUNT(1) AS "cnt" FROM "stores" "store" WHERE "store"."id" != 0 AND ("store"."name" LIKE ? OR "store"."address" LIKE ?) -- PARAMETERS: ["%宜山路%","%宜山路%"]
+query: SELECT "store"."id" AS "store_id", "store"."name" AS "store_name", "store"."address" AS "store_address", "store"."phone" AS "store_phone", "store"."business_hours" AS "store_business_hours", "store"."status" AS "store_status", "store"."manager_name" AS "store_manager_name", "store"."created_at" AS "store_created_at", "store"."updated_at" AS "store_updated_at" FROM "stores" "store" WHERE "store"."id" != 0 AND ("store"."name" LIKE ? OR "store"."address" LIKE ?) LIMIT 10 OFFSET 0 -- PARAMETERS: ["%宜山路%","%宜山路%"]

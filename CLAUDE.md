@@ -287,3 +287,210 @@ npm run mock:generate
 # 类型检查
 npm run type-check
 ```
+
+## 后端架构设计
+
+### 技术栈
+- **Node.js + TypeScript** - 与前端技术栈统一，便于类型共享
+- **Express.js** - 成熟稳定的Web框架
+- **SQLite + TypeORM** - 利用现有数据库，TypeORM提供类型安全的ORM
+- **Zod** - 数据验证，可与前端共享验证规则
+- **JWT** - 用户认证
+
+### 后端项目结构（精简版）
+
+```
+xiaochengxu-backend/
+├── src/
+│   ├── config/
+│   │   ├── database.ts      # 数据库配置
+│   │   └── index.ts         # 所有配置汇总
+│   │
+│   ├── entities/            # 数据库实体（对应现有8个表）
+│   │   ├── index.ts         # 导出所有实体
+│   │   └── *.entity.ts      # 各实体文件
+│   │
+│   ├── modules/             # 业务模块（控制器+服务+DTO）
+│   │   ├── store/
+│   │   │   ├── store.controller.ts
+│   │   │   ├── store.service.ts
+│   │   │   └── store.dto.ts
+│   │   ├── therapist/
+│   │   │   ├── therapist.controller.ts
+│   │   │   ├── therapist.service.ts
+│   │   │   └── therapist.dto.ts
+│   │   ├── appointment/
+│   │   │   ├── appointment.controller.ts
+│   │   │   ├── appointment.service.ts
+│   │   │   └── appointment.dto.ts
+│   │   ├── user/
+│   │   │   ├── user.controller.ts
+│   │   │   ├── user.service.ts
+│   │   │   └── user.dto.ts
+│   │   └── auth/
+│   │       ├── auth.controller.ts
+│   │       ├── auth.service.ts
+│   │       └── auth.dto.ts
+│   │
+│   ├── common/              # 公共资源
+│   │   ├── middleware/
+│   │   │   ├── auth.ts      # JWT认证
+│   │   │   └── error.ts     # 错误处理
+│   │   ├── utils/
+│   │   │   ├── response.ts  # 统一响应格式
+│   │   │   └── location.ts  # 距离计算
+│   │   └── types/
+│   │       └── index.ts     # 从前端复制的类型定义
+│   │
+│   ├── routes.ts            # 所有路由定义
+│   └── app.ts               # 应用入口
+│
+├── database/
+│   ├── mingyi.db           # 现有数据库
+│   └── migrations/         # 数据库迁移脚本
+│
+├── test/                   # 测试文件
+│   └── *.test.ts
+│
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+### API设计规范
+
+```typescript
+// 统一响应格式（与前端ApiResponse接口一致）
+{
+  code: number,       // 200成功，400客户端错误，500服务端错误
+  message: string,
+  data: T,
+  timestamp: number
+}
+
+// 分页响应格式（与前端PageData接口一致）
+{
+  list: T[],
+  total: number,
+  page: number,
+  pageSize: number,
+  hasMore: boolean
+}
+```
+
+### 主要API端点
+
+```
+门店相关：
+GET    /api/stores/nearby?lat=&lng=&page=&pageSize=  # 获取附近门店
+GET    /api/stores/:id                               # 获取门店详情
+GET    /api/stores/search?keyword=&page=&pageSize=   # 搜索门店
+
+推拿师相关：
+GET    /api/therapists/by-store/:storeId            # 获取门店推拿师
+GET    /api/therapists/:id                          # 获取推拿师详情
+GET    /api/therapists/:id/schedule?date=           # 获取排班信息
+
+预约相关：
+POST   /api/appointments                             # 创建预约
+GET    /api/appointments/my?page=&pageSize=&status= # 我的预约列表
+GET    /api/appointments/:id                        # 预约详情
+PUT    /api/appointments/:id/status                 # 更新预约状态
+
+用户相关：
+POST   /api/auth/login                              # 微信登录
+GET    /api/users/profile                           # 获取个人信息
+PUT    /api/users/profile                           # 更新个人信息
+```
+
+### 与前端对接要点
+
+1. **类型共享**：将前端的types/index.ts复制到后端项目，确保类型定义一致
+2. **Mock迁移**：后端实现时可直接参考前端Mock服务的业务逻辑
+3. **渐进式迁移**：前端可逐步从Mock切换到真实API
+4. **环境配置**：前端添加API_BASE_URL环境变量，开发时指向Mock，生产时指向后端
+
+### 数据模型差异处理
+
+**主要差异：**
+- **字段命名**：数据库snake_case vs 前端camelCase
+- **数据类型**：数据库ID为INTEGER，前端为string
+- **计算字段**：前端模型包含计算字段（如storeName、distance）
+- **缺失模型**：症状服务在数据库中没有对应表
+
+**转换策略示例：**
+```typescript
+// 后端实体转换
+toDTO(): Therapist {
+  return {
+    id: this.id.toString(), // 数字转字符串
+    storeId: this.store_id.toString(),
+    storeName: this.store?.name, // 关联查询获取
+    businessHours: {
+      start: this.business_hours.split('-')[0],
+      end: this.business_hours.split('-')[1]
+    }
+    // ... 其他字段转换
+  };
+}
+```
+
+### TDD开发流程
+
+**核心理念：** 先写测试，再写实现，测试驱动设计
+
+**开发流程：**
+1. 编写API契约测试 → 2. 编写单元测试 → 3. 实现代码 → 4. 重构优化
+
+**第一步开发：门店模块**
+
+建议从「门店模块」开始，理由：
+- **业务独立性高** - 不依赖用户认证，可独立测试
+- **核心功能** - 获取附近门店是用户第一个接触的功能
+- **数据结构清晰** - stores表结构简单，易于实现
+- **可测试性强** - 距离计算、分页等逻辑适合TDD
+
+**TDD示例：**
+```typescript
+// 第一步：编写测试用例 (store.test.ts)
+describe('StoreService', () => {
+  // 测试1：获取附近门店
+  it('should return nearby stores sorted by distance', async () => {
+    const result = await storeService.getNearbyStores(31.23, 121.47, 1, 10);
+    expect(result.list[0].distance).toBeLessThan(result.list[1].distance);
+  });
+  
+  // 测试2：分页功能
+  it('should handle pagination correctly', async () => {
+    const page1 = await storeService.getNearbyStores(31.23, 121.47, 1, 5);
+    expect(page1.list.length).toBe(5);
+    expect(page1.hasMore).toBe(true);
+  });
+  
+  // 测试3：数据转换
+  it('should convert snake_case to camelCase', async () => {
+    const store = await storeService.getStoreDetail('1');
+    expect(store.businessHours).toHaveProperty('start');
+    expect(store.businessHours).toHaveProperty('end');
+  });
+});
+```
+
+**实现顺序：**
+1. 门店列表 API → 2. 门店详情 API → 3. 推拿师列表 API → 4. 预约流程 API
+
+### 后端架构调整
+
+基于前端代码分析，需要调整的模块：
+```
+src/modules/
+├── store/          # 门店模块
+├── therapist/      # 推拿师模块
+├── appointment/    # 预约模块
+├── symptom/        # 新增：症状服务模块
+├── order/          # 新增：订单模块（支付相关）
+├── user/           # 用户模块
+└── auth/           # 认证模块
+```
