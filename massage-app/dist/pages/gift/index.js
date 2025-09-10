@@ -1,1 +1,77 @@
-"use strict";const s=require("../../taro.js"),e=require("../../common.js"),i="",t=()=>{const i=e.getAllGiftCards(),t=e.getAllProducts(),a=e=>{s.Taro.navigateTo({url:`/pages/gift/card-detail/index?id=${e}`})},r=e=>{s.Taro.navigateTo({url:`/pages/gift/product-detail/index?id=${e}`})};return s.jsxRuntimeExports.jsxs(s.View,{className:"gift-page",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u5e38\u4e50\u793c\u5361"}),s.jsxRuntimeExports.jsx(s.View,{className:"gift-cards",children:i.map(e=>s.jsxRuntimeExports.jsx(s.View,{className:"gift-card",onClick:()=>a(e.id),children:s.jsxRuntimeExports.jsx(s.Image,{className:"card-image",src:e.image,mode:"aspectFill"})},e.id))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u5e38\u4e50\u5468\u8fb9"}),s.jsxRuntimeExports.jsx(s.View,{className:"products",children:t.map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:"product-card",onClick:()=>r(e.id),children:[s.jsxRuntimeExports.jsx(s.Image,{className:"product-image",src:e.image,mode:"aspectFill"}),s.jsxRuntimeExports.jsxs(s.View,{className:"product-info",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"product-name",children:e.name}),s.jsxRuntimeExports.jsxs(s.View,{className:"price-row",children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"price",children:["\xa5",e.price.toFixed(2)]}),s.jsxRuntimeExports.jsx(s.Text,{className:"unit",children:"\u8d77"})]})]})]},e.id))})]})]})};var a={};Page(s.createPageConfig(t,"pages/gift/index",{root:{cn:[]}},a||{}));
+"use strict";
+const taro = require("../../taro.js");
+const common = require("../../common.js");
+const index = "";
+const Gift = () => {
+  const giftCards = common.getAllGiftCards();
+  const products = common.getAllProducts();
+  const handleCardClick = (cardId) => {
+    taro.Taro.navigateTo({
+      url: `/pages/gift/card-detail/index?id=${cardId}`
+    });
+  };
+  const handleProductClick = (productId) => {
+    taro.Taro.navigateTo({
+      url: `/pages/gift/product-detail/index?id=${productId}`
+    });
+  };
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "gift-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "常乐礼卡" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "gift-cards", children: giftCards.map(
+        (card) => /* @__PURE__ */ taro.jsx(
+          taro.View,
+          {
+            className: "gift-card",
+            onClick: () => handleCardClick(card.id),
+            children: /* @__PURE__ */ taro.jsx(
+              taro.Image,
+              {
+                className: "card-image",
+                src: card.image,
+                mode: "aspectFill"
+              }
+            )
+          },
+          card.id
+        )
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "常乐周边" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "products", children: products.map(
+        (product) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: "product-card",
+            onClick: () => handleProductClick(product.id),
+            children: [
+              /* @__PURE__ */ taro.jsx(
+                taro.Image,
+                {
+                  className: "product-image",
+                  src: product.image,
+                  mode: "aspectFill"
+                }
+              ),
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "product-info", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "product-name", children: product.name }),
+                /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-row", children: [
+                  /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+                    "¥",
+                    product.price.toFixed(2)
+                  ] }),
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "unit", children: "起" })
+                ] })
+              ] })
+            ]
+          },
+          product.id
+        )
+      ) })
+    ] })
+  ] });
+};
+var config = {};
+Page(taro.createPageConfig(Gift, "pages/gift/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

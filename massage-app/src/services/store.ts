@@ -20,14 +20,14 @@ class StoreApiService {
       return mockStoreService.getNearbyStores(latitude, longitude, page, pageSize)
     }
 
-    const response = await http.get<PageData<Store>>('/api/stores/nearby', {
+    const response = await http.get<{code: number; data: PageData<Store>; message: string}>('/api/stores/nearby', {
       lat: latitude,
       lng: longitude,
       page,
       pageSize
     })
 
-    return response.data
+    return response.data.data
   }
 
   /**
@@ -61,13 +61,13 @@ class StoreApiService {
       return mockStoreService.searchStores(keyword, page, pageSize)
     }
 
-    const response = await http.get<PageData<Store>>('/api/stores/search', {
+    const response = await http.get<{code: number; data: PageData<Store>; message: string}>('/api/stores/search', {
       keyword,
       page,
       pageSize
     })
 
-    return response.data
+    return response.data.data
   }
 
   /**
@@ -84,7 +84,7 @@ class StoreApiService {
     }
 
     // 真实 API 暂未实现此接口，先返回所有门店然后过滤
-    const response = await http.get<PageData<Store>>('/api/stores/nearby', {
+    const response = await http.get<{code: number; data: PageData<Store>; message: string}>('/api/stores/nearby', {
       lat: 31.23, // 使用默认位置
       lng: 121.47,
       page: 1,
@@ -92,7 +92,7 @@ class StoreApiService {
     })
 
     // 在前端过滤状态
-    const filteredStores = response.data.list.filter(store => store.status === status)
+    const filteredStores = response.data.data.list.filter(store => store.status === status)
     
     // 手动分页
     const start = (page - 1) * pageSize
