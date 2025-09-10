@@ -1,5 +1,6 @@
 // API 配置
-const isDevelopment = process.env.NODE_ENV === 'development'
+// 临时强制使用开发环境
+const isDevelopment = true // process.env.NODE_ENV === 'development'
 
 export const config = {
   // API 基础路径
