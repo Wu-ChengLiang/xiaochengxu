@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { orderService, CreateOrderParams } from '@/services/order'
+import { storeService } from '@/services/store'
+import { therapistService } from '@/services/therapist'
 import './index.scss'
 
 interface CartItem {
@@ -84,22 +86,13 @@ const OrderConfirmPage: React.FC = () => {
     try {
       setLoading(true)
       
-      // Mock 获取推拿师信息
-      const therapistData = {
-        id: params.therapistId,
-        name: '王志香',
-        avatar: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        rating: 4.8,
-        serviceCount: 10109
-      }
+      // 获取推拿师信息
+      const therapistRes = await therapistService.getTherapistDetail(params.therapistId)
+      const therapistData = therapistRes.data
       
-      // Mock 获取门店信息
-      const storeData = {
-        id: params.storeId,
-        name: '上海万象城店',
-        address: '闵行区吴中路1599号万象城L501b（电影院门口）',
-        distance: 8.8
-      }
+      // 获取门店信息
+      const storeRes = await storeService.getStoreDetail(params.storeId)
+      const storeData = storeRes.data
       
       setTherapistInfo(therapistData)
       setStoreInfo(storeData)

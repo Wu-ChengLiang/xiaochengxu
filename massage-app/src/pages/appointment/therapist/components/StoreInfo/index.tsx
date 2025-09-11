@@ -72,7 +72,7 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
             </View>
           </View>
           
-          <Text className="address">{store.address} (电影院门口)</Text>
+          <Text className="address">{store.address}</Text>
         </View>
         
         <View className="action-buttons">

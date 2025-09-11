@@ -20,7 +20,7 @@ export default {
   window: {
     backgroundTextStyle: 'light',
     navigationBarBackgroundColor: '#a40035',
-    navigationBarTitleText: '疲劳酸痛，到常乐对症推拿',
+    navigationBarTitleText: '疲劳酸痛，到名医堂',
     navigationBarTextStyle: 'white'
   },
   tabBar: {

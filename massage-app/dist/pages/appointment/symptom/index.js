@@ -1,1 +1,621 @@
-"use strict";var e=Object.defineProperty,s=Object.defineProperties,t=Object.getOwnPropertyDescriptors,i=Object.getOwnPropertySymbols,a=Object.prototype.hasOwnProperty,r=Object.prototype.propertyIsEnumerable,c=(s,t,i)=>t in s?e(s,t,{enumerable:!0,configurable:!0,writable:!0,value:i}):s[t]=i,n=(e,s)=>{for(var t in s||(s={}))a.call(s,t)&&c(e,t,s[t]);if(i)for(var t of i(s))r.call(s,t)&&c(e,t,s[t]);return e},o=(e,i)=>s(e,t(i)),l=(e,s,t)=>new Promise((i,a)=>{var r=e=>{try{n(t.next(e))}catch(s){a(s)}},c=e=>{try{n(t.throw(e))}catch(s){a(s)}},n=e=>e.done?i(e.value):Promise.resolve(e.value).then(r,c);n((t=t.apply(e,s)).next())});const d=require("../../../taro.js"),m=require("../../../vendors.js"),x=require("../../../common.js"),p="",u=({categories:e,activeId:s,onChange:t,className:i})=>d.jsxRuntimeExports.jsx(d.ScrollView,{className:m.classNames("symptom-category-tabs",i),scrollY:!0,showScrollbar:!1,children:e.map(e=>d.jsxRuntimeExports.jsx(d.View,{className:m.classNames("category-item",{active:e.id===s}),onClick:()=>t(e.id),children:d.jsxRuntimeExports.jsx(d.Text,{className:"category-name",children:e.name})},e.id))}),j="",h=({service:e,onAdd:s,isInCart:t=!1,className:i})=>{const a={available:"\u7a7a\u95f2",busy:"\u7e41\u5fd9",full:"\u7206\u6ee1"},r={available:"status-available",busy:"status-busy",full:"status-full"};return d.jsxRuntimeExports.jsxs(d.View,{className:m.classNames("symptom-service-card",i),children:[d.jsxRuntimeExports.jsxs(d.View,{className:"service-header",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"service-name",children:e.name}),d.jsxRuntimeExports.jsx(d.Text,{className:m.classNames("service-status",r[e.availability]),children:a[e.availability]})]}),d.jsxRuntimeExports.jsx(d.Text,{className:"service-description",children:e.description}),d.jsxRuntimeExports.jsxs(d.View,{className:"service-footer",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"service-info",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"service-duration",children:[e.duration,"\u5206\u949f"]}),d.jsxRuntimeExports.jsxs(d.View,{className:"service-price",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"price-current",children:["\xa5",e.discountPrice||e.price]}),e.discountPrice&&d.jsxRuntimeExports.jsxs(d.Text,{className:"price-original",children:["\xa5",e.price]})]})]}),d.jsxRuntimeExports.jsx(d.View,{className:m.classNames("add-button",{"in-cart":t,disabled:"full"===e.availability}),onClick:"full"!==e.availability?s:void 0,children:"full"===e.availability?d.jsxRuntimeExports.jsx(d.Text,{className:"button-text",children:"\u5df2\u6ee1"}):d.jsxRuntimeExports.jsx(d.Text,{className:"iconfont icon-add"})})]})]})},v="",E=({services:e,therapists:s,onAddToCart:t,cartServiceIds:i,className:a})=>{const r=s.map(s=>{const t=e.filter(e=>e.therapistId===s.id);return{therapist:s,services:t}}).filter(e=>e.services.length>0);return d.jsxRuntimeExports.jsx(d.ScrollView,{className:`symptom-service-list ${a||""}`,scrollY:!0,showScrollbar:!1,children:d.jsxRuntimeExports.jsx(d.View,{className:"service-list-content",children:r.map(e=>d.jsxRuntimeExports.jsxs(d.View,{className:"therapist-group",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"therapist-header",children:[d.jsxRuntimeExports.jsx(d.Image,{className:"therapist-avatar",src:e.therapist.avatar,mode:"aspectFill"}),d.jsxRuntimeExports.jsxs(d.View,{className:"therapist-info",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"therapist-name",children:e.therapist.name}),d.jsxRuntimeExports.jsxs(d.Text,{className:"therapist-level",children:["LV",e.therapist.level||1]})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"therapist-rating",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"rating-score",children:[e.therapist.rating,"\u5206"]}),d.jsxRuntimeExports.jsxs(d.Text,{className:"view-details",children:["\u67e5\u770b\u8be6\u60c5",">"]})]})]}),e.services.map(s=>d.jsxRuntimeExports.jsx(h,{service:s,onAdd:()=>t(s,e.therapist.id),isInCart:i.includes(s.id)},s.id))]},e.therapist.id))})})},y="",g=({items:e,onCheckout:s})=>{const[t,i]=d.reactExports.useState(!1),a=e.reduce((e,s)=>e+(s.discountPrice||s.price),0),r=e.reduce((e,s)=>e+s.price,0),c=r-a;return d.jsxRuntimeExports.jsxs(d.View,{className:"shopping-cart",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"cart-summary",onClick:()=>i(!t),children:[d.jsxRuntimeExports.jsx(d.View,{className:"cart-icon",children:d.jsxRuntimeExports.jsx(d.Text,{className:"cart-badge",children:e.length})}),d.jsxRuntimeExports.jsxs(d.View,{className:"price-info",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"total-price",children:["\xa5",a]}),c>0&&d.jsxRuntimeExports.jsxs(d.Text,{className:"saved-amount",children:["\u5df2\u7701\xa5",c]})]}),d.jsxRuntimeExports.jsx(m.AtButton,{className:"checkout-btn",type:"primary",size:"small",onClick:e=>{e.stopPropagation(),s()},children:"\u53bb\u7ed3\u7b97"})]}),t&&d.jsxRuntimeExports.jsx(d.View,{className:"cart-details",children:e.map((e,s)=>d.jsxRuntimeExports.jsxs(d.View,{className:"cart-item",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"item-info",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"service-name",children:e.serviceName}),d.jsxRuntimeExports.jsxs(d.Text,{className:"therapist-name",children:[e.therapistName," | ",e.duration,"\u5206\u949f"]})]}),d.jsxRuntimeExports.jsx(d.View,{className:"item-price",children:e.discountPrice?d.jsxRuntimeExports.jsxs(d.jsxRuntimeExports.Fragment,{children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"discount-price",children:["\xa5",e.discountPrice]}),d.jsxRuntimeExports.jsxs(d.Text,{className:"original-price",children:["\xa5",e.price]})]}):d.jsxRuntimeExports.jsxs(d.Text,{className:"discount-price",children:["\xa5",e.price]})})]},s))})]})},N=[{id:"1",name:"\u5934\u9888\u80a9\u75db",order:1},{id:"2",name:"\u5bf9\u75c7\u63a8\u62ff",order:2},{id:"3",name:"\u8fd0\u52a8\u6392\u9178",order:3},{id:"4",name:"\u7761\u7720\u8c03\u7406",order:4},{id:"5",name:"\u8170\u9178\u80cc\u75db",order:5},{id:"6",name:"\u6574\u810a\u8e29\u80cc",order:6},{id:"7",name:"\u80a0\u80c3\u8c03\u7406",order:7},{id:"8",name:"\u8db3\u7597+\u8e29\u80cc",order:8},{id:"9",name:"\u7126\u8651\u5931\u7720",order:9},{id:"10",name:"\u6e29\u5bab\u6696\u5de2",order:10},{id:"11",name:"\u8fd0\u52a8\u62c9\u4f38",order:11}],b=[{id:"s1",categoryId:"1",name:"\u5934\u9888\u80a9\u75db",description:"\u843d\u6795",duration:60,price:229,discountPrice:229,availability:"available"},{id:"s2",categoryId:"2",name:"\u6574\u810a\u8e29\u80cc",description:"\u8fd0\u52a8\u81c2\u817f\u9178\u75db",duration:40,price:169,discountPrice:149,availability:"available"},{id:"s3",categoryId:"3",name:"\u8fd0\u52a8\u6392\u9178",description:"",duration:60,price:229,discountPrice:229,availability:"busy"},{id:"s4",categoryId:"4",name:"\u80a0\u80c3\u8c03\u7406",description:"\u6539\u5584\u80c3\u80a0\u529f\u80fd\u3001\u8db3\u7597",duration:60,price:249,discountPrice:229,availability:"available"},{id:"s5",categoryId:"5",name:"\u8170\u9178\u80cc\u75db",description:"",duration:60,price:229,discountPrice:229,availability:"available"},{id:"s6",categoryId:"6",name:"\u8db3\u7597+\u8e29\u80cc",description:"\u8fd0\u52a8\u5c0f\u817f\u80c0\u75db",duration:70,price:279,discountPrice:259,availability:"available"},{id:"s7",categoryId:"7",name:"\u80a0\u80c3\u8c03\u7406",description:"",duration:60,price:229,discountPrice:229,availability:"full"},{id:"s8",categoryId:"8",name:"\u8db3\u7597+\u8e29\u80cc",description:"\u8fd0\u52a8\u5c0f\u817f\u80c0\u75db",duration:70,price:279,discountPrice:259,availability:"available"},{id:"s9",categoryId:"9",name:"\u7126\u8651\u5931\u7720",description:"\u63d0\u9ad8\u7761\u7720\u8d28\u91cf",duration:60,price:249,discountPrice:229,availability:"busy"},{id:"s10",categoryId:"10",name:"\u5934\u9888\u80a9\u75db",description:"\u843d\u6795",duration:60,price:249,discountPrice:229,availability:"full"},{id:"s11",categoryId:"11",name:"\u8fd0\u52a8\u62c9\u4f38",description:"",duration:60,price:229,discountPrice:229,availability:"available"}],R=e=>b.map(s=>o(n({},s),{therapistId:e,availability:Math.random()>.7?"busy":s.availability})),f=e=>new Promise(s=>setTimeout(s,e)),w={getCategories(){return l(this,null,function*(){return yield f(100),{code:200,data:N,message:"success"}})},getTherapistSymptomServices(e){return l(this,null,function*(){if(yield f(200),!e)throw new Error("\u63a8\u62ff\u5e08ID\u4e0d\u80fd\u4e3a\u7a7a");const s=R(e);return{code:200,data:s,message:"success"}})},getStoreSymptomServices(e){return l(this,null,function*(){if(yield f(200),!e)throw new Error("\u95e8\u5e97ID\u4e0d\u80fd\u4e3a\u7a7a");const s=x.mockTherapists.filter(s=>s.storeId===e),t=[];return s.forEach(e=>{const s=R(e.id);s.forEach(s=>{t.push(o(n({},s),{therapistId:e.id,therapistName:e.name,therapistAvatar:e.avatar}))})}),{code:200,data:t,message:"success"}})},getServicesByCategory(e,s){return l(this,null,function*(){yield f(150);const t=R(e),i=t.filter(e=>e.categoryId===s);return{code:200,data:i,message:"success"}})}},T="",I=()=>{const e=d.taroExports.useRouter(),{storeId:s,storeName:t,selectedDate:i,selectedTime:a}=e.params,[r,c]=d.reactExports.useState([]),[n,o]=d.reactExports.useState([]),[l,m]=d.reactExports.useState([]),[p,j]=d.reactExports.useState(""),[h,v]=d.reactExports.useState([]),[y,N]=d.reactExports.useState(!0);d.reactExports.useEffect(()=>{s&&x.therapistService.getTherapistsByStore(s).then(e=>{c(e.list)})},[s]),d.reactExports.useEffect(()=>{w.getCategories().then(e=>{o(e.data),e.data.length>0&&j(e.data[0].id)})},[]),d.reactExports.useEffect(()=>{s&&(N(!0),w.getStoreSymptomServices(s).then(e=>{m(e.data),N(!1)}))},[s]);const b=d.reactExports.useMemo(()=>l.filter(e=>e.categoryId===p),[l,p]),R=d.reactExports.useMemo(()=>h.map(e=>e.serviceId),[h]),f=(e,s)=>{const t=r.find(e=>e.id===s);if(!t)return;const c={serviceId:e.id,serviceName:e.name,duration:e.duration,price:e.price,discountPrice:e.discountPrice,date:i||(new Date).toISOString().split("T")[0],time:a||"\u5f85\u9009\u62e9",therapistName:t.name,therapistAvatar:t.avatar};v([...h,c]),d.Taro.showToast({title:"\u5df2\u6dfb\u52a0\u5230\u8d2d\u7269\u8f66",icon:"none"})},T=()=>{if(0===h.length)return void d.Taro.showToast({title:"\u8bf7\u5148\u9009\u62e9\u670d\u52a1\u9879\u76ee",icon:"none"});const e={items:JSON.stringify(h),storeId:s,storeName:t,from:"symptom"};d.Taro.navigateTo({url:`/pages/booking/confirm/index?${Object.entries(e).map(([e,s])=>`${e}=${encodeURIComponent(s)}`).join("&")}`})};return y?d.jsxRuntimeExports.jsx(d.View,{className:"symptom-page loading",children:"\u52a0\u8f7d\u4e2d..."}):d.jsxRuntimeExports.jsxs(d.View,{className:"symptom-page",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"symptom-content",children:[d.jsxRuntimeExports.jsx(u,{categories:n,activeId:p,onChange:j}),d.jsxRuntimeExports.jsx(E,{services:b,therapists:r,onAddToCart:f,cartServiceIds:R})]}),d.jsxRuntimeExports.jsx(g,{items:h,onCheckout:T})]})};var P={navigationBarTitleText:"\u63a8\u62ff\u5e08\u9884\u7ea6",navigationBarTextStyle:"black",navigationBarBackgroundColor:"#ffffff"};Page(d.createPageConfig(I,"pages/appointment/symptom/index",{root:{cn:[]}},P||{}));
+"use strict";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index$4 = "";
+const SymptomCategoryTabs = ({
+  categories,
+  activeId,
+  onChange,
+  className
+}) => {
+  return /* @__PURE__ */ taro.jsx(
+    taro.ScrollView,
+    {
+      className: vendors.classNames("symptom-category-tabs", className),
+      scrollY: true,
+      showScrollbar: false,
+      children: categories.map(
+        (category) => /* @__PURE__ */ taro.jsx(
+          taro.View,
+          {
+            className: vendors.classNames("category-item", {
+              "active": category.id === activeId
+            }),
+            onClick: () => onChange(category.id),
+            children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "category-name", children: category.name })
+          },
+          category.id
+        )
+      )
+    }
+  );
+};
+const index$3 = "";
+const SymptomServiceCard = ({
+  service,
+  onAdd,
+  isInCart = false,
+  className
+}) => {
+  const availabilityText = {
+    available: "空闲",
+    busy: "繁忙",
+    full: "爆满"
+  };
+  const availabilityClass = {
+    available: "status-available",
+    busy: "status-busy",
+    full: "status-full"
+  };
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: vendors.classNames("symptom-service-card", className), children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-header", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: service.name }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: vendors.classNames("service-status", availabilityClass[service.availability]), children: availabilityText[service.availability] })
+    ] }),
+    /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-description", children: service.description }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-footer", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-info", children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-duration", children: [
+          service.duration,
+          "分钟"
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-price", children: [
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price-current", children: [
+            "¥",
+            service.discountPrice || service.price
+          ] }),
+          service.discountPrice && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price-original", children: [
+            "¥",
+            service.price
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(
+        taro.View,
+        {
+          className: vendors.classNames("add-button", {
+            "in-cart": isInCart,
+            "disabled": service.availability === "full"
+          }),
+          onClick: service.availability !== "full" ? onAdd : void 0,
+          children: service.availability === "full" ? /* @__PURE__ */ taro.jsx(taro.Text, { className: "button-text", children: "已满" }) : /* @__PURE__ */ taro.jsx(taro.Text, { className: "iconfont icon-add" })
+        }
+      )
+    ] })
+  ] });
+};
+const index$2 = "";
+const SymptomServiceList = ({
+  services,
+  therapists,
+  onAddToCart,
+  cartServiceIds,
+  className
+}) => {
+  const groupedServices = therapists.map((therapist) => {
+    const therapistServices = services.filter((service) => service.therapistId === therapist.id);
+    return {
+      therapist,
+      services: therapistServices
+    };
+  }).filter((group) => group.services.length > 0);
+  return /* @__PURE__ */ taro.jsx(
+    taro.ScrollView,
+    {
+      className: `symptom-service-list ${className || ""}`,
+      scrollY: true,
+      showScrollbar: false,
+      children: /* @__PURE__ */ taro.jsx(taro.View, { className: "service-list-content", children: groupedServices.map(
+        (group) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-group", children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-header", children: [
+            /* @__PURE__ */ taro.jsx(
+              taro.Image,
+              {
+                className: "therapist-avatar",
+                src: group.therapist.avatar,
+                mode: "aspectFill"
+              }
+            ),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: group.therapist.name }),
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "therapist-level", children: [
+                "LV",
+                group.therapist.level || 1
+              ] })
+            ] }),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-rating", children: [
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "rating-score", children: [
+                group.therapist.rating,
+                "分"
+              ] }),
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "view-details", children: [
+                "查看详情",
+                ">"
+              ] })
+            ] })
+          ] }),
+          group.services.map(
+            (service) => /* @__PURE__ */ taro.jsx(
+              SymptomServiceCard,
+              {
+                service,
+                onAdd: () => onAddToCart(service, group.therapist.id),
+                isInCart: cartServiceIds.includes(service.id)
+              },
+              service.id
+            )
+          )
+        ] }, group.therapist.id)
+      ) })
+    }
+  );
+};
+const index$1 = "";
+const ShoppingCart = ({ items, onCheckout }) => {
+  const [expanded, setExpanded] = taro.useState(false);
+  const totalPrice = items.reduce((sum, item) => {
+    return sum + (item.discountPrice || item.price);
+  }, 0);
+  const totalOriginalPrice = items.reduce((sum, item) => {
+    return sum + item.price;
+  }, 0);
+  const savedAmount = totalOriginalPrice - totalPrice;
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "shopping-cart", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-summary", onClick: () => setExpanded(!expanded), children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-icon", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "cart-badge", children: items.length }) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥",
+          totalPrice
+        ] }),
+        savedAmount > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "saved-amount", children: [
+          "已省¥",
+          savedAmount
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(
+        vendors.AtButton,
+        {
+          className: "checkout-btn",
+          type: "primary",
+          size: "small",
+          onClick: (e) => {
+            e.stopPropagation();
+            onCheckout();
+          },
+          children: "去结算"
+        }
+      )
+    ] }),
+    expanded && /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-details", children: items.map(
+      (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-item", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "item-info", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: item.serviceName }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "therapist-name", children: [
+            item.therapistName,
+            " | ",
+            item.duration,
+            "分钟"
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "item-price", children: item.discountPrice ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
+            "¥",
+            item.discountPrice
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
+            "¥",
+            item.price
+          ] })
+        ] }) : /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
+          "¥",
+          item.price
+        ] }) })
+      ] }, index2)
+    ) })
+  ] });
+};
+const symptomCategories = [{
+  id: "1",
+  name: "头颈肩痛",
+  order: 1
+}, {
+  id: "2",
+  name: "对症推拿",
+  order: 2
+}, {
+  id: "3",
+  name: "运动排酸",
+  order: 3
+}, {
+  id: "4",
+  name: "睡眠调理",
+  order: 4
+}, {
+  id: "5",
+  name: "腰酸背痛",
+  order: 5
+}, {
+  id: "6",
+  name: "整脊踩背",
+  order: 6
+}, {
+  id: "7",
+  name: "肠胃调理",
+  order: 7
+}, {
+  id: "8",
+  name: "足疗+踩背",
+  order: 8
+}, {
+  id: "9",
+  name: "焦虑失眠",
+  order: 9
+}, {
+  id: "10",
+  name: "温宫暖巢",
+  order: 10
+}, {
+  id: "11",
+  name: "运动拉伸",
+  order: 11
+}];
+const symptomServices = [
+  // 头颈肩痛
+  {
+    id: "s1",
+    categoryId: "1",
+    name: "头颈肩痛",
+    description: "落枕",
+    duration: 60,
+    price: 229,
+    discountPrice: 229,
+    availability: "available"
+  },
+  // 对症推拿
+  {
+    id: "s2",
+    categoryId: "2",
+    name: "整脊踩背",
+    description: "运动臂腿酸痛",
+    duration: 40,
+    price: 169,
+    discountPrice: 149,
+    availability: "available"
+  },
+  // 运动排酸
+  {
+    id: "s3",
+    categoryId: "3",
+    name: "运动排酸",
+    description: "",
+    duration: 60,
+    price: 229,
+    discountPrice: 229,
+    availability: "busy"
+  },
+  // 睡眠调理
+  {
+    id: "s4",
+    categoryId: "4",
+    name: "肠胃调理",
+    description: "改善胃肠功能、足疗",
+    duration: 60,
+    price: 249,
+    discountPrice: 229,
+    availability: "available"
+  },
+  // 腰酸背痛
+  {
+    id: "s5",
+    categoryId: "5",
+    name: "腰酸背痛",
+    description: "",
+    duration: 60,
+    price: 229,
+    discountPrice: 229,
+    availability: "available"
+  },
+  // 整脊踩背
+  {
+    id: "s6",
+    categoryId: "6",
+    name: "足疗+踩背",
+    description: "运动小腿胀痛",
+    duration: 70,
+    price: 279,
+    discountPrice: 259,
+    availability: "available"
+  },
+  // 肠胃调理
+  {
+    id: "s7",
+    categoryId: "7",
+    name: "肠胃调理",
+    description: "",
+    duration: 60,
+    price: 229,
+    discountPrice: 229,
+    availability: "full"
+  },
+  // 足疗+踩背
+  {
+    id: "s8",
+    categoryId: "8",
+    name: "足疗+踩背",
+    description: "运动小腿胀痛",
+    duration: 70,
+    price: 279,
+    discountPrice: 259,
+    availability: "available"
+  },
+  // 焦虑失眠
+  {
+    id: "s9",
+    categoryId: "9",
+    name: "焦虑失眠",
+    description: "提高睡眠质量",
+    duration: 60,
+    price: 249,
+    discountPrice: 229,
+    availability: "busy"
+  },
+  // 温宫暖巢
+  {
+    id: "s10",
+    categoryId: "10",
+    name: "头颈肩痛",
+    description: "落枕",
+    duration: 60,
+    price: 249,
+    discountPrice: 229,
+    availability: "full"
+  },
+  // 运动拉伸
+  {
+    id: "s11",
+    categoryId: "11",
+    name: "运动拉伸",
+    description: "",
+    duration: 60,
+    price: 229,
+    discountPrice: 229,
+    availability: "available"
+  }
+];
+const getTherapistSymptomServices = (therapistId) => {
+  return symptomServices.map((service) => __spreadProps(__spreadValues({}, service), {
+    therapistId,
+    // 模拟动态可用性
+    availability: Math.random() > 0.7 ? "busy" : service.availability
+  }));
+};
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const symptomService = {
+  // 获取症状分类
+  getCategories() {
+    return __async(this, null, function* () {
+      yield sleep(100);
+      return {
+        code: 200,
+        data: symptomCategories,
+        message: "success"
+      };
+    });
+  },
+  // 获取推拿师的症状服务列表
+  getTherapistSymptomServices(therapistId) {
+    return __async(this, null, function* () {
+      yield sleep(200);
+      if (!therapistId) {
+        throw new Error("推拿师ID不能为空");
+      }
+      const services = getTherapistSymptomServices(therapistId);
+      return {
+        code: 200,
+        data: services,
+        message: "success"
+      };
+    });
+  },
+  // 获取门店所有推拿师的症状服务列表
+  getStoreSymptomServices(storeId) {
+    return __async(this, null, function* () {
+      yield sleep(200);
+      if (!storeId) {
+        throw new Error("门店ID不能为空");
+      }
+      const storeTherapists = common.mockTherapists.filter((t) => t.storeId === storeId);
+      const allServices = [];
+      storeTherapists.forEach((therapist) => {
+        const services = getTherapistSymptomServices(therapist.id);
+        services.forEach((service) => {
+          allServices.push(__spreadProps(__spreadValues({}, service), {
+            therapistId: therapist.id,
+            // 添加推拿师ID以便展示时分组
+            therapistName: therapist.name,
+            // 添加推拿师名称
+            therapistAvatar: therapist.avatar
+            // 添加推拿师头像
+          }));
+        });
+      });
+      return {
+        code: 200,
+        data: allServices,
+        message: "success"
+      };
+    });
+  },
+  // 根据分类ID获取服务列表
+  getServicesByCategory(therapistId, categoryId) {
+    return __async(this, null, function* () {
+      yield sleep(150);
+      const allServices = getTherapistSymptomServices(therapistId);
+      const filteredServices = allServices.filter((service) => service.categoryId === categoryId);
+      return {
+        code: 200,
+        data: filteredServices,
+        message: "success"
+      };
+    });
+  }
+};
+const index = "";
+const SymptomPage = () => {
+  const router = taro.taroExports.useRouter();
+  const { storeId, storeName, selectedDate, selectedTime } = router.params;
+  const [therapists, setTherapists] = taro.useState([]);
+  const [categories, setCategories] = taro.useState([]);
+  const [services, setServices] = taro.useState([]);
+  const [activeCategoryId, setActiveCategoryId] = taro.useState("");
+  const [cartItems, setCartItems] = taro.useState([]);
+  const [loading, setLoading] = taro.useState(true);
+  taro.useEffect(() => {
+    if (storeId) {
+      common.therapistService.getTherapistsByStore(storeId).then((res) => {
+        setTherapists(res.list);
+      });
+    }
+  }, [storeId]);
+  taro.useEffect(() => {
+    symptomService.getCategories().then((res) => {
+      setCategories(res.data);
+      if (res.data.length > 0) {
+        setActiveCategoryId(res.data[0].id);
+      }
+    });
+  }, []);
+  taro.useEffect(() => {
+    if (storeId) {
+      setLoading(true);
+      symptomService.getStoreSymptomServices(storeId).then((res) => {
+        setServices(res.data);
+        setLoading(false);
+      });
+    }
+  }, [storeId]);
+  const filteredServices = taro.useMemo(() => {
+    return services.filter((service) => service.categoryId === activeCategoryId);
+  }, [services, activeCategoryId]);
+  const cartServiceIds = taro.useMemo(() => {
+    return cartItems.map((item) => item.serviceId);
+  }, [cartItems]);
+  const handleAddToCart = (service, therapistId) => {
+    const therapist = therapists.find((t) => t.id === therapistId);
+    if (!therapist)
+      return;
+    const newItem = {
+      serviceId: service.id,
+      serviceName: service.name,
+      duration: service.duration,
+      price: service.price,
+      discountPrice: service.discountPrice,
+      date: selectedDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+      time: selectedTime || "待选择",
+      therapistName: therapist.name,
+      therapistAvatar: therapist.avatar
+    };
+    setCartItems([...cartItems, newItem]);
+    taro.Taro.showToast({
+      title: "已添加到购物车",
+      icon: "none"
+    });
+  };
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      taro.Taro.showToast({
+        title: "请先选择服务项目",
+        icon: "none"
+      });
+      return;
+    }
+    const params = {
+      items: JSON.stringify(cartItems),
+      storeId,
+      storeName,
+      from: "symptom"
+    };
+    taro.Taro.navigateTo({
+      url: `/pages/booking/confirm/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
+    });
+  };
+  if (loading) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "symptom-page loading", children: "加载中..." });
+  }
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "symptom-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "symptom-content", children: [
+      /* @__PURE__ */ taro.jsx(
+        SymptomCategoryTabs,
+        {
+          categories,
+          activeId: activeCategoryId,
+          onChange: setActiveCategoryId
+        }
+      ),
+      /* @__PURE__ */ taro.jsx(
+        SymptomServiceList,
+        {
+          services: filteredServices,
+          therapists,
+          onAddToCart: handleAddToCart,
+          cartServiceIds
+        }
+      )
+    ] }),
+    /* @__PURE__ */ taro.jsx(
+      ShoppingCart,
+      {
+        items: cartItems,
+        onCheckout: handleCheckout
+      }
+    )
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "推拿师预约",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#ffffff"
+};
+Page(taro.createPageConfig(SymptomPage, "pages/appointment/symptom/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

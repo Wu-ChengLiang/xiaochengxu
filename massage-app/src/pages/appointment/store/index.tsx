@@ -130,7 +130,7 @@ const StoreAppointmentPage: React.FC = () => {
                 {store.status === 'full' && '爆满'}
               </View>
             </View>
-            <Text className="address">{store.address} (电影院门口)</Text>
+            <Text className="address">{store.address}</Text>
           </View>
           <View className="action-buttons">
             <View className="action-btn" onClick={handleCallStore}>
