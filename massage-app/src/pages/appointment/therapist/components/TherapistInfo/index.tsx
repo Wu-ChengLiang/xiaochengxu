@@ -15,7 +15,7 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
     level: 'LV4',
     rating: therapist.rating || 5,
     salesCount: therapist.serviceCount || 10109,
-    description: '毕业于成都中医药大学针灸推拿专业。高级康复师 从业18年，专研身体疼痛、运动康复、产后康复、体态调理、经络疏通、美容养生等',
+    description: therapist.description || '待完善',
     ...therapist
   }
 

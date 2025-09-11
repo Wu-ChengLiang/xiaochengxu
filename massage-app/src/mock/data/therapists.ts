@@ -32,7 +32,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '整骨', '辩证', '颈肩腰腿痛'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: '专业推拿师，擅长推拿整骨、辨证治疗，对颈肩腰腿痛有丰富的临床经验，采用中医经络理论精准辨证施治。'
   },
   {
     id: 'therapist-102',
@@ -58,7 +59,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['艾灸', '脏腑调理', '推拿', '经络调理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: '精通艾灸疗法和脏腑调理技术，擅长通过推拿和经络疏通来调理人体脏腑功能，对亚健康调理有独特见解。'
   },
 
   // 东方路店 (store-027) - 6位
@@ -73,7 +75,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['脏腑', '脊柱', '疼痛', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: '专业中医推拿师，擅长脏腑调理和脊柱矯正，对各类疼痛有丰富的治疗经验，结合艾灸疗法提高治疗效果。'
   },
   {
     id: 'therapist-105',
@@ -125,7 +128,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['关节复位', '软组织损伤', '脏腑', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: '骨伤科专家，擅长关节复位和软组织损伤治疗，结合中医脏腑理论和艾灸技术，对运动损伤和骨关节疾病有显著疗效。'
   },
   {
     id: 'therapist-109',

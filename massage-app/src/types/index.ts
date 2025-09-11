@@ -44,6 +44,7 @@ export interface Therapist {
   serviceCount: number // 服务次数
   status: 'available' | 'busy' | 'rest'
   distance?: number  // 继承自门店的距离
+  description?: string // 推拿师简介描述
 }
 
 // 预约模型
