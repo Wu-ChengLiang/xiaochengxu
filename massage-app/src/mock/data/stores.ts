@@ -33,7 +33,7 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2692,  // 普陀区长江西路附近
+      latitude: 31.2692,  // 需要确认正确坐标，当前使用估算值
       longitude: 121.3785
     },
     status: 'normal',
@@ -52,8 +52,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2281,  // 黄浦区豫园附近
-      longitude: 121.4923
+      latitude: 31.225531,
+      longitude: 121.483349
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -71,8 +71,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1845,  // 徐汇区斜土路附近
-      longitude: 121.4512
+      latitude: 31.197641,
+      longitude: 121.458331
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -90,8 +90,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2135,  // 长宁区仙霞路附近
-      longitude: 121.3892
+      latitude: 31.207708,
+      longitude: 121.379271
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -109,8 +109,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2456,  // 普陀区武宁南路附近
-      longitude: 121.4234
+      latitude: 31.225611,
+      longitude: 121.43797
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -128,8 +128,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2134,  // 浦东新区世纪公园附近
-      longitude: 121.5523
+      latitude: 31.209967,
+      longitude: 121.538265
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -147,8 +147,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1123,  // 闵行区莘庄附近
-      longitude: 121.3865
+      latitude: 31.105884,
+      longitude: 121.376028
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -166,8 +166,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2085,  // 浦东新区浦三路附近
-      longitude: 121.5012
+      latitude: 31.197651,
+      longitude: 121.511918
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -185,8 +185,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2456,  // 浦东新区浦东大道附近
-      longitude: 121.5234
+      latitude: 31.240308,
+      longitude: 121.519302
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -204,8 +204,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2789,  // 杨浦区隆昌路附近
-      longitude: 121.5478
+      latitude: 31.274948,
+      longitude: 121.54365
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -223,8 +223,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1723,  // 徐汇区龙华路附近
-      longitude: 121.4534
+      latitude: 31.17101,
+      longitude: 121.447123
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -242,8 +242,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2567,  // 普陀区兰溪路附近
-      longitude: 121.3967
+      latitude: 31.256603,
+      longitude: 121.402713
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -261,8 +261,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1623,  // 浦东新区康桥附近
-      longitude: 121.5678
+      latitude: 31.134335,
+      longitude: 121.581084
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -280,8 +280,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2856,  // 浦东新区巨峰路附近
-      longitude: 121.5912
+      latitude: 31.279771,
+      longitude: 121.619936
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -299,8 +299,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2245,  // 静安区静安寺附近
-      longitude: 121.4467
+      latitude: 31.224122,
+      longitude: 121.444493
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -318,8 +318,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2389,  // 普陀区曹杨路附近
-      longitude: 121.4178
+      latitude: 31.236622,
+      longitude: 121.417976
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -337,8 +337,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2923,  // 杨浦区国顺路附近
-      longitude: 121.5089
+      latitude: 31.292069,
+      longitude: 121.51097
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -356,8 +356,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.0234,  // 松江区关山路附近
-      longitude: 121.2456
+      latitude: 31.290734,
+      longitude: 121.521979
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -375,8 +375,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1923,  // 长宁区虹桥路附近
-      longitude: 121.4156
+      latitude: 31.197338,
+      longitude: 121.40311
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -394,8 +394,8 @@ export const mockStores: Store[] = [
       end: '21:00'
     },
     location: {
-      latitude: 31.2045,  // 徐汇区广元西路附近
-      longitude: 121.4289
+      latitude: 31.196264,
+      longitude: 121.434905
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -413,8 +413,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2389,  // 普陀区金沙江路附近
-      longitude: 121.3567
+      latitude: 31.242084,
+      longitude: 121.358959
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -432,8 +432,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2234,  // 浦东新区东方路附近
-      longitude: 121.5223
+      latitude: 31.22643,
+      longitude: 121.523977
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -451,8 +451,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.0956,  // 闵行区春申路附近
-      longitude: 121.3945
+      latitude: 31.157768,
+      longitude: 121.451643
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -470,8 +470,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1723,  // 徐汇区漕东支路附近
-      longitude: 121.4412
+      latitude: 31.197591,
+      longitude: 121.458389
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -489,8 +489,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1789,  // 闵行区吴中路爱琴海附近
-      longitude: 121.3834
+      latitude: 31.174863,
+      longitude: 121.373308
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -508,8 +508,8 @@ export const mockStores: Store[] = [
       end: '21:00'
     },
     location: {
-      latitude: 31.3923,  // 宝山区政立路附近
-      longitude: 121.4901
+      latitude: 31.309322,
+      longitude: 121.501192
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -527,8 +527,8 @@ export const mockStores: Store[] = [
       end: '21:00'
     },
     location: {
-      latitude: 31.1845,  // 徐汇区小木桥路附近
-      longitude: 121.4512
+      latitude: 31.197641,
+      longitude: 121.458331
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -546,8 +546,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.3012,  // 杨浦区五角场附近
-      longitude: 121.5145
+      latitude: 31.300107,
+      longitude: 121.513744
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -565,8 +565,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.3756,  // 宝山区聚丰园路附近
-      longitude: 121.4623
+      latitude: 31.314744,
+      longitude: 121.384749
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -584,8 +584,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.0245,  // 闵行区南方商城附近
-      longitude: 121.3967
+      latitude: 31.131273,
+      longitude: 121.399816
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -603,8 +603,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2467,  // 普陀区中山北路附近
-      longitude: 121.4389
+      latitude: 31.24614,
+      longitude: 121.432306
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -622,8 +622,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.2867,  // 杨浦区国定路附近
-      longitude: 121.5123
+      latitude: 31.294037,
+      longitude: 121.514783
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
@@ -641,8 +641,8 @@ export const mockStores: Store[] = [
       end: '22:00'
     },
     location: {
-      latitude: 31.1167,  // 浦东新区周浦附近
-      longitude: 121.5956
+      latitude: 31.114446,
+      longitude: 121.566609
     },
     status: 'normal',
     services: ['service-001', 'service-002', 'service-003', 'service-004', 'service-005', 'service-006', 'service-007', 'service-008', 'service-009', 'service-010', 'service-011']
