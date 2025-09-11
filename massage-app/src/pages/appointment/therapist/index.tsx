@@ -60,13 +60,28 @@ const TherapistBookingPage: React.FC = () => {
       setLoading(true)
       setError('')
 
+      // 添加调试日志
+      console.log('TherapistBookingPage params:', { therapistId, storeId })
+      
+      if (!therapistId || !storeId) {
+        console.error('Missing required params:', { therapistId, storeId })
+        setError('参数错误，请重新进入')
+        return
+      }
+
       const [therapistRes, storeData] = await Promise.all([
         therapistService.getTherapistDetail(therapistId),
         storeService.getStoreDetail(storeId)
       ])
 
+      console.log('Store data response:', storeData)
+      console.log('Store data.data:', storeData.data)
+
       setTherapist(therapistRes.data)
-      setStore(storeData)
+      setStore(storeData.data)
+      
+      // 验证数据是否正确设置
+      console.log('Store state after setting:', storeData.data)
     } catch (err) {
       console.error('Failed to load data:', err)
       setError('加载数据失败，请重试')
@@ -192,7 +207,7 @@ const TherapistBookingPage: React.FC = () => {
     <View className="therapist-booking-page">
       <ScrollView className="main-content" scrollY>
         <TherapistInfo therapist={therapist} />
-        <StoreInfo store={store} />
+        {store && <StoreInfo store={store} />}
         <BookingSelector 
           ref={bookingSelectorRef}
           services={mockServices}
