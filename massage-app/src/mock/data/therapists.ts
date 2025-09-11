@@ -1,5 +1,6 @@
 import type { Therapist } from '@/types'
 import { mockImages } from './images'
+import { newTherapists } from './new-therapists'
 
 export const mockTherapists: Therapist[] = [
   {
@@ -113,5 +114,7 @@ export const mockTherapists: Therapist[] = [
     serviceCount: 3876,
     status: 'available',
     distance: 6.5
-  }
+  },
+  // 合并新增门店的推拿师数据
+  ...newTherapists
 ]
