@@ -29,7 +29,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/世纪公园/宋老师.jpg',
     rating: 4.9,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[0],
+    expertise: ['推拿', '整骨', '辩证', '颈肩腰腿痛'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -55,7 +55,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/世纪公园/马老师.jpg',
     rating: 5.0,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[2],
+    expertise: ['艾灸', '脏腑调理', '推拿', '经络调理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -70,7 +70,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/东方路店/朴老师.jpg',
     rating: 4.7,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[3],
+    expertise: ['脏腑', '脊柱', '疼痛', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -109,7 +109,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/东方路店/王老师 (男).jpg',
     rating: 4.9,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[6],
+    expertise: ['脏腑', '体态', '宗筋根骶', '升阳罐', '全息刮痧'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -122,7 +122,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/东方路店/胡老师.jpg',
     rating: 5.0,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[7],
+    expertise: ['关节复位', '软组织损伤', '脏腑', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -135,7 +135,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/东方路店/隋老师.jpg',
     rating: 4.8,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[8],
+    expertise: ['推拿', '经络', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -465,7 +465,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/国顺店/崔老师.jpg',
     rating: 4.7,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[2],
+    expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -478,7 +478,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/国顺店/翟老师.jpg',
     rating: 4.9,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[3],
+    expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -491,7 +491,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/国顺店/蔡老师.jpg',
     rating: 5.0,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[4],
+    expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -547,7 +547,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/康桥店/何老师.jpg',
     rating: 5.0,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[8],
+    expertise: ['五大基础项目', '精油', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -560,7 +560,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/康桥店/孙老师.jpg',
     rating: 4.8,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[9],
+    expertise: ['五大基础项目', '精油', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -586,7 +586,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/康桥店/晟垚老师.jpg',
     rating: 4.7,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[1],
+    expertise: ['五大基础项目', '正骨', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -655,7 +655,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/春申店/聂老师.jpg',
     rating: 4.9,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[6],
+    expertise: ['推拿', '脏腑', '骨盆修复'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -668,7 +668,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/春申店/肖老师.jpg',
     rating: 4.8,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[7],
+    expertise: ['推拿', '经络', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -1013,7 +1013,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/莘庄店/于老师.JPG',
     rating: 4.7,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[2],
+    expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -1052,7 +1052,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/莘庄店/陈老师.JPG',
     rating: 5.0,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[5],
+    expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -1162,7 +1162,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/隆昌路店/吴老师.png',
     rating: 4.7,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[3],
+    expertise: ['推拿', '脏腑', '骨盆修复', '艾灸', '能量罐'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -1175,7 +1175,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/隆昌路店/唐老师.png',
     rating: 4.8,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[4],
+    expertise: ['推拿', '艾灸', '腰肌劳损', '腰间盘突出'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
@@ -1188,7 +1188,7 @@ export const mockTherapists: Therapist[] = [
     avatar: 'http://8.133.16.64/static/XCXimage/老师收集中文原版/隆昌路店/孙老师.png',
     rating: 4.9,
     ratingCount: randomBetween(100, 500),
-    expertise: expertisePool[5],
+    expertise: ['推拿', '艾灸', '腰肌劳损', '腰间盘突出', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
     status: 'available'
