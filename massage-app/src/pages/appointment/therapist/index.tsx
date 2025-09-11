@@ -211,6 +211,7 @@ const TherapistBookingPage: React.FC = () => {
         <BookingSelector 
           ref={bookingSelectorRef}
           services={mockServices}
+          therapistId={therapistId}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
         />

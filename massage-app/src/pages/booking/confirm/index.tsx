@@ -39,14 +39,23 @@ const OrderConfirmPage: React.FC = () => {
   useEffect(() => {
     // 解析传递的数据
     try {
-      const items = JSON.parse(decodeURIComponent(params.items || '[]'))
+      console.log('页面参数:', params)
+      console.log('原始items参数:', params.items)
+      
+      const decodedItems = decodeURIComponent(params.items || '[]')
+      console.log('解码后的items:', decodedItems)
+      
+      const items = JSON.parse(decodedItems)
+      console.log('解析后的购物车项目:', items)
+      
       setCartItems(items)
       
       // 获取推拿师和门店信息
       fetchTherapistAndStoreInfo()
     } catch (error) {
+      console.error('数据解析失败:', error)
       Taro.showToast({
-        title: '数据解析失败',
+        title: `数据解析失败: ${error.message}`,
         icon: 'none'
       })
       setTimeout(() => Taro.navigateBack(), 1500)
@@ -86,21 +95,26 @@ const OrderConfirmPage: React.FC = () => {
     try {
       setLoading(true)
       
+      console.log('获取信息参数:', { therapistId: params.therapistId, storeId: params.storeId })
+      
       // 获取推拿师信息
       const therapistRes = await therapistService.getTherapistDetail(params.therapistId)
       const therapistData = therapistRes.data
+      console.log('推拿师信息:', therapistData)
       
       // 获取门店信息
       const storeRes = await storeService.getStoreDetail(params.storeId)
       const storeData = storeRes.data
+      console.log('门店信息:', storeData)
       
       setTherapistInfo(therapistData)
       setStoreInfo(storeData)
       setLoading(false)
     } catch (error) {
       setLoading(false)
+      console.error('获取信息失败:', error)
       Taro.showToast({
-        title: '获取信息失败',
+        title: `获取信息失败: ${error.message || '未知错误'}`,
         icon: 'none'
       })
     }
@@ -132,10 +146,26 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const handlePayment = async () => {
+    // 添加调试信息
+    console.log('支付检查:', {
+      cartItemsLength: cartItems.length,
+      hasTherapistInfo: !!therapistInfo,
+      hasStoreInfo: !!storeInfo,
+      cartItems,
+      therapistInfo,
+      storeInfo
+    })
+    
     if (cartItems.length === 0 || !therapistInfo || !storeInfo) {
+      const missingInfo = []
+      if (cartItems.length === 0) missingInfo.push('购物车为空')
+      if (!therapistInfo) missingInfo.push('推拿师信息缺失')
+      if (!storeInfo) missingInfo.push('门店信息缺失')
+      
       Taro.showToast({
-        title: '订单信息不完整',
-        icon: 'none'
+        title: `订单信息不完整: ${missingInfo.join(', ')}`,
+        icon: 'none',
+        duration: 3000
       })
       return
     }

@@ -46,7 +46,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-103',
@@ -89,7 +90,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-106',
@@ -102,7 +104,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-107',
@@ -115,7 +118,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['脏腑', '体态', '宗筋根骶', '升阳罐', '全息刮痧'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-108',
@@ -142,7 +146,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 丰庄店 (store-026) - 3位
@@ -157,7 +162,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-111',
@@ -170,7 +176,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-112',
@@ -183,7 +190,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 五角场店 (store-033) - 2位
@@ -198,7 +206,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-114',
@@ -211,7 +220,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 仙霞路店 (store-009) - 4位
@@ -226,7 +236,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-116',
@@ -239,7 +250,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-117',
@@ -252,7 +264,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-118',
@@ -265,7 +278,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[7],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 兰溪路店 (store-017) - 2位
@@ -280,7 +294,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-120',
@@ -293,7 +308,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 关山路店 (store-023) - 3位
@@ -308,7 +324,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-122',
@@ -321,7 +338,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-123',
@@ -334,7 +352,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 南方商城店 (store-035) - 3位
@@ -349,7 +368,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-125',
@@ -362,7 +382,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-126',
@@ -375,7 +396,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 周浦万达店 (store-038) - 3位
@@ -390,7 +412,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-128',
@@ -403,7 +426,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[7],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-129',
@@ -416,7 +440,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 国定路店 (store-037) - 3位
@@ -431,7 +456,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-131',
@@ -444,7 +470,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-132',
@@ -457,7 +484,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 国顺店 (store-022) - 3位
@@ -472,7 +500,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-134',
@@ -485,7 +514,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-135',
@@ -498,7 +528,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 巨峰路店 (store-019) - 3位
@@ -513,7 +544,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-137',
@@ -526,7 +558,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-138',
@@ -539,7 +572,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '妇科', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 康桥店 (store-018) - 4位
@@ -554,7 +588,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['五大基础项目', '精油', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-140',
@@ -567,7 +602,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['五大基础项目', '精油', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-141',
@@ -580,7 +616,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-142',
@@ -593,7 +630,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['五大基础项目', '正骨', '疼痛处理'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 成吉中医 (store-025) - 3位
@@ -608,7 +646,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-144',
@@ -621,7 +660,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-145',
@@ -634,7 +674,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 春申路店 (store-028) - 3位
@@ -649,7 +690,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-147',
@@ -662,7 +704,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '脏腑', '骨盆修复'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-148',
@@ -675,7 +718,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 武宁南路店 (store-010) - 2位
@@ -690,7 +734,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-150',
@@ -703,7 +748,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 永康中医 (store-032) - 3位
@@ -718,7 +764,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-152',
@@ -731,7 +778,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-153',
@@ -744,7 +792,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 汇融天地店 (store-021) - 3位
@@ -759,7 +808,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-155',
@@ -772,7 +822,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-156',
@@ -785,7 +836,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 浦三路店 (store-013) - 4位
@@ -800,7 +852,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-158',
@@ -813,7 +866,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[7],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-159',
@@ -826,7 +880,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-160',
@@ -839,7 +894,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 浦东大道店 (store-014) - 2位
@@ -854,7 +910,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-162',
@@ -867,7 +924,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 漕东里店 (store-029) - 3位
@@ -882,7 +940,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['辩证', '推拿正骨艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-164',
@@ -895,7 +954,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿正骨艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-165',
@@ -908,7 +968,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿正骨艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 爱琴海店 (store-030) - 4位
@@ -923,7 +984,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-167',
@@ -936,7 +998,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-168',
@@ -949,7 +1012,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '正骨', '颈椎病', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-169',
@@ -962,7 +1026,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '脏腑', '妇科', '宗筋根骶'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 联合大厦店 (store-036) - 1位
@@ -977,7 +1042,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 聚丰园路店 (store-034) - 2位
@@ -992,7 +1058,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-172',
@@ -1005,7 +1072,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 莘庄店 (store-012) - 4位
@@ -1020,7 +1088,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-174',
@@ -1033,7 +1102,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-175',
@@ -1046,7 +1116,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-176',
@@ -1059,7 +1130,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '经络', '肩颈腰腿痛调理', '脏腑', '妇科'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 豫园店 (store-007) - 4位
@@ -1074,7 +1146,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-178',
@@ -1087,7 +1160,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[7],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-179',
@@ -1100,7 +1174,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-180',
@@ -1113,7 +1188,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 长江西路店 (store-006) - 3位
@@ -1128,7 +1204,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-182',
@@ -1141,7 +1218,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-183',
@@ -1154,7 +1232,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 隆昌路店 (store-015) - 6位
@@ -1169,7 +1248,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '脏腑', '骨盆修复', '艾灸', '能量罐'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-185',
@@ -1182,7 +1262,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '腰肌劳损', '腰间盘突出'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-186',
@@ -1195,7 +1276,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '艾灸', '腰肌劳损', '腰间盘突出', '脏腑'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-187',
@@ -1208,7 +1290,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-188',
@@ -1221,7 +1304,8 @@ export const mockTherapists: Therapist[] = [
     expertise: ['推拿', '经络', '妇科', '艾灸'],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-189',
@@ -1234,7 +1318,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 静安寺店 (store-020) - 3位
@@ -1249,7 +1334,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-191',
@@ -1262,7 +1348,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-192',
@@ -1275,7 +1362,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[1],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 高岛屋店 (store-024) - 4位
@@ -1290,7 +1378,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[2],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-194',
@@ -1303,7 +1392,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[3],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-195',
@@ -1316,7 +1406,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[4],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-196',
@@ -1329,7 +1420,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[5],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 龙华路店 (store-016) - 3位
@@ -1344,7 +1436,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[6],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-198',
@@ -1357,7 +1450,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[7],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
   {
     id: 'therapist-199',
@@ -1370,7 +1464,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[8],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 妙康中医 (store-031) - 1位（补充到至少2位）
@@ -1385,7 +1480,8 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[9],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   },
 
   // 斜土路店 (store-008) - 1位（补充）
@@ -1400,6 +1496,7 @@ export const mockTherapists: Therapist[] = [
     expertise: expertisePool[0],
     yearsOfExperience: randomBetween(5, 15),
     serviceCount: randomBetween(500, 3000),
-    status: 'available'
+    status: 'available',
+    description: ''
   }
 ]

@@ -1,5 +1,6 @@
-import React, { useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
+import { appointmentService } from '@/services/appointment'
 import './index.scss'
 
 interface Service {
@@ -17,6 +18,7 @@ interface TimeSlot {
 
 interface BookingSelectorProps {
   services: Service[]
+  therapistId?: string
   onServiceSelect: (service: Service) => void
   onTimeSelect: (date: string, time: string) => void
 }
@@ -27,6 +29,7 @@ export interface BookingSelectorHandle {
 
 const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(({ 
   services, 
+  therapistId,
   onServiceSelect, 
   onTimeSelect 
 }, ref) => {
@@ -34,6 +37,8 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([])
+  const [loading, setLoading] = useState(false)
 
   // 暴露方法给父组件
   useImperativeHandle(ref, () => ({
@@ -66,26 +71,45 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
     return dates
   }
 
+  // 获取推拿师可预约时间
+  const loadTherapistAvailability = async (date: string) => {
+    if (!therapistId) return
+    
+    try {
+      setLoading(true)
+      const response = await appointmentService.getTherapistAvailability(therapistId, date)
+      setTimeSlots(response.data)
+    } catch (error) {
+      console.error('获取可预约时间失败:', error)
+      setTimeSlots([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 监听日期变化，加载对应的可预约时间
+  useEffect(() => {
+    if (selectedDate && therapistId) {
+      loadTherapistAvailability(selectedDate)
+    }
+  }, [selectedDate, therapistId])
+
   // 生成时间网格数据（按小时分组）
   const generateTimeGrid = () => {
     const grid = []
     
     for (let hour = 9; hour <= 21; hour++) {
-      const hourSlots = []
-      for (let minute = 0; minute < 60; minute += 10) {
-        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        // 模拟可用性（实际应该从后端获取）
-        const available = Math.random() > 0.3 // 70%的时段可用
-        
-        hourSlots.push({
-          time,
-          available
+      const hourSlots = timeSlots.filter(slot => {
+        const slotHour = parseInt(slot.time.split(':')[0])
+        return slotHour === hour
+      })
+      
+      if (hourSlots.length > 0) {
+        grid.push({
+          hour: `${hour}:00`,
+          slots: hourSlots
         })
       }
-      grid.push({
-        hour: `${hour}:00`,
-        slots: hourSlots
-      })
     }
     
     return grid
