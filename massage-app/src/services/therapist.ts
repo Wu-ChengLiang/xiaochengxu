@@ -1,5 +1,8 @@
 import { mockTherapists } from '@/mock/data/therapists'
+import { mockStores } from '@/mock/data/stores'
+import { getLocationService } from './location'
 import type { Therapist, PageData } from '@/types'
+import type { Location } from './location'
 
 // 模拟网络延迟
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -8,12 +11,13 @@ class TherapistService {
   // 获取推荐推拿师
   async getRecommendedTherapists(
     page: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
+    userLocation?: Location
   ): Promise<PageData<Therapist>> {
     await sleep(300)
     
     // 按评分和服务次数排序
-    const sortedTherapists = [...mockTherapists].sort((a, b) => {
+    let sortedTherapists = [...mockTherapists].sort((a, b) => {
       // 优先按评分排序
       if (b.rating !== a.rating) {
         return b.rating - a.rating
@@ -21,6 +25,30 @@ class TherapistService {
       // 评分相同按服务次数排序
       return b.serviceCount - a.serviceCount
     })
+    
+    // 如果提供了用户位置，计算距离
+    if (userLocation) {
+      sortedTherapists = sortedTherapists.map(therapist => {
+        // 找到推拿师所属门店
+        const store = mockStores.find(s => s.id === therapist.storeId)
+        if (!store || !store.location) {
+          return therapist
+        }
+        
+        // 计算距离
+        const distance = getLocationService.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          store.location.latitude,
+          store.location.longitude
+        )
+        
+        return {
+          ...therapist,
+          distance
+        }
+      })
+    }
     
     const start = (page - 1) * pageSize
     const end = start + pageSize
@@ -39,11 +67,30 @@ class TherapistService {
   async getTherapistsByStore(
     storeId: string,
     page: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
+    userLocation?: Location
   ): Promise<PageData<Therapist>> {
     await sleep(200)
     
-    const storeTherapists = mockTherapists.filter(t => t.storeId === storeId)
+    let storeTherapists = mockTherapists.filter(t => t.storeId === storeId)
+    
+    // 如果提供了用户位置，计算距离
+    if (userLocation) {
+      const store = mockStores.find(s => s.id === storeId)
+      if (store && store.location) {
+        const distance = getLocationService.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          store.location.latitude,
+          store.location.longitude
+        )
+        
+        storeTherapists = storeTherapists.map(therapist => ({
+          ...therapist,
+          distance
+        }))
+      }
+    }
     
     const start = (page - 1) * pageSize
     const end = start + pageSize

@@ -33,7 +33,7 @@ class LocationService {
       console.error('获取位置失败:', error)
       
       // 如果用户拒绝授权，使用默认位置（上海市中心）
-      if (error?.errMsg?.includes('auth deny')) {
+      if ((error as any)?.errMsg?.includes('auth deny')) {
         Taro.showModal({
           title: '提示',
           content: '需要获取您的位置信息来推荐附近门店',

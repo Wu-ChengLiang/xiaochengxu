@@ -27,7 +27,21 @@ const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({
   const [hourList, setHourList] = useState<string[]>([])
   const [minuteList, setMinuteList] = useState<string[]>([])
   
-  const [selectedIndices, setSelectedIndices] = useState([2, 2, 0]) // 临时默认值，会在初始化后更新
+  const [selectedIndices, setSelectedIndices] = useState(() => {
+    const now = new Date()
+    const currentHour = now.getHours()
+    const nextHour = currentHour + 1
+    
+    // 计算小时索引（9点是索引0）
+    let hourIndex = 0
+    if (nextHour >= 9 && nextHour <= 21) {
+      hourIndex = nextHour - 9
+    } else if (nextHour > 21) {
+      hourIndex = 0 // 超过21点就显示明天9点
+    }
+    
+    return [2, hourIndex, 0] // [今天, 计算出的小时, 00分]
+  })
 
   useEffect(() => {
     initializeLists()
