@@ -1,5 +1,5 @@
 .store-card {
-  padding: 0 32rpx 24rpx;  // 使用rpx单位确保真机一致性
+  padding: 0 24rpx 20rpx;  // 使用rpx单位确保真机一致性
   
   .card-content {
     display: flex;
@@ -9,10 +9,10 @@
     .store-image-wrapper {
       width: 200rpx;
       height: 160rpx;
-      border-radius: 16rpx;  // 使用rpx单位
+      border-radius: 12rpx;  // 使用rpx单位
       overflow: hidden;
       flex-shrink: 0;
-      margin-right: 24rpx;
+      margin-right: 20rpx;
       // 关键：确保圆角生效
       position: relative;
       z-index: 1;
@@ -31,10 +31,10 @@
       justify-content: space-between;
       
       .store-name {
-        font-size: 32px;
-        font-weight: 600;
+        font-size: 30px;
+        font-weight: 500;
         color: var(--text-primary);
-        margin-bottom: var(--spacing-xs);
+        margin-bottom: 6px;
       }
       
       .business-hours {
@@ -54,9 +54,9 @@
           border-radius: var(--radius-sm);
           
           &.status-normal {
-            background: rgba(164, 0, 53, 0.15);
+            background: rgba(164, 0, 53, 0.08);
             color: #a40035;
-            border: 1px solid #a40035;
+            border: 1px solid rgba(164, 0, 53, 0.3);
           }
           
           &.status-busy {
