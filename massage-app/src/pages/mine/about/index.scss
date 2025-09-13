@@ -27,7 +27,7 @@
         
         .logo-text {
           color: #fff;
-          font-size: 48px;
+          font-size: 40px;
           font-weight: bold;
         }
         
@@ -68,33 +68,19 @@
     }
     
     .culture-item {
-      display: flex;
-      align-items: flex-start;
       margin-bottom: 24px;
       
       &:last-child {
         margin-bottom: 0;
       }
       
-      .bullet {
-        width: 12px;
-        height: 12px;
-        background-color: var(--text-secondary);
-        border-radius: 50%;
-        margin-top: 14px;
-        margin-right: 16px;
-        flex-shrink: 0;
-      }
-      
       .culture-text {
         font-size: 30px;
         color: var(--text-secondary);
-        line-height: 1.6;
-        
-        .culture-label {
-          color: var(--text-primary);
-          font-weight: 500;
-        }
+        line-height: 1.8;
+        text-align: justify;
+        text-indent: 2em;
+        display: block;
       }
     }
   }

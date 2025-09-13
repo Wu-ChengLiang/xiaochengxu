@@ -37,37 +37,19 @@ const About: React.FC = () => {
       <View className="brand-section">
         <View className="logo-container">
           <View className="logo">
-            <Text className="logo-text">常乐</Text>
+            <Text className="logo-text">名医堂</Text>
           </View>
-          <Text className="brand-name">对症推拿</Text>
+          <Text className="brand-name">上海名医堂</Text>
         </View>
         <Text className="version">版本号：5.1.20</Text>
       </View>
 
       <View className="culture-section">
-        <Text className="section-title">常乐文化</Text>
+        <Text className="section-title">关于我们</Text>
         
         <View className="culture-item">
-          <View className="bullet" />
           <Text className="culture-text">
-            <Text className="culture-label">身份：</Text>
-            中国对症推拿数字化平台开创者
-          </Text>
-        </View>
-        
-        <View className="culture-item">
-          <View className="bullet" />
-          <Text className="culture-text">
-            <Text className="culture-label">主张：</Text>
-            疲劳酸痛，到常乐对症推拿
-          </Text>
-        </View>
-        
-        <View className="culture-item">
-          <View className="bullet" />
-          <Text className="culture-text">
-            <Text className="culture-label">承诺：</Text>
-            对症无效，一键退款
+            上海名医堂是黄浦区中西医结合医院的精品门诊品牌，专注于中西医结合治疗，尤其擅长中医特色理疗（针灸、推拿）、骨伤康复及老年常见病调理，为市中心患者提供专家级、一站式的中医诊疗服务。
           </Text>
         </View>
       </View>
