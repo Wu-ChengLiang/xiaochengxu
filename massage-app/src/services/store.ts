@@ -1,5 +1,7 @@
 import { mockStores } from '@/mock/data/stores'
 import { getLocationService } from './location'
+import { request } from '@/utils/request'
+import { API_CONFIG } from '@/config/api'
 import type { Store, PageData } from '@/types'
 
 // 模拟网络延迟
@@ -13,30 +15,53 @@ class StoreService {
     page: number = 1,
     pageSize: number = 10
   ): Promise<PageData<Store>> {
-    await sleep(300) // 模拟网络延迟
+    if (API_CONFIG.useMock) {
+      // 保留原有Mock逻辑（完全不变）
+      await sleep(300) // 模拟网络延迟
+      
+      // 计算每个门店的距离并排序
+      const storesWithDistance = mockStores.map(store => ({
+        ...store,
+        distance: getLocationService.calculateDistance(
+          latitude,
+          longitude,
+          store.location.latitude,
+          store.location.longitude
+        )
+      })).sort((a, b) => a.distance - b.distance)
+      
+      // 分页处理
+      const start = (page - 1) * pageSize
+      const end = start + pageSize
+      const list = storesWithDistance.slice(start, end)
+      
+      return {
+        list,
+        total: storesWithDistance.length,
+        page,
+        pageSize,
+        hasMore: end < storesWithDistance.length
+      }
+    }
     
-    // 计算每个门店的距离并排序
-    const storesWithDistance = mockStores.map(store => ({
-      ...store,
-      distance: getLocationService.calculateDistance(
-        latitude,
-        longitude,
-        store.location.latitude,
-        store.location.longitude
-      )
-    })).sort((a, b) => a.distance - b.distance)
-    
-    // 分页处理
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-    const list = storesWithDistance.slice(start, end)
-    
-    return {
-      list,
-      total: storesWithDistance.length,
-      page,
-      pageSize,
-      hasMore: end < storesWithDistance.length
+    // 新增：真实API调用
+    try {
+      const data = await request('/stores/nearby', {
+        data: { latitude, longitude, page, pageSize }
+      })
+      
+      console.log('✅ API调用成功:', data)
+      return data.data
+    } catch (error) {
+      console.error('❌ API调用失败，降级到Mock:', error)
+      // 失败时递归调用Mock模式
+      const originalUseMock = API_CONFIG.useMock
+      // @ts-ignore
+      API_CONFIG.useMock = true
+      const result = await this.getNearbyStores(latitude, longitude, page, pageSize)
+      // @ts-ignore
+      API_CONFIG.useMock = originalUseMock // 恢复原设置
+      return result
     }
   }
   
