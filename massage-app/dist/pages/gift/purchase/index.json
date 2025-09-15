@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "电子礼卡",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+}
