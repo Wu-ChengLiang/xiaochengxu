@@ -30,7 +30,11 @@ export default defineConfig<'vite'>({
     enable: true // 开启缓存，提升编译速度
   },
   sass: {
-    resource: []
+    resource: [],
+    // 静默依赖包的弃用警告
+    quietDeps: true,
+    // 静默所有弃用警告（可选，更彻底）
+    // silenceDeprecations: ['import', 'global-builtin', 'legacy-js-api']
   },
   alias: {
     '@': path.resolve(__dirname, '..', 'src'),
