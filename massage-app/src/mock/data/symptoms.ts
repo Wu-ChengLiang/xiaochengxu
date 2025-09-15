@@ -15,214 +15,145 @@ export const symptomServices = [
   {
     id: 's1',
     categoryId: '1',
-    name: '颈椎调理',
-    description: '缓解颈椎疼痛、落枕',
+    name: '【不满意退】颈肩腰腿痛特色调理60分钟',
+    description: '专业手法调理各类痛症',
     duration: 60,
-    price: 258,
-    discountPrice: 229,
-    availability: 'available' as const
+    price: 298,
+    discountPrice: 258,
+    availability: 'available' as const,
+    tag: '不满意退'
   },
   {
     id: 's2',
     categoryId: '1',
-    name: '肩周炎调理',
-    description: '改善肩部活动受限',
+    name: '【冬季养生】肩颈腰背推拿+热疗60分钟',
+    description: '温经通络，驱寒养生',
     duration: 60,
-    price: 258,
-    discountPrice: 229,
-    availability: 'available' as const
+    price: 268,
+    discountPrice: 238,
+    availability: 'available' as const,
+    tag: '冬季养生'
   },
   {
     id: 's3',
     categoryId: '1',
-    name: '腰腿痛调理',
-    description: '缓解腰部及腿部疼痛',
-    duration: 70,
-    price: 298,
-    discountPrice: 268,
-    availability: 'available' as const
+    name: '【初次专享】肩颈疏通+肌肉放松',
+    description: '新客特惠，深度放松',
+    duration: 60,
+    price: 198,
+    discountPrice: 98,
+    availability: 'available' as const,
+    tag: '初次专享'
   },
 
   // 肝胆脾胃调理
   {
     id: 's4',
     categoryId: '2',
-    name: '脾胃调理',
-    description: '改善消化功能',
-    duration: 60,
-    price: 238,
-    discountPrice: 218,
-    availability: 'available' as const
+    name: '【舒肝润肺】推拿+艾灸｜养身伴侣90分钟',
+    description: '疏肝理气，润肺养阴',
+    duration: 90,
+    price: 398,
+    discountPrice: 358,
+    availability: 'available' as const,
+    tag: '热销'
   },
   {
     id: 's5',
     categoryId: '2',
-    name: '肝胆疏通',
-    description: '疏肝理气、排毒养颜',
+    name: '【专项调理】纤养瘦身·脾胃脏腑调理60分钟',
+    description: '调理脾胃，健康瘦身',
     duration: 60,
-    price: 258,
-    discountPrice: 238,
-    availability: 'busy' as const
-  },
-  {
-    id: 's6',
-    categoryId: '2',
-    name: '消化系统调理',
-    description: '调理肠胃、改善便秘',
-    duration: 50,
-    price: 218,
-    discountPrice: 198,
-    availability: 'available' as const
+    price: 318,
+    discountPrice: 288,
+    availability: 'available' as const,
+    tag: '专项调理'
   },
 
   // 失眠调理
   {
-    id: 's7',
+    id: 's6',
     categoryId: '3',
-    name: '安神助眠',
-    description: '改善睡眠质量',
+    name: '【深度放松】全身推拿20年经典60分钟',
+    description: '经典手法，深度助眠',
     duration: 60,
     price: 268,
-    discountPrice: 248,
-    availability: 'available' as const
-  },
-  {
-    id: 's8',
-    categoryId: '3',
-    name: '头部放松',
-    description: '缓解头痛、精神压力',
-    duration: 45,
-    price: 198,
-    discountPrice: 178,
-    availability: 'available' as const
-  },
-  {
-    id: 's9',
-    categoryId: '3',
-    name: '深度睡眠调理',
-    description: '调节神经系统、深度放松',
-    duration: 70,
-    price: 318,
-    discountPrice: 288,
-    availability: 'busy' as const
+    discountPrice: 238,
+    availability: 'available' as const,
+    tag: '经典'
   },
 
   // 宫寒痛经调理
   {
-    id: 's10',
+    id: 's7',
     categoryId: '4',
-    name: '温宫暖巢',
-    description: '调理宫寒、改善手脚冰凉',
+    name: '【特色养生】关元灸手工悬灸60分钟',
+    description: '温补肾阳，调理宫寒',
     duration: 60,
-    price: 278,
+    price: 288,
     discountPrice: 258,
-    availability: 'available' as const
+    availability: 'available' as const,
+    tag: '特色'
   },
   {
-    id: 's11',
+    id: 's8',
     categoryId: '4',
-    name: '痛经调理',
-    description: '缓解经期不适',
-    duration: 50,
-    price: 238,
-    discountPrice: 218,
-    availability: 'available' as const
-  },
-  {
-    id: 's12',
-    categoryId: '4',
-    name: '妇科保养',
-    description: '调理月经不调、保养卵巢',
-    duration: 70,
-    price: 328,
-    discountPrice: 298,
-    availability: 'available' as const
+    name: '【本店热销】特色铺姜关元灸60分钟',
+    description: '铺姜温灸，暖宫调经',
+    duration: 60,
+    price: 298,
+    discountPrice: 268,
+    availability: 'busy' as const,
+    tag: '热销'
   },
 
   // 腙筋根骶
   {
-    id: 's13',
+    id: 's9',
     categoryId: '5',
-    name: '筋膜松解',
-    description: '深层筋膜放松',
+    name: '【体态调整】大师手法中式整脊60分钟',
+    description: '正骨整脊，调整体态',
     duration: 60,
-    price: 298,
-    discountPrice: 268,
-    availability: 'available' as const
-  },
-  {
-    id: 's14',
-    categoryId: '5',
-    name: '根骶调理',
-    description: '骶骨矫正、骨盆调整',
-    duration: 70,
-    price: 358,
-    discountPrice: 328,
-    availability: 'busy' as const
+    price: 398,
+    discountPrice: 368,
+    availability: 'available' as const,
+    tag: '大师手法'
   },
 
   // 运动拉伸
   {
-    id: 's15',
+    id: 's10',
     categoryId: '6',
-    name: '运动后恢复',
-    description: '缓解运动后肌肉酸痛',
-    duration: 50,
+    name: '运动恢复拉伸',
+    description: '专业运动后恢复',
+    duration: 45,
     price: 198,
-    discountPrice: 178,
-    availability: 'available' as const
-  },
-  {
-    id: 's16',
-    categoryId: '6',
-    name: '筋膜拉伸',
-    description: '提升身体柔韧性',
-    duration: 60,
-    price: 238,
-    discountPrice: 218,
-    availability: 'available' as const
-  },
-  {
-    id: 's17',
-    categoryId: '6',
-    name: '运动损伤调理',
-    description: '运动损伤康复调理',
-    duration: 70,
-    price: 288,
-    discountPrice: 258,
+    discountPrice: 168,
     availability: 'available' as const
   },
 
   // 体态调理
   {
-    id: 's18',
+    id: 's11',
     categoryId: '7',
-    name: '体态矫正',
-    description: '改善不良体态',
-    duration: 60,
-    price: 278,
-    discountPrice: 248,
-    availability: 'available' as const
+    name: '【净排寒气】拔罐/刮痧二选一',
+    description: '祛湿排寒，疏通经络',
+    duration: 30,
+    price: 128,
+    discountPrice: 98,
+    availability: 'available' as const,
+    tag: '二选一'
   },
   {
-    id: 's19',
+    id: 's12',
     categoryId: '7',
-    name: '驼背调理',
-    description: '改善驼背、圆肩',
-    duration: 60,
-    price: 268,
-    discountPrice: 238,
-    availability: 'available' as const
-  },
-  {
-    id: 's20',
-    categoryId: '7',
-    name: '骨盆矫正',
-    description: '调整骨盆前倾、后倾',
-    duration: 70,
-    price: 328,
-    discountPrice: 298,
-    availability: 'full' as const
+    name: '【芳香滋养】沉浸式精油SPA',
+    description: '精油护理，身心放松',
+    duration: 90,
+    price: 428,
+    discountPrice: 398,
+    availability: 'available' as const,
+    tag: '精油SPA'
   }
 ]
 
