@@ -3,6 +3,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
+import { symptomServices } from '@/mock/data/symptoms'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
@@ -42,14 +43,16 @@ const TherapistBookingPage: React.FC = () => {
   // BookingSelector 组件引用
   const bookingSelectorRef = useRef<BookingSelectorHandle>(null)
 
-  // Mock 服务数据
-  const mockServices = [
-    { id: '1', name: '肩颈调理', duration: 60, price: 128, discountPrice: 98 },
-    { id: '2', name: '全身推拿', duration: 90, price: 198, discountPrice: 158 },
-    { id: '3', name: '足底按摩', duration: 45, price: 88 },
-    { id: '4', name: '拔罐刮痧', duration: 30, price: 68, discountPrice: 58 },
-    { id: '5', name: '中医理疗', duration: 120, price: 298, discountPrice: 238 }
-  ]
+  // 使用真实的症状服务数据
+  const mockServices = symptomServices.map(service => ({
+    id: service.id,
+    name: service.name,
+    duration: service.duration,
+    price: service.price,
+    discountPrice: service.discountPrice,
+    description: service.description,
+    tag: service.tag
+  }))
 
   useEffect(() => {
     loadData()
