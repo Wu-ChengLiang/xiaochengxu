@@ -12,8 +12,8 @@
   "scripts": {
     "build:weapp": "taro build --type weapp",
     "build:h5": "taro build --type h5",
-    "dev:weapp": "TARO_APP_USE_MOCK=true npm run build:weapp -- --watch",
-    "dev:api": "TARO_APP_USE_MOCK=false TARO_APP_API=http://localhost:3001/api/v2 npm run build:weapp -- --watch",
+    "dev:weapp": "TARO_APP_API=http://localhost:3002/api/v2 npm run build:weapp -- --watch",
+    "dev:api": "TARO_APP_API=http://localhost:3002/api/v2 npm run build:weapp -- --watch",
     "dev:h5": "npm run build:h5 -- --watch",
     "test": "jest",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",

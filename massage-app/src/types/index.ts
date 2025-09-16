@@ -14,20 +14,38 @@ export interface User {
 export interface Store {
   id: string
   name: string
-  images: string[]
+  images?: string[]  // 详情页用
+  image?: string     // 列表页用
   address: string
   phone: string
-  businessHours: {
-    start: string  // "10:00"
-    end: string    // "22:00"
-  }
-  location: {
+  businessHours: string  // "10:00-22:00" 格式
+  location?: {
     latitude: number
     longitude: number
   }
   distance?: number  // 计算得出的距离（km）
   status: 'normal' | 'busy' | 'full'  // 正常、繁忙、爆满
-  services: string[] // 服务项目ID列表
+  services?: StoreService[] // 服务项目列表（详情页用）
+  therapists?: StoreTherapist[] // 门店推拿师列表（详情页用）
+  therapistCount?: number   // 在岗推拿师数量
+}
+
+// 门店服务项目模型
+export interface StoreService {
+  id: string
+  name: string
+  price: number     // 价格（分）
+  duration: number  // 时长（分钟）
+}
+
+// 门店推拿师模型（简化版，用于门店详情）
+export interface StoreTherapist {
+  id: string
+  name: string
+  avatar: string
+  title: string
+  rating: number
+  status: 'available' | 'busy' | 'rest'
 }
 
 // 推拿师模型
@@ -35,15 +53,17 @@ export interface Therapist {
   id: string
   storeId: string
   storeName?: string
+  storeAddress?: string  // 门店地址
   name: string
   avatar: string
-  rating: number     // 评分
-  ratingCount: number // 评价数
-  expertise: string[] // 擅长项目，如 ["头颈肩痛", "足疗+踩背"]
+  title: string         // 职位头衔，如"高级推拿师"
+  rating: number        // 评分
+  ratingCount: number   // 评价数
+  expertise: string[]   // 擅长项目
   yearsOfExperience: number
-  serviceCount: number // 服务次数
+  serviceCount?: number // 服务次数
   status: 'available' | 'busy' | 'rest'
-  distance?: number  // 继承自门店的距离
+  distance?: number     // 继承自门店的距离
 }
 
 // 预约模型
