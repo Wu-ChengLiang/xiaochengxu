@@ -19,9 +19,10 @@ interface CartItem {
 }
 
 interface OrderConfirmPageParams {
-  therapistId: string
+  therapistId?: string
   storeId: string
   items: string // JSON string of CartItem[]
+  from?: string  // 来源标识，如 'symptom'
 }
 
 const OrderConfirmPage: React.FC = () => {
@@ -85,16 +86,17 @@ const OrderConfirmPage: React.FC = () => {
   const fetchTherapistAndStoreInfo = async () => {
     try {
       setLoading(true)
-      
-      // 获取推拿师信息
-      const therapistRes = await therapistService.getTherapistDetail(params.therapistId)
-      const therapistData = therapistRes.data
-      
+
+      // 获取推拿师信息（仅在有therapistId时获取）
+      if (params.therapistId) {
+        const therapistRes = await therapistService.getTherapistDetail(params.therapistId)
+        setTherapistInfo(therapistRes.data)
+      }
+
       // 获取门店信息
       const storeRes = await storeService.getStoreDetail(params.storeId)
       const storeData = storeRes.data
-      
-      setTherapistInfo(therapistData)
+
       setStoreInfo(storeData)
       setLoading(false)
     } catch (error) {
@@ -132,7 +134,11 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const handlePayment = async () => {
-    if (cartItems.length === 0 || !therapistInfo || !storeInfo) {
+    // 症状调理模式下推拿师信息在cartItems中，不需要therapistInfo
+    const isSymptomMode = params.from === 'symptom'
+    const needTherapistInfo = !isSymptomMode && !therapistInfo
+
+    if (cartItems.length === 0 || needTherapistInfo || !storeInfo) {
       Taro.showToast({
         title: '订单信息不完整',
         icon: 'none'
@@ -148,7 +154,7 @@ const OrderConfirmPage: React.FC = () => {
       // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
       const firstItem = cartItems[0]
       const orderParams: CreateOrderParams = {
-        therapistId: params.therapistId,
+        therapistId: params.therapistId || 'symptom-mode', // 症状调理模式使用特殊标识
         storeId: params.storeId,
         serviceId: firstItem.serviceId,
         serviceName: firstItem.serviceName,
@@ -158,7 +164,7 @@ const OrderConfirmPage: React.FC = () => {
         appointmentDate: firstItem.date,
         appointmentTime: firstItem.time,
         therapistName: firstItem.therapistName,
-        therapistAvatar: firstItem.therapistAvatar || therapistInfo.avatar
+        therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar)
       }
 
       // 创建订单
