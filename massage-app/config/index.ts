@@ -68,6 +68,14 @@ export default defineConfig<'vite'>({
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    devServer: {
+      host: '0.0.0.0', // 监听所有网络接口
+      port: 8081,
+      hot: true,
+      fs: {
+        allow: ['..'] // 允许访问项目目录
+      }
+    },
     output: {
       filename: 'js/[name].[hash:8].js',
       chunkFilename: 'js/[name].[chunkhash:8].js'

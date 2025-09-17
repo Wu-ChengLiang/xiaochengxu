@@ -36,14 +36,13 @@ const SymptomServiceList: React.FC<SymptomServiceListProps> = ({
   cartServiceIds,
   className
 }) => {
-  // 按推拿师分组服务
-  const groupedServices = therapists.map(therapist => {
-    const therapistServices = services.filter(service => service.therapistId === therapist.id)
+  // 按服务显示，每个服务显示所有可选推拿师
+  const servicesWithTherapists = services.map(service => {
     return {
-      therapist,
-      services: therapistServices
+      service,
+      availableTherapists: therapists // 所有推拿师都可以提供该服务
     }
-  }).filter(group => group.services.length > 0)
+  })
 
   return (
     <ScrollView 
@@ -52,34 +51,32 @@ const SymptomServiceList: React.FC<SymptomServiceListProps> = ({
       showScrollbar={false}
     >
       <View className="service-list-content">
-        {groupedServices.map((group) => (
-          <View key={group.therapist.id} className="therapist-group">
-            {/* 推拿师信息头部 */}
-            <View className="therapist-header">
-              <Image 
-                className="therapist-avatar" 
-                src={group.therapist.avatar}
-                mode="aspectFill"
-              />
-              <View className="therapist-info">
-                <Text className="therapist-name">{group.therapist.name}</Text>
-                <Text className="therapist-level">LV{group.therapist.level || 1}</Text>
-              </View>
-              <View className="therapist-rating">
-                <Text className="rating-score">{group.therapist.rating}分</Text>
-                <Text className="view-details">查看详情{'>'}</Text>
-              </View>
+        {servicesWithTherapists.map((item) => (
+          <View key={item.service.id} className="service-item-container">
+            {/* 服务卡片 */}
+            <SymptomServiceCard
+              service={item.service}
+              onAdd={() => {}} // 暂时禁用直接添加
+              isInCart={cartServiceIds.includes(item.service.id)}
+            />
+
+            {/* 推拿师区域 */}
+            <View className="therapist-options">
+              {item.availableTherapists.map(therapist => (
+                <View
+                  key={therapist.id}
+                  className="therapist-option"
+                  onClick={() => onAddToCart(item.service, therapist.id)}
+                >
+                  <Image
+                    className="therapist-mini-avatar"
+                    src={therapist.avatar}
+                    mode="aspectFill"
+                  />
+                  <Text className="therapist-name">{therapist.name}</Text>
+                </View>
+              ))}
             </View>
-            
-            {/* 该推拿师的服务列表 */}
-            {group.services.map((service) => (
-              <SymptomServiceCard
-                key={service.id}
-                service={service}
-                onAdd={() => onAddToCart(service, group.therapist.id)}
-                isInCart={cartServiceIds.includes(service.id)}
-              />
-            ))}
           </View>
         ))}
       </View>
