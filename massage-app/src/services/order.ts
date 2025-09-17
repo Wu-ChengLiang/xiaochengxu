@@ -1,27 +1,58 @@
 import Taro from '@tarojs/taro'
 import { sleep } from '@/utils/common'
+import { getApiBaseUrl } from '@/config/api'
+import { ApiResponse } from '@/types'
 
-// 订单数据接口
+const API_BASE = getApiBaseUrl()
+
+/**
+ * 获取当前用户ID
+ * TODO: 从全局状态或本地存储获取实际用户ID
+ */
+const getCurrentUserId = (): number => {
+  // 临时使用固定用户ID，后续从用户状态管理获取
+  return 1
+}
+
+// 订单数据接口 - 支持多种订单类型
 export interface OrderData {
   orderNo: string
-  therapistId: string
-  therapistName: string
-  therapistAvatar: string
-  storeId: string
-  storeName: string
-  storeAddress: string
-  serviceId: string
-  serviceName: string
-  duration: number
-  price: number
-  discountPrice?: number
-  appointmentDate: string
-  appointmentTime: string
+  orderType?: 'service' | 'product' | 'recharge'     // 订单类型
+  userId?: number                                     // 用户ID
+  title?: string                                      // 订单标题（统一字段）
+  paymentMethod?: string                              // 支付方式
   status: 'pending_payment' | 'paid' | 'serving' | 'completed' | 'cancelled' | 'refunded'
   createdAt: string
   paidAt?: string
-  paymentDeadline: string
-  totalAmount: number
+  paymentDeadline?: string
+  totalAmount: number                                 // 金额（元）
+
+  // 按摩预约特有字段（可选）
+  therapistId?: string
+  therapistName?: string
+  therapistAvatar?: string
+  storeId?: string
+  storeName?: string
+  storeAddress?: string
+  serviceId?: string
+  serviceName?: string
+  duration?: number
+  price?: number
+  discountPrice?: number
+  appointmentDate?: string
+  appointmentTime?: string
+
+  // 商品订单特有字段（可选）
+  productId?: string
+  productName?: string
+  quantity?: number
+
+  // 充值订单特有字段（可选）
+  rechargeAmount?: number
+  bonusAmount?: number
+
+  // API返回的原始额外数据
+  extraData?: any
 }
 
 // 创建订单请求参数
@@ -168,21 +199,141 @@ class OrderService {
   
   // 获取订单列表
   async getOrderList(status?: OrderData['status']): Promise<OrderData[]> {
+    try {
+      // 调用真实API
+      const response = await Taro.request({
+        url: `${API_BASE}/api/v2/orders`,
+        method: 'GET',
+        data: {
+          userId: getCurrentUserId(),
+          page: 1,
+          pageSize: 100,
+          status: status ? this.unmapStatus(status) : undefined
+        },
+        header: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const result = response.data as ApiResponse<{list: any[]}>
+      if (result.code !== 0) {
+        throw new Error(result.message)
+      }
+
+      // 转换数据格式
+      return result.data.list.map((order: any) => this.transformApiOrder(order))
+    } catch (error) {
+      console.error('获取订单列表失败:', error)
+      // 降级到本地存储
+      return this.getLocalOrders(status)
+    }
+  }
+
+  // 转换API订单数据为前端格式
+  private transformApiOrder(apiOrder: any): OrderData {
+    const extraData = apiOrder.extraData || {}
+
+    // 基础字段
+    const baseOrder: OrderData = {
+      orderNo: apiOrder.orderNo,
+      orderType: apiOrder.orderType,
+      userId: apiOrder.userId,
+      title: apiOrder.title,
+      status: this.mapPaymentStatus(apiOrder.paymentStatus),
+      totalAmount: apiOrder.amount / 100, // 分转元
+      createdAt: apiOrder.createdAt,
+      paidAt: apiOrder.paidAt,
+      paymentMethod: apiOrder.paymentMethod,
+      extraData: extraData
+    }
+
+    // 根据订单类型补充字段
+    if (apiOrder.orderType === 'service') {
+      return {
+        ...baseOrder,
+        // 从extraData提取按摩预约字段
+        therapistId: extraData.therapistId || '',
+        therapistName: extraData.therapistName || '待分配',
+        therapistAvatar: extraData.therapistAvatar || '',
+        storeId: extraData.storeId || '',
+        storeName: extraData.storeName || '默认门店',
+        storeAddress: extraData.storeAddress || '',
+        serviceId: extraData.serviceId || '',
+        serviceName: extraData.serviceName || apiOrder.title || '按摩服务',
+        appointmentDate: extraData.appointmentDate || '',
+        appointmentTime: extraData.startTime || '',
+        duration: extraData.duration || 60,
+        price: extraData.price ? extraData.price / 100 : apiOrder.amount / 100,
+        discountPrice: extraData.discountPrice ? extraData.discountPrice / 100 : undefined
+      }
+    } else if (apiOrder.orderType === 'product') {
+      return {
+        ...baseOrder,
+        // 从extraData提取商品字段
+        productId: extraData.productId || '',
+        productName: extraData.productName || apiOrder.title,
+        quantity: extraData.quantity || 1,
+        // 为了兼容列表显示，设置一些默认值
+        storeName: '线上商城',
+        therapistName: '商品订单',
+        serviceName: apiOrder.title
+      }
+    } else if (apiOrder.orderType === 'recharge') {
+      return {
+        ...baseOrder,
+        // 从extraData提取充值字段
+        rechargeAmount: extraData.rechargeAmount ? extraData.rechargeAmount / 100 : apiOrder.amount / 100,
+        bonusAmount: extraData.bonus ? extraData.bonus / 100 : 0,
+        // 为了兼容列表显示
+        storeName: '充值中心',
+        therapistName: '充值订单',
+        serviceName: apiOrder.title
+      }
+    }
+
+    // 默认返回基础订单
+    return baseOrder
+  }
+
+  // 状态映射：前端状态 -> API状态
+  private unmapStatus(status: OrderData['status']): string {
+    const statusMap = {
+      'pending_payment': 'pending',
+      'paid': 'paid',
+      'serving': 'paid',
+      'completed': 'completed',
+      'cancelled': 'cancelled',
+      'refunded': 'refunded'
+    }
+    return statusMap[status] || status
+  }
+
+  // 状态映射：API状态 -> 前端状态
+  private mapPaymentStatus(apiStatus: string): OrderData['status'] {
+    const statusMap = {
+      'pending': 'pending_payment',
+      'paid': 'paid',
+      'failed': 'cancelled',
+      'cancelled': 'cancelled',
+      'refunded': 'refunded',
+      'completed': 'completed'
+    }
+    return statusMap[apiStatus] || 'pending_payment'
+  }
+
+  // 获取本地存储的订单（降级方案）
+  private async getLocalOrders(status?: OrderData['status']): Promise<OrderData[]> {
     await sleep(300)
-    
-    // 从本地存储获取订单
     let orders = Taro.getStorageSync('orders') || []
-    
-    // 按状态筛选
+
     if (status) {
       orders = orders.filter((o: OrderData) => o.status === status)
     }
-    
-    // 按创建时间倒序
+
     orders.sort((a: OrderData, b: OrderData) => {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
-    
+
     return orders
   }
   

@@ -184,60 +184,102 @@ const OrderListPage = () => {
     const minute = date.getMinutes();
     return `${month}月${day}日 ${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
   };
-  const renderOrderItem = (order) => /* @__PURE__ */ taro.jsxs(
-    taro.View,
-    {
-      className: "order-item",
-      onClick: () => handleOrderClick(order.orderNo),
-      children: [
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-header", children: [
-          /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: order.storeName }),
-          /* @__PURE__ */ taro.jsx(taro.Text, { className: `order-status ${getStatusClass(order.status)}`, children: getStatusText(order.status) })
-        ] }),
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-content", children: [
-          /* @__PURE__ */ taro.jsx(
-            taro.Image,
-            {
-              className: "therapist-avatar",
-              src: order.therapistAvatar || "https://img.yzcdn.cn/vant/cat.jpeg"
-            }
-          ),
-          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-info", children: [
-            /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-row", children: [
-              /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: order.therapistName }),
-              /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: order.serviceName })
+  const renderOrderItem = (order) => {
+    const getOrderIcon = () => {
+      var _a;
+      if (order.orderType === "service") {
+        return order.therapistAvatar || "https://img.yzcdn.cn/vant/cat.jpeg";
+      } else if (order.orderType === "product") {
+        return ((_a = order.extraData) == null ? void 0 : _a.productType) === "gift_card" ? "/assets/images/gift/card/gift-card.png" : "/assets/images/gift/product/neck-pillow.png";
+      } else if (order.orderType === "recharge") {
+        return "/assets/images/icons/wallet-icon.png";
+      }
+      return "https://img.yzcdn.cn/vant/cat.jpeg";
+    };
+    const getOrderTitle = () => {
+      if (order.orderType === "service") {
+        return order.therapistName || "按摩服务";
+      }
+      return order.title || "订单";
+    };
+    const getOrderSubtitle = () => {
+      var _a, _b;
+      if (order.orderType === "service") {
+        return order.serviceName || "按摩服务";
+      } else if (order.orderType === "product") {
+        const quantity = ((_a = order.extraData) == null ? void 0 : _a.quantity) || 1;
+        return quantity > 1 ? `数量: ${quantity}` : "";
+      } else if (order.orderType === "recharge") {
+        const bonus = (_b = order.extraData) == null ? void 0 : _b.bonus;
+        return bonus ? `赠送金额: ¥${(bonus / 100).toFixed(2)}` : "";
+      }
+      return "";
+    };
+    const getOrderTime = () => {
+      if (order.orderType === "service" && order.appointmentDate) {
+        return `预约时间：${formatDate(`${order.appointmentDate} ${order.appointmentTime || ""}`)}`;
+      }
+      return `下单时间：${formatDate(order.createdAt)}`;
+    };
+    return /* @__PURE__ */ taro.jsxs(
+      taro.View,
+      {
+        className: "order-item",
+        onClick: () => handleOrderClick(order.orderNo),
+        children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-header", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-type-badge", children: [
+              order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.Text, { className: "badge-service", children: "按摩" }),
+              order.orderType === "product" && /* @__PURE__ */ taro.jsx(taro.Text, { className: "badge-product", children: "商品" }),
+              order.orderType === "recharge" && /* @__PURE__ */ taro.jsx(taro.Text, { className: "badge-recharge", children: "充值" })
             ] }),
-            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "appointment-time", children: [
-              "预约时间：",
-              formatDate(`${order.appointmentDate} ${order.appointmentTime}`)
-            ] }) }),
-            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "order-no", children: [
-              "订单号：",
-              order.orderNo
-            ] }) })
-          ] })
-        ] }),
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-footer", children: [
-          /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
-            /* @__PURE__ */ taro.jsx(taro.Text, { className: "label", children: "实付：" }),
-            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
-              "¥",
-              order.totalAmount
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: order.storeName || (order.orderType === "service" ? "默认门店" : order.orderType === "product" ? "线上商城" : "充值中心") }),
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: `order-status ${getStatusClass(order.status)}`, children: getStatusText(order.status) })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-content", children: [
+            /* @__PURE__ */ taro.jsx(
+              taro.Image,
+              {
+                className: "therapist-avatar",
+                src: getOrderIcon(),
+                mode: "aspectFill"
+              }
+            ),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-info", children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-row", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: getOrderTitle() }),
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: getOrderSubtitle() })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "appointment-time", children: getOrderTime() }) }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "order-no", children: [
+                "订单号：",
+                order.orderNo
+              ] }) })
             ] })
           ] }),
-          /* @__PURE__ */ taro.jsxs(taro.View, { className: "action-buttons", children: [
-            order.status === "pending_payment" && /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
-              /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
-              /* @__PURE__ */ taro.jsx(taro.View, { className: "button pay", onClick: (e) => handlePayOrder(e, order), children: "去支付" })
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-footer", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "label", children: "实付：" }),
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+                "¥",
+                order.totalAmount.toFixed(2)
+              ] })
             ] }),
-            order.status === "paid" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
-            (order.status === "completed" || order.status === "cancelled") && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e, order), children: "再次预约" })
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "action-buttons", children: [
+              order.status === "pending_payment" && /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "button pay", onClick: (e) => handlePayOrder(e, order), children: "去支付" })
+              ] }),
+              order.status === "paid" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
+              (order.status === "completed" || order.status === "cancelled") && order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e, order), children: "再次预约" }),
+              (order.status === "completed" || order.status === "cancelled") && order.orderType !== "service" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: () => taro.Taro.navigateBack(), children: "返回" })
+            ] })
           ] })
-        ] })
-      ]
-    },
-    order.orderNo
-  );
+        ]
+      },
+      order.orderNo
+    );
+  };
   const renderEmpty = () => /* @__PURE__ */ taro.jsxs(taro.View, { className: "empty-state", children: [
     /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "file-generic", size: "60", color: "#ccc" }),
     /* @__PURE__ */ taro.jsx(taro.Text, { className: "empty-text", children: "暂无订单" })
