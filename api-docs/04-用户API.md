@@ -1,5 +1,13 @@
 # 用户相关API文档
 
+## MVP版本说明
+
+此文档为MVP（最小可行产品）版本，已简化以下内容：
+- **无积分系统**：移除了所有积分相关功能
+- **统一订单管理**：所有支付（服务、商品、充值）都通过统一的订单系统
+- **简化支付方式**：仅支持微信或余额支付（不支持混合支付）
+- **订单同步创建**：下单即创建订单记录，支付后更新状态
+
 ## 设计原则
 
 1. **简化优先**：初期不做复杂的注册登录系统
@@ -27,10 +35,7 @@ GET /api/v2/users/info
     "phone": "13800138000",
     "name": "张先生",
     "avatar": "/images/avatars/default.jpg",
-    "memberLevel": 0,  // 0普通用户 1银卡 2金卡 3钻石卡
-    "points": 0,  // 积分
     "balance": 12500,  // 余额（分为单位）
-    "frozenBalance": 0,  // 冻结余额（分为单位）
     "appointmentCount": 5,  // 预约次数
     "lastVisit": "2024-01-15T14:00:00.000Z"
   }
@@ -336,20 +341,35 @@ GET /api/v2/users/wallet/balance
 }
 ```
 
-## 6. 创建充值订单
+## 6. 创建订单（统一接口）
 
 ### 接口地址
 ```
-POST /api/v2/users/wallet/recharge
+POST /api/v2/orders/create
 ```
 
 ### 请求参数
 ```json
 {
-  "phone": "13800138000",
-  "amount": 10000,  // 充值金额（分为单位）
-  "bonus": 1000,    // 赠送金额（分为单位）
-  "description": "充值100元，赠送10元"
+  "orderType": "service",  // service服务/product商品/recharge充值
+  "userPhone": "13800138000",
+  "title": "颈部按摩60分钟",  // 订单标题
+  "amount": 12800,  // 金额（分为单位）
+  "paymentMethod": "balance",  // wechat微信支付/balance余额支付
+  "extraData": {
+    // 不同类型订单的额外信息
+    // 服务类：
+    "therapistId": "1",
+    "storeId": "1",
+    "appointmentDate": "2024-01-20",
+    "startTime": "14:00",
+    "duration": 60
+    // 充值类：
+    // "bonus": 1000  // 赠送金额
+    // 商品类：
+    // "productId": "1",
+    // "quantity": 2
+  }
 }
 ```
 
@@ -359,35 +379,38 @@ POST /api/v2/users/wallet/recharge
   "code": 0,
   "message": "success",
   "data": {
-    "orderNo": "RECHARGE202401151234567",
-    "amount": 10000,
-    "bonus": 1000,
-    "totalAmount": 11000,
-    "paymentParams": {
-      "timeStamp": "1642234567",
+    "orderNo": "ORDER202401151234567",
+    "orderType": "service",
+    "title": "颈部按摩60分钟",
+    "amount": 12800,
+    "paymentMethod": "balance",
+    "paymentStatus": "pending",  // pending待支付/paid已支付/failed失败/refunded已退款
+    "createdAt": "2024-01-15T14:30:00.000Z",
+    // 如果是微信支付，返回支付参数
+    "wxPayParams": {
+      "prepayId": "wx_prepay_id",
+      "timeStamp": "1234567890",
       "nonceStr": "random_string",
-      "package": "prepay_id=wx123456789",
-      "signType": "MD5",
-      "paySign": "sign_here"
+      "package": "prepay_id=wx_prepay_id",
+      "signType": "RSA",
+      "paySign": "signature"
     }
   }
 }
 ```
 
-## 7. 余额支付
+## 7. 支付订单
 
 ### 接口地址
 ```
-POST /api/v2/users/wallet/consume
+POST /api/v2/orders/pay
 ```
 
 ### 请求参数
 ```json
 {
-  "phone": "13800138000",
-  "amount": 8000,  // 消费金额（分为单位）
-  "orderNo": "ORD123456789",  // 关联订单号
-  "description": "支付订单-颈部按摩"
+  "orderNo": "ORDER202401151234567",
+  "paymentMethod": "balance"  // wechat微信支付/balance余额支付
 }
 ```
 
@@ -397,10 +420,20 @@ POST /api/v2/users/wallet/consume
   "code": 0,
   "message": "success",
   "data": {
-    "transactionId": "TXN202401151234567",
+    "orderNo": "ORDER202401151234567",
+    "paymentStatus": "paid",
+    "paidAt": "2024-01-15T14:35:00.000Z",
+    // 余额支付返回
     "balance": 4500,  // 支付后余额
-    "amount": 8000,   // 消费金额
-    "createdAt": "2024-01-15T14:30:00.000Z"
+    // 微信支付返回支付参数
+    "wxPayParams": {
+      "prepayId": "wx_prepay_id",
+      "timeStamp": "1234567890",
+      "nonceStr": "random_string",
+      "package": "prepay_id=wx_prepay_id",
+      "signType": "RSA",
+      "paySign": "signature"
+    }
   }
 }
 ```
@@ -546,30 +579,33 @@ CREATE INDEX idx_wallet_transactions_created_at ON wallet_transactions(created_a
 CREATE INDEX idx_wallet_transactions_order_no ON wallet_transactions(order_no);
 ```
 
-## 3. 充值订单表 (recharge_orders)
+## 3. 统一订单表 (orders)
 
 ```sql
-CREATE TABLE recharge_orders (
-  order_no VARCHAR(50) PRIMARY KEY,  -- RECHARGE开头的订单号
-  phone VARCHAR(20) NOT NULL,
-  amount INTEGER NOT NULL,           -- 支付金额（分）
-  bonus INTEGER NOT NULL DEFAULT 0,  -- 赠送金额（分）
-  total_amount INTEGER NOT NULL,     -- 总到账金额
-  status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending/paid/failed
-  payment_method VARCHAR(20) NOT NULL DEFAULT 'wechat',  -- wechat
+CREATE TABLE orders (
+  order_no VARCHAR(50) PRIMARY KEY,  -- ORDER开头的订单号
+  order_type VARCHAR(20) NOT NULL,   -- service服务/product商品/recharge充值
+  user_phone VARCHAR(20) NOT NULL,
+  title VARCHAR(200) NOT NULL,       -- 订单标题
+  amount INTEGER NOT NULL,           -- 订单金额（分）
+  payment_method VARCHAR(20),        -- wechat微信/balance余额
+  payment_status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending待支付/paid已支付/failed失败/refunded已退款
+  extra_data TEXT,                   -- 额外数据（JSON格式，存储不同类型订单的特定信息）
   wx_prepay_id VARCHAR(100),         -- 微信预支付ID
   wx_transaction_id VARCHAR(100),    -- 微信交易号
   paid_at DATETIME,                  -- 支付时间
+  refunded_at DATETIME,              -- 退款时间
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-  FOREIGN KEY (phone) REFERENCES users(phone) ON UPDATE CASCADE
+  FOREIGN KEY (user_phone) REFERENCES users(phone) ON UPDATE CASCADE
 );
 
 -- 索引
-CREATE INDEX idx_recharge_orders_phone ON recharge_orders(phone);
-CREATE INDEX idx_recharge_orders_status ON recharge_orders(status);
-CREATE INDEX idx_recharge_orders_created_at ON recharge_orders(created_at);
+CREATE INDEX idx_orders_user_phone ON orders(user_phone);
+CREATE INDEX idx_orders_order_type ON orders(order_type);
+CREATE INDEX idx_orders_payment_status ON orders(payment_status);
+CREATE INDEX idx_orders_created_at ON orders(created_at);
 ```
 
 ## 4. 充值配置表 (recharge_configs)
@@ -631,23 +667,37 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 
 ## 核心业务逻辑
 
-### 充值流程
+### 统一订单创建流程
 ```
-1. 确认用户身份（openid → phone）
-2. 创建充值订单
-3. 调用微信统一下单 → 返回支付参数
-4. 前端调用微信支付 → 用户完成支付
-5. 微信回调后端 → 验证并处理支付结果
-6. 更新用户余额 → 创建交易记录
+1. 验证用户身份（phone）
+2. 创建订单记录（orders表）
+3. 根据支付方式处理：
+   - 微信支付：调用微信统一下单，返回支付参数
+   - 余额支付：检查余额，立即扣款并更新订单状态
+4. 返回订单信息
 ```
 
-### 余额支付流程
+### 充值流程（特殊的订单类型）
 ```
-1. 验证用户身份
-2. 检查余额是否充足
-3. 在事务中扣减余额
-4. 创建消费交易记录
-5. 返回支付结果
+1. 创建充值类型订单（order_type='recharge'）
+2. 调用微信支付
+3. 支付成功后：
+   - 更新订单状态为已支付
+   - 增加用户余额（含赠送金额）
+   - 创建充值交易记录
+```
+
+### 服务/商品订单支付流程
+```
+1. 创建对应类型订单
+2. 根据支付方式：
+   - 微信支付：调用微信支付API
+   - 余额支付：
+     a. 检查余额是否充足
+     b. 扣减余额
+     c. 创建消费交易记录
+     d. 更新订单状态为已支付
+3. 支付成功后执行业务逻辑（如创建预约记录）
 ```
 
 ## 测试用例
@@ -656,24 +706,44 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 # 获取余额
 curl "http://localhost:3001/api/v2/users/wallet/balance?phone=13800138000"
 
-# 创建充值订单
-curl -X POST http://localhost:3001/api/v2/users/wallet/recharge \
+# 创建充值订单（微信支付）
+curl -X POST http://localhost:3001/api/v2/orders/create \
   -H "Content-Type: application/json" \
   -d '{
-    "phone": "13800138000",
+    "orderType": "recharge",
+    "userPhone": "13800138000",
+    "title": "充值100元",
     "amount": 10000,
-    "bonus": 1000,
-    "description": "充值100元，赠送10元"
+    "paymentMethod": "wechat",
+    "extraData": {
+      "bonus": 1000
+    }
   }'
 
-# 余额支付
-curl -X POST http://localhost:3001/api/v2/users/wallet/consume \
+# 创建服务订单（余额支付）
+curl -X POST http://localhost:3001/api/v2/orders/create \
   -H "Content-Type: application/json" \
   -d '{
-    "phone": "13800138000",
-    "amount": 8000,
-    "orderNo": "ORD123456789",
-    "description": "支付订单-颈部按摩"
+    "orderType": "service",
+    "userPhone": "13800138000",
+    "title": "颈部按摩60分钟",
+    "amount": 12800,
+    "paymentMethod": "balance",
+    "extraData": {
+      "therapistId": "1",
+      "storeId": "1",
+      "appointmentDate": "2024-01-20",
+      "startTime": "14:00",
+      "duration": 60
+    }
+  }'
+
+# 支付订单（余额支付）
+curl -X POST http://localhost:3001/api/v2/orders/pay \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderNo": "ORDER202401151234567",
+    "paymentMethod": "balance"
   }'
 
 # 获取交易记录
