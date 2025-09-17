@@ -10,8 +10,9 @@ class LocationService {
   async getCurrentLocation(): Promise<Location> {
     try {
       // 检查授权状态
-      const { authSetting } = await Taro.getSetting()
-      
+      const settingRes = await Taro.getSetting()
+      const authSetting = settingRes?.authSetting || {}
+
       if (!authSetting['scope.userLocation']) {
         // 请求授权
         await Taro.authorize({
@@ -19,21 +20,33 @@ class LocationService {
         })
       }
       
-      // 获取位置
-      const res = await Taro.getLocation({
-        type: 'gcj02', // 返回可用于 openLocation 的坐标
-        isHighAccuracy: true // 开启高精度
-      })
-      
+      // 获取位置，先尝试gcj02，失败则降级到wgs84
+      let res
+      try {
+        res = await Taro.getLocation({
+          type: 'gcj02', // 国内火星坐标系
+          isHighAccuracy: true
+        })
+      } catch (gcj02Error) {
+        console.warn('gcj02坐标系不支持，尝试wgs84:', gcj02Error)
+        // 降级到wgs84坐标系
+        res = await Taro.getLocation({
+          type: 'wgs84' // GPS原始坐标系
+        })
+      }
+
       return {
         latitude: res.latitude,
         longitude: res.longitude
       }
     } catch (error) {
       console.error('获取位置失败:', error)
-      
-      // 如果用户拒绝授权，使用默认位置（上海市中心）
-      if ((error as any)?.errMsg?.includes('auth deny')) {
+
+      // 如果用户拒绝授权或其他错误，使用默认位置（上海市中心）
+      const errorMsg = (error as any)?.errMsg || ''
+
+      // 只在用户明确拒绝授权时才显示弹窗
+      if (errorMsg.includes('auth deny') || errorMsg.includes('authorize:fail')) {
         Taro.showModal({
           title: '提示',
           content: '需要获取您的位置信息来推荐附近门店',
@@ -44,15 +57,14 @@ class LocationService {
             }
           }
         })
-        
-        // 返回默认位置
-        return {
-          latitude: 31.2304,
-          longitude: 121.4737
-        }
       }
-      
-      throw error
+
+      // 无论什么错误，都返回默认位置（上海市中心）
+      console.log('使用默认位置：上海市中心')
+      return {
+        latitude: 31.2304,
+        longitude: 121.4737
+      }
     }
   }
   
