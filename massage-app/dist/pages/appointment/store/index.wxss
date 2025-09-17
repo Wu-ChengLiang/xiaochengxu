@@ -330,6 +330,9 @@
   z-index: 100;
 }
 .store-appointment-page .bottom-bar .selected-time {
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
   font-size: 28rpx;
   color: var(--text-primary);
 }
@@ -339,6 +342,7 @@
   font-size: 32rpx;
   background: #a40035;
   border: none;
+  margin-left: auto;
 }
 .store-appointment-page .bottom-bar .submit-btn::after {
   border: none;

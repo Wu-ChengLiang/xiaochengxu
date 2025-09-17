@@ -132,9 +132,9 @@ const StoreAppointmentPage = () => {
   const router = taro.taroExports.useRouter();
   const { id } = router.params;
   const [store, setStore] = taro.useState(null);
-  const [selectedDate, setSelectedDate] = taro.useState("");
-  const [selectedHour, setSelectedHour] = taro.useState("");
-  const [selectedMinute, setSelectedMinute] = taro.useState("");
+  const [selectedDate, setSelectedDate] = taro.useState((/* @__PURE__ */ new Date()).toISOString().split("T")[0]);
+  const [selectedHour, setSelectedHour] = taro.useState("10点");
+  const [selectedMinute, setSelectedMinute] = taro.useState("00分");
   const [loading, setLoading] = taro.useState(true);
   taro.useEffect(() => {
     loadStoreData();
@@ -279,10 +279,7 @@ const StoreAppointmentPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "门店预约",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "门店预约"
 };
 Page(taro.createPageConfig(StoreAppointmentPage, "pages/appointment/store/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

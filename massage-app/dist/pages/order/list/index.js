@@ -150,8 +150,8 @@ const OrderListPage = () => {
   });
   const handleRebookOrder = (e, order) => {
     e.stopPropagation();
-    taro.Taro.navigateTo({
-      url: `/pages/appointment/therapist/index?therapistId=${order.therapistId}&storeId=${order.storeId}`
+    taro.Taro.switchTab({
+      url: "/pages/appointment/index"
     });
   };
   const getStatusText = (status) => {
@@ -231,7 +231,7 @@ const OrderListPage = () => {
               /* @__PURE__ */ taro.jsx(taro.View, { className: "button pay", onClick: (e) => handlePayOrder(e, order), children: "去支付" })
             ] }),
             order.status === "paid" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
-            (order.status === "completed" || order.status === "cancelled") && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e, order), children: "再次预约" })
+            (order.status === "completed" || order.status === "cancelled") && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e), children: "再次预约" })
           ] })
         ] })
       ]
@@ -259,10 +259,7 @@ const OrderListPage = () => {
 var config = {
   "navigationBarTitleText": "我的订单",
   "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "backgroundTextStyle": "dark"
 };
 Page(taro.createPageConfig(OrderListPage, "pages/order/list/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

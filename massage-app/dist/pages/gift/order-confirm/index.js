@@ -1,16 +1,51 @@
 "use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 const taro = require("../../../taro.js");
 const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
 const index = "";
 const OrderConfirm = () => {
   const router = taro.taroExports.useRouter();
-  const { amount, quantity } = router.params;
+  const { orderNo, amount, quantity } = router.params;
   const [paymentMethod, setPaymentMethod] = taro.useState("wechat");
   const totalAmount = Number(amount) * Number(quantity);
-  const handlePayment = () => {
-    taro.Taro.showLoading({ title: "支付中..." });
-    setTimeout(() => {
+  const handlePayment = () => __async(exports, null, function* () {
+    if (!orderNo) {
+      taro.Taro.showToast({
+        title: "订单信息错误",
+        icon: "none"
+      });
+      return;
+    }
+    try {
+      taro.Taro.showLoading({ title: "支付中..." });
+      const result = yield common.GiftService.payOrder({
+        orderNo,
+        paymentMethod
+      });
       taro.Taro.hideLoading();
+      if (result.paymentMethod === "wechat" && result.wxPayParams) {
+        yield common.GiftService.handleWechatPay(result.wxPayParams);
+      }
       taro.Taro.showToast({
         title: "支付成功",
         icon: "success",
@@ -19,8 +54,14 @@ const OrderConfirm = () => {
       setTimeout(() => {
         taro.Taro.navigateBack({ delta: 2 });
       }, 2e3);
-    }, 2e3);
-  };
+    } catch (error) {
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "支付失败",
+        icon: "none"
+      });
+    }
+  });
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-confirm", children: [
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-info", children: [
       /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "电子礼卡" }),
@@ -88,10 +129,7 @@ const OrderConfirm = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单确认",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "订单确认"
 };
 Page(taro.createPageConfig(OrderConfirm, "pages/gift/order-confirm/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

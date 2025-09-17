@@ -22,9 +22,9 @@ const About = () => {
       }
     });
   };
-  const handlePhoneCall = () => {
+  const handleJoinCall = () => {
     taro.Taro.makePhoneCall({
-      phoneNumber: "400-633-0933"
+      phoneNumber: "13701757685"
     });
   };
   return /* @__PURE__ */ taro.jsxs(taro.View, { className: "about-page", children: [
@@ -37,20 +37,17 @@ const About = () => {
     ] }),
     /* @__PURE__ */ taro.jsxs(taro.View, { className: "culture-section", children: [
       /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "关于我们" }),
-      /* @__PURE__ */ taro.jsx(taro.View, { className: "culture-item", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "culture-text", children: "上海名医堂是黄浦区中西医结合医院的精品门诊品牌，专注于中西医结合治疗，尤其擅长中医特色理疗（针灸、推拿）、骨伤康复及老年常见病调理，为市中心患者提供专家级、一站式的中医诊疗服务。" }) })
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "culture-item", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "culture-text", children: "名医堂创立于2017年，汇聚非遗专家与中医师，融合正脊、推拿、艾灸等传统疗法，辨证施治，提供个性化医养结合服务，专注疼痛、亚健康及未病调理。" }) })
     ] }),
-    /* @__PURE__ */ taro.jsxs(taro.View, { className: "contact-section", onClick: handlePhoneCall, children: [
-      /* @__PURE__ */ taro.jsx(taro.Text, { className: "contact-label", children: "客服电话：" }),
-      /* @__PURE__ */ taro.jsx(taro.Text, { className: "contact-number", children: "400-633-0933" })
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "contact-section", onClick: handleJoinCall, children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "contact-label", children: "加盟热线：" }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "contact-number", children: "13701757685" })
     ] }),
     /* @__PURE__ */ taro.jsx(taro.View, { className: "button-section", children: /* @__PURE__ */ taro.jsx(taro.Button, { className: "logout-btn", onClick: handleLogout, children: "退出账户" }) })
   ] });
 };
 var config = {
-  "navigationBarTitleText": "联系我们",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "联系我们"
 };
 Page(taro.createPageConfig(About, "pages/mine/about/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

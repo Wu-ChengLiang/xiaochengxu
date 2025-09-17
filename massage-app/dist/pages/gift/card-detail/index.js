@@ -10,7 +10,7 @@ const CardDetail = () => {
   const [loading, setLoading] = taro.useState(true);
   taro.useEffect(() => {
     if (id) {
-      const card = common.getGiftCardById(id);
+      const card = common.GiftService.getGiftCardById(id);
       if (card) {
         setCardInfo(card);
       }
@@ -73,10 +73,7 @@ const CardDetail = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "礼卡详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "礼卡详情"
 };
 Page(taro.createPageConfig(CardDetail, "pages/gift/card-detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

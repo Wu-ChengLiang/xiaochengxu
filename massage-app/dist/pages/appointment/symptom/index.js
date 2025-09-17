@@ -41,7 +41,7 @@ var __async = (__this, __arguments, generator) => {
 const taro = require("../../../taro.js");
 const vendors = require("../../../vendors.js");
 const common = require("../../../common.js");
-const index$4 = "";
+const index$3 = "";
 const SymptomCategoryTabs = ({
   categories,
   activeId,
@@ -70,7 +70,7 @@ const SymptomCategoryTabs = ({
     }
   );
 };
-const index$3 = "";
+const index$2 = "";
 const SymptomServiceCard = ({
   service,
   onAdd,
@@ -124,7 +124,7 @@ const SymptomServiceCard = ({
     ] })
   ] });
 };
-const index$2 = "";
+const index$1 = "";
 const SymptomServiceList = ({
   services,
   therapists,
@@ -181,71 +181,6 @@ const SymptomServiceList = ({
       ) })
     }
   );
-};
-const index$1 = "";
-const ShoppingCart = ({ items, onCheckout }) => {
-  const [expanded, setExpanded] = taro.useState(false);
-  const totalPrice = items.reduce((sum, item) => {
-    return sum + (item.discountPrice || item.price);
-  }, 0);
-  const totalOriginalPrice = items.reduce((sum, item) => {
-    return sum + item.price;
-  }, 0);
-  const savedAmount = totalOriginalPrice - totalPrice;
-  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "shopping-cart", children: [
-    /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-summary", onClick: () => setExpanded(!expanded), children: [
-      /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-icon", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "cart-badge", children: items.length }) }),
-      /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
-        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
-          "¥",
-          totalPrice
-        ] }),
-        savedAmount > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "saved-amount", children: [
-          "已省¥",
-          savedAmount
-        ] })
-      ] }),
-      /* @__PURE__ */ taro.jsx(
-        vendors.AtButton,
-        {
-          className: "checkout-btn",
-          type: "primary",
-          size: "small",
-          onClick: (e) => {
-            e.stopPropagation();
-            onCheckout();
-          },
-          children: "去结算"
-        }
-      )
-    ] }),
-    expanded && /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-details", children: items.map(
-      (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-item", children: [
-        /* @__PURE__ */ taro.jsxs(taro.View, { className: "item-info", children: [
-          /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: item.serviceName }),
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "therapist-name", children: [
-            item.therapistName,
-            " | ",
-            item.duration,
-            "分钟"
-          ] })
-        ] }),
-        /* @__PURE__ */ taro.jsx(taro.View, { className: "item-price", children: item.discountPrice ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
-            "¥",
-            item.discountPrice
-          ] }),
-          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
-            "¥",
-            item.price
-          ] })
-        ] }) : /* @__PURE__ */ taro.jsxs(taro.Text, { className: "discount-price", children: [
-          "¥",
-          item.price
-        ] }) })
-      ] }, index2)
-    ) })
-  ] });
 };
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const symptomService = {
@@ -345,6 +280,7 @@ const index = "";
 const SymptomPage = () => {
   const router = taro.taroExports.useRouter();
   const { storeId, storeName, selectedDate, selectedTime } = router.params;
+  const decodedTime = selectedTime ? decodeURIComponent(selectedTime) : "";
   const [therapists, setTherapists] = taro.useState([]);
   const [categories, setCategories] = taro.useState([]);
   const [services, setServices] = taro.useState([]);
@@ -392,13 +328,29 @@ const SymptomPage = () => {
       price: service.price,
       discountPrice: service.discountPrice,
       date: selectedDate || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
-      time: selectedTime || "待选择",
+      time: decodedTime || "10:00",
+      // 使用解码后的时间，默认10:00
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     };
     setCartItems([...cartItems, newItem]);
     taro.Taro.showToast({
       title: "已添加到购物车",
+      icon: "none"
+    });
+  };
+  const handleClearCart = () => {
+    setCartItems([]);
+    taro.Taro.showToast({
+      title: "购物车已清空",
+      icon: "none"
+    });
+  };
+  const handleRemoveItem = (index2) => {
+    const newItems = cartItems.filter((_, i) => i !== index2);
+    setCartItems(newItems);
+    taro.Taro.showToast({
+      title: "已移除商品",
       icon: "none"
     });
   };
@@ -444,10 +396,13 @@ const SymptomPage = () => {
       )
     ] }),
     /* @__PURE__ */ taro.jsx(
-      ShoppingCart,
+      common.ShoppingCart,
       {
         items: cartItems,
-        onCheckout: handleCheckout
+        onCheckout: handleCheckout,
+        onMaskClick: handleClearCart,
+        onRemoveItem: handleRemoveItem,
+        simpleClearMode: true
       }
     )
   ] });
@@ -455,10 +410,7 @@ const SymptomPage = () => {
 var config = {
   "navigationBarTitleText": "推拿师预约",
   "navigationBarTextStyle": "black",
-  "navigationBarBackgroundColor": "#ffffff",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarBackgroundColor": "#ffffff"
 };
 Page(taro.createPageConfig(SymptomPage, "pages/appointment/symptom/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

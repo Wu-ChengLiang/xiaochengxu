@@ -74,11 +74,12 @@ const OrderConfirmPage = () => {
   const fetchTherapistAndStoreInfo = () => __async(exports, null, function* () {
     try {
       setLoading(true);
-      const therapistRes = yield common.therapistService.getTherapistDetail(params.therapistId);
-      const therapistData = therapistRes.data;
+      if (params.therapistId) {
+        const therapistRes = yield common.therapistService.getTherapistDetail(params.therapistId);
+        setTherapistInfo(therapistRes.data);
+      }
       const storeRes = yield common.storeService.getStoreDetail(params.storeId);
       const storeData = storeRes.data;
-      setTherapistInfo(therapistData);
       setStoreInfo(storeData);
       setLoading(false);
     } catch (error) {
@@ -111,7 +112,9 @@ const OrderConfirmPage = () => {
     return cartItems.reduce((sum, item) => sum + (item.discountPrice || item.price), 0);
   };
   const handlePayment = () => __async(exports, null, function* () {
-    if (cartItems.length === 0 || !therapistInfo || !storeInfo) {
+    const isSymptomMode = params.from === "symptom";
+    const needTherapistInfo = !isSymptomMode && !therapistInfo;
+    if (cartItems.length === 0 || needTherapistInfo || !storeInfo) {
       taro.Taro.showToast({
         title: "订单信息不完整",
         icon: "none"
@@ -124,7 +127,8 @@ const OrderConfirmPage = () => {
       });
       const firstItem = cartItems[0];
       const orderParams = {
-        therapistId: params.therapistId,
+        therapistId: params.therapistId || "symptom-mode",
+        // 症状调理模式使用特殊标识
         storeId: params.storeId,
         serviceId: firstItem.serviceId,
         serviceName: firstItem.serviceName,
@@ -134,7 +138,7 @@ const OrderConfirmPage = () => {
         appointmentDate: firstItem.date,
         appointmentTime: firstItem.time,
         therapistName: firstItem.therapistName,
-        therapistAvatar: firstItem.therapistAvatar || therapistInfo.avatar
+        therapistAvatar: firstItem.therapistAvatar || (therapistInfo == null ? void 0 : therapistInfo.avatar)
       };
       const order = yield common.orderService.createOrder(orderParams);
       taro.Taro.hideLoading();
@@ -247,10 +251,7 @@ const OrderConfirmPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单确认",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "订单确认"
 };
 Page(taro.createPageConfig(OrderConfirmPage, "pages/booking/confirm/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

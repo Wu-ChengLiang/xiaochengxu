@@ -3,8 +3,8 @@ const taro = require("../../taro.js");
 const common = require("../../common.js");
 const index = "";
 const Gift = () => {
-  const giftCards = common.getAllGiftCards();
-  const products = common.getAllProducts();
+  const giftCards = common.GiftService.getAllGiftCards();
+  const products = common.GiftService.getAllProducts();
   const handleCardClick = (cardId) => {
     taro.Taro.navigateTo({
       url: `/pages/gift/card-detail/index?id=${cardId}`
@@ -72,10 +72,6 @@ const Gift = () => {
     ] })
   ] });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Gift, "pages/gift/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

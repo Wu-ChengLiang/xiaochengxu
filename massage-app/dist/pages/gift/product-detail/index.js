@@ -1,4 +1,24 @@
 "use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 const taro = require("../../../taro.js");
 const vendors = require("../../../vendors.js");
 const common = require("../../../common.js");
@@ -11,7 +31,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = taro.useState(1);
   taro.useEffect(() => {
     if (id) {
-      const product = common.getProductById(id);
+      const product = common.GiftService.getProductById(id);
       if (product) {
         setProductInfo(product);
       }
@@ -31,12 +51,32 @@ const ProductDetail = () => {
       icon: "none"
     });
   };
-  const handleBuyNow = () => {
-    taro.Taro.showToast({
-      title: "功能开发中",
-      icon: "none"
-    });
-  };
+  const handleBuyNow = () => __async(exports, null, function* () {
+    if (!productInfo)
+      return;
+    try {
+      taro.Taro.showLoading({ title: "创建订单..." });
+      const order = yield common.GiftService.createProductOrder({
+        productId: productInfo.id,
+        quantity,
+        paymentMethod: "wechat"
+      });
+      taro.Taro.hideLoading();
+      if (order.paymentMethod === "wechat" && order.wxPayParams) {
+        yield common.GiftService.handleWechatPay(order.wxPayParams);
+        taro.Taro.showToast({
+          title: "支付成功",
+          icon: "success"
+        });
+      }
+    } catch (error) {
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "购买失败",
+        icon: "none"
+      });
+    }
+  });
   if (loading) {
     return /* @__PURE__ */ taro.jsx(taro.View, { className: "product-detail-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
   }
@@ -122,10 +162,7 @@ const ProductDetail = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "商品详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "商品详情"
 };
 Page(taro.createPageConfig(ProductDetail, "pages/gift/product-detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

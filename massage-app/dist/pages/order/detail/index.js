@@ -85,11 +85,9 @@ const OrderDetailPage = () => {
     });
   });
   const handleRebook = () => {
-    if (orderInfo) {
-      taro.Taro.navigateTo({
-        url: `/pages/appointment/therapist/index?therapistId=${orderInfo.therapistId}&storeId=${orderInfo.storeId}`
-      });
-    }
+    taro.Taro.switchTab({
+      url: "/pages/appointment/index"
+    });
   };
   const handleNavigate = () => {
     if (orderInfo) {
@@ -264,10 +262,7 @@ const OrderDetailPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "订单详情"
 };
 Page(taro.createPageConfig(OrderDetailPage, "pages/order/detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

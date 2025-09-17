@@ -1,6 +1,27 @@
 "use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
 const taro = require("../../../taro.js");
 const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
 const index = "";
 const GiftCardPurchase = () => {
   const [selectedAmount, setSelectedAmount] = taro.useState(200);
@@ -22,7 +43,7 @@ const GiftCardPurchase = () => {
   const handleQuantityChange = (value) => {
     setQuantity(value);
   };
-  const handlePurchase = () => {
+  const handlePurchase = () => __async(exports, null, function* () {
     const amount = selectedAmount || customAmount;
     if (!amount) {
       taro.Taro.showToast({
@@ -31,10 +52,27 @@ const GiftCardPurchase = () => {
       });
       return;
     }
-    taro.Taro.navigateTo({
-      url: `/pages/gift/order-confirm/index?amount=${amount}&quantity=${quantity}`
-    });
-  };
+    try {
+      taro.Taro.showLoading({ title: "创建订单..." });
+      const order = yield common.GiftService.createGiftCardOrder({
+        amount: amount * 100,
+        // 转换为分
+        quantity,
+        paymentMethod: "wechat",
+        customMessage: "世界上最好的爸爸"
+      });
+      taro.Taro.hideLoading();
+      taro.Taro.navigateTo({
+        url: `/pages/gift/order-confirm/index?orderNo=${order.orderNo}&amount=${amount}&quantity=${quantity}`
+      });
+    } catch (error) {
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "创建订单失败",
+        icon: "none"
+      });
+    }
+  });
   const getTotalPrice = () => {
     const amount = selectedAmount || customAmount || 0;
     return amount * quantity;
@@ -159,10 +197,7 @@ const GiftCardPurchase = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "电子礼卡",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "电子礼卡"
 };
 Page(taro.createPageConfig(GiftCardPurchase, "pages/gift/purchase/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

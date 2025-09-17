@@ -31,7 +31,9 @@ var config = {
     "pages/gift/product-detail/index",
     "pages/gift/purchase/index",
     "pages/gift/order-confirm/index",
-    "pages/mine/about/index"
+    "pages/mine/about/index",
+    "pages/mine/recharge/index",
+    "pages/mine/balance/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -48,20 +50,20 @@ var config = {
       {
         "pagePath": "pages/appointment/index",
         "text": "预约",
-        "iconPath": "assets/icons/预约未选.png",
-        "selectedIconPath": "assets/icons/预约选择.png"
+        "iconPath": "./assets/icons/预约未选.png",
+        "selectedIconPath": "./assets/icons/预约选择.png"
       },
       {
         "pagePath": "pages/gift/index",
         "text": "好礼",
-        "iconPath": "assets/icons/好礼未选.png",
-        "selectedIconPath": "assets/icons/好礼选中.png"
+        "iconPath": "./assets/icons/好礼未选.png",
+        "selectedIconPath": "./assets/icons/好礼选中.png"
       },
       {
         "pagePath": "pages/mine/index",
         "text": "我的",
-        "iconPath": "assets/icons/我的未选.png",
-        "selectedIconPath": "assets/icons/我 的选择.png"
+        "iconPath": "./assets/icons/我的未选.png",
+        "selectedIconPath": "./assets/icons/我 的选择.png"
       }
     ]
   },
