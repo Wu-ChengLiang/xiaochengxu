@@ -30,12 +30,6 @@ const Mine: React.FC = () => {
       path: '/pages/order/list/index',
       arrow: true
     },
-    {
-      icon: 'shopping-bag',
-      title: '好礼订单',
-      path: '/pages/mine/gift-orders/index',
-      arrow: true
-    },
     // {
     //   icon: 'money',
     //   title: '我的券包',
