@@ -24,7 +24,10 @@ GET /api/v2/users/info
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| phone | string | 是 | 手机号 |
+| phone | string | 否 | 手机号 |
+| openid | string | 否 | 微信openid |
+
+注意：phone和openid至少提供一个
 
 ### 响应数据
 ```json
@@ -32,19 +35,27 @@ GET /api/v2/users/info
   "code": 0,
   "message": "success",
   "data": {
+    "id": 123,
     "phone": "13800138000",
-    "name": "张先生",
+    "username": "张先生",
+    "nickname": "微信昵称",
     "avatar": "/images/avatars/default.jpg",
-    "balance": 12500,  // 余额（分为单位）
-    "appointmentCount": 5,  // 预约次数
-    "lastVisit": "2024-01-15T14:00:00.000Z"
+    "openid": "wx_openid_123456",
+    "membershipNumber": "M202401001",
+    "memberLevel": "normal",      // MVP阶段默认normal
+    "balance": 12500,             // 余额（分为单位，直接使用users.balance）
+    "points": 0,                  // MVP阶段固定为0
+    "discountRate": 1.0,          // MVP阶段固定为1.0（不打折）
+    "totalSpent": 128000,         // 总消费（users.total_spent）
+    "totalVisits": 15             // 总访问次数（users.total_visits）
   }
 }
 ```
 
 ### 实现说明
-- 如果用户不存在，返回默认信息
-- 通过预约记录统计用户数据
+- 如果用户不存在，返回404错误
+- 直接从users表查询，不需要关联查询
+- MVP阶段：points固定为0，memberLevel固定为'normal'，discountRate固定为1.0
 
 ## 2. 更新用户信息
 
@@ -56,9 +67,10 @@ PUT /api/v2/users/info
 ### 请求参数
 ```json
 {
-  "phone": "13800138000",
-  "name": "张先生",
-  "avatar": "base64..."  // 可选，base64图片数据
+  "userId": 123,                    // 用户ID（必填）
+  "username": "张先生",             // 更新用户名
+  "avatar": "base64...",            // 可选，base64图片数据
+  "nickname": "新的微信昵称"        // 可选，更新微信昵称
 }
 ```
 
@@ -68,9 +80,11 @@ PUT /api/v2/users/info
   "code": 0,
   "message": "更新成功",
   "data": {
+    "id": 123,
     "phone": "13800138000",
-    "name": "张先生",
-    "avatar": "/images/avatars/13800138000.jpg"
+    "username": "张先生",
+    "nickname": "新的微信昵称",
+    "avatar": "/images/avatars/123.jpg"
   }
 }
 ```
@@ -85,7 +99,7 @@ GET /api/v2/users/statistics
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| phone | string | 是 | 手机号 |
+| userId | number | 是 | 用户ID |
 
 ### 响应数据
 ```json
@@ -93,15 +107,17 @@ GET /api/v2/users/statistics
   "code": 0,
   "message": "success",
   "data": {
-    "totalAppointments": 12,  // 总预约次数
-    "completedAppointments": 10,  // 已完成次数
-    "totalAmount": 128000,  // 总消费金额（分）
-    "favoriteTherapist": {  // 最常预约的推拿师
+    "totalAppointments": 12,      // 总预约次数（从appointments表统计）
+    "completedAppointments": 10,  // 已完成次数（从appointments表统计）
+    "totalAmount": 128000,        // 总消费金额（users.total_spent）
+    "totalVisits": 15,            // 总访问次数（users.total_visits）
+    "currentBalance": 12500,      // 当前余额（users.balance）
+    "favoriteTherapist": {        // 最常预约的推拿师
       "id": "1",
       "name": "张师傅",
       "appointmentCount": 5
     },
-    "favoriteStore": {  // 最常去的门店
+    "favoriteStore": {            // 最常去的门店
       "id": "1",
       "name": "明医推拿（罗湖店）",
       "visitCount": 8
@@ -168,11 +184,25 @@ POST /api/v2/users/bind-phone
   "code": 0,
   "message": "success",
   "data": {
-    "phone": "13800138000",
-    "isNewUser": true  // 是否新用户
+    "userId": 123,                // 用户ID
+    "phone": "13800138000",       // 解密得到的手机号
+    "isNewUser": true,            // 是否新用户
+    "membershipNumber": "M202401001"  // 会员号（新用户自动生成）
   }
 }
 ```
+
+### 实现说明
+- 解密微信手机号后，查询users表中是否已存在该手机号
+- 如果不存在，创建新用户记录：
+  ```sql
+  INSERT INTO users (phone, openid, nickname, avatar, membership_number, member_level, balance, points, discount_rate)
+  VALUES ('13800138000', 'wx_openid', '微信昵称', '头像URL', 'M202401001', 'normal', 0, 0, 1.0);
+  ```
+- 如果已存在，更新openid关联：
+  ```sql
+  UPDATE users SET openid = 'wx_openid', nickname = '微信昵称', avatar = '头像URL' WHERE phone = '13800138000';
+  ```
 
 ## 5. 手机号变更
 
@@ -326,7 +356,7 @@ GET /api/v2/users/wallet/balance
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| phone | string | 是 | 手机号 |
+| userId | number | 是 | 用户ID |
 
 ### 响应数据
 ```json
@@ -334,12 +364,16 @@ GET /api/v2/users/wallet/balance
   "code": 0,
   "message": "success",
   "data": {
-    "balance": 12500,  // 可用余额（分为单位）
-    "frozenBalance": 0,  // 冻结余额（分为单位）
-    "totalBalance": 12500  // 总余额
+    "balance": 12500,        // 可用余额（分为单位，直接从users.balance读取）
+    "totalSpent": 128000,    // 总消费（users.total_spent）
+    "totalVisits": 15        // 总访问次数（users.total_visits）
   }
 }
 ```
+
+### 实现说明
+- 直接从users表的balance字段读取余额
+- 不需要单独的user_wallets表
 
 ## 6. 创建订单（统一接口）
 
@@ -351,11 +385,11 @@ POST /api/v2/orders/create
 ### 请求参数
 ```json
 {
-  "orderType": "service",  // service服务/product商品/recharge充值
-  "userPhone": "13800138000",
-  "title": "颈部按摩60分钟",  // 订单标题
-  "amount": 12800,  // 金额（分为单位）
-  "paymentMethod": "balance",  // wechat微信支付/balance余额支付
+  "orderType": "service",     // service服务/product商品/recharge充值
+  "userId": 123,              // 用户ID（必填）
+  "title": "颈部按摩60分钟",   // 订单标题
+  "amount": 12800,            // 金额（分为单位）
+  "paymentMethod": "balance", // wechat微信支付/balance余额支付
   "extraData": {
     // 不同类型订单的额外信息
     // 服务类：
@@ -479,7 +513,7 @@ GET /api/v2/users/wallet/transactions
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| phone | string | 是 | 手机号 |
+| userId | number | 是 | 用户ID |
 | page | number | 否 | 页码，默认1 |
 | pageSize | number | 否 | 每页数量，默认20 |
 | type | string | 否 | 交易类型：recharge/consume/refund |
@@ -535,80 +569,104 @@ POST /api/v2/payments/wechat/notify
 
 # 数据库表结构设计
 
-## 1. 用户钱包表 (user_wallets)
+## 重要说明：基于现有users表的扩展方案
 
+### 现有users表结构（已存在，不可删除）
 ```sql
-CREATE TABLE user_wallets (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  phone VARCHAR(20) UNIQUE NOT NULL,
-  balance INTEGER NOT NULL DEFAULT 0,  -- 余额（分为单位）
-  frozen_balance INTEGER NOT NULL DEFAULT 0,  -- 冻结余额（分为单位）
-  total_recharge INTEGER NOT NULL DEFAULT 0,  -- 累计充值
-  total_consume INTEGER NOT NULL DEFAULT 0,   -- 累计消费
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 现有users表包含以下核心字段：
+-- id                    INTEGER PRIMARY KEY     -- 主键
+-- phone                 VARCHAR(20) UNIQUE      -- 手机号（唯一）
+-- username              VARCHAR(100) UNIQUE     -- 用户名
+-- membership_number     VARCHAR(50)             -- 会员号
+-- member_level          VARCHAR(20)             -- 会员等级
+-- balance               INTEGER DEFAULT 0       -- 余额（分为单位）★MVP直接使用
+-- points                INTEGER DEFAULT 0       -- 积分（MVP不用）
+-- discount_rate         DECIMAL(3,2)            -- 折扣率（MVP设为1.0）
+-- total_spent           INTEGER DEFAULT 0       -- 总消费
+-- total_visits          INTEGER DEFAULT 0       -- 总访问次数
+-- medical_record_number VARCHAR(50)             -- 病历号（MVP不用）
+-- constitution_type     VARCHAR(50)             -- 体质类型（MVP不用）
+-- allergies            TEXT                    -- 过敏信息（MVP不用）
+-- tcm_diagnosis_history TEXT                    -- 中医诊断历史（MVP不用）
+-- created_at           DATETIME
+-- updated_at           DATETIME
 
-  FOREIGN KEY (phone) REFERENCES users(phone) ON UPDATE CASCADE
-);
-
--- 索引
-CREATE INDEX idx_user_wallets_phone ON user_wallets(phone);
+-- appointments表已有外键关联：
+-- appointments.user_id → users.id
 ```
 
-## 2. 钱包交易记录表 (wallet_transactions)
+### 需要为users表新增的字段（支持微信登录）
+```sql
+-- 最小化改动：仅添加微信登录必需字段
+ALTER TABLE users ADD COLUMN openid VARCHAR(100) UNIQUE;    -- 微信唯一标识
+ALTER TABLE users ADD COLUMN avatar VARCHAR(500);            -- 用户头像URL
+ALTER TABLE users ADD COLUMN nickname VARCHAR(100);          -- 微信昵称
+ALTER TABLE users ADD COLUMN session_key VARCHAR(255);       -- 微信会话密钥（加密存储）
+
+-- 添加索引
+CREATE INDEX idx_users_openid ON users(openid);
+```
+
+## 1. 钱包交易记录表 (wallet_transactions) - 新建
 
 ```sql
 CREATE TABLE wallet_transactions (
-  id VARCHAR(50) PRIMARY KEY,  -- TXN开头的交易ID
-  phone VARCHAR(20) NOT NULL,
-  type VARCHAR(20) NOT NULL,   -- recharge/consume/refund
-  amount INTEGER NOT NULL,     -- 交易金额（分），正数为入账，负数为出账
-  balance INTEGER NOT NULL,    -- 交易后余额
-  description VARCHAR(500) NOT NULL,
-  order_no VARCHAR(50),        -- 关联订单号
-  extra_data TEXT,             -- 额外数据（JSON格式）
+  id VARCHAR(50) PRIMARY KEY,          -- TXN开头的交易ID
+  user_id INTEGER NOT NULL,            -- 关联users表的id（主要外键）
+  phone VARCHAR(20) NOT NULL,          -- 冗余存储，方便查询
+  type VARCHAR(20) NOT NULL,           -- recharge/consume/refund
+  amount INTEGER NOT NULL,             -- 交易金额（分），正数为入账，负数为出账
+  balance_after INTEGER NOT NULL,      -- 交易后余额（分）
+  description VARCHAR(500) NOT NULL,   -- 交易描述
+  order_no VARCHAR(50),                -- 关联订单号
+  extra_data TEXT,                     -- 额外数据（JSON格式）
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (phone) REFERENCES users(phone) ON UPDATE CASCADE
 );
 
 -- 索引
+CREATE INDEX idx_wallet_transactions_user_id ON wallet_transactions(user_id);
 CREATE INDEX idx_wallet_transactions_phone ON wallet_transactions(phone);
 CREATE INDEX idx_wallet_transactions_type ON wallet_transactions(type);
 CREATE INDEX idx_wallet_transactions_created_at ON wallet_transactions(created_at);
 CREATE INDEX idx_wallet_transactions_order_no ON wallet_transactions(order_no);
 ```
 
-## 3. 统一订单表 (orders)
+## 2. 统一订单表 (orders) - 新建
 
 ```sql
 CREATE TABLE orders (
-  order_no VARCHAR(50) PRIMARY KEY,  -- ORDER开头的订单号
-  order_type VARCHAR(20) NOT NULL,   -- service服务/product商品/recharge充值
-  user_phone VARCHAR(20) NOT NULL,
-  title VARCHAR(200) NOT NULL,       -- 订单标题
-  amount INTEGER NOT NULL,           -- 订单金额（分）
-  payment_method VARCHAR(20),        -- wechat微信/balance余额
-  payment_status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending待支付/paid已支付/failed失败/refunded已退款
-  extra_data TEXT,                   -- 额外数据（JSON格式，存储不同类型订单的特定信息）
-  wx_prepay_id VARCHAR(100),         -- 微信预支付ID
-  wx_transaction_id VARCHAR(100),    -- 微信交易号
-  paid_at DATETIME,                  -- 支付时间
-  refunded_at DATETIME,              -- 退款时间
+  order_no VARCHAR(50) PRIMARY KEY,    -- ORDER开头的订单号
+  order_type VARCHAR(20) NOT NULL,     -- service服务/product商品/recharge充值
+  user_id INTEGER NOT NULL,            -- 关联users表的id（主要外键）
+  user_phone VARCHAR(20) NOT NULL,     -- 冗余存储，方便查询
+  title VARCHAR(200) NOT NULL,         -- 订单标题
+  amount INTEGER NOT NULL,             -- 订单金额（分）
+  payment_method VARCHAR(20),          -- wechat微信/balance余额
+  payment_status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending/paid/failed/refunded
+  extra_data TEXT,                     -- 额外数据（JSON格式）
+  wx_prepay_id VARCHAR(100),           -- 微信预支付ID
+  wx_transaction_id VARCHAR(100),      -- 微信交易号
+  paid_at DATETIME,                    -- 支付时间
+  refunded_at DATETIME,                -- 退款时间
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 
+  FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (user_phone) REFERENCES users(phone) ON UPDATE CASCADE
 );
 
 -- 索引
+CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_orders_user_phone ON orders(user_phone);
 CREATE INDEX idx_orders_order_type ON orders(order_type);
 CREATE INDEX idx_orders_payment_status ON orders(payment_status);
 CREATE INDEX idx_orders_created_at ON orders(created_at);
 ```
 
-## 4. 充值配置表 (recharge_configs)
+## 3. 充值配置表 (recharge_configs) - 新建
 
 ```sql
 CREATE TABLE recharge_configs (
@@ -747,5 +805,113 @@ curl -X POST http://localhost:3001/api/v2/orders/pay \
   }'
 
 # 获取交易记录
-curl "http://localhost:3001/api/v2/users/wallet/transactions?phone=13800138000&page=1&pageSize=10"
+curl "http://localhost:3001/api/v2/users/wallet/transactions?userId=123&page=1&pageSize=10"
 ```
+
+---
+
+# 基于现有users表的完整实施方案
+
+## 📋 实施清单
+
+### ✅ 现有表结构利用
+- **users表**：直接使用，无需删除任何字段
+- **appointments表**：已有`user_id`外键，完美兼容
+- **余额管理**：直接使用`users.balance`字段（分为单位）
+
+### 🔧 最小化数据库改动
+```sql
+-- 1. 为users表添加微信登录支持（仅4个字段）
+ALTER TABLE users ADD COLUMN openid VARCHAR(100) UNIQUE;
+ALTER TABLE users ADD COLUMN avatar VARCHAR(500);
+ALTER TABLE users ADD COLUMN nickname VARCHAR(100);
+ALTER TABLE users ADD COLUMN session_key VARCHAR(255);
+CREATE INDEX idx_users_openid ON users(openid);
+
+-- 2. 创建钱包交易记录表
+CREATE TABLE wallet_transactions (
+  id VARCHAR(50) PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  type VARCHAR(20) NOT NULL,
+  amount INTEGER NOT NULL,
+  balance_after INTEGER NOT NULL,
+  description VARCHAR(500) NOT NULL,
+  order_no VARCHAR(50),
+  extra_data TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 3. 创建统一订单表
+CREATE TABLE orders (
+  order_no VARCHAR(50) PRIMARY KEY,
+  order_type VARCHAR(20) NOT NULL,
+  user_id INTEGER NOT NULL,
+  user_phone VARCHAR(20) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  amount INTEGER NOT NULL,
+  payment_method VARCHAR(20),
+  payment_status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  extra_data TEXT,
+  wx_prepay_id VARCHAR(100),
+  wx_transaction_id VARCHAR(100),
+  paid_at DATETIME,
+  refunded_at DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 4. 创建充值配置表
+CREATE TABLE recharge_configs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  amount INTEGER NOT NULL,
+  bonus INTEGER NOT NULL DEFAULT 0,
+  label VARCHAR(100) NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT 1,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### 🎯 MVP字段使用策略
+| 字段 | MVP使用方式 | 说明 |
+|-----|------------|------|
+| `id` | ✅ 主键 | 所有外键关联使用 |
+| `phone` | ✅ 用户标识 | 手机号登录 |
+| `username` | ✅ 用户名 | 显示名称 |
+| `openid` | ✅ 微信标识 | 新增，微信登录 |
+| `balance` | ✅ 钱包余额 | 直接使用（分为单位） |
+| `total_spent` | ✅ 消费统计 | 统计显示 |
+| `total_visits` | ✅ 访问统计 | 统计显示 |
+| `points` | 🔒 固定为0 | MVP不用积分 |
+| `member_level` | 🔒 固定'normal' | MVP不分等级 |
+| `discount_rate` | 🔒 固定1.0 | MVP不打折 |
+| `medical_*` | 🔒 暂时NULL | 医疗功能后期用 |
+
+### 🔄 API适配策略
+- **用户识别**：支持`userId`和`phone`双重查询
+- **余额操作**：直接更新`users.balance`字段
+- **事务安全**：余额变动必须在事务中进行
+- **数据一致性**：每次余额变动创建`wallet_transactions`记录
+
+### ⚡ 性能优化
+- 主要查询基于`users.id`（整数主键，最快）
+- 保留`phone`冗余存储（便于模糊查询）
+- 合理索引设计（openid、phone、created_at）
+
+### 🚀 实施步骤
+1. **备份现有数据库**
+2. **执行ALTER TABLE添加微信字段**
+3. **创建新的3个表**
+4. **更新API代码**
+5. **测试数据迁移和API功能**
+
+### 💎 优势
+- **零风险**：不删除任何现有字段
+- **最小改动**：仅添加4个字段和3个新表
+- **向后兼容**：现有appointments关联完全保持
+- **易扩展**：预留了未来功能扩展空间
+
+这套方案完全基于您现有的users表结构，确保了最小的改动风险和最大的兼容性。
