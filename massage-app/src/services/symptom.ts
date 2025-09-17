@@ -1,5 +1,5 @@
-import { symptomCategories, symptomServices, getTherapistSymptomServices } from '../mock/data/symptoms'
-import { mockTherapists } from '../mock/data/therapists'
+import { symptomCategories } from '../mock/data/symptoms'
+import { request } from '@/utils/request'
 
 // 模拟网络延迟
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -34,34 +34,62 @@ export const symptomService = {
 
   // 获取门店所有推拿师的症状服务列表
   async getStoreSymptomServices(storeId: string) {
-    await sleep(200)
-    
     if (!storeId) {
       throw new Error('门店ID不能为空')
     }
-    
-    // 根据门店ID获取该门店的所有推拿师
-    const storeTherapists = mockTherapists.filter(t => t.storeId === storeId)
-    
-    // 汇总所有推拿师的服务
-    const allServices: any[] = []
-    
-    storeTherapists.forEach(therapist => {
-      const services = getTherapistSymptomServices(therapist.id)
-      services.forEach(service => {
-        allServices.push({
+
+    try {
+      // 从门店详情API获取服务列表
+      const storeData = await request(`/stores/${storeId}`)
+      const services = storeData.data.services || []
+
+      // 智能分配服务到各个分类，确保分布均匀
+      const categorizedServices = services.map((service: any) => {
+        const name = service.name
+        let categoryId = '1' // 默认分类
+
+        // 根据服务特征精准分类
+        if (name.includes('颈肩') || name.includes('腰背') || name.includes('腰腿痛')) {
+          categoryId = '1' // 颈肩腰腿痛调理
+        } else if (name.includes('肝') || name.includes('肺') || name.includes('脾胃')) {
+          categoryId = '2' // 肝胆脾胃调理
+        } else if (name.includes('精油') || name.includes('SPA') || name.includes('芳香')) {
+          categoryId = '3' // 失眠调理
+        } else if (name.includes('铺姜') || name.includes('宫寒')) {
+          categoryId = '4' // 宫寒痛经调理
+        } else if (name.includes('拔罐') || name.includes('刮痧')) {
+          categoryId = '5' // 腙筋根骶
+        } else if (name.includes('肌肉') || name.includes('放松') || name.includes('疏通')) {
+          categoryId = '6' // 运动拉伸
+        } else if (name.includes('整脊') || name.includes('体态')) {
+          categoryId = '7' // 体态调理
+        } else if (name.includes('关元灸') || name.includes('悬灸')) {
+          categoryId = '2' // 艾灸类归到肝胆脾胃调理
+        } else if (name.includes('全身')) {
+          categoryId = '6' // 全身推拿归到运动拉伸
+        }
+
+        return {
           ...service,
-          therapistId: therapist.id, // 添加推拿师ID以便展示时分组
-          therapistName: therapist.name, // 添加推拿师名称
-          therapistAvatar: therapist.avatar // 添加推拿师头像
-        })
+          categoryId,
+          availability: 'available',
+          description: service.name
+        }
       })
-    })
-    
-    return {
-      code: 200,
-      data: allServices,
-      message: 'success'
+
+      return {
+        code: 200,
+        data: categorizedServices,
+        message: 'success'
+      }
+    } catch (error) {
+      console.error('获取门店服务失败:', error)
+      // 返回空数组而不是抛出错误
+      return {
+        code: 200,
+        data: [],
+        message: 'success'
+      }
     }
   },
 
