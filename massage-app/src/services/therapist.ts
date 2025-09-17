@@ -27,7 +27,15 @@ class TherapistService {
     })
 
     console.log('✅ 门店推拿师API调用成功:', data)
-    return data.data
+
+    // API返回的data是数组，需要转换为PageData格式
+    const therapistArray = Array.isArray(data.data) ? data.data : []
+    return {
+      list: therapistArray,
+      total: therapistArray.length,
+      page: 1,
+      pageSize: therapistArray.length
+    }
   }
   
   // 获取推拿师详情
