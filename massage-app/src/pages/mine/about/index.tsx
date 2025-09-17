@@ -26,9 +26,9 @@ const About: React.FC = () => {
     })
   }
 
-  const handlePhoneCall = () => {
+  const handleJoinCall = () => {
     Taro.makePhoneCall({
-      phoneNumber: '400-633-0933'
+      phoneNumber: '13701757685'
     })
   }
 
@@ -49,14 +49,14 @@ const About: React.FC = () => {
         
         <View className="culture-item">
           <Text className="culture-text">
-            上海名医堂是黄浦区中西医结合医院的精品门诊品牌，专注于中西医结合治疗，尤其擅长中医特色理疗（针灸、推拿）、骨伤康复及老年常见病调理，为市中心患者提供专家级、一站式的中医诊疗服务。
+            名医堂创立于2017年，汇聚非遗专家与中医师，融合正脊、推拿、艾灸等传统疗法，辨证施治，提供个性化医养结合服务，专注疼痛、亚健康及未病调理。
           </Text>
         </View>
       </View>
 
-      <View className="contact-section" onClick={handlePhoneCall}>
-        <Text className="contact-label">客服电话：</Text>
-        <Text className="contact-number">400-633-0933</Text>
+      <View className="contact-section" onClick={handleJoinCall}>
+        <Text className="contact-label">加盟热线：</Text>
+        <Text className="contact-number">13701757685</Text>
       </View>
 
       <View className="button-section">

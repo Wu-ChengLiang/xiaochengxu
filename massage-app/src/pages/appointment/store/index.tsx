@@ -12,9 +12,9 @@ const StoreAppointmentPage: React.FC = () => {
   const router = useRouter()
   const { id } = router.params
   const [store, setStore] = useState<Store | null>(null)
-  const [selectedDate, setSelectedDate] = useState('')
-  const [selectedHour, setSelectedHour] = useState('')
-  const [selectedMinute, setSelectedMinute] = useState('')
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [selectedHour, setSelectedHour] = useState('10点')  // 默认10点
+  const [selectedMinute, setSelectedMinute] = useState('00分')  // 默认00分
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

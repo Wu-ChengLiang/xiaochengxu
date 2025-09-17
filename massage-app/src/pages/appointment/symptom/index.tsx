@@ -4,7 +4,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import TherapistHeader from '../../../components/TherapistHeader'
 import SymptomCategoryTabs from '../../../components/SymptomCategoryTabs'
 import SymptomServiceList from '../../../components/SymptomServiceList'
-import ShoppingCart from './components/ShoppingCart'
+import ShoppingCart from '../therapist/components/ShoppingCart'
 import { symptomService } from '../../../services/symptom'
 import { therapistService } from '../../../services/therapist'
 import './index.scss'
@@ -24,6 +24,9 @@ interface CartItem {
 const SymptomPage = () => {
   const router = useRouter()
   const { storeId, storeName, selectedDate, selectedTime } = router.params
+
+  // 解码URL参数中的时间（处理URL编码的冒号）
+  const decodedTime = selectedTime ? decodeURIComponent(selectedTime as string) : ''
 
   const [therapists, setTherapists] = useState<any[]>([])
   const [categories, setCategories] = useState<any[]>([])
@@ -84,7 +87,7 @@ const SymptomPage = () => {
       price: service.price,
       discountPrice: service.discountPrice,
       date: selectedDate as string || new Date().toISOString().split('T')[0],
-      time: selectedTime as string || '待选择',
+      time: decodedTime || '10:00',  // 使用解码后的时间，默认10:00
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }
@@ -99,6 +102,25 @@ const SymptomPage = () => {
 
 
   // 去结算
+  // 清空购物车
+  const handleClearCart = () => {
+    setCartItems([])
+    Taro.showToast({
+      title: '购物车已清空',
+      icon: 'none'
+    })
+  }
+
+  // 删除单个商品
+  const handleRemoveItem = (index: number) => {
+    const newItems = cartItems.filter((_, i) => i !== index)
+    setCartItems(newItems)
+    Taro.showToast({
+      title: '已移除商品',
+      icon: 'none'
+    })
+  }
+
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       Taro.showToast({
@@ -151,6 +173,9 @@ const SymptomPage = () => {
       <ShoppingCart
         items={cartItems}
         onCheckout={handleCheckout}
+        onMaskClick={handleClearCart}
+        onRemoveItem={handleRemoveItem}
+        simpleClearMode={true}
       />
     </View>
   )

@@ -7,57 +7,44 @@
     padding: 16px;
     padding-bottom: 80px; // 为底部购物车留出空间
 
-    .therapist-group {
-      margin-bottom: 40rpx;
+    .service-item-container {
+      margin-bottom: 20px;
 
-      .therapist-header {
-        background: white;
-        padding: 24rpx;
-        border-radius: 16rpx 16rpx 0 0;
+      .therapist-options {
         display: flex;
-        align-items: center;
-        margin-bottom: 2rpx;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px;
+        background: white;
+        border-radius: 0 0 12px 12px;
 
-        .therapist-avatar {
-          width: 88rpx;
-          height: 88rpx;
-          border-radius: 50%;
-          margin-right: 20rpx;
-        }
+        .therapist-option {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 12px;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          min-width: 80px;
+          cursor: pointer;
+          transition: all 0.2s;
 
-        .therapist-info {
-          flex: 1;
+          &:hover {
+            border-color: #ff6b6b;
+            background: #fff5f5;
+          }
+
+          .therapist-mini-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-bottom: 8px;
+          }
 
           .therapist-name {
-            font-size: 32rpx;
-            font-weight: bold;
+            font-size: 12px;
             color: #333;
-            margin-right: 16rpx;
-          }
-
-          .therapist-level {
-            display: inline-block;
-            background: #a40035;
-            color: white;
-            font-size: 20rpx;
-            padding: 4rpx 12rpx;
-            border-radius: 8rpx;
-          }
-        }
-
-        .therapist-rating {
-          text-align: right;
-
-          .rating-score {
-            font-size: 28rpx;
-            color: #ff6b35;
-            display: block;
-            margin-bottom: 8rpx;
-          }
-
-          .view-details {
-            font-size: 24rpx;
-            color: #666;
+            text-align: center;
           }
         }
       }

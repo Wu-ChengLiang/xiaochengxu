@@ -2,32 +2,56 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
+import { GiftService } from '@/services/gift.service'
 import './index.scss'
 
 const OrderConfirm: React.FC = () => {
   const router = useRouter()
-  const { amount, quantity } = router.params
+  const { orderNo, amount, quantity } = router.params
   const [paymentMethod, setPaymentMethod] = useState('wechat')
-  
+
   const totalAmount = Number(amount) * Number(quantity)
 
-  const handlePayment = () => {
-    // 模拟支付流程
-    Taro.showLoading({ title: '支付中...' })
-    
-    setTimeout(() => {
+  const handlePayment = async () => {
+    if (!orderNo) {
+      Taro.showToast({
+        title: '订单信息错误',
+        icon: 'none'
+      })
+      return
+    }
+
+    try {
+      Taro.showLoading({ title: '支付中...' })
+
+      const result = await GiftService.payOrder({
+        orderNo: orderNo as string,
+        paymentMethod: paymentMethod as 'wechat' | 'balance'
+      })
+
       Taro.hideLoading()
+
+      if (result.paymentMethod === 'wechat' && result.wxPayParams) {
+        await GiftService.handleWechatPay(result.wxPayParams)
+      }
+
       Taro.showToast({
         title: '支付成功',
         icon: 'success',
         duration: 2000
       })
-      
+
       setTimeout(() => {
         // 支付成功后跳转到礼卡列表或我的页面
         Taro.navigateBack({ delta: 2 })
       }, 2000)
-    }, 2000)
+    } catch (error: any) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: error.message || '支付失败',
+        icon: 'none'
+      })
+    }
   }
 
   return (
