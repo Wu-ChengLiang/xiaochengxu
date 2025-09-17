@@ -110,12 +110,71 @@ export interface Campaign {
   rules: any  // 活动规则
 }
 
+// 礼卡模型
+export interface GiftCard {
+  id: string
+  type: 'member' | 'electronic'
+  name: string
+  image: string
+  description: string
+  features: string[]
+  terms: string
+}
+
+// 周边商品模型
+export interface Product {
+  id: string
+  name: string
+  image: string
+  price: number
+  originalPrice: number
+  unit: string
+  description: string
+  features: string[]
+  specifications: Record<string, string>
+}
+
+// 订单创建请求
+export interface CreateOrderRequest {
+  orderType: 'service' | 'product' | 'recharge'
+  userId: number
+  title: string
+  amount: number
+  paymentMethod: 'wechat' | 'balance'
+  extraData?: any
+}
+
+// 订单响应
+export interface OrderResponse {
+  orderNo: string
+  orderType: string
+  title: string
+  amount: number
+  paymentMethod: string
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded'
+  createdAt: string
+  wxPayParams?: {
+    prepayId: string
+    timeStamp: string
+    nonceStr: string
+    package: string
+    signType: string
+    paySign: string
+  }
+}
+
+// 支付订单请求
+export interface PayOrderRequest {
+  orderNo: string
+  paymentMethod: 'wechat' | 'balance'
+}
+
 // API 响应格式
 export interface ApiResponse<T> {
   code: number
   message: string
   data: T
-  timestamp: number
+  timestamp?: number
 }
 
 // 分页数据格式

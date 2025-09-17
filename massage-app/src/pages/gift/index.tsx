@@ -1,12 +1,12 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { getAllGiftCards, getAllProducts } from '@/mock/data/gifts'
+import { GiftService } from '@/services/gift.service'
 import './index.scss'
 
 const Gift: React.FC = () => {
-  const giftCards = getAllGiftCards()
-  const products = getAllProducts()
+  const giftCards = GiftService.getAllGiftCards()
+  const products = GiftService.getAllProducts()
 
   const handleCardClick = (cardId: string) => {
     Taro.navigateTo({

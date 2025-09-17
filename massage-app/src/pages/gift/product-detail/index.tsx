@@ -2,19 +2,20 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Button, Swiper, SwiperItem } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
-import { getProductById } from '@/mock/data/gifts'
+import { GiftService } from '@/services/gift.service'
+import { Product } from '@/types'
 import './index.scss'
 
 const ProductDetail: React.FC = () => {
   const router = useRouter()
   const { id } = router.params
-  const [productInfo, setProductInfo] = useState<any>(null)
+  const [productInfo, setProductInfo] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
     if (id) {
-      const product = getProductById(id as string)
+      const product = GiftService.getProductById(id as string)
       if (product) {
         setProductInfo(product)
       }
@@ -37,11 +38,34 @@ const ProductDetail: React.FC = () => {
     })
   }
 
-  const handleBuyNow = () => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
+  const handleBuyNow = async () => {
+    if (!productInfo) return
+
+    try {
+      Taro.showLoading({ title: '创建订单...' })
+
+      const order = await GiftService.createProductOrder({
+        productId: productInfo.id,
+        quantity,
+        paymentMethod: 'wechat'
+      })
+
+      Taro.hideLoading()
+
+      if (order.paymentMethod === 'wechat' && order.wxPayParams) {
+        await GiftService.handleWechatPay(order.wxPayParams)
+        Taro.showToast({
+          title: '支付成功',
+          icon: 'success'
+        })
+      }
+    } catch (error: any) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: error.message || '购买失败',
+        icon: 'none'
+      })
+    }
   }
 
   if (loading) {

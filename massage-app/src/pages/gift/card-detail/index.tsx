@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
-import { getGiftCardById } from '@/mock/data/gifts'
+import { GiftService } from '@/services/gift.service'
+import { GiftCard } from '@/types'
 import './index.scss'
 
 const CardDetail: React.FC = () => {
   const router = useRouter()
   const { id } = router.params
-  const [cardInfo, setCardInfo] = useState<any>(null)
+  const [cardInfo, setCardInfo] = useState<GiftCard | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (id) {
-      const card = getGiftCardById(id as string)
+      const card = GiftService.getGiftCardById(id as string)
       if (card) {
         setCardInfo(card)
       }

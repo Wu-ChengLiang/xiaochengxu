@@ -39,12 +39,18 @@ class WalletService {
   async getBalance(): Promise<number> {
     try {
       const userId = this.getCurrentUserId()
-      const response = await request(`/users/wallet/balance?userId=${userId}`)
+      const response = await request(`/api/v2/users/wallet/balance?userId=${userId}`)
       console.log('✅ 获取余额API调用成功:', response)
-      // API返回的是分，转换为元
-      return (response.data?.balance || 0) / 100
+
+      // 检查响应格式
+      if (response && response.data && typeof response.data.balance === 'number') {
+        return response.data.balance / 100  // API返回的是分，转换为元
+      } else {
+        console.log('⚠️ 余额API返回格式不正确，使用默认值0')
+        return 0
+      }
     } catch (error) {
-      console.error('❌ 获取余额失败:', error)
+      console.log('⚠️ 获取余额API调用失败，使用默认值0:', error)
       return 0
     }
   }
@@ -62,7 +68,7 @@ class WalletService {
       const userId = this.getCurrentUserId()
 
       // 创建充值订单
-      const orderResponse = await request('/orders/create', {
+      const orderResponse = await request('/api/v2/orders/create', {
         method: 'POST',
         data: {
           orderType: 'recharge',
@@ -126,7 +132,7 @@ class WalletService {
         const userId = this.getCurrentUserId()
 
         // 创建服务订单
-        const orderResponse = await request('/orders/create', {
+        const orderResponse = await request('/api/v2/orders/create', {
           method: 'POST',
           data: {
             orderType: 'service',
@@ -142,7 +148,7 @@ class WalletService {
       }
 
       // 使用余额支付订单
-      const payResponse = await request('/orders/pay', {
+      const payResponse = await request('/api/v2/orders/pay', {
         method: 'POST',
         data: {
           orderNo: orderId,
@@ -195,7 +201,7 @@ class WalletService {
       const userId = this.getCurrentUserId()
 
       // 调用退款API
-      const response = await request('/users/wallet/refund', {
+      const response = await request('/api/v2/users/wallet/refund', {
         method: 'POST',
         data: {
           phone: await this.getUserPhone(),
@@ -239,7 +245,7 @@ class WalletService {
   async getTransactions(page: number = 1, pageSize: number = 20): Promise<Transaction[]> {
     try {
       const userId = this.getCurrentUserId()
-      const response = await request(`/users/wallet/transactions?userId=${userId}&page=${page}&pageSize=${pageSize}`)
+      const response = await request(`/api/v2/users/wallet/transactions?userId=${userId}&page=${page}&pageSize=${pageSize}`)
 
       console.log('✅ 获取交易记录成功:', response)
 

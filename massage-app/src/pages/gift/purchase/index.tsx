@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { AtIcon, AtInputNumber } from 'taro-ui'
+import { GiftService } from '@/services/gift.service'
 import './index.scss'
 
 const GiftCardPurchase: React.FC = () => {
@@ -29,7 +30,7 @@ const GiftCardPurchase: React.FC = () => {
     setQuantity(value)
   }
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
     const amount = selectedAmount || customAmount
     if (!amount) {
       Taro.showToast({
@@ -39,9 +40,29 @@ const GiftCardPurchase: React.FC = () => {
       return
     }
 
-    Taro.navigateTo({
-      url: `/pages/gift/order-confirm/index?amount=${amount}&quantity=${quantity}`
-    })
+    try {
+      Taro.showLoading({ title: '创建订单...' })
+
+      const order = await GiftService.createGiftCardOrder({
+        amount: amount * 100, // 转换为分
+        quantity,
+        paymentMethod: 'wechat',
+        customMessage: '世界上最好的爸爸'
+      })
+
+      Taro.hideLoading()
+
+      // 跳转到确认页面，传递订单信息
+      Taro.navigateTo({
+        url: `/pages/gift/order-confirm/index?orderNo=${order.orderNo}&amount=${amount}&quantity=${quantity}`
+      })
+    } catch (error: any) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: error.message || '创建订单失败',
+        icon: 'none'
+      })
+    }
   }
 
   const getTotalPrice = () => {

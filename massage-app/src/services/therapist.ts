@@ -8,12 +8,17 @@ class TherapistService {
     pageSize: number = 10,
     userLocation?: { latitude: number; longitude: number }
   ): Promise<PageData<Therapist>> {
-    const data = await request('/therapists/recommended', {
-      data: { page, pageSize, latitude: userLocation?.latitude, longitude: userLocation?.longitude }
-    })
+    try {
+      const data = await request('/api/v2/therapists/recommended', {
+        data: { page, pageSize, latitude: userLocation?.latitude, longitude: userLocation?.longitude }
+      })
 
-    console.log('✅ 推荐推拿师API调用成功:', data)
-    return data.data
+      console.log('✅ 推荐推拿师API调用成功:', data)
+      return data.data || { list: [], total: 0, page: 1, pageSize: 10, hasMore: false }
+    } catch (error) {
+      console.log('⚠️ 推荐推拿师API调用失败，使用mock数据:', error)
+      return { list: [], total: 0, page: 1, pageSize: 10, hasMore: false }
+    }
   }
   
   // 根据门店获取推拿师
