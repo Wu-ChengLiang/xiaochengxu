@@ -72,10 +72,6 @@ const Gift = () => {
     ] })
   ] });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Gift, "pages/gift/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

@@ -95,10 +95,6 @@ const Mine = () => {
     ) })
   ] });
 };
-var config = {
-  "usingComponents": {
-    "comp": "../../comp"
-  }
-};
+var config = {};
 Page(taro.createPageConfig(Mine, "pages/mine/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

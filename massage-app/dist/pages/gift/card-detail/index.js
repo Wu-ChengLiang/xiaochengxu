@@ -73,10 +73,7 @@ const CardDetail = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "礼卡详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "礼卡详情"
 };
 Page(taro.createPageConfig(CardDetail, "pages/gift/card-detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

@@ -122,10 +122,7 @@ const ProductDetail = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "商品详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "商品详情"
 };
 Page(taro.createPageConfig(ProductDetail, "pages/gift/product-detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

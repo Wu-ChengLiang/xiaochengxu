@@ -135,10 +135,7 @@ const BookingSuccessPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "支付成功",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "支付成功"
 };
 Page(taro.createPageConfig(BookingSuccessPage, "pages/booking/success/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

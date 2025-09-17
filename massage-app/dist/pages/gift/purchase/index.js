@@ -159,10 +159,7 @@ const GiftCardPurchase = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "电子礼卡",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "电子礼卡"
 };
 Page(taro.createPageConfig(GiftCardPurchase, "pages/gift/purchase/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

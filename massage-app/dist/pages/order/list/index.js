@@ -259,10 +259,7 @@ const OrderListPage = () => {
 var config = {
   "navigationBarTitleText": "我的订单",
   "enablePullDownRefresh": true,
-  "backgroundTextStyle": "dark",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "backgroundTextStyle": "dark"
 };
 Page(taro.createPageConfig(OrderListPage, "pages/order/list/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

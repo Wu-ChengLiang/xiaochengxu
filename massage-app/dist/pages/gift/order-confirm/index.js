@@ -88,10 +88,7 @@ const OrderConfirm = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单确认",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "订单确认"
 };
 Page(taro.createPageConfig(OrderConfirm, "pages/gift/order-confirm/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

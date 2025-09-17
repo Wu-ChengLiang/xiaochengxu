@@ -47,10 +47,7 @@ const About = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "联系我们",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "联系我们"
 };
 Page(taro.createPageConfig(About, "pages/mine/about/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map

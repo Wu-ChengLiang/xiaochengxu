@@ -264,10 +264,7 @@ const OrderDetailPage = () => {
   ] });
 };
 var config = {
-  "navigationBarTitleText": "订单详情",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
+  "navigationBarTitleText": "订单详情"
 };
 Page(taro.createPageConfig(OrderDetailPage, "pages/order/detail/index", { root: { cn: [] } }, config || {}));
 //# sourceMappingURL=index.js.map
