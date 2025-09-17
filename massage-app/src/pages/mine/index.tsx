@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
-import Taro from '@tarojs/taro'
+import Taro, { useDidShow } from '@tarojs/taro'
+import { walletService } from '@/services/wallet.service'
 import LogoImg from '@/assets/icons/logo.png'
 import './index.scss'
 
 const Mine: React.FC = () => {
+  const [balance, setBalance] = useState(0)
+
+  useEffect(() => {
+    fetchBalance()
+  }, [])
+
+  // 页面显示时刷新余额
+  useDidShow(() => {
+    fetchBalance()
+  })
+
+  const fetchBalance = async () => {
+    const currentBalance = await walletService.getBalance()
+    setBalance(currentBalance)
+  }
+
   const menuItems = [
     {
       icon: 'file-generic',
@@ -58,6 +75,12 @@ const Mine: React.FC = () => {
     })
   }
 
+  const handleBalanceClick = () => {
+    Taro.navigateTo({
+      url: '/pages/mine/balance/index'
+    })
+  }
+
   return (
     <View className="mine-page">
       <View className="header-section">
@@ -70,9 +93,9 @@ const Mine: React.FC = () => {
             />
             <Text className="phone">193****9506</Text>
           </View>
-          <View className="balance-info">
+          <View className="balance-info" onClick={handleBalanceClick}>
             <Text className="balance-label">余额: </Text>
-            <Text className="balance-amount">¥ 0.00</Text>
+            <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
             <AtIcon value="chevron-right" size="16" color="#fff" />
           </View>
         </View>

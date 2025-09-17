@@ -6,6 +6,8 @@ export interface User {
   phone: string
   memberLevel: number  // 会员等级
   points: number       // 积分
+  balance: number      // 账户余额
+  frozenBalance?: number // 冻结余额（可选）
   createdAt: string
   updatedAt: string
 }
