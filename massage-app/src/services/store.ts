@@ -10,7 +10,7 @@ class StoreService {
     pageSize: number = 10
   ): Promise<PageData<Store>> {
     try {
-      const data = await request('/api/v2/stores/nearby', {
+      const data = await request('/stores/nearby', {
         data: { latitude, longitude, page, pageSize }
       })
 
@@ -46,7 +46,7 @@ class StoreService {
   // 获取门店详情
   async getStoreDetail(storeId: string) {
     try {
-      const data = await request(`/api/v2/stores/${storeId}`)
+      const data = await request(`/stores/${storeId}`)
       console.log('✅ 门店详情API调用成功:', data)
       return data.data || null
     } catch (error) {
@@ -58,7 +58,7 @@ class StoreService {
   // 搜索门店
   async searchStores(keyword: string, page: number = 1, pageSize: number = 10): Promise<PageData<Store>> {
     try {
-      const data = await request('/api/v2/stores/search', {
+      const data = await request('/stores/search', {
         data: { keyword, page, pageSize }
       })
 
@@ -77,7 +77,7 @@ class StoreService {
     pageSize: number = 10
   ): Promise<PageData<Store>> {
     try {
-      const data = await request('/api/v2/stores/filter', {
+      const data = await request('/stores/filter', {
         data: { status, page, pageSize }
       })
 

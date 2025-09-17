@@ -9,7 +9,7 @@ class TherapistService {
     userLocation?: { latitude: number; longitude: number }
   ): Promise<PageData<Therapist>> {
     try {
-      const data = await request('/api/v2/therapists/recommended', {
+      const data = await request('/therapists/recommended', {
         data: { page, pageSize, latitude: userLocation?.latitude, longitude: userLocation?.longitude }
       })
 

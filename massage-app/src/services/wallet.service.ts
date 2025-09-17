@@ -39,7 +39,7 @@ class WalletService {
   async getBalance(): Promise<number> {
     try {
       const userId = this.getCurrentUserId()
-      const response = await request(`/api/v2/users/wallet/balance?userId=${userId}`)
+      const response = await request(`/users/wallet/balance?userId=${userId}`)
       console.log('✅ 获取余额API调用成功:', response)
 
       // 检查响应格式
@@ -68,7 +68,7 @@ class WalletService {
       const userId = this.getCurrentUserId()
 
       // 创建充值订单
-      const orderResponse = await request('/api/v2/orders/create', {
+      const orderResponse = await request('/orders/create', {
         method: 'POST',
         data: {
           orderType: 'recharge',
@@ -132,7 +132,7 @@ class WalletService {
         const userId = this.getCurrentUserId()
 
         // 创建服务订单
-        const orderResponse = await request('/api/v2/orders/create', {
+        const orderResponse = await request('/orders/create', {
           method: 'POST',
           data: {
             orderType: 'service',
@@ -148,7 +148,7 @@ class WalletService {
       }
 
       // 使用余额支付订单
-      const payResponse = await request('/api/v2/orders/pay', {
+      const payResponse = await request('/orders/pay', {
         method: 'POST',
         data: {
           orderNo: orderId,
@@ -201,7 +201,7 @@ class WalletService {
       const userId = this.getCurrentUserId()
 
       // 调用退款API
-      const response = await request('/api/v2/users/wallet/refund', {
+      const response = await request('/users/wallet/refund', {
         method: 'POST',
         data: {
           phone: await this.getUserPhone(),
@@ -245,7 +245,7 @@ class WalletService {
   async getTransactions(page: number = 1, pageSize: number = 20): Promise<Transaction[]> {
     try {
       const userId = this.getCurrentUserId()
-      const response = await request(`/api/v2/users/wallet/transactions?userId=${userId}&page=${page}&pageSize=${pageSize}`)
+      const response = await request(`/users/wallet/transactions?userId=${userId}&page=${page}&pageSize=${pageSize}`)
 
       console.log('✅ 获取交易记录成功:', response)
 

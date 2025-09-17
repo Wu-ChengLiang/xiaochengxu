@@ -155,7 +155,7 @@ export class GiftService {
     }
 
     const response = await Taro.request({
-      url: `${API_BASE}/api/v2/orders/create`,
+      url: `${API_BASE}/orders/create`,
       method: 'POST',
       data: request,
       header: {
@@ -199,7 +199,7 @@ export class GiftService {
     }
 
     const response = await Taro.request({
-      url: `${API_BASE}/api/v2/orders/create`,
+      url: `${API_BASE}/orders/create`,
       method: 'POST',
       data: request,
       header: {
@@ -220,7 +220,7 @@ export class GiftService {
    */
   static async payOrder(params: PayOrderRequest): Promise<OrderResponse> {
     const response = await Taro.request({
-      url: `${API_BASE}/api/v2/orders/pay`,
+      url: `${API_BASE}/orders/pay`,
       method: 'POST',
       data: params,
       header: {
