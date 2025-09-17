@@ -128,9 +128,9 @@ const OrderListPage: React.FC = () => {
 
   const handleRebookOrder = (e: any, order: OrderData) => {
     e.stopPropagation()
-    // 跳转到推拿师详情页重新预约
-    Taro.navigateTo({
-      url: `/pages/appointment/therapist/index?therapistId=${order.therapistId}&storeId=${order.storeId}`
+    // 跳转到预约首页重新预约
+    Taro.switchTab({
+      url: '/pages/appointment/index'
     })
   }
 

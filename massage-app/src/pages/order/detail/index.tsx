@@ -73,11 +73,10 @@ const OrderDetailPage: React.FC = () => {
   }
 
   const handleRebook = () => {
-    if (orderInfo) {
-      Taro.navigateTo({
-        url: `/pages/appointment/therapist/index?therapistId=${orderInfo.therapistId}&storeId=${orderInfo.storeId}`
-      })
-    }
+    // 跳转到预约首页重新预约
+    Taro.switchTab({
+      url: '/pages/appointment/index'
+    })
   }
 
   const handleNavigate = () => {

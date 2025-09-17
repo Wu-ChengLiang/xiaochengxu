@@ -1,5 +1,5 @@
+import { request } from '@/utils/request'
 import Taro from '@tarojs/taro'
-import { sleep } from '@/utils/common'
 
 // 交易记录类型
 export interface Transaction {
@@ -28,157 +28,242 @@ export interface WalletOperationResult {
 }
 
 class WalletService {
-  private readonly BALANCE_KEY = 'wallet_balance'
-  private readonly TRANSACTIONS_KEY = 'wallet_transactions'
+  // 获取当前用户ID（从本地存储或登录状态获取）
+  private getCurrentUserId(): number {
+    // 这里应该从登录状态获取用户ID，暂时使用固定值
+    const userInfo = Taro.getStorageSync('userInfo')
+    return userInfo?.id || 1  // 默认用户ID为1
+  }
 
   // 获取余额
   async getBalance(): Promise<number> {
-    await sleep(100)
-    const balance = Taro.getStorageSync(this.BALANCE_KEY)
-    return balance || 0
+    try {
+      const userId = this.getCurrentUserId()
+      const response = await request(`/users/wallet/balance?userId=${userId}`)
+      console.log('✅ 获取余额API调用成功:', response)
+      // API返回的是分，转换为元
+      return (response.data?.balance || 0) / 100
+    } catch (error) {
+      console.error('❌ 获取余额失败:', error)
+      return 0
+    }
   }
 
-  // 充值
+  // 充值（创建充值订单）
   async recharge(amount: number, description: string = '余额充值'): Promise<WalletOperationResult> {
-    await sleep(200)
+    try {
+      if (amount <= 0) {
+        return {
+          success: false,
+          message: '充值金额必须大于0'
+        }
+      }
 
-    if (amount <= 0) {
+      const userId = this.getCurrentUserId()
+
+      // 创建充值订单
+      const orderResponse = await request('/orders/create', {
+        method: 'POST',
+        data: {
+          orderType: 'recharge',
+          userId: userId,
+          title: description,
+          amount: amount * 100, // 转换为分
+          paymentMethod: 'wechat',
+          extraData: {
+            bonus: this.calculateBonus(amount * 100) // 计算赠送金额
+          }
+        }
+      })
+
+      console.log('✅ 创建充值订单成功:', orderResponse)
+
+      // 返回订单信息（实际支付需要调用微信支付）
+      return {
+        success: true,
+        message: '充值订单创建成功，请完成微信支付',
+        transaction: {
+          id: orderResponse.data.orderNo,
+          type: 'recharge',
+          amount: amount,
+          balance: 0, // 支付完成后才能获取最新余额
+          description,
+          orderId: orderResponse.data.orderNo,
+          createdAt: orderResponse.data.createdAt
+        }
+      }
+    } catch (error) {
+      console.error('❌ 充值失败:', error)
       return {
         success: false,
-        message: '充值金额必须大于0'
+        message: '充值失败，请稍后重试'
       }
-    }
-
-    const currentBalance = await this.getBalance()
-    const newBalance = currentBalance + amount
-
-    // 创建交易记录
-    const transaction: Transaction = {
-      id: `TXN${Date.now()}`,
-      type: 'recharge',
-      amount: amount,
-      balance: newBalance,
-      description,
-      createdAt: new Date().toISOString()
-    }
-
-    // 保存余额
-    Taro.setStorageSync(this.BALANCE_KEY, newBalance)
-
-    // 保存交易记录
-    this.saveTransaction(transaction)
-
-    return {
-      success: true,
-      balance: newBalance,
-      transaction
     }
   }
 
-  // 消费
+  // 计算赠送金额
+  private calculateBonus(amount: number): number {
+    // amount是分为单位
+    if (amount >= 500000) return 100000      // 5000元赠1000元
+    if (amount >= 200000) return 30000       // 2000元赠300元
+    if (amount >= 100000) return 10000       // 1000元赠100元
+    if (amount >= 50000) return 5000         // 500元赠50元
+    return 0
+  }
+
+  // 消费（创建订单并支付）
   async consume(amount: number, description: string, orderId?: string): Promise<WalletOperationResult> {
-    await sleep(200)
+    try {
+      if (amount <= 0) {
+        return {
+          success: false,
+          message: '消费金额必须大于0'
+        }
+      }
 
-    if (amount <= 0) {
+      // 如果没有提供订单号，创建新订单
+      if (!orderId) {
+        const userId = this.getCurrentUserId()
+
+        // 创建服务订单
+        const orderResponse = await request('/orders/create', {
+          method: 'POST',
+          data: {
+            orderType: 'service',
+            userId: userId,
+            title: description,
+            amount: amount * 100, // 转换为分
+            paymentMethod: 'balance'
+          }
+        })
+
+        orderId = orderResponse.data.orderNo
+        console.log('✅ 创建服务订单成功:', orderResponse)
+      }
+
+      // 使用余额支付订单
+      const payResponse = await request('/orders/pay', {
+        method: 'POST',
+        data: {
+          orderNo: orderId,
+          paymentMethod: 'balance'
+        }
+      })
+
+      console.log('✅ 余额支付成功:', payResponse)
+
+      return {
+        success: true,
+        balance: (payResponse.data.balance || 0) / 100, // 转换为元
+        message: '支付成功',
+        transaction: {
+          id: `PAY_${orderId}`,
+          type: 'consume',
+          amount: -amount,
+          balance: (payResponse.data.balance || 0) / 100, // 转换为元
+          description,
+          orderId,
+          createdAt: payResponse.data.paidAt
+        }
+      }
+    } catch (error) {
+      console.error('❌ 消费失败:', error)
       return {
         success: false,
-        message: '消费金额必须大于0'
+        message: '支付失败，请检查余额是否充足'
       }
-    }
-
-    const currentBalance = await this.getBalance()
-
-    if (currentBalance < amount) {
-      return {
-        success: false,
-        message: '余额不足'
-      }
-    }
-
-    const newBalance = currentBalance - amount
-
-    // 创建交易记录
-    const transaction: Transaction = {
-      id: `TXN${Date.now()}`,
-      type: 'consume',
-      amount: -amount,  // 消费为负数
-      balance: newBalance,
-      description,
-      orderId,
-      createdAt: new Date().toISOString()
-    }
-
-    // 保存余额
-    Taro.setStorageSync(this.BALANCE_KEY, newBalance)
-
-    // 保存交易记录
-    this.saveTransaction(transaction)
-
-    return {
-      success: true,
-      balance: newBalance,
-      transaction
     }
   }
 
   // 退款
   async refund(amount: number, description: string = '订单退款', orderId?: string): Promise<WalletOperationResult> {
-    await sleep(200)
+    try {
+      if (amount <= 0) {
+        return {
+          success: false,
+          message: '退款金额必须大于0'
+        }
+      }
 
-    if (amount <= 0) {
+      if (!orderId) {
+        return {
+          success: false,
+          message: '退款必须提供订单号'
+        }
+      }
+
+      const userId = this.getCurrentUserId()
+
+      // 调用退款API
+      const response = await request('/users/wallet/refund', {
+        method: 'POST',
+        data: {
+          phone: await this.getUserPhone(),
+          amount: amount * 100, // 转换为分
+          orderNo: orderId,
+          description
+        }
+      })
+
+      console.log('✅ 退款成功:', response)
+
+      return {
+        success: true,
+        balance: (response.data.balance || 0) / 100, // 转换为元
+        transaction: {
+          id: response.data.transactionId,
+          type: 'refund',
+          amount: amount,
+          balance: (response.data.balance || 0) / 100, // 转换为元
+          description,
+          orderId,
+          createdAt: response.data.createdAt
+        }
+      }
+    } catch (error) {
+      console.error('❌ 退款失败:', error)
       return {
         success: false,
-        message: '退款金额必须大于0'
+        message: '退款失败，请稍后重试'
       }
     }
+  }
 
-    const currentBalance = await this.getBalance()
-    const newBalance = currentBalance + amount
-
-    // 创建交易记录
-    const transaction: Transaction = {
-      id: `TXN${Date.now()}`,
-      type: 'refund',
-      amount: amount,
-      balance: newBalance,
-      description,
-      orderId,
-      createdAt: new Date().toISOString()
-    }
-
-    // 保存余额
-    Taro.setStorageSync(this.BALANCE_KEY, newBalance)
-
-    // 保存交易记录
-    this.saveTransaction(transaction)
-
-    return {
-      success: true,
-      balance: newBalance,
-      transaction
-    }
+  // 获取用户手机号
+  private async getUserPhone(): Promise<string> {
+    const userInfo = Taro.getStorageSync('userInfo')
+    return userInfo?.phone || '13800138000' // 默认手机号
   }
 
   // 获取交易记录
   async getTransactions(page: number = 1, pageSize: number = 20): Promise<Transaction[]> {
-    await sleep(200)
+    try {
+      const userId = this.getCurrentUserId()
+      const response = await request(`/users/wallet/transactions?userId=${userId}&page=${page}&pageSize=${pageSize}`)
 
-    const allTransactions = Taro.getStorageSync(this.TRANSACTIONS_KEY) || []
+      console.log('✅ 获取交易记录成功:', response)
 
-    // 按时间倒序排序
-    allTransactions.sort((a: Transaction, b: Transaction) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+      // 转换API响应格式为前端格式
+      const transactions = response.data.list.map((item: any) => ({
+        id: item.id,
+        type: item.type,
+        amount: item.amount / 100, // 转换为元
+        balance: item.balance / 100, // 转换为元
+        description: item.description,
+        orderId: item.orderNo,
+        createdAt: item.createdAt
+      }))
 
-    // 分页
-    const start = (page - 1) * pageSize
-    const end = start + pageSize
-
-    return allTransactions.slice(start, end)
+      return transactions
+    } catch (error) {
+      console.error('❌ 获取交易记录失败:', error)
+      return []
+    }
   }
 
   // 获取充值选项
   getRechargeOptions(): RechargeOption[] {
+    // 暂时使用硬编码，后续可以从API获取充值配置
     return [
       { amount: 100, bonus: 0, label: '100元' },
       { amount: 200, bonus: 0, label: '200元' },
@@ -189,17 +274,10 @@ class WalletService {
     ]
   }
 
-  // 保存交易记录
-  private saveTransaction(transaction: Transaction): void {
-    const transactions = Taro.getStorageSync(this.TRANSACTIONS_KEY) || []
-    transactions.push(transaction)
-    Taro.setStorageSync(this.TRANSACTIONS_KEY, transactions)
-  }
-
-  // 清空数据（仅用于测试）
-  async clearAll(): Promise<void> {
-    Taro.removeStorageSync(this.BALANCE_KEY)
-    Taro.removeStorageSync(this.TRANSACTIONS_KEY)
+  // 清空本地缓存（仅用于测试）
+  async clearLocalCache(): Promise<void> {
+    Taro.removeStorageSync('userInfo')
+    console.log('✅ 本地用户缓存已清空')
   }
 }
 
