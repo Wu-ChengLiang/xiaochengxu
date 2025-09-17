@@ -167,126 +167,70 @@ const OrderListPage: React.FC = () => {
     return `${month}月${day}日 ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
   }
 
-  const renderOrderItem = (order: OrderData) => {
-    // 根据订单类型显示不同内容
-    const getOrderIcon = () => {
-      if (order.orderType === 'service') {
-        return order.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'
-      } else if (order.orderType === 'product') {
-        return order.extraData?.productType === 'gift_card'
-          ? '/assets/images/gift/card/gift-card.png'
-          : '/assets/images/gift/product/neck-pillow.png'
-      } else if (order.orderType === 'recharge') {
-        return '/assets/images/icons/wallet-icon.png'
-      }
-      return 'https://img.yzcdn.cn/vant/cat.jpeg'
-    }
+  const renderOrderItem = (order: OrderData) => (
+    <View 
+      key={order.orderNo}
+      className="order-item" 
+      onClick={() => handleOrderClick(order.orderNo)}
+    >
+      <View className="order-header">
+        <Text className="store-name">{order.storeName}</Text>
+        <Text className={`order-status ${getStatusClass(order.status)}`}>
+          {getStatusText(order.status)}
+        </Text>
+      </View>
 
-    const getOrderTitle = () => {
-      if (order.orderType === 'service') {
-        return order.therapistName || '按摩服务'
-      }
-      return order.title || '订单'
-    }
-
-    const getOrderSubtitle = () => {
-      if (order.orderType === 'service') {
-        return order.serviceName || '按摩服务'
-      } else if (order.orderType === 'product') {
-        const quantity = order.extraData?.quantity || 1
-        return quantity > 1 ? `数量: ${quantity}` : ''
-      } else if (order.orderType === 'recharge') {
-        const bonus = order.extraData?.bonus
-        return bonus ? `赠送金额: ¥${(bonus/100).toFixed(2)}` : ''
-      }
-      return ''
-    }
-
-    const getOrderTime = () => {
-      if (order.orderType === 'service' && order.appointmentDate) {
-        return `预约时间：${formatDate(`${order.appointmentDate} ${order.appointmentTime || ''}`)}`
-      }
-      return `下单时间：${formatDate(order.createdAt)}`
-    }
-
-    return (
-      <View
-        key={order.orderNo}
-        className="order-item"
-        onClick={() => handleOrderClick(order.orderNo)}
-      >
-        <View className="order-header">
-          <View className="order-type-badge">
-            {order.orderType === 'service' && <Text className="badge-service">按摩</Text>}
-            {order.orderType === 'product' && <Text className="badge-product">商品</Text>}
-            {order.orderType === 'recharge' && <Text className="badge-recharge">充值</Text>}
+      <View className="order-content">
+        <Image 
+          className="therapist-avatar" 
+          src={order.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'} 
+        />
+        <View className="order-info">
+          <View className="info-row">
+            <Text className="therapist-name">{order.therapistName}</Text>
+            <Text className="service-name">{order.serviceName}</Text>
           </View>
-          <Text className="store-name">{order.storeName || (
-            order.orderType === 'service' ? '默认门店' :
-            order.orderType === 'product' ? '线上商城' :
-            '充值中心'
-          )}</Text>
-          <Text className={`order-status ${getStatusClass(order.status)}`}>
-            {getStatusText(order.status)}
-          </Text>
-        </View>
-
-        <View className="order-content">
-          <Image
-            className="therapist-avatar"
-            src={getOrderIcon()}
-            mode="aspectFill"
-          />
-          <View className="order-info">
-            <View className="info-row">
-              <Text className="therapist-name">{getOrderTitle()}</Text>
-              <Text className="service-name">{getOrderSubtitle()}</Text>
-            </View>
-            <View className="info-row">
-              <Text className="appointment-time">{getOrderTime()}</Text>
-            </View>
-            <View className="info-row">
-              <Text className="order-no">订单号：{order.orderNo}</Text>
-            </View>
+          <View className="info-row">
+            <Text className="appointment-time">
+              预约时间：{formatDate(`${order.appointmentDate} ${order.appointmentTime}`)}
+            </Text>
           </View>
-        </View>
-
-        <View className="order-footer">
-          <View className="price-info">
-            <Text className="label">实付：</Text>
-            <Text className="price">¥{order.totalAmount.toFixed(2)}</Text>
-          </View>
-          <View className="action-buttons">
-            {order.status === 'pending_payment' && (
-              <>
-                <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
-                  取消订单
-                </View>
-                <View className="button pay" onClick={(e) => handlePayOrder(e, order)}>
-                  去支付
-                </View>
-              </>
-            )}
-            {order.status === 'paid' && (
-              <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
-                取消订单
-              </View>
-            )}
-            {(order.status === 'completed' || order.status === 'cancelled') && order.orderType === 'service' && (
-              <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
-                再次预约
-              </View>
-            )}
-            {(order.status === 'completed' || order.status === 'cancelled') && order.orderType !== 'service' && (
-              <View className="button rebook" onClick={() => Taro.navigateBack()}>
-                返回
-              </View>
-            )}
+          <View className="info-row">
+            <Text className="order-no">订单号：{order.orderNo}</Text>
           </View>
         </View>
       </View>
-    )
-  }
+
+      <View className="order-footer">
+        <View className="price-info">
+          <Text className="label">实付：</Text>
+          <Text className="price">¥{order.totalAmount}</Text>
+        </View>
+        <View className="action-buttons">
+          {order.status === 'pending_payment' && (
+            <>
+              <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
+                取消订单
+              </View>
+              <View className="button pay" onClick={(e) => handlePayOrder(e, order)}>
+                去支付
+              </View>
+            </>
+          )}
+          {order.status === 'paid' && (
+            <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
+              取消订单
+            </View>
+          )}
+          {(order.status === 'completed' || order.status === 'cancelled') && (
+            <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
+              再次预约
+            </View>
+          )}
+        </View>
+      </View>
+    </View>
+  )
 
   const renderEmpty = () => (
     <View className="empty-state">

@@ -41,39 +41,11 @@
           align-items: center;
   padding-bottom: 20rpx;
   border-bottom: 1rpx solid #f0f0f0;
-  position: relative;
-}
-.order-list-page .order-item .order-header .order-type-badge {
-  position: absolute;
-  left: 0;
-  top: -10rpx;
-}
-.order-list-page .order-item .order-header .order-type-badge .badge-service,
-.order-list-page .order-item .order-header .order-type-badge .badge-product,
-.order-list-page .order-item .order-header .order-type-badge .badge-recharge {
-  display: inline-block;
-  padding: 4rpx 12rpx;
-  border-radius: 4rpx;
-  font-size: 20rpx;
-  font-weight: 500;
-  color: #fff;
-}
-.order-list-page .order-item .order-header .order-type-badge .badge-service {
-  background-color: #a40035;
-}
-.order-list-page .order-item .order-header .order-type-badge .badge-product {
-  background-color: #ff6b6b;
-}
-.order-list-page .order-item .order-header .order-type-badge .badge-recharge {
-  background-color: #4ecdc4;
 }
 .order-list-page .order-item .order-header .store-name {
   font-size: 30rpx;
   font-weight: bold;
   color: #333;
-  -webkit-flex: 1;
-      -ms-flex: 1;
-          flex: 1;
 }
 .order-list-page .order-item .order-header .order-status {
   font-size: 26rpx;

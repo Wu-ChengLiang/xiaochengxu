@@ -40,42 +40,11 @@
       align-items: center;
       padding-bottom: 20px;
       border-bottom: 1px solid #f0f0f0;
-      position: relative;
-
-      .order-type-badge {
-        position: absolute;
-        left: 0;
-        top: -10px;
-
-        .badge-service,
-        .badge-product,
-        .badge-recharge {
-          display: inline-block;
-          padding: 4px 12px;
-          border-radius: 4px;
-          font-size: 20px;
-          font-weight: 500;
-          color: #fff;
-        }
-
-        .badge-service {
-          background-color: #a40035;
-        }
-
-        .badge-product {
-          background-color: #ff6b6b;
-        }
-
-        .badge-recharge {
-          background-color: #4ecdc4;
-        }
-      }
 
       .store-name {
         font-size: 30px;
         font-weight: bold;
         color: #333;
-        flex: 1;
       }
 
       .order-status {
