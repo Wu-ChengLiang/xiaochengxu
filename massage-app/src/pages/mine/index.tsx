@@ -93,11 +93,11 @@ const Mine: React.FC = () => {
             />
             <Text className="phone">193****9506</Text>
           </View>
-          <View className="balance-info" onClick={handleBalanceClick}>
+          <Button className="balance-info" onClick={() => handleBalanceClick()}>
             <Text className="balance-label">余额: </Text>
             <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
             <AtIcon value="chevron-right" size="16" color="#fff" />
-          </View>
+          </Button>
         </View>
       </View>
 
