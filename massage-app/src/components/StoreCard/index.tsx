@@ -40,9 +40,9 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
     <View className="store-card" onClick={onClick}>
       <View className="card-content">
         <View className="store-image-wrapper">
-          <Image 
-            className="store-image" 
-            src={store.images[0]} 
+          <Image
+            className="store-image"
+            src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
             mode="aspectFill"
           />
         </View>

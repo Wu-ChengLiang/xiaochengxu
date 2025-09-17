@@ -105,9 +105,9 @@ const StoreAppointmentPage: React.FC = () => {
     <View className="store-appointment-page">
       {/* 门店信息头部 */}
       <View className="store-header">
-        <Image 
-          className="store-image" 
-          src={store.images[0]} 
+        <Image
+          className="store-image"
+          src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
           mode="aspectFill"
         />
       </View>
