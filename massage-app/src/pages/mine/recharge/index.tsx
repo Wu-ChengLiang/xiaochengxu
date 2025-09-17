@@ -19,7 +19,7 @@ const Recharge: React.FC = () => {
   }
 
   const handleCustomAmountChange = (e: any) => {
-    const value = e.detail.value
+    const value = e.detail?.value || e.target?.value || ''
     if (/^\d*$/.test(value)) {
       setCustomAmount(value)
       setSelectedAmount(0)
