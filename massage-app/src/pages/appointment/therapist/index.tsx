@@ -78,13 +78,18 @@ const TherapistBookingPage: React.FC = () => {
       ])
 
       console.log('Store data response:', storeData)
-      console.log('Store data.data:', storeData.data)
+      console.log('Therapist data response:', therapistRes)
 
-      setTherapist(therapistRes.data)
-      setStore(storeData.data)
-      
+      // 根据API返回的实际结构处理数据
+      const therapistData = therapistRes.data || therapistRes
+      const storeDataFinal = storeData?.data || storeData
+
+      setTherapist(therapistData)
+      setStore(storeDataFinal)
+
       // 验证数据是否正确设置
-      console.log('Store state after setting:', storeData.data)
+      console.log('Store state after setting:', storeDataFinal)
+      console.log('Therapist state after setting:', therapistData)
     } catch (err) {
       console.error('Failed to load data:', err)
       setError('加载数据失败，请重试')

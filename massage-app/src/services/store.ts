@@ -48,7 +48,7 @@ class StoreService {
     try {
       const data = await request(`/stores/${storeId}`)
       console.log('✅ 门店详情API调用成功:', data)
-      return data.data || null
+      return data  // 直接返回data，不需要data.data
     } catch (error) {
       console.log('⚠️ 门店详情API调用失败:', error)
       return null
