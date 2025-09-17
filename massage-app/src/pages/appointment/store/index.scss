@@ -288,23 +288,25 @@
     align-items: center;
     justify-content: space-between;
     z-index: 100;
-    
+
     .selected-time {
+      flex: 1;
       font-size: 28px;
       color: var(--text-primary);
     }
-    
+
     .submit-btn {
       width: 200px;
       height: 80px;
       font-size: 32px;
       background: #a40035;
       border: none;
-      
+      margin-left: auto;
+
       &::after {
         border: none;
       }
-      
+
       &[disabled] {
         background: #ccc;
         color: #fff;
