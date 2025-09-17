@@ -25,6 +25,9 @@ const SymptomPage = () => {
   const router = useRouter()
   const { storeId, storeName, selectedDate, selectedTime } = router.params
 
+  // 解码URL参数中的时间（处理URL编码的冒号）
+  const decodedTime = selectedTime ? decodeURIComponent(selectedTime as string) : ''
+
   const [therapists, setTherapists] = useState<any[]>([])
   const [categories, setCategories] = useState<any[]>([])
   const [services, setServices] = useState<any[]>([])
@@ -84,7 +87,7 @@ const SymptomPage = () => {
       price: service.price,
       discountPrice: service.discountPrice,
       date: selectedDate as string || new Date().toISOString().split('T')[0],
-      time: selectedTime as string || '待选择',
+      time: decodedTime || '10:00',  // 使用解码后的时间，默认10:00
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }
