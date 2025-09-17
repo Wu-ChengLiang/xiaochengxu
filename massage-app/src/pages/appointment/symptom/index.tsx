@@ -102,6 +102,25 @@ const SymptomPage = () => {
 
 
   // 去结算
+  // 清空购物车
+  const handleClearCart = () => {
+    setCartItems([])
+    Taro.showToast({
+      title: '购物车已清空',
+      icon: 'none'
+    })
+  }
+
+  // 删除单个商品
+  const handleRemoveItem = (index: number) => {
+    const newItems = cartItems.filter((_, i) => i !== index)
+    setCartItems(newItems)
+    Taro.showToast({
+      title: '已移除商品',
+      icon: 'none'
+    })
+  }
+
   const handleCheckout = () => {
     if (cartItems.length === 0) {
       Taro.showToast({
@@ -154,6 +173,9 @@ const SymptomPage = () => {
       <ShoppingCart
         items={cartItems}
         onCheckout={handleCheckout}
+        onMaskClick={handleClearCart}
+        onRemoveItem={handleRemoveItem}
+        simpleClearMode={true}
       />
     </View>
   )

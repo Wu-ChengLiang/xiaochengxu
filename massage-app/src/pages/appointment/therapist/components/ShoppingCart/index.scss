@@ -127,34 +127,34 @@
       
       .service-info {
         flex: 1;
-        
+
         .info-header {
           display: flex;
           align-items: center;
           margin-bottom: 8rpx;
-          
+
           .therapist-name {
             font-size: 32rpx;
             font-weight: 600;
             color: #333;
             margin-right: 16rpx;
           }
-          
+
           .duration {
             font-size: 24rpx;
             color: #666;
           }
         }
-        
+
         .info-detail {
           margin-bottom: 8rpx;
-          
+
           .service-name {
             font-size: 28rpx;
             color: #333;
           }
         }
-        
+
         .info-time {
           .time-text {
             font-size: 24rpx;
@@ -162,12 +162,37 @@
           }
         }
       }
-      
-      .price-info {
-        .price {
-          font-size: 32rpx;
-          font-weight: 600;
-          color: #333;
+
+      .item-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .price-info {
+          margin-bottom: 8rpx;
+
+          .price {
+            font-size: 32rpx;
+            font-weight: 600;
+            color: #333;
+          }
+        }
+
+        .remove-btn {
+          width: 48rpx;
+          height: 48rpx;
+          background: #ff4757;
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24rpx;
+          font-weight: bold;
+
+          &:active {
+            background: #e84142;
+          }
         }
       }
     }

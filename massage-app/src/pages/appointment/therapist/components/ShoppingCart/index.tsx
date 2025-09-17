@@ -22,15 +22,19 @@ interface ShoppingCartProps {
   onMaskClick?: () => void
   onContinue?: () => void
   hasPendingAction?: boolean
+  onRemoveItem?: (index: number) => void
+  simpleClearMode?: boolean  // 简化模式：点击遮罩清空购物车
 }
 
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ 
-  items, 
-  therapist, 
+const ShoppingCart: React.FC<ShoppingCartProps> = ({
+  items,
+  therapist,
   onCheckout,
   onMaskClick,
   onContinue,
-  hasPendingAction = false
+  hasPendingAction = false,
+  onRemoveItem,
+  simpleClearMode = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [countdown, setCountdown] = useState(180) // 3分钟 = 180秒
@@ -108,9 +112,16 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   }
 
   const handleMaskClick = () => {
-    // 如果有待处理操作且提供了撤销函数，执行撤销
-    if (onMaskClick && hasPendingAction) {
-      onMaskClick()
+    if (simpleClearMode) {
+      // 简化模式：直接清空购物车
+      if (onMaskClick) {
+        onMaskClick()
+      }
+    } else {
+      // 原有逻辑：如果有待处理操作且提供了撤销函数，执行撤销
+      if (onMaskClick && hasPendingAction) {
+        onMaskClick()
+      }
     }
     setIsExpanded(false)
   }
@@ -171,9 +182,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
           <View className="service-list">
             {items.map((item, index) => (
               <View key={index} className="service-item">
-                <Image 
-                  className="therapist-avatar" 
-                  src={item.therapistAvatar || therapist?.avatar || ''} 
+                <Image
+                  className="therapist-avatar"
+                  src={item.therapistAvatar || therapist?.avatar || ''}
                 />
                 <View className="service-info">
                   <View className="info-header">
@@ -198,8 +209,18 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
                     </Text>
                   </View>
                 </View>
-                <View className="price-info">
-                  <Text className="price">¥{item.discountPrice || item.price}</Text>
+                <View className="item-actions">
+                  <View className="price-info">
+                    <Text className="price">¥{item.discountPrice || item.price}</Text>
+                  </View>
+                  {onRemoveItem && (
+                    <View
+                      className="remove-btn"
+                      onClick={() => onRemoveItem(index)}
+                    >
+                      ✕
+                    </View>
+                  )}
                 </View>
               </View>
             ))}
