@@ -24,7 +24,7 @@ const Gift: React.FC = () => {
     <View className="gift-page">
       {/* 礼卡部分 */}
       <View className="section">
-        <Text className="section-title">常乐礼卡</Text>
+        <Text className="section-title">名医堂礼卡</Text>
         <View className="gift-cards">
           {giftCards.map((card) => (
             <View 
@@ -44,7 +44,7 @@ const Gift: React.FC = () => {
 
       {/* 周边商品部分 */}
       <View className="section">
-        <Text className="section-title">常乐周边</Text>
+        <Text className="section-title">名医堂产品</Text>
         <View className="products">
           {products.map((product) => (
             <View 
