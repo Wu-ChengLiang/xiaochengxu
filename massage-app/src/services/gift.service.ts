@@ -7,9 +7,9 @@ import {
   PayOrderRequest,
   ApiResponse
 } from '@/types'
-import { getApiBaseUrl } from '@/config/api'
+import { API_CONFIG } from '@/config/api'
 
-const API_BASE = getApiBaseUrl()
+const API_BASE = API_CONFIG.baseURL
 
 // 静态礼卡数据（替代mock）
 const GIFT_CARDS: GiftCard[] = [

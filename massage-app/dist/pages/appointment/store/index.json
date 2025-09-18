@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "门店预约",
-  "usingComponents": {
-    "comp": "../../../comp"
-  }
-}

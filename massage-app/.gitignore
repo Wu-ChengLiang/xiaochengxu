@@ -50,3 +50,6 @@ project.swan.json
 project.tt.json
 project.qq.json
 project.quickapp.json
+
+# Build output
+dist/
