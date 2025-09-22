@@ -168,7 +168,8 @@ const OrderConfirmPage: React.FC = () => {
       }
 
       // 创建订单
-      const order = await orderService.createOrder(orderParams)
+      const result = await orderService.createAppointmentOrder(orderParams)
+      const order = result.order
       
       Taro.hideLoading()
       Taro.showLoading({

@@ -9,6 +9,8 @@ const OrderListPage: React.FC = () => {
   const [current, setCurrent] = useState(0)
   const [orders, setOrders] = useState<OrderData[]>([])
   const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(false)
+  const [page, setPage] = useState(1)
 
   const tabList = [
     { title: '全部' },
@@ -19,35 +21,50 @@ const OrderListPage: React.FC = () => {
 
   const statusMap = {
     0: undefined, // 全部
-    1: 'pending_payment', // 待支付
+    1: 'pending', // 待支付
     2: 'paid', // 待服务
     3: 'completed' // 已完成
   } as const
 
   useDidShow(() => {
-    fetchOrders()
+    setPage(1)
+    fetchOrders(1)
   })
 
   useEffect(() => {
-    fetchOrders()
+    setPage(1)
+    fetchOrders(1)
   }, [current])
 
   usePullDownRefresh(async () => {
-    await fetchOrders()
+    await fetchOrders(1)
     Taro.stopPullDownRefresh()
   })
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (pageNum: number = page) => {
     try {
       setLoading(true)
       const status = statusMap[current]
-      const orderList = await orderService.getOrderList(status)
-      setOrders(orderList)
+      const orderList = await orderService.getOrderList(
+        status as any,
+        'service', // 只获取服务类型订单
+        pageNum,
+        20
+      )
+
+      if (pageNum === 1) {
+        setOrders(orderList)
+      } else {
+        setOrders(prev => [...prev, ...orderList])
+      }
+
+      setPage(pageNum)
+      setHasMore(orderList.length === 20)
     } catch (error) {
-      Taro.showToast({
-        title: '获取订单失败',
-        icon: 'none'
-      })
+      console.error('获取订单失败:', error)
+      if (pageNum === 1) {
+        setOrders([])
+      }
     } finally {
       setLoading(false)
     }
@@ -102,22 +119,33 @@ const OrderListPage: React.FC = () => {
 
   const handleCancelOrder = async (e: any, order: OrderData) => {
     e.stopPropagation()
-    
+
     Taro.showModal({
       title: '取消订单',
       content: '确定要取消该订单吗？',
       success: async (res) => {
         if (res.confirm) {
           try {
-            await orderService.cancelOrder(order.orderNo)
+            const result = await orderService.cancelOrder(order.orderNo)
+
+            if (result.refundAmount && result.refundAmount > 0) {
+              Taro.showToast({
+                title: `已取消，退款￥${(result.refundAmount / 100).toFixed(2)}`,
+                icon: 'success',
+                duration: 2500
+              })
+            } else {
+              Taro.showToast({
+                title: '订单已取消',
+                icon: 'success'
+              })
+            }
+
+            // 刷新列表
+            fetchOrders(1)
+          } catch (error: any) {
             Taro.showToast({
-              title: '订单已取消',
-              icon: 'success'
-            })
-            fetchOrders()
-          } catch (error) {
-            Taro.showToast({
-              title: '取消失败',
+              title: error.message || '取消失败',
               icon: 'none'
             })
           }
@@ -136,7 +164,7 @@ const OrderListPage: React.FC = () => {
 
   const getStatusText = (status: string) => {
     const statusTextMap = {
-      'pending_payment': '待支付',
+      'pending': '待支付',
       'paid': '待服务',
       'serving': '服务中',
       'completed': '已完成',
@@ -148,7 +176,7 @@ const OrderListPage: React.FC = () => {
 
   const getStatusClass = (status: string) => {
     const statusClassMap = {
-      'pending_payment': 'status-pending',
+      'pending': 'status-pending',
       'paid': 'status-paid',
       'serving': 'status-serving',
       'completed': 'status-completed',
@@ -207,7 +235,7 @@ const OrderListPage: React.FC = () => {
           <Text className="price">¥{order.totalAmount}</Text>
         </View>
         <View className="action-buttons">
-          {order.status === 'pending_payment' && (
+          {order.paymentStatus === 'pending' && (
             <>
               <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
                 取消订单
@@ -217,12 +245,12 @@ const OrderListPage: React.FC = () => {
               </View>
             </>
           )}
-          {order.status === 'paid' && (
+          {order.paymentStatus === 'paid' && (
             <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
               取消订单
             </View>
           )}
-          {(order.status === 'completed' || order.status === 'cancelled') && (
+          {(order.paymentStatus === 'completed' || order.paymentStatus === 'cancelled') && (
             <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
               再次预约
             </View>

@@ -1,20 +1,43 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
-import { walletService } from '@/services/wallet.service'
+import { walletService, RechargeOption } from '@/services/wallet.service'
 import './index.scss'
 
 const Recharge: React.FC = () => {
   const [selectedAmount, setSelectedAmount] = useState(0)
+  const [selectedBonus, setSelectedBonus] = useState(0)
   const [customAmount, setCustomAmount] = useState('')
   const [loading, setLoading] = useState(false)
+  const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
 
-  // 获取充值选项
-  const rechargeOptions = walletService.getRechargeOptions()
+  // 从API获取充值配置
+  useEffect(() => {
+    loadRechargeOptions()
+  }, [])
 
-  const handleAmountSelect = (amount: number) => {
+  const loadRechargeOptions = async () => {
+    try {
+      const options = await walletService.getRechargeOptions()
+      setRechargeOptions(options)
+    } catch (error) {
+      console.error('获取充值配置失败:', error)
+      // 使用默认配置
+      setRechargeOptions([
+        { id: 1, amount: 100, bonus: 0, label: '100元', sortOrder: 1 },
+        { id: 2, amount: 200, bonus: 0, label: '200元', sortOrder: 2 },
+        { id: 3, amount: 500, bonus: 50, label: '500元', sortOrder: 3 },
+        { id: 4, amount: 1000, bonus: 100, label: '1000元', sortOrder: 4 },
+        { id: 5, amount: 2000, bonus: 300, label: '2000元', sortOrder: 5 },
+        { id: 6, amount: 5000, bonus: 1000, label: '5000元', sortOrder: 6 }
+      ])
+    }
+  }
+
+  const handleAmountSelect = (amount: number, bonus: number = 0) => {
     setSelectedAmount(amount)
+    setSelectedBonus(bonus)
     setCustomAmount('')
   }
 
@@ -23,11 +46,13 @@ const Recharge: React.FC = () => {
     if (/^\d*$/.test(value)) {
       setCustomAmount(value)
       setSelectedAmount(0)
+      setSelectedBonus(0)
     }
   }
 
   const handleRecharge = async () => {
     const amount = selectedAmount || Number(customAmount)
+    const bonus = selectedBonus || 0
 
     if (!amount || amount <= 0) {
       Taro.showToast({
@@ -48,26 +73,13 @@ const Recharge: React.FC = () => {
     setLoading(true)
 
     try {
-      // 模拟微信支付
-      Taro.showLoading({ title: '正在支付...' })
+      // 创建充值订单
+      const order = await walletService.createRechargeOrder(amount, bonus)
 
-      // Mock 支付延迟
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // 调起微信支付
+      if (order.wxPayParams) {
+        await walletService.handleWechatPay(order.wxPayParams)
 
-      // 查找对应的充值选项，获取赠送金额
-      const option = rechargeOptions.find(opt => opt.amount === amount)
-      const bonus = option?.bonus || 0
-      const totalAmount = amount + bonus
-
-      // 充值到余额
-      const result = await walletService.recharge(
-        totalAmount,
-        bonus > 0 ? `充值${amount}元，赠送${bonus}元` : `充值${amount}元`
-      )
-
-      Taro.hideLoading()
-
-      if (result.success) {
         Taro.showToast({
           title: '充值成功',
           icon: 'success',
@@ -78,17 +90,20 @@ const Recharge: React.FC = () => {
           Taro.navigateBack()
         }, 2000)
       } else {
+        throw new Error('获取支付参数失败')
+      }
+    } catch (error: any) {
+      if (error.message?.includes('用户取消')) {
         Taro.showToast({
-          title: result.message || '充值失败',
+          title: '支付已取消',
+          icon: 'none'
+        })
+      } else {
+        Taro.showToast({
+          title: error.message || '充值失败，请重试',
           icon: 'none'
         })
       }
-    } catch (error) {
-      Taro.hideLoading()
-      Taro.showToast({
-        title: '充值失败，请重试',
-        icon: 'none'
-      })
     } finally {
       setLoading(false)
     }
@@ -102,9 +117,9 @@ const Recharge: React.FC = () => {
         <View className="amount-grid">
           {rechargeOptions.map((option) => (
             <View
-              key={option.amount}
+              key={option.id || option.amount}
               className={`amount-card ${selectedAmount === option.amount ? 'active' : ''}`}
-              onClick={() => handleAmountSelect(option.amount)}
+              onClick={() => handleAmountSelect(option.amount, option.bonus)}
             >
               <Text className="amount">¥{option.amount}</Text>
               {option.bonus > 0 && (

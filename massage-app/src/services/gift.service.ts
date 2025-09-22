@@ -4,12 +4,9 @@ import {
   Product,
   CreateOrderRequest,
   OrderResponse,
-  PayOrderRequest,
-  ApiResponse
+  PayOrderRequest
 } from '@/types'
-import { API_CONFIG } from '@/config/api'
-
-const API_BASE = API_CONFIG.baseURL
+import { post } from '@/utils/request'
 
 // 静态礼卡数据（替代mock）
 const GIFT_CARDS: GiftCard[] = [
@@ -139,36 +136,32 @@ export class GiftService {
     paymentMethod: 'wechat' | 'balance'
     customMessage?: string
   }): Promise<OrderResponse> {
-    const request: CreateOrderRequest = {
-      orderType: 'product',
-      userId: getCurrentUserId(),
-      title: `电子礼卡 ¥${(params.amount / 100).toFixed(0)}`,
-      amount: params.amount * params.quantity,
-      paymentMethod: params.paymentMethod,
-      extraData: {
-        productType: 'gift_card',
-        cardType: 'electronic',
-        faceValue: params.amount,
-        quantity: params.quantity,
-        customMessage: params.customMessage || '世界上最好的爸爸'
+    try {
+      const orderData: CreateOrderRequest = {
+        orderType: 'product',
+        userId: getCurrentUserId(),
+        title: `电子礼卡 ¥${(params.amount / 100).toFixed(0)}`,
+        amount: params.amount * params.quantity,
+        paymentMethod: params.paymentMethod,
+        extraData: {
+          productType: 'gift_card',
+          cardType: 'electronic',
+          faceValue: params.amount,
+          quantity: params.quantity,
+          customMessage: params.customMessage || '世界上最好的爸爸'
+        }
       }
+
+      const response = await post('/orders/create', orderData, {
+        showLoading: true,
+        loadingTitle: '创建订单中...'
+      })
+
+      return response.data
+    } catch (error: any) {
+      console.error('创建礼卡订单失败:', error)
+      throw new Error(error.message || '创建礼卡订单失败')
     }
-
-    const response = await Taro.request({
-      url: `${API_BASE}/orders/create`,
-      method: 'POST',
-      data: request,
-      header: {
-        'Content-Type': 'application/json'
-      }
-    })
-
-    const result = response.data as ApiResponse<OrderResponse>
-    if (result.code !== 0) {
-      throw new Error(result.message)
-    }
-
-    return result.data
   }
 
   /**
@@ -179,61 +172,53 @@ export class GiftService {
     quantity: number
     paymentMethod: 'wechat' | 'balance'
   }): Promise<OrderResponse> {
-    const product = this.getProductById(params.productId)
-    if (!product) {
-      throw new Error('商品不存在')
-    }
-
-    const request: CreateOrderRequest = {
-      orderType: 'product',
-      userId: getCurrentUserId(),
-      title: product.name,
-      amount: product.price * 100 * params.quantity, // 转换为分
-      paymentMethod: params.paymentMethod,
-      extraData: {
-        productType: 'merchandise',
-        productId: params.productId,
-        quantity: params.quantity,
-        specifications: product.specifications
+    try {
+      const product = this.getProductById(params.productId)
+      if (!product) {
+        throw new Error('商品不存在')
       }
-    }
 
-    const response = await Taro.request({
-      url: `${API_BASE}/orders/create`,
-      method: 'POST',
-      data: request,
-      header: {
-        'Content-Type': 'application/json'
+      const orderData: CreateOrderRequest = {
+        orderType: 'product',
+        userId: getCurrentUserId(),
+        title: product.name,
+        amount: product.price * 100 * params.quantity, // 转换为分
+        paymentMethod: params.paymentMethod,
+        extraData: {
+          productType: 'merchandise',
+          productId: params.productId,
+          quantity: params.quantity,
+          specifications: product.specifications
+        }
       }
-    })
 
-    const result = response.data as ApiResponse<OrderResponse>
-    if (result.code !== 0) {
-      throw new Error(result.message)
+      const response = await post('/orders/create', orderData, {
+        showLoading: true,
+        loadingTitle: '创建订单中...'
+      })
+
+      return response.data
+    } catch (error: any) {
+      console.error('创建商品订单失败:', error)
+      throw new Error(error.message || '创建商品订单失败')
     }
-
-    return result.data
   }
 
   /**
    * 支付订单
    */
   static async payOrder(params: PayOrderRequest): Promise<OrderResponse> {
-    const response = await Taro.request({
-      url: `${API_BASE}/orders/pay`,
-      method: 'POST',
-      data: params,
-      header: {
-        'Content-Type': 'application/json'
-      }
-    })
+    try {
+      const response = await post('/orders/pay', params, {
+        showLoading: true,
+        loadingTitle: '支付中...'
+      })
 
-    const result = response.data as ApiResponse<OrderResponse>
-    if (result.code !== 0) {
-      throw new Error(result.message)
+      return response.data
+    } catch (error: any) {
+      console.error('支付订单失败:', error)
+      throw new Error(error.message || '支付失败')
     }
-
-    return result.data
   }
 
   /**
