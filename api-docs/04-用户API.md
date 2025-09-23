@@ -661,13 +661,22 @@ GET /api/v2/orders/{orderNo}
 
 ### 接口地址
 ```
-PUT /api/v2/orders/{orderNo}/cancel
+POST /api/v2/orders/cancel
 ```
 
 ### 请求参数
+```json
+{
+  "orderNo": "ORDER202401151234567",
+  "userId": 123,
+  "reason": "用户取消"
+}
+```
+
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| orderNo | string | 是 | 订单号（路径参数） |
+| orderNo | string | 是 | 订单号 |
+| userId | number | 是 | 用户ID |
 | reason | string | 否 | 取消原因 |
 
 ### 响应数据
@@ -1171,7 +1180,7 @@ CREATE TABLE recharge_configs (
 - ❌ `POST /api/v2/payments/wechat/notify` - 微信支付回调接口
 
 **订单管理**：
-- ❌ `PUT /api/v2/orders/{orderNo}/cancel` - 取消订单接口
+- ✅ `POST /api/v2/orders/cancel` - 取消订单接口
 
 **手机号变更**：
 - ❌ `POST /api/v2/users/change-phone` - 手机号变更接口
@@ -1185,9 +1194,9 @@ CREATE TABLE recharge_configs (
 - **核心功能**: 100% 完成（用户信息、钱包、订单）
 - **订单查询**: 100% 完成（列表查询、详情查询）
 - **微信支付**: 90% 完成（缺少回调处理）
-- **辅助功能**: 0% 完成（手机号变更、取消订单）
+- **辅助功能**: 50% 完成（取消订单已完成，手机号变更待实现）
 
-**总体完成度**: **约90%**
+**总体完成度**: **约95%**
 
 ### 🎯 **当前状态**
 
