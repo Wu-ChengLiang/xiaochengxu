@@ -52,4 +52,4 @@ project.qq.json
 project.quickapp.json
 
 # Build output
-dist/
+# dist/  # 暂时注释掉，允许提交编译后的dist目录
