@@ -73,10 +73,89 @@ All models fully typed in `src/types/index.ts`:
 
 ### API Integration
 Working with production API:
-1. Ensure backend implements TypeScript interfaces correctly
-2. Configure endpoints in `src/config/api.ts`
-3. Test with `npm run dev:api`
-4. Handle error cases and loading states
+1. **Check API Documentation**: Always read `api-docs/` folder first for endpoint specifications
+2. Ensure backend implements TypeScript interfaces correctly
+3. Configure endpoints in `src/config/api.ts`
+4. Test with `npm run dev:api`
+5. Handle error cases and loading states
+
+### API Documentation Requirements
+Before implementing any new API integration:
+1. **Check `api-docs/` folder** for existing API specifications
+2. If API documentation doesn't exist, request backend team to add it
+3. **Required API documentation format:**
+
+```markdown
+# API Name - Endpoint Documentation
+
+## Endpoint
+`METHOD /api/v2/endpoint-path`
+
+## Description
+Brief description of what this API does
+
+## Request Parameters
+### Path Parameters
+- `id` (string, required): Description
+
+### Query Parameters
+- `page` (number, optional): Page number (default: 1)
+- `limit` (number, optional): Items per page (default: 10)
+
+### Request Body
+```json
+{
+  "field1": "string (required)",
+  "field2": "number (optional)"
+}
+```
+
+## Response Format
+### Success Response (200)
+```json
+{
+  "success": true,
+  "data": {
+    "id": "string",
+    "name": "string",
+    "createdAt": "ISO 8601 date string"
+  },
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 100,
+    "totalPages": 10
+  }
+}
+```
+
+### Error Response (4xx/5xx)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human readable error message"
+  }
+}
+```
+
+## TypeScript Interface
+```typescript
+interface ApiResponse {
+  id: string;
+  name: string;
+  createdAt: string;
+}
+
+interface ApiRequest {
+  field1: string;
+  field2?: number;
+}
+```
+```
+
+**Important**: All API documentation must include TypeScript interfaces that match exactly with `src/types/index.ts`
 
 ## Testing Approach
 
@@ -96,6 +175,7 @@ massage-app/
 │   ├── types/           # TypeScript type definitions
 │   ├── config/          # API and app configuration
 │   └── utils/           # Helpers (location, formatting)
+├── api-docs/            # API documentation (read first before implementing)
 ├── config/              # Taro build configuration
 └── project.config.json  # WeChat mini-program settings
 ```
@@ -115,11 +195,12 @@ massage-app/
 
 ## Key Files to Understand
 
-1. **`src/types/index.ts`** - Complete data model definitions
-2. **`src/services/therapist.service.ts`** - Service layer pattern example
-3. **`src/config/api.ts`** - API configuration and endpoint management
-4. **`src/pages/appointment/`** - Core booking flow implementation
-5. **`src/utils/location.ts`** - Location-based calculations and utilities
+1. **`api-docs/`** - API documentation (ALWAYS read first before implementation)
+2. **`src/types/index.ts`** - Complete data model definitions
+3. **`src/services/therapist.service.ts`** - Service layer pattern example
+4. **`src/config/api.ts`** - API configuration and endpoint management
+5. **`src/pages/appointment/`** - Core booking flow implementation
+6. **`src/utils/location.ts`** - Location-based calculations and utilities
 
 ## 🚀 Complete Development and Debugging Guide
 
