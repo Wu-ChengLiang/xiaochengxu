@@ -4,6 +4,8 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { orderService, CreateOrderParams } from '@/services/order'
 import { storeService } from '@/services/store'
 import { therapistService } from '@/services/therapist'
+import { walletService } from '@/services/wallet.service'
+import { paymentService } from '@/services/payment.service'
 import './index.scss'
 
 interface CartItem {
@@ -34,7 +36,9 @@ const OrderConfirmPage: React.FC = () => {
   const [storeInfo, setStoreInfo] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [countdown, setCountdown] = useState(180) // 3分钟倒计时
-  const [paymentMethod, setPaymentMethod] = useState('wechat')
+  const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'balance'>('wechat')
+  const [userBalance, setUserBalance] = useState(0) // 用户余额
+  const [balanceLoading, setBalanceLoading] = useState(false)
   const timerRef = useRef<any>(null)
 
   useEffect(() => {
@@ -42,9 +46,11 @@ const OrderConfirmPage: React.FC = () => {
     try {
       const items = JSON.parse(decodeURIComponent(params.items || '[]'))
       setCartItems(items)
-      
+
       // 获取推拿师和门店信息
       fetchTherapistAndStoreInfo()
+      // 获取用户余额
+      fetchUserBalance()
     } catch (error) {
       Taro.showToast({
         title: '数据解析失败',
@@ -82,6 +88,26 @@ const OrderConfirmPage: React.FC = () => {
       }
     }
   }, [loading, cartItems])
+
+  // 获取用户余额
+  const fetchUserBalance = async () => {
+    try {
+      setBalanceLoading(true)
+      const balance = await walletService.getBalance()
+      setUserBalance(balance)
+
+      // 如果余额充足，默认选择余额支付
+      const totalPrice = getTotalPrice()
+      if (balance >= totalPrice / 100) { // 转换为元比较
+        setPaymentMethod('balance')
+      }
+    } catch (error) {
+      console.error('获取余额失败:', error)
+      setUserBalance(0)
+    } finally {
+      setBalanceLoading(false)
+    }
+  }
 
   const fetchTherapistAndStoreInfo = async () => {
     try {
@@ -133,6 +159,25 @@ const OrderConfirmPage: React.FC = () => {
     return cartItems.reduce((sum, item) => sum + (item.discountPrice || item.price), 0)
   }
 
+  // 检查余额是否充足
+  const isBalanceSufficient = () => {
+    const totalPrice = getTotalPrice()
+    return userBalance >= totalPrice / 100 // 转换为元比较
+  }
+
+  // 处理支付方式切换
+  const handlePaymentMethodChange = (method: 'wechat' | 'balance') => {
+    if (method === 'balance' && !isBalanceSufficient()) {
+      Taro.showToast({
+        title: '余额不足，请充值或使用其他支付方式',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
+    setPaymentMethod(method)
+  }
+
   const handlePayment = async () => {
     // 症状调理模式下推拿师信息在cartItems中，不需要therapistInfo
     const isSymptomMode = params.from === 'symptom'
@@ -142,6 +187,16 @@ const OrderConfirmPage: React.FC = () => {
       Taro.showToast({
         title: '订单信息不完整',
         icon: 'none'
+      })
+      return
+    }
+
+    // 余额支付前再次检查余额
+    if (paymentMethod === 'balance' && !isBalanceSufficient()) {
+      Taro.showToast({
+        title: '余额不足，请充值或使用其他支付方式',
+        icon: 'none',
+        duration: 2000
       })
       return
     }
@@ -170,28 +225,23 @@ const OrderConfirmPage: React.FC = () => {
       // 创建订单
       const result = await orderService.createAppointmentOrder(orderParams)
       const order = result.order
-      
+
       Taro.hideLoading()
-      Taro.showLoading({
-        title: '正在支付...'
+
+      // 根据支付方式调用不同的支付方法
+      const paymentSuccess = await paymentService.pay({
+        orderNo: order.orderNo,
+        amount: order.totalAmount ? order.totalAmount * 100 : getTotalPrice() * 100, // 转换为分
+        paymentMethod: paymentMethod,
+        title: `${firstItem.serviceName} - ${firstItem.therapistName}`
       })
 
-      // 获取支付参数
-      const paymentParams = await orderService.getPaymentParams(order.orderNo)
-      
-      Taro.hideLoading()
-      
-      // 调用微信支付（Mock环境直接模拟成功）
-      if (process.env.NODE_ENV === 'development') {
-        // 开发环境Mock支付成功
-        await orderService.updateOrderStatus(order.orderNo, 'paid')
-        
-        Taro.showToast({
-          title: '支付成功',
-          icon: 'success',
-          duration: 1500
-        })
-        
+      if (paymentSuccess) {
+        // 支付成功后更新余额显示
+        if (paymentMethod === 'balance') {
+          await fetchUserBalance()
+        }
+
         setTimeout(() => {
           Taro.redirectTo({
             url: `/pages/booking/success/index?orderNo=${order.orderNo}`
@@ -308,12 +358,31 @@ const OrderConfirmPage: React.FC = () => {
       <View className="payment-section">
         <Text className="section-title">支付方式</Text>
         <View className="payment-methods">
-          <View 
-            className={`payment-method ${paymentMethod === 'wechat' ? 'active' : ''}`}
-            onClick={() => setPaymentMethod('wechat')}
+          {/* 余额支付 */}
+          <View
+            className={`payment-method ${paymentMethod === 'balance' ? 'active' : ''} ${!isBalanceSufficient() ? 'disabled' : ''}`}
+            onClick={() => handlePaymentMethodChange('balance')}
           >
             <View className="method-info">
-              <Text className="method-icon">✅</Text>
+              <Text className="method-icon">💰</Text>
+              <Text className="method-name">余额支付</Text>
+              <Text className="balance-amount">
+                {balanceLoading ? '加载中...' : `¥${userBalance.toFixed(2)}`}
+                {!isBalanceSufficient() && !balanceLoading && (
+                  <Text className="insufficient"> (余额不足)</Text>
+                )}
+              </Text>
+            </View>
+            <View className={`check-icon ${paymentMethod === 'balance' ? 'checked' : ''}`} />
+          </View>
+
+          {/* 微信支付 */}
+          <View
+            className={`payment-method ${paymentMethod === 'wechat' ? 'active' : ''}`}
+            onClick={() => handlePaymentMethodChange('wechat')}
+          >
+            <View className="method-info">
+              <Text className="method-icon">💚</Text>
               <Text className="method-name">微信支付</Text>
             </View>
             <View className={`check-icon ${paymentMethod === 'wechat' ? 'checked' : ''}`} />
