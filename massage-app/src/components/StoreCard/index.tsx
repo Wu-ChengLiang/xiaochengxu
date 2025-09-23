@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import BookingButton from '@/components/BookingButton'
-import { mockImages } from '@/mock/data/images'
 import type { Store } from '@/types'
 import './index.scss'
 
@@ -43,7 +42,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
         <View className="store-image-wrapper">
           <Image
             className="store-image"
-            src={store.images?.[0] || store.image || mockImages.stores[0]}
+            src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
             mode="aspectFill"
           />
         </View>

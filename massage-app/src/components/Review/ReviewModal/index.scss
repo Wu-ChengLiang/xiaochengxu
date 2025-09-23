@@ -1,0 +1,247 @@
+@import '../../../styles/variables.scss';
+
+.review-modal {
+  padding: 32px;
+  background-color: #fff;
+
+  .modal-header {
+    margin-bottom: 40px;
+
+    .therapist-info {
+      display: flex;
+      align-items: center;
+
+      .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 24px;
+      }
+
+      .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .name {
+          font-size: 32px;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 8px;
+        }
+
+        .service {
+          font-size: 28px;
+          color: #666;
+        }
+      }
+    }
+  }
+
+  .rating-section {
+    margin-bottom: 40px;
+
+    .rating-label {
+      display: block;
+      font-size: 30px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .star-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .at-rate {
+        flex-shrink: 0;
+      }
+
+      .rating-text {
+        font-size: 32px;
+        font-weight: 600;
+        color: #a40035;
+        margin-left: 24px;
+      }
+    }
+  }
+
+  .quick-tags {
+    margin-bottom: 40px;
+
+    .tags-label {
+      display: block;
+      font-size: 30px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+
+      .tag {
+        padding: 16px 24px;
+        font-size: 28px;
+        color: #666;
+        background-color: #f5f5f5;
+        border-radius: 32px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+
+        &.active {
+          color: #a40035;
+          background-color: rgba(164, 0, 53, 0.08);
+          border-color: #a40035;
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+  }
+
+  .content-section {
+    margin-bottom: 40px;
+
+    .content-label {
+      display: block;
+      font-size: 30px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .content-textarea {
+      .at-textarea__textarea {
+        font-size: 28px;
+        line-height: 1.6;
+        background-color: #f9f9f9;
+        border-radius: 16px;
+        padding: 20px;
+      }
+
+      .at-textarea__counter {
+        font-size: 24px;
+        color: #999;
+        text-align: right;
+        margin-top: 8px;
+      }
+    }
+  }
+
+  .modal-footer {
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+
+    .buttons {
+      display: flex;
+      gap: 24px;
+
+      .btn-cancel,
+      .btn-submit {
+        flex: 1;
+        height: 88px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 500;
+        border-radius: 44px;
+        transition: all 0.3s ease;
+
+        &:active {
+          transform: scale(0.98);
+        }
+      }
+
+      .btn-cancel {
+        color: #666;
+        background-color: #f5f5f5;
+
+        &:hover {
+          background-color: #ebebeb;
+        }
+      }
+
+      .btn-submit {
+        color: #fff;
+        background-color: #a40035;
+
+        &.disabled {
+          opacity: 0.5;
+          pointer-events: none;
+        }
+
+        &:hover:not(.disabled) {
+          background-color: #8a002d;
+        }
+      }
+    }
+  }
+}
+
+// 浮层样式优化
+.at-float-layout {
+  .at-float-layout__container {
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .at-float-layout__header {
+    padding: 32px;
+    border-bottom: 1px solid #eee;
+
+    .at-float-layout__title {
+      font-size: 36px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .at-float-layout__btn-close {
+      .at-icon {
+        font-size: 40px;
+        color: #999;
+      }
+    }
+  }
+
+  .at-float-layout__body {
+    padding: 0;
+  }
+}
+
+// 动画效果
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.at-float-layout--active {
+  .at-float-layout__container {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .at-float-layout__overlay {
+    animation: fadeIn 0.3s ease-out;
+  }
+}

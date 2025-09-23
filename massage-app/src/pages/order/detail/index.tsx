@@ -3,6 +3,8 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon, AtSteps } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
+import { reviewService } from '@/services/review'
+import { ReviewModal } from '@/components/Review'
 import './index.scss'
 
 const OrderDetailPage: React.FC = () => {
@@ -10,6 +12,8 @@ const OrderDetailPage: React.FC = () => {
   const { orderNo } = router.params as { orderNo: string }
   const [orderInfo, setOrderInfo] = useState<OrderData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showReviewModal, setShowReviewModal] = useState(false)
+  const [hasReviewed, setHasReviewed] = useState(false)
 
   useEffect(() => {
     fetchOrderDetail()
@@ -30,6 +34,13 @@ const OrderDetailPage: React.FC = () => {
     try {
       const order = await orderService.getOrderDetail(orderNo)
       setOrderInfo(order)
+
+      // 检查是否已评价（如果有appointmentId）
+      if (order.extraData?.appointmentId) {
+        const canReview = await reviewService.checkCanReview(order.extraData.appointmentId)
+        setHasReviewed(!canReview)
+      }
+
       setLoading(false)
     } catch (error) {
       setLoading(false)
@@ -77,6 +88,61 @@ const OrderDetailPage: React.FC = () => {
     Taro.switchTab({
       url: '/pages/appointment/index'
     })
+  }
+
+  const handleCreateReview = () => {
+    setShowReviewModal(true)
+  }
+
+  const handleViewReview = async () => {
+    if (!orderInfo?.extraData?.appointmentId) {
+      Taro.showToast({
+        title: '暂无评价',
+        icon: 'none'
+      })
+      return
+    }
+
+    try {
+      const reviewDetail = await reviewService.getReviewDetail(orderInfo.extraData.appointmentId)
+      // 可以跳转到评价详情页或显示评价内容
+      Taro.showModal({
+        title: '我的评价',
+        content: `评分：${reviewDetail.rating}星\n${reviewDetail.content}`,
+        showCancel: false
+      })
+    } catch (error) {
+      Taro.showToast({
+        title: '获取评价失败',
+        icon: 'none'
+      })
+    }
+  }
+
+  const handleSubmitReview = async (reviewData: {
+    appointmentId: number
+    rating: number
+    content: string
+    tags: string[]
+  }) => {
+    try {
+      // 添加therapistId到评价数据
+      const fullReviewData = {
+        ...reviewData,
+        therapistId: orderInfo?.therapistId
+      }
+
+      await reviewService.createReview(fullReviewData)
+
+      // 更新评价状态
+      setHasReviewed(true)
+      setShowReviewModal(false)
+
+      // 刷新订单详情
+      fetchOrderDetail()
+    } catch (error: any) {
+      throw error // 让ReviewModal处理错误
+    }
   }
 
   const handleNavigate = () => {
@@ -283,13 +349,41 @@ const OrderDetailPage: React.FC = () => {
             <Text>联系门店</Text>
           </View>
         )}
-        {/* 已完成/已取消：可以再次预约 */}
-        {(['completed', 'cancelled', 'refunded'].includes(currentStatus)) && (
+        {/* 已完成状态：显示评价和再次预约按钮 */}
+        {currentStatus === 'completed' && (
+          <>
+            {!hasReviewed ? (
+              <View className="button primary" onClick={handleCreateReview}>
+                <AtIcon value="star" size="16" />
+                <Text> 评价服务</Text>
+              </View>
+            ) : (
+              <View className="button secondary" onClick={handleViewReview}>
+                查看评价
+              </View>
+            )}
+            <View className="button primary" onClick={handleRebook}>
+              再次预约
+            </View>
+          </>
+        )}
+        {/* 已取消/已退款：只显示再次预约 */}
+        {(['cancelled', 'refunded'].includes(currentStatus)) && (
           <View className="button primary" onClick={handleRebook}>
             再次预约
           </View>
         )}
       </View>
+
+      {/* 评价模态层 */}
+      {orderInfo && (
+        <ReviewModal
+          visible={showReviewModal}
+          orderInfo={orderInfo}
+          onClose={() => setShowReviewModal(false)}
+          onSubmit={handleSubmitReview}
+        />
+      )}
     </View>
   )
 }

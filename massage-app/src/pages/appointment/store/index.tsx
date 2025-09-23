@@ -3,7 +3,6 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { storeService } from '@/services/store'
-import { mockImages } from '@/mock/data/images'
 import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
 import './index.scss'
@@ -108,7 +107,7 @@ const StoreAppointmentPage: React.FC = () => {
       <View className="store-header">
         <Image
           className="store-image"
-          src={store.images?.[0] || store.image || mockImages.stores[0]}
+          src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
           mode="aspectFill"
         />
       </View>

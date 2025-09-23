@@ -36,14 +36,15 @@
         display: flex;
         align-items: center;
         font-size: 28px;
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        color: inherit !important;
+        background: transparent;
+        border: none;
+        padding: 12px 0;
+        margin: 0;
+        color: #fff;
+        cursor: pointer;
 
-        &::after {
-          display: none !important;
+        &:active {
+          opacity: 0.8;
         }
 
         .balance-amount {

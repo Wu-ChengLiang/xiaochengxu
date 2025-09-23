@@ -170,6 +170,8 @@ GET /api/v2/orders
         "paymentMethod": "balance",
         "paymentStatus": "paid",
         "extraData": {
+          "appointmentId": 123,              // 关联的预约ID（如果有）
+          "appointmentStatus": "completed",  // 预约状态（自动查询添加）
           "therapistId": "1",
           "storeId": "1",
           "appointmentDate": "2024-01-20",
@@ -225,6 +227,7 @@ GET /api/v2/orders
 - 支持按状态和类型筛选
 - 按创建时间倒序排列
 - **extraData字段现已自动解析为对象**（不再返回JSON字符串）
+- **批量查询预约状态并自动添加appointmentStatus字段**（优化避免N+1查询）
 - 分页查询，避免一次返回过多数据
 
 ### extraData字段说明
@@ -233,6 +236,8 @@ GET /api/v2/orders
 #### service类型（按摩预约）
 ```json
 {
+  "appointmentId": 123,            // 关联的预约ID（创建后自动生成）
+  "appointmentStatus": "completed", // 预约状态（系统自动查询添加）：pending/confirmed/serving/completed/cancelled
   "therapistId": "1",              // 技师ID（必需）
   "therapistName": "张师傅",       // 技师姓名（必需）
   "therapistAvatar": "url",        // 技师头像URL（必需）
@@ -301,6 +306,8 @@ GET /api/v2/orders/{orderNo}
     "paymentMethod": "balance",
     "paymentStatus": "paid",
     "extraData": {
+      "appointmentId": 123,              // 关联的预约ID（如果有）
+      "appointmentStatus": "completed",  // 预约状态（自动查询添加）
       "therapistId": "1",
       "storeId": "1",
       "appointmentDate": "2024-01-20",
@@ -320,28 +327,21 @@ GET /api/v2/orders/{orderNo}
 ### 实现说明
 - 通过订单号获取订单详情
 - **extraData字段现已自动解析为对象**（不再返回JSON字符串）
+- **如果订单关联了预约（存在appointmentId），会自动查询并添加appointmentStatus字段**
+- appointmentStatus可能的值：pending/confirmed/serving/completed/cancelled
 - 如果订单不存在，返回404错误
 
 ## 10. 取消订单
 
 ### 接口地址
 ```
-POST /api/v2/orders/cancel
+PUT /api/v2/orders/{orderNo}/cancel
 ```
 
 ### 请求参数
-```json
-{
-  "orderNo": "ORDER202401151234567",
-  "userId": 123,
-  "reason": "用户取消"
-}
-```
-
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| orderNo | string | 是 | 订单号 |
-| userId | number | 是 | 用户ID |
+| orderNo | string | 是 | 订单号（路径参数） |
 | reason | string | 否 | 取消原因 |
 
 ### 响应数据
@@ -845,7 +845,7 @@ CREATE TABLE recharge_configs (
 - ❌ `POST /api/v2/payments/wechat/notify` - 微信支付回调接口
 
 **订单管理**：
-- ✅ `POST /api/v2/orders/cancel` - 取消订单接口
+- ❌ `PUT /api/v2/orders/{orderNo}/cancel` - 取消订单接口
 
 **手机号变更**：
 - ❌ `POST /api/v2/users/change-phone` - 手机号变更接口
@@ -859,9 +859,9 @@ CREATE TABLE recharge_configs (
 - **核心功能**: 100% 完成（用户信息、钱包、订单）
 - **订单查询**: 100% 完成（列表查询、详情查询）
 - **微信支付**: 90% 完成（缺少回调处理）
-- **辅助功能**: 50% 完成（取消订单已完成，手机号变更待实现）
+- **辅助功能**: 0% 完成（手机号变更、取消订单）
 
-**总体完成度**: **约95%**
+**总体完成度**: **约90%**
 
 ### 🎯 **当前状态**
 

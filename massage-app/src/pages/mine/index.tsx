@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Image, Button } from '@tarojs/components'
+import { View, Text, Image } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { walletService } from '@/services/wallet.service'
@@ -98,11 +98,11 @@ const Mine: React.FC = () => {
             />
             <Text className="phone">{maskPhone(userInfo?.phone || '')}</Text>
           </View>
-          <Button className="balance-info" onClick={() => handleBalanceClick()}>
+          <View className="balance-info" onClick={handleBalanceClick}>
             <Text className="balance-label">余额: </Text>
             <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
             <AtIcon value="chevron-right" size="16" color="#fff" />
-          </Button>
+          </View>
         </View>
       </View>
 
