@@ -30,10 +30,12 @@ export interface OrderData {
   duration?: number
   appointmentDate?: string
   appointmentTime?: string
+  appointmentStatus?: 'pending' | 'confirmed' | 'serving' | 'completed' | 'cancelled'  // 预约状态
 
   // 计算字段
   totalAmount?: number
   paymentDeadline?: string
+  displayStatus?: string  // 综合显示状态
 }
 
 /**
@@ -104,6 +106,59 @@ class OrderService {
       userId: getCurrentUserId(),
       userPhone: getCurrentUserPhone()
     }
+  }
+
+  /**
+   * 获取综合显示状态
+   * 结合支付状态和预约状态，返回最终的显示状态
+   */
+  private getDisplayStatus(order: OrderData): string {
+    // 支付未完成
+    if (order.paymentStatus === 'pending') {
+      return 'pending'
+    }
+
+    // 已取消或退款
+    if (order.paymentStatus === 'cancelled' || order.paymentStatus === 'refunded') {
+      return order.paymentStatus
+    }
+
+    // 已支付的服务订单，根据预约状态细分
+    if (order.paymentStatus === 'paid' && order.orderType === 'service') {
+      // 如果有预约状态，优先使用
+      if (order.appointmentStatus) {
+        switch(order.appointmentStatus) {
+          case 'completed':
+            return 'completed'  // 已完成（管理员标记）
+          case 'serving':
+            return 'serving'    // 服务中（虽然少见，但可能存在）
+          case 'cancelled':
+            return 'cancelled'  // 预约已取消
+          case 'pending':         // 待确认
+          case 'confirmed':       // 已确认
+          default:
+            return 'paid'       // 都归类为"待服务"
+        }
+      }
+
+      // 没有预约状态时，根据时间推断
+      if (order.appointmentDate && order.appointmentTime) {
+        const appointmentDateTime = new Date(`${order.appointmentDate} ${order.appointmentTime}`)
+        const endDateTime = new Date(appointmentDateTime.getTime() + (order.duration || 60) * 60000)
+        const now = new Date()
+
+        // 如果服务时间已经结束，但没有标记completed，暂时归类为待服务
+        // 等待管理员手动标记为completed
+        if (endDateTime < now) {
+          // 服务时间已过，可能已完成但未标记
+          // 保守处理：仍显示为"待服务"，避免误判
+          return 'paid'
+        }
+      }
+    }
+
+    // 默认返回支付状态
+    return order.paymentStatus
   }
 
   /**
@@ -433,9 +488,15 @@ class OrderService {
         order.duration = order.extraData.duration
         order.serviceName = order.extraData.serviceName || order.title
 
+        // 🚀 读取预约状态（后端新增字段）
+        order.appointmentStatus = order.extraData.appointmentStatus
+
         // 🚀 自动获取完整的门店和技师信息
         await this.enrichOrderWithStoreAndTherapistInfo(order)
       }
+
+      // 计算综合显示状态
+      order.displayStatus = this.getDisplayStatus(order)
 
       return order
     } catch (error: any) {
@@ -485,12 +546,18 @@ class OrderService {
           order.appointmentTime = order.extraData.startTime
           order.duration = order.extraData.duration
           order.serviceName = order.extraData.serviceName || order.title
+
+          // 🚀 读取预约状态（后端新增字段）
+          order.appointmentStatus = order.extraData.appointmentStatus
         }
 
         // 添加默认头像（如果没有的话）
         if (!order.therapistAvatar) {
           order.therapistAvatar = 'https://img.yzcdn.cn/vant/cat.jpeg'
         }
+
+        // 计算综合显示状态
+        order.displayStatus = this.getDisplayStatus(order)
 
         return order
       })

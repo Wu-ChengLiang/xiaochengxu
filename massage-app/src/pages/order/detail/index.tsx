@@ -94,24 +94,30 @@ const OrderDetailPage: React.FC = () => {
     return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${orderNo}`
   }
 
-  const getStatusText = (status: string) => {
+  const getStatusText = (order: OrderData) => {
+    // 使用综合显示状态（优先）或支付状态（降级）
+    const status = order.displayStatus || order.paymentStatus
+
     const statusTextMap = {
-      'pending_payment': '待支付',
+      'pending': '待支付',
       'paid': '待服务',
       'serving': '服务中',
-      'completed': '已完成',
+      'completed': '已完成',  // 🚀 管理员标记的完成状态
       'cancelled': '已取消',
       'refunded': '已退款'
     }
     return statusTextMap[status] || status
   }
 
-  const getOrderSteps = (status: string) => {
+  const getOrderSteps = (order: OrderData) => {
+    // 使用综合显示状态（优先）或支付状态（降级）
+    const status = order.displayStatus || order.paymentStatus
+
     const allSteps = ['下单', '支付', '到店服务', '完成']
     let current = 0
-    
+
     switch (status) {
-      case 'pending_payment':
+      case 'pending':
         current = 0
         break
       case 'paid':
@@ -127,7 +133,7 @@ const OrderDetailPage: React.FC = () => {
       case 'refunded':
         return { steps: ['已取消'], current: 0 }
     }
-    
+
     return { steps: allSteps, current }
   }
 
@@ -157,23 +163,24 @@ const OrderDetailPage: React.FC = () => {
     )
   }
 
-  const { steps, current } = getOrderSteps(orderInfo.status)
+  const { steps, current } = getOrderSteps(orderInfo)
+  const currentStatus = orderInfo.displayStatus || orderInfo.paymentStatus
 
   return (
     <View className="order-detail-page">
       {/* 订单状态 */}
       <View className="status-section">
         <View className="status-header">
-          <AtIcon 
-            value={orderInfo.status === 'paid' ? 'check-circle' : 'clock'} 
-            size="40" 
-            color="#fff" 
+          <AtIcon
+            value={currentStatus === 'paid' ? 'check-circle' : 'clock'}
+            size="40"
+            color="#fff"
           />
-          <Text className="status-text">{getStatusText(orderInfo.status)}</Text>
+          <Text className="status-text">{getStatusText(orderInfo)}</Text>
         </View>
-        
+
         {/* 订单流程 */}
-        {orderInfo.status !== 'cancelled' && orderInfo.status !== 'refunded' && (
+        {currentStatus !== 'cancelled' && currentStatus !== 'refunded' && (
           <View className="steps-container">
             <AtSteps
               items={steps.map(step => ({ title: step }))}
@@ -185,7 +192,7 @@ const OrderDetailPage: React.FC = () => {
       </View>
 
       {/* 核销二维码（已支付状态显示） */}
-      {orderInfo.status === 'paid' && (
+      {currentStatus === 'paid' && (
         <View className="qrcode-section">
           <Text className="section-title">到店核销码</Text>
           <View className="qrcode-card">
@@ -258,7 +265,7 @@ const OrderDetailPage: React.FC = () => {
 
       {/* 操作按钮 */}
       <View className="action-section">
-        {orderInfo.status === 'paid' && (
+        {currentStatus === 'paid' && (
           <>
             <View className="button secondary" onClick={handleCall}>
               <AtIcon value="phone" size="18" />
@@ -269,7 +276,15 @@ const OrderDetailPage: React.FC = () => {
             </View>
           </>
         )}
-        {(orderInfo.status === 'completed' || orderInfo.status === 'cancelled') && (
+        {/* 服务中：可以联系门店 */}
+        {currentStatus === 'serving' && (
+          <View className="button secondary" onClick={handleCall}>
+            <AtIcon value="phone" size="18" />
+            <Text>联系门店</Text>
+          </View>
+        )}
+        {/* 已完成/已取消：可以再次预约 */}
+        {(['completed', 'cancelled', 'refunded'].includes(currentStatus)) && (
           <View className="button primary" onClick={handleRebook}>
             再次预约
           </View>

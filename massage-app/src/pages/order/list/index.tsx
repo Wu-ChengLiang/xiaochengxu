@@ -45,21 +45,48 @@ const OrderListPage: React.FC = () => {
     try {
       setLoading(true)
       const status = statusMap[current]
-      const orderList = await orderService.getOrderList(
-        status as any,
+
+      // 获取所有订单，然后根据displayStatus筛选
+      let orderList = await orderService.getOrderList(
+        undefined, // 先不按paymentStatus筛选
         'service', // 只获取服务类型订单
         pageNum,
-        20
+        100 // 获取更多以便筛选
       )
 
+      // 根据标签页筛选订单
+      if (status) {
+        orderList = orderList.filter(order => {
+          const displayStatus = order.displayStatus || order.paymentStatus
+
+          // 特殊处理：已完成标签页显示completed状态
+          if (status === 'completed') {
+            return displayStatus === 'completed'
+          }
+          // 待服务标签页：显示paid状态（包括pending和confirmed的预约）
+          if (status === 'paid') {
+            return displayStatus === 'paid'
+          }
+          // 待支付标签页
+          if (status === 'pending') {
+            return displayStatus === 'pending'
+          }
+
+          return displayStatus === status
+        })
+      }
+
+      // 只取前20条
+      const paginatedList = orderList.slice(0, 20)
+
       if (pageNum === 1) {
-        setOrders(orderList)
+        setOrders(paginatedList)
       } else {
-        setOrders(prev => [...prev, ...orderList])
+        setOrders(prev => [...prev, ...paginatedList])
       }
 
       setPage(pageNum)
-      setHasMore(orderList.length === 20)
+      setHasMore(paginatedList.length === 20)
     } catch (error) {
       console.error('获取订单失败:', error)
       if (pageNum === 1) {
@@ -162,24 +189,30 @@ const OrderListPage: React.FC = () => {
     })
   }
 
-  const getStatusText = (status: string) => {
+  const getStatusText = (order: OrderData) => {
+    // 使用综合显示状态（优先）或支付状态（降级）
+    const status = order.displayStatus || order.paymentStatus
+
     const statusTextMap = {
       'pending': '待支付',
       'paid': '待服务',
       'serving': '服务中',
-      'completed': '已完成',
+      'completed': '已完成',  // 🚀 管理员标记的完成状态
       'cancelled': '已取消',
       'refunded': '已退款'
     }
     return statusTextMap[status] || status
   }
 
-  const getStatusClass = (status: string) => {
+  const getStatusClass = (order: OrderData) => {
+    // 使用综合显示状态（优先）或支付状态（降级）
+    const status = order.displayStatus || order.paymentStatus
+
     const statusClassMap = {
       'pending': 'status-pending',
       'paid': 'status-paid',
       'serving': 'status-serving',
-      'completed': 'status-completed',
+      'completed': 'status-completed',  // 🚀 已完成样式
       'cancelled': 'status-cancelled',
       'refunded': 'status-refunded'
     }
@@ -203,8 +236,8 @@ const OrderListPage: React.FC = () => {
     >
       <View className="order-header">
         <Text className="store-name">{order.storeName}</Text>
-        <Text className={`order-status ${getStatusClass(order.status)}`}>
-          {getStatusText(order.status)}
+        <Text className={`order-status ${getStatusClass(order)}`}>
+          {getStatusText(order)}
         </Text>
       </View>
 
@@ -235,7 +268,8 @@ const OrderListPage: React.FC = () => {
           <Text className="price">¥{order.totalAmount}</Text>
         </View>
         <View className="action-buttons">
-          {order.paymentStatus === 'pending' && (
+          {/* 待支付订单：显示支付和取消 */}
+          {(order.displayStatus || order.paymentStatus) === 'pending' && (
             <>
               <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
                 取消订单
@@ -245,12 +279,19 @@ const OrderListPage: React.FC = () => {
               </View>
             </>
           )}
-          {order.paymentStatus === 'paid' && (
+
+          {/* 待服务订单：显示取消 */}
+          {(order.displayStatus || order.paymentStatus) === 'paid' && (
             <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
               取消订单
             </View>
           )}
-          {(order.paymentStatus === 'completed' || order.paymentStatus === 'cancelled') && (
+
+          {/* 服务中订单：不显示操作按钮 */}
+          {(order.displayStatus || order.paymentStatus) === 'serving' && null}
+
+          {/* 已完成/已取消订单：显示再次预约 */}
+          {(['completed', 'cancelled', 'refunded'].includes(order.displayStatus || order.paymentStatus)) && (
             <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
               再次预约
             </View>
