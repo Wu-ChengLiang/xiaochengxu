@@ -187,7 +187,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
           <AtTextarea
             value={content}
             onChange={(value) => setContent(value)}
-            placeholder="分享您的服务体验，帮助其他顾客（10-500字）"
+            placeholder="分享您的服务体验，帮助其他顾客（1-500字）"
             maxLength={500}
             height={120}
             count

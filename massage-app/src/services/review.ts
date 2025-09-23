@@ -73,8 +73,8 @@ class ReviewService {
    */
   async createReview(params: CreateReviewParams): Promise<ReviewData> {
     // 参数验证
-    if (params.content.length < 10) {
-      throw new Error('评价内容至少需要10个字')
+    if (params.content.length < 1) {
+      throw new Error('评价内容不能为空')
     }
 
     if (params.content.length > 500) {
