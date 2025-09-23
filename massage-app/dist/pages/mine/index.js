@@ -41,15 +41,28 @@ const Mine = () => {
   const initUser = () => __async(exports, null, function* () {
     setLoading(true);
     try {
-      const userInfo2 = yield common.checkAndAutoLogin();
-      if (userInfo2) {
-        setUserInfo(userInfo2);
+      const localUser = common.getCurrentUserInfo();
+      if (localUser && localUser.phone) {
+        setUserInfo(localUser);
         fetchBalance();
+        common.checkAndAutoLogin().then((freshUser) => {
+          if (freshUser) {
+            setUserInfo(freshUser);
+          }
+        });
       } else {
-        console.log("需要用户手动登录");
+        const userInfo2 = yield common.checkAndAutoLogin();
+        if (userInfo2) {
+          setUserInfo(userInfo2);
+          fetchBalance();
+        } else {
+          console.log("需要用户手动登录");
+          setUserInfo(null);
+        }
       }
     } catch (error) {
       console.error("初始化用户失败:", error);
+      setUserInfo(null);
     } finally {
       setLoading(false);
     }
@@ -241,30 +254,34 @@ const Mine = () => {
         index2
       )
     ) }),
-    /* @__PURE__ */ taro.jsx(
+    /* @__PURE__ */ taro.jsxs(
       vendors.AtModal,
       {
         isOpened: showBindPhoneModal,
         onCancel: handleCancelBindPhone,
         onConfirm: handleBindPhone,
-        title: "绑定手机号",
-        cancelText: "取消",
-        confirmText: bindingPhone ? "绑定中..." : "确认绑定",
-        content: /* @__PURE__ */ taro.jsxs(taro.View, { className: "bind-phone-content", children: [
-          /* @__PURE__ */ taro.jsx(taro.Text, { className: "bind-phone-tips", children: "请输入您的手机号，用于账号登录和信息接收" }),
-          /* @__PURE__ */ taro.jsx(
-            taro.Input,
-            {
-              className: "phone-input",
-              type: "number",
-              placeholder: "请输入手机号",
-              value: phoneInput,
-              onInput: (e) => setPhoneInput(e.detail.value),
-              maxlength: 11,
-              disabled: bindingPhone
-            }
-          )
-        ] })
+        children: [
+          /* @__PURE__ */ taro.jsx(vendors.AtModalHeader, { children: "绑定手机号" }),
+          /* @__PURE__ */ taro.jsx(vendors.AtModalContent, { children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "bind-phone-content", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "bind-phone-tips", children: "请输入您的手机号，用于账号登录和信息接收" }),
+            /* @__PURE__ */ taro.jsx(
+              taro.Input,
+              {
+                className: "phone-input",
+                type: "number",
+                placeholder: "请输入手机号",
+                value: phoneInput,
+                onInput: (e) => setPhoneInput(e.detail.value),
+                maxlength: 11,
+                disabled: bindingPhone
+              }
+            )
+          ] }) }),
+          /* @__PURE__ */ taro.jsxs(vendors.AtModalAction, { children: [
+            /* @__PURE__ */ taro.jsx(taro.Button, { onClick: handleCancelBindPhone, children: "取消" }),
+            /* @__PURE__ */ taro.jsx(taro.Button, { onClick: handleBindPhone, disabled: bindingPhone, children: bindingPhone ? "绑定中..." : "确认绑定" })
+          ] })
+        ]
       }
     )
   ] });

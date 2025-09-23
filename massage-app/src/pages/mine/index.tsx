@@ -39,16 +39,34 @@ const Mine: React.FC = () => {
   const initUser = async () => {
     setLoading(true)
     try {
-      const userInfo = await checkAndAutoLogin()
-      if (userInfo) {
-        setUserInfo(userInfo)
+      // 先尝试从本地获取用户信息
+      const localUser = getCurrentUserInfo()
+      if (localUser && localUser.phone) {
+        setUserInfo(localUser)
         fetchBalance()
+        // 后台静默尝试刷新用户信息
+        checkAndAutoLogin().then(freshUser => {
+          if (freshUser) {
+            setUserInfo(freshUser)
+          }
+        })
       } else {
-        // 需要手动触发登录
-        console.log('需要用户手动登录')
+        // 没有本地用户，尝试自动登录
+        const userInfo = await checkAndAutoLogin()
+        if (userInfo) {
+          setUserInfo(userInfo)
+          fetchBalance()
+        } else {
+          // 需要手动触发登录
+          console.log('需要用户手动登录')
+          // 确保userInfo为null，显示登录按钮
+          setUserInfo(null)
+        }
       }
     } catch (error) {
       console.error('初始化用户失败:', error)
+      // 失败时也要确保显示登录按钮
+      setUserInfo(null)
     } finally {
       setLoading(false)
     }
@@ -272,10 +290,9 @@ const Mine: React.FC = () => {
         isOpened={showBindPhoneModal}
         onCancel={handleCancelBindPhone}
         onConfirm={handleBindPhone}
-        title="绑定手机号"
-        cancelText="取消"
-        confirmText={bindingPhone ? "绑定中..." : "确认绑定"}
-        content={
+      >
+        <AtModalHeader>绑定手机号</AtModalHeader>
+        <AtModalContent>
           <View className="bind-phone-content">
             <Text className="bind-phone-tips">
               请输入您的手机号，用于账号登录和信息接收
@@ -290,8 +307,14 @@ const Mine: React.FC = () => {
               disabled={bindingPhone}
             />
           </View>
-        }
-      />
+        </AtModalContent>
+        <AtModalAction>
+          <Button onClick={handleCancelBindPhone}>取消</Button>
+          <Button onClick={handleBindPhone} disabled={bindingPhone}>
+            {bindingPhone ? '绑定中...' : '确认绑定'}
+          </Button>
+        </AtModalAction>
+      </AtModal>
     </View>
   )
 }
