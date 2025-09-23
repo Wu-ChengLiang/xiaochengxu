@@ -64,6 +64,8 @@ export interface Therapist {
   expertise: string[]   // 擅长项目
   yearsOfExperience: number
   serviceCount?: number // 服务次数
+  bio?: string          // 技师简介
+  certificates?: string[] // 资质证书
   status: 'available' | 'busy' | 'rest'
   distance?: number     // 继承自门店的距离
 }

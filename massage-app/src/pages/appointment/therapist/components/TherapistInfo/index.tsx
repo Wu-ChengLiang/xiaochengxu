@@ -10,12 +10,12 @@ interface TherapistInfoProps {
 const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   
-  // 模拟扩展的推拿师信息（实际应该从 therapist 对象获取）
+  // 从API获取推拿师信息，提供合理的默认值
   const therapistDetail = {
-    level: 'LV4',
-    rating: therapist.rating || 5,
-    salesCount: therapist.serviceCount || 10109,
-    description: '毕业于成都中医药大学针灸推拿专业。高级康复师 从业18年，专研身体疼痛、运动康复、产后康复、体态调理、经络疏通、美容养生等',
+    level: 'LV4', // 暂时保持固定，后续可从API获取
+    rating: therapist.rating || 4.8,
+    salesCount: therapist.serviceCount || 1000,
+    description: therapist.bio || '专业推拿师，经验丰富，擅长各类疼痛调理和康复治疗',
     ...therapist
   }
 
