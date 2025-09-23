@@ -30,6 +30,31 @@
           font-size: 36px;
           font-weight: 500;
         }
+
+        .login-btn {
+          background: rgba(255, 255, 255, 0.2);
+          border: 2px solid rgba(255, 255, 255, 0.4);
+          color: #fff;
+          border-radius: 24px;
+          padding: 8px 24px;
+          font-size: 28px;
+          font-weight: 500;
+          min-width: 160px;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+          }
+
+          &:active {
+            opacity: 0.8;
+          }
+
+          &.button-loading,
+          &.button-disabled {
+            opacity: 0.6;
+          }
+        }
       }
       
       .balance-info {
@@ -100,6 +125,40 @@
           min-width: 40px;
           text-align: center;
         }
+      }
+    }
+  }
+
+  // 手机号绑定弹窗样式
+  .bind-phone-content {
+    padding: 16px 0;
+
+    .bind-phone-tips {
+      display: block;
+      color: #666;
+      font-size: 28px;
+      line-height: 1.5;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .phone-input {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 32px;
+      text-align: center;
+      background-color: #f9f9f9;
+
+      &:focus {
+        border-color: #a40035;
+        background-color: #fff;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        background-color: #f5f5f5;
       }
     }
   }

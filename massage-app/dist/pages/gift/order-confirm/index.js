@@ -1,1 +1,135 @@
-"use strict";var e=(e,s,t)=>new Promise((a,r)=>{var i=e=>{try{n(t.next(e))}catch(s){r(s)}},o=e=>{try{n(t.throw(e))}catch(s){r(s)}},n=e=>e.done?a(e.value):Promise.resolve(e.value).then(i,o);n((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),a=require("../../../common.js"),r="",i=()=>{const r=s.taroExports.useRouter(),{orderNo:i,amount:o,quantity:n}=r.params,[c,x]=s.reactExports.useState("wechat"),m=Number(o)*Number(n),l=()=>e(exports,null,function*(){if(i)try{s.Taro.showLoading({title:"\u652f\u4ed8\u4e2d..."});const e=yield a.GiftService.payOrder({orderNo:i,paymentMethod:c});s.Taro.hideLoading(),"wechat"===e.paymentMethod&&e.wxPayParams&&(yield a.GiftService.handleWechatPay(e.wxPayParams)),s.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success",duration:2e3}),setTimeout(()=>{s.Taro.navigateBack({delta:2})},2e3)}catch(e){s.Taro.hideLoading(),s.Taro.showToast({title:e.message||"\u652f\u4ed8\u5931\u8d25",icon:"none"})}else s.Taro.showToast({title:"\u8ba2\u5355\u4fe1\u606f\u9519\u8bef",icon:"none"})});return s.jsxRuntimeExports.jsxs(s.View,{className:"order-confirm",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"order-info",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u7535\u5b50\u793c\u5361"}),s.jsxRuntimeExports.jsxs(s.View,{className:"card-item",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"card-preview",children:[s.jsxRuntimeExports.jsx(s.Image,{className:"card-thumb",src:"/assets/images/gift/card/gift-card.png",mode:"aspectFill"}),s.jsxRuntimeExports.jsxs(s.View,{className:"card-badge",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"tag",size:"12",color:"#fff"}),s.jsxRuntimeExports.jsx(s.Text,{children:"\u4e16\u754c\u4e0a\u6700\u597d\u7684\u7238\u7238"})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"card-details",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"card-name",children:"\u7535\u5b50\u793c\u5361"}),s.jsxRuntimeExports.jsxs(s.View,{className:"price-quantity",children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"price",children:["\xa5 ",o]}),s.jsxRuntimeExports.jsxs(s.Text,{className:"quantity",children:["\xd7",n]})]})]})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"payment-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u652f\u4ed8\u65b9\u5f0f"}),s.jsxRuntimeExports.jsxs(s.View,{className:"payment-method "+("wechat"===c?"selected":""),onClick:()=>x("wechat"),children:[s.jsxRuntimeExports.jsxs(s.View,{className:"method-info",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"sketch",size:"20",color:"#1AAD19"}),s.jsxRuntimeExports.jsx(s.Text,{className:"method-name",children:"\u5fae\u4fe1\u652f\u4ed8"})]}),s.jsxRuntimeExports.jsx(t.AtIcon,{value:"wechat"===c?"check-circle":"circle",size:"20",color:"wechat"===c?"#a40035":"#999"})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"payment-bar",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"total-amount",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"amount-symbol",children:"\xa5"}),s.jsxRuntimeExports.jsx(s.Text,{className:"amount-value",children:m})]}),s.jsxRuntimeExports.jsx(s.Button,{className:"pay-btn",onClick:l,children:"\u53bb\u652f\u4ed8"})]})]})};var o={navigationBarTitleText:"\u8ba2\u5355\u786e\u8ba4"};Page(s.createPageConfig(i,"pages/gift/order-confirm/index",{root:{cn:[]}},o||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const OrderConfirm = () => {
+  const router = taro.taroExports.useRouter();
+  const { orderNo, amount, quantity } = router.params;
+  const [paymentMethod, setPaymentMethod] = taro.useState("wechat");
+  const totalAmount = Number(amount) * Number(quantity);
+  const handlePayment = () => __async(exports, null, function* () {
+    if (!orderNo) {
+      taro.Taro.showToast({
+        title: "订单信息错误",
+        icon: "none"
+      });
+      return;
+    }
+    try {
+      taro.Taro.showLoading({ title: "支付中..." });
+      const result = yield common.GiftService.payOrder({
+        orderNo,
+        paymentMethod
+      });
+      taro.Taro.hideLoading();
+      if (result.paymentMethod === "wechat" && result.wxPayParams) {
+        yield common.GiftService.handleWechatPay(result.wxPayParams);
+      }
+      taro.Taro.showToast({
+        title: "支付成功",
+        icon: "success",
+        duration: 2e3
+      });
+      setTimeout(() => {
+        taro.Taro.navigateBack({ delta: 2 });
+      }, 2e3);
+    } catch (error) {
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "支付失败",
+        icon: "none"
+      });
+    }
+  });
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-confirm", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-info", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "电子礼卡" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-item", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-preview", children: [
+          /* @__PURE__ */ taro.jsx(
+            taro.Image,
+            {
+              className: "card-thumb",
+              src: "/assets/images/gift/card/gift-card.png",
+              mode: "aspectFill"
+            }
+          ),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-badge", children: [
+            /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "tag", size: "12", color: "#fff" }),
+            /* @__PURE__ */ taro.jsx(taro.Text, { children: "世界上最好的爸爸" })
+          ] })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-details", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "card-name", children: "电子礼卡" }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-quantity", children: [
+            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+              "¥ ",
+              amount
+            ] }),
+            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "quantity", children: [
+              "×",
+              quantity
+            ] })
+          ] })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "payment-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "支付方式" }),
+      /* @__PURE__ */ taro.jsxs(
+        taro.View,
+        {
+          className: `payment-method ${paymentMethod === "wechat" ? "selected" : ""}`,
+          onClick: () => setPaymentMethod("wechat"),
+          children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "method-info", children: [
+              /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "sketch", size: "20", color: "#1AAD19" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "method-name", children: "微信支付" })
+            ] }),
+            /* @__PURE__ */ taro.jsx(
+              vendors.AtIcon,
+              {
+                value: paymentMethod === "wechat" ? "check-circle" : "circle",
+                size: "20",
+                color: paymentMethod === "wechat" ? "#a40035" : "#999"
+              }
+            )
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "payment-bar", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "total-amount", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "amount-symbol", children: "¥" }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "amount-value", children: totalAmount })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.Button, { className: "pay-btn", onClick: handlePayment, children: "去支付" })
+    ] })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "订单确认"
+};
+Page(taro.createPageConfig(OrderConfirm, "pages/gift/order-confirm/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

@@ -1,37 +1,73 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Image } from '@tarojs/components'
-import { AtIcon } from 'taro-ui'
+import { View, Text, Image, Button, Input } from '@tarojs/components'
+import { AtIcon, AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { walletService } from '@/services/wallet.service'
-import { getCurrentUserInfo, maskPhone, initDefaultUserInfo, UserInfo } from '@/utils/user'
+import {
+  getCurrentUserInfo,
+  maskPhone,
+  checkAndAutoLogin,
+  wechatLogin,
+  bindPhone,
+  WechatLoginResult,
+  UserInfo
+} from '@/utils/user'
 import LogoImg from '@/assets/icons/logo.png'
 import './index.scss'
 
 const Mine: React.FC = () => {
   const [balance, setBalance] = useState(0)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  // 手机号绑定弹窗状态
+  const [showBindPhoneModal, setShowBindPhoneModal] = useState(false)
+  const [phoneInput, setPhoneInput] = useState('')
+  const [bindingPhone, setBingingPhone] = useState(false)
+  const [currentOpenid, setCurrentOpenid] = useState('')
 
   useEffect(() => {
-    // 初始化默认用户信息（开发环境）
-    initDefaultUserInfo()
-    fetchUserInfo()
-    fetchBalance()
+    initUser()
   }, [])
 
-  // 页面显示时刷新余额
+  // 页面显示时刷新数据
   useDidShow(() => {
-    fetchUserInfo()
-    fetchBalance()
+    refreshUserData()
   })
 
-  const fetchUserInfo = () => {
-    const currentUserInfo = getCurrentUserInfo()
-    setUserInfo(currentUserInfo)
+  // 初始化用户信息
+  const initUser = async () => {
+    setLoading(true)
+    try {
+      const userInfo = await checkAndAutoLogin()
+      if (userInfo) {
+        setUserInfo(userInfo)
+        fetchBalance()
+      } else {
+        // 需要手动触发登录
+        console.log('需要用户手动登录')
+      }
+    } catch (error) {
+      console.error('初始化用户失败:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 刷新用户数据
+  const refreshUserData = async () => {
+    if (userInfo?.phone) {
+      fetchBalance()
+    }
   }
 
   const fetchBalance = async () => {
-    const currentBalance = await walletService.getBalance()
-    setBalance(currentBalance)
+    try {
+      const currentBalance = await walletService.getBalance()
+      setBalance(currentBalance)
+    } catch (error) {
+      console.error('获取余额失败:', error)
+    }
   }
 
   const menuItems = [
@@ -72,12 +108,92 @@ const Mine: React.FC = () => {
     Taro.navigateTo({ url: item.path })
   }
 
-  const handleLogin = () => {
-    // TODO: 实现登录逻辑
-    Taro.showToast({
-      title: '登录功能开发中',
-      icon: 'none'
-    })
+  // 处理微信登录
+  const handleLogin = async () => {
+    if (loading) return
+
+    setLoading(true)
+    try {
+      const loginResult = await wechatLogin()
+
+      if (loginResult.needBindPhone) {
+        // 需要绑定手机号
+        setCurrentOpenid(loginResult.openid)
+        setShowBindPhoneModal(true)
+      } else if (loginResult.userInfo) {
+        // 登录成功
+        setUserInfo(loginResult.userInfo)
+        fetchBalance()
+        Taro.showToast({
+          title: '登录成功',
+          icon: 'success'
+        })
+      }
+    } catch (error) {
+      console.error('微信登录失败:', error)
+      Taro.showToast({
+        title: '登录失败，请重试',
+        icon: 'error'
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 处理手机号绑定
+  const handleBindPhone = async () => {
+    if (!phoneInput.trim()) {
+      Taro.showToast({
+        title: '请输入手机号',
+        icon: 'error'
+      })
+      return
+    }
+
+    // 简单的手机号验证
+    const phoneRegex = /^1[3-9]\d{9}$/
+    if (!phoneRegex.test(phoneInput.trim())) {
+      Taro.showToast({
+        title: '手机号格式不正确',
+        icon: 'error'
+      })
+      return
+    }
+
+    setBingingPhone(true)
+    try {
+      await bindPhone(currentOpenid, phoneInput.trim())
+
+      // 绑定成功，获取最新用户信息
+      const latestUserInfo = getCurrentUserInfo()
+      if (latestUserInfo) {
+        setUserInfo(latestUserInfo)
+        fetchBalance()
+      }
+
+      setShowBindPhoneModal(false)
+      setPhoneInput('')
+
+      Taro.showToast({
+        title: '绑定成功',
+        icon: 'success'
+      })
+    } catch (error) {
+      console.error('手机号绑定失败:', error)
+      Taro.showToast({
+        title: '绑定失败，请重试',
+        icon: 'error'
+      })
+    } finally {
+      setBingingPhone(false)
+    }
+  }
+
+  // 取消手机号绑定
+  const handleCancelBindPhone = () => {
+    setShowBindPhoneModal(false)
+    setPhoneInput('')
+    setCurrentOpenid('')
   }
 
   const handleBalanceClick = () => {
@@ -91,18 +207,35 @@ const Mine: React.FC = () => {
       <View className="header-section">
         <View className="user-card">
           <View className="user-info">
-            <Image 
-              className="avatar" 
-              src={LogoImg}
+            <Image
+              className="avatar"
+              src={userInfo?.avatar || LogoImg}
               mode="aspectFill"
             />
-            <Text className="phone">{maskPhone(userInfo?.phone || '')}</Text>
+            {userInfo ? (
+              <Text className="phone">
+                {userInfo.nickname || userInfo.username || maskPhone(userInfo.phone)}
+              </Text>
+            ) : (
+              <Button
+                className="login-btn"
+                onClick={handleLogin}
+                loading={loading}
+                disabled={loading}
+                size="mini"
+                type="primary"
+              >
+                {loading ? '登录中...' : '微信登录'}
+              </Button>
+            )}
           </View>
-          <View className="balance-info" onClick={handleBalanceClick}>
-            <Text className="balance-label">余额: </Text>
-            <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
-            <AtIcon value="chevron-right" size="16" color="#fff" />
-          </View>
+          {userInfo && (
+            <View className="balance-info" onClick={handleBalanceClick}>
+              <Text className="balance-label">余额: </Text>
+              <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
+              <AtIcon value="chevron-right" size="16" color="#fff" />
+            </View>
+          )}
         </View>
       </View>
 
@@ -133,6 +266,32 @@ const Mine: React.FC = () => {
           </View>
         ))}
       </View>
+
+      {/* 手机号绑定弹窗 */}
+      <AtModal
+        isOpened={showBindPhoneModal}
+        onCancel={handleCancelBindPhone}
+        onConfirm={handleBindPhone}
+        title="绑定手机号"
+        cancelText="取消"
+        confirmText={bindingPhone ? "绑定中..." : "确认绑定"}
+        content={
+          <View className="bind-phone-content">
+            <Text className="bind-phone-tips">
+              请输入您的手机号，用于账号登录和信息接收
+            </Text>
+            <Input
+              className="phone-input"
+              type="number"
+              placeholder="请输入手机号"
+              value={phoneInput}
+              onInput={(e) => setPhoneInput(e.detail.value)}
+              maxlength={11}
+              disabled={bindingPhone}
+            />
+          </View>
+        }
+      />
     </View>
   )
 }

@@ -1,1 +1,193 @@
-"use strict";var e=(e,s,t)=>new Promise((a,r)=>{var n=e=>{try{o(t.next(e))}catch(s){r(s)}},i=e=>{try{o(t.throw(e))}catch(s){r(s)}},o=e=>e.done?a(e.value):Promise.resolve(e.value).then(n,i);o((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),a=require("../../../common.js"),r="",n=()=>{const[r,n]=s.reactExports.useState(0),[i,o]=s.reactExports.useState(0),[l,x]=s.reactExports.useState(""),[c,u]=s.reactExports.useState(!1),[m,d]=s.reactExports.useState([]);s.reactExports.useEffect(()=>{j()},[]);const j=()=>e(exports,null,function*(){try{const e=yield a.walletService.getRechargeOptions();d(e)}catch(e){console.error("\u83b7\u53d6\u5145\u503c\u914d\u7f6e\u5931\u8d25:",e),d([{id:1,amount:100,bonus:0,label:"100\u5143",sortOrder:1},{id:2,amount:200,bonus:0,label:"200\u5143",sortOrder:2},{id:3,amount:500,bonus:50,label:"500\u5143",sortOrder:3},{id:4,amount:1e3,bonus:100,label:"1000\u5143",sortOrder:4},{id:5,amount:2e3,bonus:300,label:"2000\u5143",sortOrder:5},{id:6,amount:5e3,bonus:1e3,label:"5000\u5143",sortOrder:6}])}}),p=(e,s=0)=>{n(e),o(s),x("")},h=e=>{var s,t;const a=(null==(s=e.detail)?void 0:s.value)||(null==(t=e.target)?void 0:t.value)||"";/^\d*$/.test(a)&&(x(a),n(0),o(0))},E=()=>e(exports,null,function*(){var e;const t=r||Number(l),n=i||0;if(!t||t<=0)s.Taro.showToast({title:"\u8bf7\u9009\u62e9\u6216\u8f93\u5165\u5145\u503c\u91d1\u989d",icon:"none"});else if(t>5e4)s.Taro.showToast({title:"\u5355\u6b21\u5145\u503c\u91d1\u989d\u4e0d\u80fd\u8d85\u8fc75\u4e07\u5143",icon:"none"});else{u(!0);try{const e=yield a.walletService.createRechargeOrder(t,n);if(!e.wxPayParams)throw new Error("\u83b7\u53d6\u652f\u4ed8\u53c2\u6570\u5931\u8d25");yield a.walletService.handleWechatPay(e.wxPayParams),s.Taro.showToast({title:"\u5145\u503c\u6210\u529f",icon:"success",duration:2e3}),setTimeout(()=>{s.Taro.navigateBack()},2e3)}catch(o){(null==(e=o.message)?void 0:e.includes("\u7528\u6237\u53d6\u6d88"))?s.Taro.showToast({title:"\u652f\u4ed8\u5df2\u53d6\u6d88",icon:"none"}):s.Taro.showToast({title:o.message||"\u5145\u503c\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5",icon:"none"})}finally{u(!1)}}});return s.jsxRuntimeExports.jsxs(s.View,{className:"recharge-page",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"amount-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u9009\u62e9\u5145\u503c\u91d1\u989d"}),s.jsxRuntimeExports.jsx(s.View,{className:"amount-grid",children:m.map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:"amount-card "+(r===e.amount?"active":""),onClick:()=>p(e.amount,e.bonus),children:[s.jsxRuntimeExports.jsxs(s.Text,{className:"amount",children:["\xa5",e.amount]}),e.bonus>0&&s.jsxRuntimeExports.jsxs(s.Text,{className:"bonus",children:["\u8d60\u9001",e.bonus,"\u5143"]})]},e.id||e.amount))}),s.jsxRuntimeExports.jsxs(s.View,{className:"custom-amount",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"label",children:"\u5176\u4ed6\u91d1\u989d"}),s.jsxRuntimeExports.jsxs(s.View,{className:"input-wrapper",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"prefix",children:"\xa5"}),s.jsxRuntimeExports.jsx("input",{className:"input",type:"number",placeholder:"\u8bf7\u8f93\u5165\u5145\u503c\u91d1\u989d",value:l,onInput:h})]})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"tips-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u5145\u503c\u8bf4\u660e"}),s.jsxRuntimeExports.jsxs(s.View,{className:"tips-list",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"tip-item",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"dot",children:"\u2022"}),s.jsxRuntimeExports.jsx(s.Text,{className:"text",children:"\u5145\u503c\u91d1\u989d\u5c06\u5b9e\u65f6\u5230\u8d26\uff0c\u53ef\u7528\u4e8e\u652f\u4ed8\u63a8\u62ff\u670d\u52a1"})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"tip-item",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"dot",children:"\u2022"}),s.jsxRuntimeExports.jsx(s.Text,{className:"text",children:"\u4f59\u989d\u4e0d\u652f\u6301\u63d0\u73b0\uff0c\u8bf7\u5408\u7406\u5145\u503c"})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"tip-item",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"dot",children:"\u2022"}),s.jsxRuntimeExports.jsx(s.Text,{className:"text",children:"\u5145\u503c\u8d60\u9001\u91d1\u989d\u4e0e\u672c\u91d1\u540c\u7b49\u4f7f\u7528"})]})]})]}),s.jsxRuntimeExports.jsx(s.View,{className:"bottom-bar",children:s.jsxRuntimeExports.jsxs(s.Button,{className:"recharge-btn",onClick:E,disabled:c,children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"credit-card",size:"20"}),s.jsxRuntimeExports.jsx(s.Text,{children:"\u7acb\u5373\u5145\u503c"})]})})]})};var i={navigationBarTitleText:"\u4f59\u989d\u5145\u503c"};Page(s.createPageConfig(n,"pages/mine/recharge/index",{root:{cn:[]}},i||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const Recharge = () => {
+  const [selectedAmount, setSelectedAmount] = taro.useState(0);
+  const [selectedBonus, setSelectedBonus] = taro.useState(0);
+  const [customAmount, setCustomAmount] = taro.useState("");
+  const [loading, setLoading] = taro.useState(false);
+  const [rechargeOptions, setRechargeOptions] = taro.useState([]);
+  taro.useEffect(() => {
+    loadRechargeOptions();
+  }, []);
+  const loadRechargeOptions = () => __async(exports, null, function* () {
+    try {
+      const options = yield common.walletService.getRechargeOptions();
+      setRechargeOptions(options);
+    } catch (error) {
+      console.error("获取充值配置失败:", error);
+      setRechargeOptions(
+        [
+          { id: 1, amount: 100, bonus: 0, label: "100元", sortOrder: 1 },
+          { id: 2, amount: 200, bonus: 0, label: "200元", sortOrder: 2 },
+          { id: 3, amount: 500, bonus: 50, label: "500元", sortOrder: 3 },
+          { id: 4, amount: 1e3, bonus: 100, label: "1000元", sortOrder: 4 },
+          { id: 5, amount: 2e3, bonus: 300, label: "2000元", sortOrder: 5 },
+          { id: 6, amount: 5e3, bonus: 1e3, label: "5000元", sortOrder: 6 }
+        ]
+      );
+    }
+  });
+  const handleAmountSelect = (amount, bonus = 0) => {
+    setSelectedAmount(amount);
+    setSelectedBonus(bonus);
+    setCustomAmount("");
+  };
+  const handleCustomAmountChange = (e) => {
+    var _a, _b;
+    const value = ((_a = e.detail) == null ? void 0 : _a.value) || ((_b = e.target) == null ? void 0 : _b.value) || "";
+    if (/^\d*$/.test(value)) {
+      setCustomAmount(value);
+      setSelectedAmount(0);
+      setSelectedBonus(0);
+    }
+  };
+  const handleRecharge = () => __async(exports, null, function* () {
+    var _a;
+    const amount = selectedAmount || Number(customAmount);
+    const bonus = selectedBonus || 0;
+    if (!amount || amount <= 0) {
+      taro.Taro.showToast({
+        title: "请选择或输入充值金额",
+        icon: "none"
+      });
+      return;
+    }
+    if (amount > 5e4) {
+      taro.Taro.showToast({
+        title: "单次充值金额不能超过5万元",
+        icon: "none"
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      const order = yield common.walletService.createRechargeOrder(amount, bonus);
+      if (order.wxPayParams) {
+        yield common.walletService.handleWechatPay(order.wxPayParams);
+        taro.Taro.showToast({
+          title: "充值成功",
+          icon: "success",
+          duration: 2e3
+        });
+        setTimeout(() => {
+          taro.Taro.navigateBack();
+        }, 2e3);
+      } else {
+        throw new Error("获取支付参数失败");
+      }
+    } catch (error) {
+      if ((_a = error.message) == null ? void 0 : _a.includes("用户取消")) {
+        taro.Taro.showToast({
+          title: "支付已取消",
+          icon: "none"
+        });
+      } else {
+        taro.Taro.showToast({
+          title: error.message || "充值失败，请重试",
+          icon: "none"
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  });
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "recharge-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "amount-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "选择充值金额" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "amount-grid", children: rechargeOptions.map(
+        (option) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `amount-card ${selectedAmount === option.amount ? "active" : ""}`,
+            onClick: () => handleAmountSelect(option.amount, option.bonus),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "amount", children: [
+                "¥",
+                option.amount
+              ] }),
+              option.bonus > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "bonus", children: [
+                "赠送",
+                option.bonus,
+                "元"
+              ] })
+            ]
+          },
+          option.id || option.amount
+        )
+      ) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "custom-amount", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "label", children: "其他金额" }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "input-wrapper", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "prefix", children: "¥" }),
+          /* @__PURE__ */ taro.jsx(
+            "input",
+            {
+              className: "input",
+              type: "number",
+              placeholder: "请输入充值金额",
+              value: customAmount,
+              onInput: handleCustomAmountChange
+            }
+          )
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "tips-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "充值说明" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "tips-list", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-item", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "dot", children: "•" }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "充值金额将实时到账，可用于支付推拿服务" })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-item", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "dot", children: "•" }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "余额不支持提现，请合理充值" })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "tip-item", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "dot", children: "•" }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "text", children: "充值赠送金额与本金同等使用" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "bottom-bar", children: /* @__PURE__ */ taro.jsxs(
+      taro.Button,
+      {
+        className: "recharge-btn",
+        onClick: handleRecharge,
+        disabled: loading,
+        children: [
+          /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "credit-card", size: "20" }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { children: "立即充值" })
+        ]
+      }
+    ) })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "余额充值"
+};
+Page(taro.createPageConfig(Recharge, "pages/mine/recharge/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

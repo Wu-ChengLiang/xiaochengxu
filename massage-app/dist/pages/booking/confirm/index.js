@@ -1,1 +1,568 @@
-"use strict";var e=Object.defineProperty,t=Object.defineProperties,s=Object.getOwnPropertyDescriptors,o=Object.getOwnPropertySymbols,a=Object.prototype.hasOwnProperty,r=Object.prototype.propertyIsEnumerable,n=(t,s,o)=>s in t?e(t,s,{enumerable:!0,configurable:!0,writable:!0,value:o}):t[s]=o,i=(e,t)=>{for(var s in t||(t={}))a.call(t,s)&&n(e,s,t[s]);if(o)for(var s of o(t))r.call(t,s)&&n(e,s,t[s]);return e},c=(e,o)=>t(e,s(o)),l=(e,t,s)=>new Promise((o,a)=>{var r=e=>{try{i(s.next(e))}catch(t){a(t)}},n=e=>{try{i(s.throw(e))}catch(t){a(t)}},i=e=>e.done?o(e.value):Promise.resolve(e.value).then(r,n);i((s=s.apply(e,t)).next())});const m=require("../../../taro.js"),d=require("../../../common.js");class p{constructor(){this.config={useMockPayment:!0,enableBalancePayment:!0,enableWechatPayment:!1}}pay(e){return l(this,null,function*(){const{paymentMethod:t}=e;if(this.config.useMockPayment&&"wechat"===t)return this.mockWechatPayment(e);if("balance"===t)return this.payWithBalance(e);if("wechat"===t&&this.config.enableWechatPayment)return this.payWithWechat(e);throw new Error("\u4e0d\u652f\u6301\u7684\u652f\u4ed8\u65b9\u5f0f")})}mockWechatPayment(e){return l(this,null,function*(){try{const{confirm:t}=yield m.Taro.showModal({title:"\u6a21\u62df\u652f\u4ed8",content:`\u8ba2\u5355\u91d1\u989d\uff1a\xa5${(e.amount/100).toFixed(2)}\n${e.title||""}`,confirmText:"\u786e\u8ba4\u652f\u4ed8",cancelText:"\u53d6\u6d88\u652f\u4ed8",confirmColor:"#07c160"});return t?(m.Taro.showLoading({title:"\u652f\u4ed8\u4e2d..."}),yield this.delay(1500),yield d.post("/orders/mock-pay",{orderNo:e.orderNo,paymentStatus:"paid"}),m.Taro.hideLoading(),m.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success"}),!0):(console.log("\u7528\u6237\u53d6\u6d88\u6a21\u62df\u652f\u4ed8"),!1)}catch(t){throw m.Taro.hideLoading(),m.Taro.showToast({title:"\u652f\u4ed8\u5931\u8d25",icon:"none"}),t}})}payWithBalance(e){return l(this,null,function*(){try{m.Taro.showLoading({title:"\u652f\u4ed8\u4e2d..."}),console.log("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u8bf7\u6c42\u53c2\u6570:",{orderNo:e.orderNo,paymentMethod:"balance"});const t=yield d.post("/orders/pay",{orderNo:e.orderNo,paymentMethod:"balance"});if(console.log("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u54cd\u5e94:",t),m.Taro.hideLoading(),0===t.code)return m.Taro.showToast({title:`\u652f\u4ed8\u6210\u529f\n\u4f59\u989d\uff1a\xa5${(t.data.balance/100).toFixed(2)}`,icon:"success",duration:2e3}),!0;throw new Error(t.message||"\u4f59\u989d\u4e0d\u8db3")}catch(t){return console.error("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u5931\u8d25:",t),console.error("\ud83d\udcb0 \u9519\u8bef\u8be6\u60c5:",t.response||t.message),m.Taro.hideLoading(),m.Taro.showToast({title:t.message||"\u652f\u4ed8\u5931\u8d25",icon:"none"}),!1}})}payWithWechat(e){return l(this,null,function*(){try{const{data:t}=yield d.post("/orders/wechat-pay-params",{orderNo:e.orderNo}),{wxPayParams:s}=t;return yield m.Taro.requestPayment({timeStamp:s.timeStamp,nonceStr:s.nonceStr,package:s.package,signType:s.signType,paySign:s.paySign}),m.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success"}),!0}catch(t){if("requestPayment:fail cancel"===t.errMsg)return console.log("\u7528\u6237\u53d6\u6d88\u652f\u4ed8"),!1;throw m.Taro.showToast({title:"\u652f\u4ed8\u5931\u8d25",icon:"none"}),t}})}checkPaymentEnvironment(){return l(this,null,function*(){m.Taro.getAccountInfoSync();const e=!this.config.enableWechatPayment;return{canUseWechatPay:!e&&this.config.enableWechatPayment,canUseBalance:this.config.enableBalancePayment,canUseMockPay:this.config.useMockPayment,message:e?"\u5f53\u524d\u4e3a\u4e2a\u4eba\u5c0f\u7a0b\u5e8f\uff0c\u4f7f\u7528\u6a21\u62df\u652f\u4ed8\u548c\u4f59\u989d\u652f\u4ed8":"\u4f01\u4e1a\u5c0f\u7a0b\u5e8f\uff0c\u652f\u6301\u5b8c\u6574\u652f\u4ed8\u529f\u80fd"}})}generateRechargeCode(e){return l(this,null,function*(){const t=yield d.post("/recharge/generate-code",{amount:e});return t.data})}delay(e){return new Promise(t=>setTimeout(t,e))}}const u=new p,x="",h=()=>{const e=m.taroExports.useRouter(),t=e.params,[s,o]=m.reactExports.useState([]),[a,r]=m.reactExports.useState(null),[n,p]=m.reactExports.useState(null),[x,h]=m.reactExports.useState(!0),[j,y]=m.reactExports.useState(180),[g,T]=m.reactExports.useState("wechat"),[w,N]=m.reactExports.useState(0),[f,E]=m.reactExports.useState(!1),R=m.reactExports.useRef(null);m.reactExports.useEffect(()=>{try{const e=JSON.parse(decodeURIComponent(t.items||"[]"));o(e),b(),v()}catch(e){m.Taro.showToast({title:"\u6570\u636e\u89e3\u6790\u5931\u8d25",icon:"none"}),setTimeout(()=>m.Taro.navigateBack(),1500)}},[t]),m.reactExports.useEffect(()=>(!x&&s.length>0&&(R.current=setInterval(()=>{y(e=>e<=1?(clearInterval(R.current),m.Taro.showModal({title:"\u652f\u4ed8\u8d85\u65f6\u4e86\u5466",content:"\u5feb\u5feb\u91cd\u65b0\u4e0b\u5355\u5427~",showCancel:!1,success:()=>{m.Taro.navigateBack()}}),0):e-1)},1e3)),()=>{R.current&&clearInterval(R.current)}),[x,s]);const v=()=>l(exports,null,function*(){try{E(!0);const e=yield d.walletService.getBalance();N(e);const t=k();e>=t/100&&T("balance")}catch(e){console.error("\u83b7\u53d6\u4f59\u989d\u5931\u8d25:",e),N(0)}finally{E(!1)}}),b=()=>l(exports,null,function*(){try{if(h(!0),t.therapistId){const e=yield d.therapistService.getTherapistDetail(t.therapistId);r(e.data)}const e=yield d.storeService.getStoreDetail(t.storeId),s=e.data;p(s),h(!1)}catch(e){h(!1),m.Taro.showToast({title:"\u83b7\u53d6\u4fe1\u606f\u5931\u8d25",icon:"none"})}}),S=e=>{const t=Math.floor(e/60),s=e%60;return`${t.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`},P=e=>{const t=new Date(e),s=t.getMonth()+1,o=t.getDate();return`${s.toString().padStart(2,"0")}\u6708${o.toString().padStart(2,"0")}\u65e5`},V=(e,t)=>{const[s,o]=e.split(":").map(Number),a=o+t,r=s+Math.floor(a/60),n=a%60;return`${r}:${n.toString().padStart(2,"0")}`},k=()=>s.reduce((e,t)=>e+(t.discountPrice||t.price),0),I=()=>{const e=k();return w>=e/100},M=e=>{"balance"!==e||I()?T(e):m.Taro.showToast({title:"\u4f59\u989d\u4e0d\u8db3\uff0c\u8bf7\u5145\u503c\u6216\u4f7f\u7528\u5176\u4ed6\u652f\u4ed8\u65b9\u5f0f",icon:"none",duration:2e3})},$=()=>l(exports,null,function*(){const e="symptom"===t.from,o=!e&&!a;if(0!==s.length&&!o&&n)if("balance"!==g||I())try{m.Taro.showLoading({title:"\u521b\u5efa\u8ba2\u5355..."});const e=s[0];console.log("\ud83d\uded2 \u8d2d\u7269\u8f66\u7b2c\u4e00\u4e2a\u9879\u76ee:",e),console.log("\ud83d\uded2 firstItem.therapistId:",e.therapistId),console.log("\ud83d\uded2 params.therapistId:",t.therapistId),console.log("\ud83d\uded2 params.from:",t.from);const o={therapistId:e.therapistId||t.therapistId||"symptom-mode",storeId:t.storeId,serviceId:e.serviceId,serviceName:e.serviceName,duration:e.duration,price:e.price,discountPrice:e.discountPrice,appointmentDate:e.date,appointmentTime:e.time,therapistName:e.therapistName,therapistAvatar:e.therapistAvatar||(null==a?void 0:a.avatar)};console.log("\ud83d\udce6 \u6700\u7ec8\u7684\u8ba2\u5355\u53c2\u6570:",o),console.log("\ud83d\udce6 therapistId\u5c06\u8981\u4f20\u9012\u7684\u503c:",o.therapistId);const r=yield d.orderService.createAppointmentOrder(o),n=r.order;console.log("\u2705 \u8ba2\u5355\u521b\u5efa\u6210\u529f:",r),console.log("\u2705 \u8ba2\u5355\u53f7:",n.orderNo),m.Taro.hideLoading();const p=yield u.pay({orderNo:n.orderNo,amount:n.totalAmount?100*n.totalAmount:100*k(),paymentMethod:g,title:`${e.serviceName} - ${e.therapistName}`});p?("balance"===g&&(yield v()),setTimeout(()=>{m.Taro.redirectTo({url:`/pages/booking/success/index?orderNo=${n.orderNo}`})},1500)):m.Taro.requestPayment(c(i({},paymentParams),{success:()=>l(exports,null,function*(){yield d.orderService.updateOrderStatus(n.orderNo,"paid"),m.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success",duration:1500}),setTimeout(()=>{m.Taro.redirectTo({url:`/pages/booking/success/index?orderNo=${n.orderNo}`})},1500)}),fail:e=>{console.error("\u652f\u4ed8\u5931\u8d25:",e),"requestPayment:fail cancel"!==e.errMsg&&(e.errMsg&&e.errMsg.includes("total_fee")?m.Taro.showToast({title:"\u652f\u4ed8\u53c2\u6570\u9519\u8bef\uff1a\u7f3a\u5c11\u91d1\u989d\u4fe1\u606f",icon:"none",duration:2500}):m.Taro.showToast({title:"\u652f\u4ed8\u5931\u8d25",icon:"none"}))}}))}catch(r){m.Taro.hideLoading(),m.Taro.showToast({title:r.message||"\u8ba2\u5355\u521b\u5efa\u5931\u8d25",icon:"none"})}else m.Taro.showToast({title:"\u4f59\u989d\u4e0d\u8db3\uff0c\u8bf7\u5145\u503c\u6216\u4f7f\u7528\u5176\u4ed6\u652f\u4ed8\u65b9\u5f0f",icon:"none",duration:2e3});else m.Taro.showToast({title:"\u8ba2\u5355\u4fe1\u606f\u4e0d\u5b8c\u6574",icon:"none"})});return x?m.jsxRuntimeExports.jsx(m.View,{className:"order-confirm-page",children:m.jsxRuntimeExports.jsx(m.View,{className:"loading",children:"\u52a0\u8f7d\u4e2d..."})}):m.jsxRuntimeExports.jsxs(m.ScrollView,{className:"order-confirm-page",scrollY:!0,children:[m.jsxRuntimeExports.jsxs(m.View,{className:"store-section",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"store-name",children:null==n?void 0:n.name}),m.jsxRuntimeExports.jsxs(m.Text,{className:"store-distance",children:["\ud83d\udccd ",null==n?void 0:n.distance,"km"]})]}),m.jsxRuntimeExports.jsx(m.View,{className:"booking-info",children:s.map((e,t)=>m.jsxRuntimeExports.jsxs(m.View,{className:"booking-item",children:[m.jsxRuntimeExports.jsx(m.Image,{className:"therapist-avatar",src:e.therapistAvatar||(null==a?void 0:a.avatar)}),m.jsxRuntimeExports.jsxs(m.View,{className:"booking-details",children:[m.jsxRuntimeExports.jsx(m.View,{className:"therapist-name",children:e.therapistName}),m.jsxRuntimeExports.jsxs(m.View,{className:"service-time",children:[P(e.date)," ",e.time," \u81f3 ",V(e.time,e.duration)]}),m.jsxRuntimeExports.jsx(m.View,{className:"service-name",children:e.serviceName})]}),m.jsxRuntimeExports.jsxs(m.View,{className:"service-price",children:["\xa5",e.discountPrice||e.price]})]},t))}),m.jsxRuntimeExports.jsxs(m.View,{className:"refund-policy",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"policy-title",children:"\u9000\u5355\u8bf4\u660e"}),m.jsxRuntimeExports.jsxs(m.View,{className:"policy-list",children:[m.jsxRuntimeExports.jsx(m.View,{className:"policy-item",children:"\u2022 \u4e0b\u535515\u5206\u949f\u5185\u6216\u8ddd\u8ba2\u5355\u5f00\u59cb\u65f6\u95f4>6\u5c0f\u65f6\u9000\u5355\uff0c\u9000100%"}),m.jsxRuntimeExports.jsx(m.View,{className:"policy-item",children:"\u2022 \u8ddd\u8ba2\u5355\u5f00\u59cb\u524d<6\u5c0f\u65f6\u9000\u5355\uff0c\u9000\u5b9e\u4ed8\u91d1\u989d90%"}),m.jsxRuntimeExports.jsx(m.View,{className:"policy-item",children:"\u2022 \u8ba2\u5355\u65f6\u95f4\u5f00\u59cb\u540e\u9000\u5355\uff0c\u9000\u5b9e\u4ed8\u91d1\u989d80%"})]})]}),m.jsxRuntimeExports.jsxs(m.View,{className:"customer-note",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"note-title",children:"\u5ba2\u6237\u5907\u6ce8"}),m.jsxRuntimeExports.jsx(m.Text,{className:"note-hint",children:"\u60a8\u5bf9\u8336\u6c34\u3001\u623f\u95f4\u3001\u6309\u6469\u670d\u7b49\u662f\u5426\u6709\u7279\u6b8a\u9700\u6c42\uff0c\u6211\u4eec\u5c06\u63d0\u524d\u4e3a\u60a8\u505a\u597d\u51c6\u5907"})]}),m.jsxRuntimeExports.jsxs(m.View,{className:"payment-section",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"section-title",children:"\u652f\u4ed8\u65b9\u5f0f"}),m.jsxRuntimeExports.jsxs(m.View,{className:"payment-methods",children:[m.jsxRuntimeExports.jsxs(m.View,{className:`payment-method ${"balance"===g?"active":""} ${I()?"":"disabled"}`,onClick:()=>M("balance"),children:[m.jsxRuntimeExports.jsxs(m.View,{className:"method-info",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"method-icon",children:"\ud83d\udcb0"}),m.jsxRuntimeExports.jsx(m.Text,{className:"method-name",children:"\u4f59\u989d\u652f\u4ed8"}),m.jsxRuntimeExports.jsxs(m.Text,{className:"balance-amount",children:[f?"\u52a0\u8f7d\u4e2d...":`\xa5${w.toFixed(2)}`,!I()&&!f&&m.jsxRuntimeExports.jsx(m.Text,{className:"insufficient",children:" (\u4f59\u989d\u4e0d\u8db3)"})]})]}),m.jsxRuntimeExports.jsx(m.View,{className:"check-icon "+("balance"===g?"checked":"")})]}),m.jsxRuntimeExports.jsxs(m.View,{className:"payment-method "+("wechat"===g?"active":""),onClick:()=>M("wechat"),children:[m.jsxRuntimeExports.jsxs(m.View,{className:"method-info",children:[m.jsxRuntimeExports.jsx(m.Text,{className:"method-icon",children:"\ud83d\udc9a"}),m.jsxRuntimeExports.jsx(m.Text,{className:"method-name",children:"\u5fae\u4fe1\u652f\u4ed8"})]}),m.jsxRuntimeExports.jsx(m.View,{className:"check-icon "+("wechat"===g?"checked":"")})]})]})]}),m.jsxRuntimeExports.jsxs(m.View,{className:"payment-bar",children:[m.jsxRuntimeExports.jsxs(m.View,{className:"price-info",children:[m.jsxRuntimeExports.jsxs(m.Text,{className:"total-price",children:["\xa5 ",k()]}),m.jsxRuntimeExports.jsxs(m.Text,{className:"countdown",children:["\u652f\u4ed8\u5012\u8ba1\u65f6: ",S(j)]})]}),m.jsxRuntimeExports.jsx(m.View,{className:"pay-button",onClick:$,children:"\u53bb\u652f\u4ed8"})]})]})};var j={navigationBarTitleText:"\u8ba2\u5355\u786e\u8ba4"};Page(m.createPageConfig(h,"pages/booking/confirm/index",{root:{cn:[]}},j||{}));
+"use strict";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const common = require("../../../common.js");
+class PaymentService {
+  constructor() {
+    this.config = {
+      // 个人小程序默认配置
+      useMockPayment: true,
+      enableBalancePayment: true,
+      enableWechatPayment: false
+    };
+  }
+  /**
+   * 统一支付入口
+   */
+  pay(options) {
+    return __async(this, null, function* () {
+      const {
+        paymentMethod
+      } = options;
+      if (this.config.useMockPayment && paymentMethod === "wechat") {
+        return this.mockWechatPayment(options);
+      }
+      if (paymentMethod === "balance") {
+        return this.payWithBalance(options);
+      }
+      if (paymentMethod === "wechat" && this.config.enableWechatPayment) {
+        return this.payWithWechat(options);
+      }
+      throw new Error("不支持的支付方式");
+    });
+  }
+  /**
+   * 模拟微信支付（个人小程序测试用）
+   */
+  mockWechatPayment(options) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          confirm
+        } = yield taro.Taro.showModal({
+          title: "模拟支付",
+          content: `订单金额：¥${(options.amount / 100).toFixed(2)}
+${options.title || ""}`,
+          confirmText: "确认支付",
+          cancelText: "取消支付",
+          confirmColor: "#07c160"
+        });
+        if (confirm) {
+          taro.Taro.showLoading({
+            title: "支付中..."
+          });
+          yield this.delay(1500);
+          yield common.post("/orders/mock-pay", {
+            orderNo: options.orderNo,
+            paymentStatus: "paid"
+          });
+          taro.Taro.hideLoading();
+          taro.Taro.showToast({
+            title: "支付成功",
+            icon: "success"
+          });
+          return true;
+        } else {
+          console.log("用户取消模拟支付");
+          return false;
+        }
+      } catch (error) {
+        taro.Taro.hideLoading();
+        taro.Taro.showToast({
+          title: "支付失败",
+          icon: "none"
+        });
+        throw error;
+      }
+    });
+  }
+  /**
+   * 余额支付
+   */
+  payWithBalance(options) {
+    return __async(this, null, function* () {
+      try {
+        taro.Taro.showLoading({
+          title: "支付中..."
+        });
+        console.log("💰 余额支付请求参数:", {
+          orderNo: options.orderNo,
+          paymentMethod: "balance"
+        });
+        const response = yield common.post("/orders/pay", {
+          orderNo: options.orderNo,
+          paymentMethod: "balance"
+        });
+        console.log("💰 余额支付响应:", response);
+        taro.Taro.hideLoading();
+        if (response.code === 0) {
+          taro.Taro.showToast({
+            title: `支付成功
+余额：¥${(response.data.balance / 100).toFixed(2)}`,
+            icon: "success",
+            duration: 2e3
+          });
+          return true;
+        } else {
+          throw new Error(response.message || "余额不足");
+        }
+      } catch (error) {
+        console.error("💰 余额支付失败:", error);
+        console.error("💰 错误详情:", error.response || error.message);
+        taro.Taro.hideLoading();
+        taro.Taro.showToast({
+          title: error.message || "支付失败",
+          icon: "none"
+        });
+        return false;
+      }
+    });
+  }
+  /**
+   * 真实微信支付（需要企业认证）
+   */
+  payWithWechat(options) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          data
+        } = yield common.post("/orders/wechat-pay-params", {
+          orderNo: options.orderNo
+        });
+        const {
+          wxPayParams
+        } = data;
+        yield taro.Taro.requestPayment({
+          timeStamp: wxPayParams.timeStamp,
+          nonceStr: wxPayParams.nonceStr,
+          package: wxPayParams.package,
+          signType: wxPayParams.signType,
+          paySign: wxPayParams.paySign
+        });
+        taro.Taro.showToast({
+          title: "支付成功",
+          icon: "success"
+        });
+        return true;
+      } catch (error) {
+        if (error.errMsg === "requestPayment:fail cancel") {
+          console.log("用户取消支付");
+          return false;
+        }
+        taro.Taro.showToast({
+          title: "支付失败",
+          icon: "none"
+        });
+        throw error;
+      }
+    });
+  }
+  /**
+   * 检查支付环境
+   */
+  checkPaymentEnvironment() {
+    return __async(this, null, function* () {
+      taro.Taro.getAccountInfoSync();
+      const isPersonalApp = !this.config.enableWechatPayment;
+      return {
+        canUseWechatPay: !isPersonalApp && this.config.enableWechatPayment,
+        canUseBalance: this.config.enableBalancePayment,
+        canUseMockPay: this.config.useMockPayment,
+        message: isPersonalApp ? "当前为个人小程序，使用模拟支付和余额支付" : "企业小程序，支持完整支付功能"
+      };
+    });
+  }
+  /**
+   * 生成充值码（线下充值）
+   */
+  generateRechargeCode(amount) {
+    return __async(this, null, function* () {
+      const response = yield common.post("/recharge/generate-code", {
+        amount
+      });
+      return response.data;
+    });
+  }
+  /**
+   * 辅助方法：延迟
+   */
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+}
+const paymentService = new PaymentService();
+const index = "";
+const OrderConfirmPage = () => {
+  const router = taro.taroExports.useRouter();
+  const params = router.params;
+  const [cartItems, setCartItems] = taro.useState([]);
+  const [therapistInfo, setTherapistInfo] = taro.useState(null);
+  const [storeInfo, setStoreInfo] = taro.useState(null);
+  const [loading, setLoading] = taro.useState(true);
+  const [countdown, setCountdown] = taro.useState(180);
+  const [paymentMethod, setPaymentMethod] = taro.useState("wechat");
+  const [userBalance, setUserBalance] = taro.useState(0);
+  const [balanceLoading, setBalanceLoading] = taro.useState(false);
+  const timerRef = taro.useRef(null);
+  taro.useEffect(() => {
+    try {
+      const items = JSON.parse(decodeURIComponent(params.items || "[]"));
+      setCartItems(items);
+      fetchTherapistAndStoreInfo();
+      fetchUserBalance();
+    } catch (error) {
+      taro.Taro.showToast({
+        title: "数据解析失败",
+        icon: "none"
+      });
+      setTimeout(() => taro.Taro.navigateBack(), 1500);
+    }
+  }, [params]);
+  taro.useEffect(() => {
+    if (!loading && cartItems.length > 0) {
+      timerRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            taro.Taro.showModal({
+              title: "支付超时了呦",
+              content: "快快重新下单吧~",
+              showCancel: false,
+              success: () => {
+                taro.Taro.navigateBack();
+              }
+            });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1e3);
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [loading, cartItems]);
+  const fetchUserBalance = () => __async(exports, null, function* () {
+    try {
+      setBalanceLoading(true);
+      const balance = yield common.walletService.getBalance();
+      setUserBalance(balance);
+      const totalPrice = getTotalPrice();
+      if (balance >= totalPrice / 100) {
+        setPaymentMethod("balance");
+      }
+    } catch (error) {
+      console.error("获取余额失败:", error);
+      setUserBalance(0);
+    } finally {
+      setBalanceLoading(false);
+    }
+  });
+  const fetchTherapistAndStoreInfo = () => __async(exports, null, function* () {
+    try {
+      setLoading(true);
+      if (params.therapistId) {
+        const therapistRes = yield common.therapistService.getTherapistDetail(params.therapistId);
+        setTherapistInfo(therapistRes.data);
+      }
+      const storeRes = yield common.storeService.getStoreDetail(params.storeId);
+      const storeData = storeRes.data;
+      setStoreInfo(storeData);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      taro.Taro.showToast({
+        title: "获取信息失败",
+        icon: "none"
+      });
+    }
+  });
+  const formatCountdown = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month.toString().padStart(2, "0")}月${day.toString().padStart(2, "0")}日`;
+  };
+  const calculateEndTime = (time, duration) => {
+    const [hour, minute] = time.split(":").map(Number);
+    const endMinute = minute + duration;
+    const endHour = hour + Math.floor(endMinute / 60);
+    const finalMinute = endMinute % 60;
+    return `${endHour}:${finalMinute.toString().padStart(2, "0")}`;
+  };
+  const getTotalPrice = () => {
+    return cartItems.reduce((sum, item) => sum + (item.discountPrice || item.price), 0);
+  };
+  const isBalanceSufficient = () => {
+    const totalPrice = getTotalPrice();
+    return userBalance >= totalPrice / 100;
+  };
+  const handlePaymentMethodChange = (method) => {
+    if (method === "balance" && !isBalanceSufficient()) {
+      taro.Taro.showToast({
+        title: "余额不足，请充值或使用其他支付方式",
+        icon: "none",
+        duration: 2e3
+      });
+      return;
+    }
+    setPaymentMethod(method);
+  };
+  const handlePayment = () => __async(exports, null, function* () {
+    const isSymptomMode = params.from === "symptom";
+    const needTherapistInfo = !isSymptomMode && !therapistInfo;
+    if (cartItems.length === 0 || needTherapistInfo || !storeInfo) {
+      taro.Taro.showToast({
+        title: "订单信息不完整",
+        icon: "none"
+      });
+      return;
+    }
+    if (paymentMethod === "balance" && !isBalanceSufficient()) {
+      taro.Taro.showToast({
+        title: "余额不足，请充值或使用其他支付方式",
+        icon: "none",
+        duration: 2e3
+      });
+      return;
+    }
+    try {
+      taro.Taro.showLoading({
+        title: "创建订单..."
+      });
+      const firstItem = cartItems[0];
+      console.log("🛒 购物车第一个项目:", firstItem);
+      console.log("🛒 firstItem.therapistId:", firstItem.therapistId);
+      console.log("🛒 params.therapistId:", params.therapistId);
+      console.log("🛒 params.from:", params.from);
+      const orderParams = {
+        therapistId: firstItem.therapistId || params.therapistId || "symptom-mode",
+        // 优先使用购物车中的技师ID
+        storeId: params.storeId,
+        serviceId: firstItem.serviceId,
+        serviceName: firstItem.serviceName,
+        duration: firstItem.duration,
+        price: firstItem.price,
+        discountPrice: firstItem.discountPrice,
+        appointmentDate: firstItem.date,
+        appointmentTime: firstItem.time,
+        therapistName: firstItem.therapistName,
+        therapistAvatar: firstItem.therapistAvatar || (therapistInfo == null ? void 0 : therapistInfo.avatar)
+      };
+      console.log("📦 最终的订单参数:", orderParams);
+      console.log("📦 therapistId将要传递的值:", orderParams.therapistId);
+      const result = yield common.orderService.createAppointmentOrder(orderParams);
+      const order = result.order;
+      console.log("✅ 订单创建成功:", result);
+      console.log("✅ 订单号:", order.orderNo);
+      taro.Taro.hideLoading();
+      const paymentSuccess = yield paymentService.pay({
+        orderNo: order.orderNo,
+        amount: order.totalAmount ? order.totalAmount * 100 : getTotalPrice() * 100,
+        // 转换为分
+        paymentMethod,
+        title: `${firstItem.serviceName} - ${firstItem.therapistName}`
+      });
+      if (paymentSuccess) {
+        if (paymentMethod === "balance") {
+          yield fetchUserBalance();
+        }
+        setTimeout(() => {
+          taro.Taro.redirectTo({
+            url: `/pages/booking/success/index?orderNo=${order.orderNo}`
+          });
+        }, 1500);
+      } else {
+        taro.Taro.requestPayment(__spreadProps(__spreadValues({}, paymentParams), {
+          success: () => __async(exports, null, function* () {
+            yield common.orderService.updateOrderStatus(order.orderNo, "paid");
+            taro.Taro.showToast({
+              title: "支付成功",
+              icon: "success",
+              duration: 1500
+            });
+            setTimeout(() => {
+              taro.Taro.redirectTo({
+                url: `/pages/booking/success/index?orderNo=${order.orderNo}`
+              });
+            }, 1500);
+          }),
+          fail: (err) => {
+            console.error("支付失败:", err);
+            if (err.errMsg !== "requestPayment:fail cancel") {
+              if (err.errMsg && err.errMsg.includes("total_fee")) {
+                taro.Taro.showToast({
+                  title: "支付参数错误：缺少金额信息",
+                  icon: "none",
+                  duration: 2500
+                });
+              } else {
+                taro.Taro.showToast({
+                  title: "支付失败",
+                  icon: "none"
+                });
+              }
+            }
+          }
+        }));
+      }
+    } catch (error) {
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "订单创建失败",
+        icon: "none"
+      });
+    }
+  });
+  if (loading) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "order-confirm-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
+  }
+  return /* @__PURE__ */ taro.jsxs(taro.ScrollView, { className: "order-confirm-page", scrollY: true, children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: storeInfo == null ? void 0 : storeInfo.name }),
+      /* @__PURE__ */ taro.jsxs(taro.Text, { className: "store-distance", children: [
+        "📍 ",
+        storeInfo == null ? void 0 : storeInfo.distance,
+        "km"
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "booking-info", children: cartItems.map(
+      (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "booking-item", children: [
+        /* @__PURE__ */ taro.jsx(
+          taro.Image,
+          {
+            className: "therapist-avatar",
+            src: item.therapistAvatar || (therapistInfo == null ? void 0 : therapistInfo.avatar)
+          }
+        ),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "booking-details", children: [
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-name", children: item.therapistName }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-time", children: [
+            formatDate(item.date),
+            " ",
+            item.time,
+            " 至 ",
+            calculateEndTime(item.time, item.duration)
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "service-name", children: item.serviceName })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-price", children: [
+          "¥",
+          item.discountPrice || item.price
+        ] })
+      ] }, index2)
+    ) }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "refund-policy", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "policy-title", children: "退单说明" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "policy-list", children: [
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "policy-item", children: "• 下单15分钟内或距订单开始时间>6小时退单，退100%" }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "policy-item", children: "• 距订单开始前<6小时退单，退实付金额90%" }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "policy-item", children: "• 订单时间开始后退单，退实付金额80%" })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "customer-note", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "note-title", children: "客户备注" }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "note-hint", children: "您对茶水、房间、按摩服等是否有特殊需求，我们将提前为您做好准备" })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "payment-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "支付方式" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "payment-methods", children: [
+        /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `payment-method ${paymentMethod === "balance" ? "active" : ""} ${!isBalanceSufficient() ? "disabled" : ""}`,
+            onClick: () => handlePaymentMethodChange("balance"),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "method-info", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "method-icon", children: "💰" }),
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "method-name", children: "余额支付" }),
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "balance-amount", children: [
+                  balanceLoading ? "加载中..." : `¥${userBalance.toFixed(2)}`,
+                  !isBalanceSufficient() && !balanceLoading && /* @__PURE__ */ taro.jsx(taro.Text, { className: "insufficient", children: " (余额不足)" })
+                ] })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: `check-icon ${paymentMethod === "balance" ? "checked" : ""}` })
+            ]
+          }
+        ),
+        /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `payment-method ${paymentMethod === "wechat" ? "active" : ""}`,
+            onClick: () => handlePaymentMethodChange("wechat"),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "method-info", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "method-icon", children: "💚" }),
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "method-name", children: "微信支付" })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: `check-icon ${paymentMethod === "wechat" ? "checked" : ""}` })
+            ]
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "payment-bar", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥ ",
+          getTotalPrice()
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "countdown", children: [
+          "支付倒计时: ",
+          formatCountdown(countdown)
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "pay-button", onClick: handlePayment, children: "去支付" })
+    ] })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "订单确认"
+};
+Page(taro.createPageConfig(OrderConfirmPage, "pages/booking/confirm/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map
