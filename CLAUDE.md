@@ -154,9 +154,9 @@ npm run dev:weapp
 
 #### 1️⃣ Start Development Server (Hot Reload)
 ```bash
-# Development mode (port 8082)
+# Development mode (port 8081)
 npm run dev:h5:api
-# Access: http://localhost:8082
+# Access: http://localhost:8081
 ```
 
 #### 2️⃣ Production Build Server (Optional)
@@ -164,9 +164,9 @@ npm run dev:h5:api
 # Build first
 TARO_APP_API=http://emagen.323424.xyz/api/v2 npm run build:h5
 
-# Python static server (port 8081)
-cd dist && python3 -m http.server 8081
-# Access: http://localhost:8081
+# Python static server (port 8082)
+cd dist && python3 -m http.server 8082
+# Access: http://localhost:8082
 ```
 
 #### 3️⃣ Browser Debugging
@@ -192,7 +192,8 @@ WebSocket connection failed
 #### 🔴 Port Already in Use
 ```bash
 # Check port usage
-lsof -i :8081
+lsof -i :8081  # For H5 dev server
+lsof -i :8082  # For Python static server
 
 # Kill process
 kill -9 [PID]
@@ -216,13 +217,13 @@ npm run dev:h5:api
 # H5 production build
 export TARO_APP_API=http://emagen.323424.xyz/api/v2
 npm run build:h5
-python3 -m http.server 8081
+cd dist && python3 -m http.server 8082
 ```
 
 #### ✅ Verify Running
 - Mini-program: Check in WeChat DevTools
-- H5 Dev: http://localhost:8082
-- H5 Prod: http://localhost:8081
+- H5 Dev: http://localhost:8081 (Taro dev server with hot reload)
+- H5 Prod: http://localhost:8082 (Python static server)
 
 #### ✅ Debugging Tips
 1. Check network requests: Confirm API address
@@ -255,11 +256,22 @@ Test Production Version
 | Purpose | Command | Port | Description |
 |---------|---------|------|-------------|
 | Mini-program Dev | `npm run dev:api` | - | Connect remote API |
-| H5 Dev | `npm run dev:h5:api` | 8082 | Hot reload dev |
+| H5 Dev | `npm run dev:h5:api` | 8081 | Hot reload dev |
 | H5 Build | `npm run build:h5` | - | Production build |
-| H5 Preview | `python3 -m http.server` | 8081 | Static server |
+| H5 Preview | `python3 -m http.server 8082` | 8082 | Static server |
 
 ### Core Principles
 - 🎯 Development: Use `dev:api` (auto-connects to remote)
 - 🎯 Debug: Check Network and Console panels
 - 🎯 Issues: Clear cache and restart first
+
+### 七、Service Status Summary
+
+When both H5 services are running:
+- **Port 8081**: Taro H5 development server (hot reload, development mode)
+- **Port 8082**: Python static file server (serves production build from dist/)
+
+This setup allows you to:
+1. Develop with hot reload on port 8081
+2. Test production build on port 8082
+3. Compare development vs production behavior side by side
