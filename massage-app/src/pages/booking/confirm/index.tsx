@@ -16,6 +16,7 @@ interface CartItem {
   discountPrice?: number
   date: string
   time: string
+  therapistId?: string
   therapistName: string
   therapistAvatar?: string
 }
@@ -209,7 +210,7 @@ const OrderConfirmPage: React.FC = () => {
       // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
       const firstItem = cartItems[0]
       const orderParams: CreateOrderParams = {
-        therapistId: params.therapistId || 'symptom-mode', // 症状调理模式使用特殊标识
+        therapistId: firstItem.therapistId || params.therapistId || 'symptom-mode', // 优先使用购物车中的技师ID
         storeId: params.storeId,
         serviceId: firstItem.serviceId,
         serviceName: firstItem.serviceName,

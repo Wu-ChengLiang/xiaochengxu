@@ -17,6 +17,7 @@ interface CartItem {
   discountPrice?: number
   date: string
   time: string
+  therapistId: string
   therapistName: string
   therapistAvatar?: string
 }
@@ -88,6 +89,7 @@ const SymptomPage = () => {
       discountPrice: service.discountPrice,
       date: selectedDate as string || new Date().toISOString().split('T')[0],
       time: decodedTime || '10:00',  // 使用解码后的时间，默认10:00
+      therapistId: therapist.id,
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }
