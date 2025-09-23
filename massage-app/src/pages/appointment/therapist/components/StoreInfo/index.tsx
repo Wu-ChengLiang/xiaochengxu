@@ -9,32 +9,6 @@ interface StoreInfoProps {
 }
 
 const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
-  const getStatusText = (status: Store['status']) => {
-    switch (status) {
-      case 'normal':
-        return '就近'
-      case 'busy':
-        return '繁忙'
-      case 'full':
-        return '爆满'
-      default:
-        return ''
-    }
-  }
-
-  const getStatusClass = (status: Store['status']) => {
-    switch (status) {
-      case 'normal':
-        return 'status-normal'
-      case 'busy':
-        return 'status-busy'
-      case 'full':
-        return 'status-full'
-      default:
-        return ''
-    }
-  }
-
   const handleCallStore = () => {
     if (store.phone) {
       Taro.makePhoneCall({
@@ -65,11 +39,8 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
           
           <View className="hours-row">
             <Text className="business-hours">
-              {store.businessHours ? `${store.businessHours.start}-${store.businessHours.end}` : '营业时间未知'}
+              {store.businessHours}
             </Text>
-            <View className={`status ${getStatusClass(store.status)}`}>
-              {getStatusText(store.status)}
-            </View>
           </View>
           
           <Text className="address">{store.address}</Text>

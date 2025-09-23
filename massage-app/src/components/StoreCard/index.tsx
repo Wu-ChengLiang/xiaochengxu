@@ -52,7 +52,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
           
           <View className="business-hours">
             <Text className="hours-text">
-              {store.businessHours.start}-{store.businessHours.end}
+              {store.businessHours}
             </Text>
             <Text className={`status ${getStatusClass(store.status)}`}>
               {getStatusText(store.status)}
