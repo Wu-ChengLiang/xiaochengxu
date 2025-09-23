@@ -18,6 +18,10 @@ module.exports = {
     navigateTo: jest.fn(),
     getStorageSync: jest.fn(),
     setStorageSync: jest.fn(),
-    removeStorageSync: jest.fn()
+    removeStorageSync: jest.fn(),
+    getStorageInfoSync: jest.fn(() => ({ keys: [] })),
+    eventCenter: {
+      trigger: jest.fn()
+    }
   }
 }

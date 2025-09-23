@@ -8,15 +8,18 @@ jest.mock('@/utils/request', () => ({
 }))
 
 // Mock Taro
-jest.mock('@tarojs/taro', () => ({
-  default: {
-    eventCenter: {
-      trigger: jest.fn()
-    },
-    getStorageInfoSync: () => ({ keys: [] }),
-    removeStorageSync: jest.fn()
+jest.mock('@tarojs/taro', () => {
+  const mockEventTrigger = jest.fn()
+  return {
+    default: {
+      eventCenter: {
+        trigger: mockEventTrigger
+      },
+      getStorageInfoSync: () => ({ keys: [] }),
+      removeStorageSync: jest.fn()
+    }
   }
-}))
+})
 
 describe('ReviewService', () => {
   const mockPost = post as jest.MockedFunction<typeof post>
@@ -53,7 +56,7 @@ describe('ReviewService', () => {
 
       const result = await reviewService.createReview(reviewData)
 
-      expect(mockPost).toHaveBeenCalledWith('/api/v2/reviews', reviewData, {
+      expect(mockPost).toHaveBeenCalledWith('/reviews', reviewData, {
         showLoading: true,
         loadingTitle: '提交评价中...'
       })
@@ -65,7 +68,7 @@ describe('ReviewService', () => {
         appointmentId: 123,
         therapistId: '1',
         rating: 5,
-        content: '服务很好'
+        content: '服务很好，技师很专业，按摩的很舒服'
       }
 
       mockPost.mockRejectedValue(new Error('已评价过该订单'))
@@ -127,7 +130,7 @@ describe('ReviewService', () => {
 
       const result = await reviewService.getTherapistReviews(therapistId)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/therapists/${therapistId}/reviews`, {
+      expect(mockGet).toHaveBeenCalledWith(`/therapists/${therapistId}/reviews`, {
         page: 1,
         pageSize: 10
       })
@@ -143,7 +146,7 @@ describe('ReviewService', () => {
 
       await reviewService.getTherapistReviews(therapistId, page, pageSize)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/therapists/${therapistId}/reviews`, {
+      expect(mockGet).toHaveBeenCalledWith(`/therapists/${therapistId}/reviews`, {
         page,
         pageSize
       })
@@ -157,7 +160,7 @@ describe('ReviewService', () => {
 
       await reviewService.getTherapistReviews(therapistId, 1, 10, rating)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/therapists/${therapistId}/reviews`, {
+      expect(mockGet).toHaveBeenCalledWith(`/therapists/${therapistId}/reviews`, {
         page: 1,
         pageSize: 10,
         rating
@@ -198,7 +201,7 @@ describe('ReviewService', () => {
 
       const result = await reviewService.getUserReviews(userId)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/users/${userId}/reviews`, {
+      expect(mockGet).toHaveBeenCalledWith(`/users/${userId}/reviews`, {
         page: 1,
         pageSize: 10
       })
@@ -233,7 +236,7 @@ describe('ReviewService', () => {
 
       const result = await reviewService.getReviewDetail(reviewId)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/reviews/${reviewId}`)
+      expect(mockGet).toHaveBeenCalledWith(`/reviews/${reviewId}`)
       expect(result).toEqual(mockResponse.data)
     })
 
@@ -269,7 +272,7 @@ describe('ReviewService', () => {
 
       const result = await reviewService.getReviewStats(therapistId)
 
-      expect(mockGet).toHaveBeenCalledWith(`/api/v2/therapists/${therapistId}/review-stats`)
+      expect(mockGet).toHaveBeenCalledWith(`/therapists/${therapistId}/review-stats`)
       expect(result).toEqual(mockResponse.data)
     })
   })
@@ -278,20 +281,14 @@ describe('ReviewService', () => {
     it('should check if appointment can be reviewed', async () => {
       const appointmentId = 123
 
-      // Mock获取预约详情的API
-      mockGet.mockResolvedValue({
-        code: 0,
-        message: 'success',
-        data: {
-          id: 123,
-          status: 'completed',
-          rating: null,
-          review: null
-        }
-      })
+      // Mock - review not found means can review
+      mockGet.mockRejectedValue(new Error('评价不存在'))
 
       const result = await reviewService.checkCanReview(appointmentId)
 
+      expect(mockGet).toHaveBeenCalledWith(`/reviews/${appointmentId}`, {}, {
+        showLoading: false
+      })
       expect(result).toBe(true)
     })
 
@@ -302,10 +299,10 @@ describe('ReviewService', () => {
         code: 0,
         message: 'success',
         data: {
-          id: 123,
-          status: 'completed',
+          reviewId: 123,
+          appointmentId: 123,
           rating: 5,
-          review: '已评价'
+          content: '已评价'
         }
       })
 
@@ -314,23 +311,16 @@ describe('ReviewService', () => {
       expect(result).toBe(false)
     })
 
-    it('should return false if appointment not completed', async () => {
+    it('should handle unknown errors gracefully', async () => {
       const appointmentId = 123
 
-      mockGet.mockResolvedValue({
-        code: 0,
-        message: 'success',
-        data: {
-          id: 123,
-          status: 'pending',
-          rating: null,
-          review: null
-        }
-      })
+      // Mock unknown error
+      mockGet.mockRejectedValue(new Error('Network error'))
 
       const result = await reviewService.checkCanReview(appointmentId)
 
-      expect(result).toBe(false)
+      // Should default to allowing review on unknown error
+      expect(result).toBe(true)
     })
   })
 })

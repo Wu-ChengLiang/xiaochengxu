@@ -39,6 +39,9 @@ const OrderDetailPage: React.FC = () => {
       if (order.extraData?.appointmentId) {
         const canReview = await reviewService.checkCanReview(order.extraData.appointmentId)
         setHasReviewed(!canReview)
+      } else {
+        // 没有appointmentId，默认为未评价
+        setHasReviewed(false)
       }
 
       setLoading(false)
@@ -104,6 +107,7 @@ const OrderDetailPage: React.FC = () => {
     }
 
     try {
+      // 使用appointmentId作为reviewId（因为后端使用appointmentId作为评价ID）
       const reviewDetail = await reviewService.getReviewDetail(orderInfo.extraData.appointmentId)
       // 可以跳转到评价详情页或显示评价内容
       Taro.showModal({
@@ -113,7 +117,7 @@ const OrderDetailPage: React.FC = () => {
       })
     } catch (error) {
       Taro.showToast({
-        title: '获取评价失败',
+        title: '评价信息获取失败',
         icon: 'none'
       })
     }
@@ -349,8 +353,8 @@ const OrderDetailPage: React.FC = () => {
             <Text>联系门店</Text>
           </View>
         )}
-        {/* 已完成状态：显示评价和再次预约按钮 */}
-        {currentStatus === 'completed' && (
+        {/* 已完成状态或已支付状态：显示评价和再次预约按钮 */}
+        {(currentStatus === 'completed' || currentStatus === 'paid') && (
           <>
             {!hasReviewed ? (
               <View className="button primary" onClick={handleCreateReview}>

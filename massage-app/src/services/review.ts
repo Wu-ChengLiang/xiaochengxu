@@ -1,5 +1,6 @@
 import { post, get } from '@/utils/request'
 import Taro from '@tarojs/taro'
+import { API_CONFIG } from '@/config/api'
 
 /**
  * 评价数据接口
@@ -85,7 +86,7 @@ class ReviewService {
     }
 
     try {
-      const response = await post('/api/v2/reviews', params, {
+      const response = await post('/reviews', params, {
         showLoading: true,
         loadingTitle: '提交评价中...'
       })
@@ -120,7 +121,7 @@ class ReviewService {
         params.rating = rating
       }
 
-      const response = await get(`/api/v2/therapists/${therapistId}/reviews`, params)
+      const response = await get(`/therapists/${therapistId}/reviews`, params)
       return response.data
     } catch (error: any) {
       console.error('获取推拿师评价失败:', error)
@@ -147,7 +148,7 @@ class ReviewService {
     pageSize: number = 10
   ): Promise<ReviewListResponse> {
     try {
-      const response = await get(`/api/v2/users/${userId}/reviews`, {
+      const response = await get(`/users/${userId}/reviews`, {
         page,
         pageSize
       })
@@ -171,7 +172,7 @@ class ReviewService {
    */
   async getReviewDetail(reviewId: string | number): Promise<ReviewData> {
     try {
-      const response = await get(`/api/v2/reviews/${reviewId}`)
+      const response = await get(`/reviews/${reviewId}`)
       return response.data
     } catch (error: any) {
       console.error('获取评价详情失败:', error)
@@ -186,7 +187,7 @@ class ReviewService {
    */
   async getReviewStats(therapistId: string | number): Promise<ReviewStats> {
     try {
-      const response = await get(`/api/v2/therapists/${therapistId}/review-stats`)
+      const response = await get(`/therapists/${therapistId}/review-stats`)
       return response.data
     } catch (error: any) {
       console.error('获取评价统计失败:', error)
@@ -212,21 +213,36 @@ class ReviewService {
    */
   async checkCanReview(appointmentId: number): Promise<boolean> {
     try {
-      // 获取预约详情
-      const response = await get(`/api/v2/appointments/${appointmentId}`)
-      const appointment = response.data
+      // 直接使用Taro.request来避免request.ts的错误日志
+      const response = await Taro.request({
+        url: `${API_CONFIG.baseURL}/reviews/${appointmentId}`,
+        method: 'GET',
+        header: {
+          'Content-Type': 'application/json'
+        },
+        timeout: API_CONFIG.timeout
+      })
 
-      // 检查条件：
-      // 1. 预约状态必须是completed
-      // 2. 还没有评价（rating和review为空）
-      return (
-        appointment.status === 'completed' &&
-        !appointment.rating &&
-        !appointment.review
-      )
-    } catch (error) {
-      console.error('检查评价状态失败:', error)
-      return false
+      const result = response.data as any
+
+      // 如果返回code 1002（评价不存在），说明可以评价
+      if (result.code === 1002) {
+        console.log('评价不存在，可以创建评价')
+        return true
+      }
+
+      // 如果返回code 0且有数据，说明已评价
+      if (result.code === 0 && result.data?.reviewId) {
+        console.log('评价已存在，不能再评价')
+        return false
+      }
+
+      // 其他情况默认可以评价
+      return true
+    } catch (error: any) {
+      // 网络错误等情况，默认允许评价
+      console.warn('检查评价状态时发生错误，默认允许评价')
+      return true
     }
   }
 
