@@ -124,9 +124,18 @@ class OrderService {
               order.storeName = store.name
               order.storeAddress = store.address
             })
-            .catch(error => {
+            .catch(async (error) => {
               console.error(`获取门店信息失败 (storeId: ${order.storeId}):`, error)
-              // 失败时不设置，避免undefined覆盖可能存在的extraData值
+              // 尝试获取默认门店信息
+              const defaultStore = await this.getDefaultStoreInfo()
+              if (defaultStore) {
+                order.storeName = `${defaultStore.name}（替代显示）`
+                order.storeAddress = defaultStore.address
+              } else {
+                // 最后的降级方案
+                order.storeName = '门店信息暂时无法获取'
+                order.storeAddress = '请联系客服获取详情'
+              }
             })
         )
       }
@@ -164,11 +173,32 @@ class OrderService {
   }
 
   /**
-   * 批量补全订单列表的门店和技师信息
-   * @param orders 订单列表
+   * 获取默认门店信息（当原门店不存在时使用）
    * @private
    */
-  private async enrichOrderListWithStoreAndTherapistInfo(orders: OrderData[]): Promise<void> {
+  private async getDefaultStoreInfo(): Promise<{ name: string; address: string } | null> {
+    try {
+      const response = await get('/stores/nearby', { page: 1, pageSize: 1 })
+      if (response.data?.list?.[0]) {
+        const store = response.data.list[0]
+        return {
+          name: store.name,
+          address: store.address
+        }
+      }
+    } catch (error) {
+      console.error('获取默认门店信息失败:', error)
+    }
+    return null
+  }
+
+  /**
+   * 批量补全订单列表的门店和技师信息，过滤无效订单
+   * @param orders 订单列表
+   * @returns 过滤后的有效订单列表
+   * @private
+   */
+  private async enrichOrderListWithStoreAndTherapistInfo(orders: OrderData[]): Promise<OrderData[]> {
     try {
       // 收集需要获取的门店ID和技师ID（去重）
       const storeIds = new Set<string>()
@@ -187,6 +217,7 @@ class OrderService {
       const promises: Promise<any>[] = []
       const storeMap = new Map<string, any>()
       const therapistMap = new Map<string, any>()
+      const invalidStoreIds = new Set<string>()
 
       // 批量获取门店信息
       Array.from(storeIds).forEach(storeId => {
@@ -196,7 +227,8 @@ class OrderService {
               storeMap.set(storeId, response.data)
             })
             .catch(error => {
-              console.error(`批量获取门店信息失败 (storeId: ${storeId}):`, error)
+              console.warn(`门店不存在，将过滤相关订单 (storeId: ${storeId}):`, error.message)
+              invalidStoreIds.add(storeId)
             })
         )
       })
@@ -219,8 +251,17 @@ class OrderService {
         await Promise.allSettled(promises)
       }
 
-      // 将获取到的信息填充到订单中
-      orders.forEach(order => {
+      // 🚀 过滤掉门店不存在的无效订单
+      const validOrders = orders.filter(order => {
+        if (order.storeId && invalidStoreIds.has(order.storeId.toString())) {
+          console.warn(`过滤无效订单: ${order.orderNo}（门店 ${order.storeId} 不存在）`)
+          return false
+        }
+        return true
+      })
+
+      // 只对有效订单填充信息
+      validOrders.forEach(order => {
         // 填充门店信息
         if (order.storeId && !order.storeName) {
           const store = storeMap.get(order.storeId.toString())
@@ -238,12 +279,18 @@ class OrderService {
             if (!order.therapistName) {
               order.therapistName = therapist.name
             }
+          } else {
+            // 如果没有获取到技师信息，设置默认头像
+            order.therapistAvatar = 'https://img.yzcdn.cn/vant/cat.jpeg'
           }
         }
       })
+
+      return validOrders
     } catch (error) {
       console.error('批量补全订单列表信息失败:', error)
-      // 不抛出错误，确保订单列表仍能正常返回
+      // 发生错误时返回原始订单列表
+      return orders
     }
   }
 
@@ -448,10 +495,10 @@ class OrderService {
         return order
       })
 
-      // 🚀 批量补全门店和技师信息
-      await this.enrichOrderListWithStoreAndTherapistInfo(orders)
+      // 🚀 批量补全门店和技师信息，并过滤无效订单
+      const validOrders = await this.enrichOrderListWithStoreAndTherapistInfo(orders)
 
-      return orders
+      return validOrders
     } catch (error: any) {
       console.error('获取订单列表失败:', error)
       return []
