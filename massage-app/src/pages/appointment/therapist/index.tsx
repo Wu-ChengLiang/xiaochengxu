@@ -19,6 +19,7 @@ interface CartItem {
   discountPrice?: number
   date: string
   time: string
+  therapistId?: string
   therapistName: string
   therapistAvatar?: string
 }
@@ -119,6 +120,7 @@ const TherapistBookingPage: React.FC = () => {
       discountPrice: selectedService.discountPrice,
       date,
       time,
+      therapistId: therapist.id,
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }

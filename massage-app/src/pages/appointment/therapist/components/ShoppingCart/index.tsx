@@ -11,6 +11,7 @@ interface CartItem {
   discountPrice?: number
   date: string
   time: string
+  therapistId?: string
   therapistName: string
   therapistAvatar?: string
 }

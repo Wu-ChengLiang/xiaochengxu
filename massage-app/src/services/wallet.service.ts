@@ -72,8 +72,14 @@ class WalletService {
       const userId = this.getCurrentUserId()
       const response = await get<BalanceResponse>('/users/wallet/balance', { userId })
 
-      // API返回的余额单位是元，直接使用
-      return response.data.balance || 0
+      // API返回的余额单位是分，需要转换为元
+      const balanceInCents = response.data.balance || 0
+      const balanceInYuan = balanceInCents / 100
+      console.log('💰 余额查询:', {
+        分: balanceInCents,
+        元: balanceInYuan.toFixed(2)
+      })
+      return balanceInYuan
     } catch (error) {
       console.error('获取余额失败:', error)
       throw new Error('获取余额失败，请重试')
@@ -88,7 +94,13 @@ class WalletService {
     try {
       const userId = this.getCurrentUserId()
       const response = await get<BalanceResponse>('/users/wallet/balance', { userId })
-      return response.data
+      // 转换单位：分转换为元
+      const data = response.data
+      return {
+        balance: data.balance / 100,  // 分转元
+        totalSpent: data.totalSpent / 100,  // 分转元
+        totalVisits: data.totalVisits
+      }
     } catch (error) {
       console.error('获取余额详情失败:', error)
       throw new Error('获取余额详情失败，请重试')

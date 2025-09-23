@@ -115,6 +115,10 @@ class OrderService {
     try {
       const { userId, userPhone } = this.getUserInfo()
 
+      // 调试日志 - 查看原始参数
+      console.log('📝 创建订单原始参数:', params)
+      console.log('📝 therapistId类型:', typeof params.therapistId, '值:', params.therapistId)
+
       const requestData = {
         therapistId: Number(params.therapistId),
         storeId: Number(params.storeId),
@@ -127,6 +131,10 @@ class OrderService {
         serviceName: params.serviceName,
         price: params.discountPrice || params.price
       }
+
+      // 调试日志 - 查看转换后的请求数据
+      console.log('📤 实际发送的请求数据:', requestData)
+      console.log('📤 转换后的therapistId:', requestData.therapistId, '是否为NaN:', isNaN(requestData.therapistId))
 
       const response = await post('/appointments/create-with-order', requestData, {
         showLoading: true,
@@ -218,7 +226,8 @@ class OrderService {
    */
   async getOrderDetail(orderNo: string): Promise<OrderData> {
     try {
-      const response = await get('/orders/detail', { orderNo })
+      // 使用RESTful风格的API路径
+      const response = await get(`/orders/${orderNo}`)
 
       // 转换金额单位和格式
       const order = response.data

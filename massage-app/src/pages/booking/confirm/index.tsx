@@ -209,6 +209,13 @@ const OrderConfirmPage: React.FC = () => {
 
       // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
       const firstItem = cartItems[0]
+
+      // 调试日志 - 查看购物车项目数据
+      console.log('🛒 购物车第一个项目:', firstItem)
+      console.log('🛒 firstItem.therapistId:', firstItem.therapistId)
+      console.log('🛒 params.therapistId:', params.therapistId)
+      console.log('🛒 params.from:', params.from)
+
       const orderParams: CreateOrderParams = {
         therapistId: firstItem.therapistId || params.therapistId || 'symptom-mode', // 优先使用购物车中的技师ID
         storeId: params.storeId,
@@ -223,9 +230,16 @@ const OrderConfirmPage: React.FC = () => {
         therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar)
       }
 
+      // 调试日志 - 查看最终的订单参数
+      console.log('📦 最终的订单参数:', orderParams)
+      console.log('📦 therapistId将要传递的值:', orderParams.therapistId)
+
       // 创建订单
       const result = await orderService.createAppointmentOrder(orderParams)
       const order = result.order
+
+      console.log('✅ 订单创建成功:', result)
+      console.log('✅ 订单号:', order.orderNo)
 
       Taro.hideLoading()
 

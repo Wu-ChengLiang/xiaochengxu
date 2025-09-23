@@ -78,8 +78,14 @@ const SymptomPage = () => {
 
   // 添加到购物车
   const handleAddToCart = (service: any, therapistId: string) => {
+    console.log('🎯 添加到购物车 - therapistId:', therapistId)
     const therapist = therapists.find(t => t.id === therapistId)
-    if (!therapist) return
+    console.log('🎯 找到的技师:', therapist)
+
+    if (!therapist) {
+      console.error('❌ 未找到技师，therapistId:', therapistId)
+      return
+    }
 
     const newItem: CartItem = {
       serviceId: service.id,
@@ -93,6 +99,9 @@ const SymptomPage = () => {
       therapistName: therapist.name,
       therapistAvatar: therapist.avatar
     }
+
+    console.log('🎯 新购物车项目:', newItem)
+    console.log('🎯 新项目的therapistId:', newItem.therapistId)
 
     setCartItems([...cartItems, newItem])
 
@@ -132,12 +141,18 @@ const SymptomPage = () => {
       return
     }
 
+    console.log('🔄 准备结算，购物车内容:', cartItems)
+    console.log('🔄 第一个项目:', cartItems[0])
+    console.log('🔄 第一个项目的therapistId:', cartItems[0]?.therapistId)
+
     const params = {
       items: JSON.stringify(cartItems),
       storeId,
       storeName,
       from: 'symptom'
     }
+
+    console.log('🔄 传递的参数:', params)
 
     Taro.navigateTo({
       url: `/pages/booking/confirm/index?${Object.entries(params)

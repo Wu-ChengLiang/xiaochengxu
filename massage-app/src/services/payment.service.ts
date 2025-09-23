@@ -105,11 +105,18 @@ class PaymentService {
     try {
       Taro.showLoading({ title: '支付中...' })
 
+      console.log('💰 余额支付请求参数:', {
+        orderNo: options.orderNo,
+        paymentMethod: 'balance'
+      })
+
       // 调用余额支付接口
       const response = await post('/orders/pay', {
         orderNo: options.orderNo,
         paymentMethod: 'balance'
       })
+
+      console.log('💰 余额支付响应:', response)
 
       Taro.hideLoading()
 
@@ -125,6 +132,8 @@ class PaymentService {
         throw new Error(response.message || '余额不足')
       }
     } catch (error: any) {
+      console.error('💰 余额支付失败:', error)
+      console.error('💰 错误详情:', error.response || error.message)
       Taro.hideLoading()
       Taro.showToast({
         title: error.message || '支付失败',
