@@ -26,6 +26,14 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist, stats, reviews
     ...therapist
   }
 
+  // 添加调试日志
+  console.log('🔍 TherapistInfo Debug:', {
+    therapistId: therapist.id,
+    serviceCount: therapist.serviceCount,
+    originalTherapist: therapist,
+    therapistDetail
+  })
+
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded)
   }
@@ -54,15 +62,6 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist, stats, reviews
             <View className="level">{therapistDetail.level}</View>
           </View>
           
-          <View className="stats-row">
-            <View className="rating">
-              <Text className="rating-score">{therapistDetail.rating}分</Text>
-            </View>
-            <View className="divider">|</View>
-            <View className="sales">
-              <Text className="sales-text">服务{therapistDetail.serviceCount}次</Text>
-            </View>
-          </View>
         </View>
       </View>
       

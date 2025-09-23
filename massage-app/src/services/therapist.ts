@@ -45,9 +45,14 @@ class TherapistService {
   
   // 获取推拿师详情
   async getTherapistDetail(therapistId: string) {
-    const data = await request(`/therapists/${therapistId}`)
-    console.log('✅ 推拿师详情API调用成功:', data)
-    return data
+    try {
+      const data = await request(`/therapists/${therapistId}`)
+      console.log('✅ 推拿师详情API调用成功:', data)
+      return data
+    } catch (error) {
+      console.log('⚠️ 推拿师详情API调用失败:', error)
+      throw error // 让上层处理错误
+    }
   }
   
   // 按擅长项目筛选推拿师

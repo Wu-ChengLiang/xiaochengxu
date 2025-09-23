@@ -32,7 +32,7 @@ export const getCurrentUserInfo = (): UserInfo | null => {
  */
 export const getCurrentUserId = (): number => {
   const userInfo = getCurrentUserInfo()
-  return userInfo?.id || 20 // 默认用户ID为20（开发环境）
+  return userInfo?.id || 1 // 默认用户ID为1（开发环境）
 }
 
 /**

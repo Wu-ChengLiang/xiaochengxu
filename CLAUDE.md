@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-推拿预约小程序 (Massage Appointment Mini-Program) - A WeChat mini-program built with Taro 3.x + React + TypeScript, following a Mock-Driven Development approach. The frontend operates independently via a comprehensive mock data layer that defines API contracts.
+推拿预约小程序 (Massage Appointment Mini-Program) - A WeChat mini-program built with Taro 3.x + React + TypeScript. A production-ready application connecting to real backend APIs for massage appointment booking and management.
 
 ## Essential Commands
 
 ```bash
 # Development
-npm run dev:weapp    # Start development (uses localhost:3001 by default)
-npm run dev:api      # Start with remote API (emagen.323424.xyz)
+npm run dev:api      # Start development with production API (emagen.323424.xyz)
+npm run dev:weapp    # Start with local API (localhost:3001) - for backend development
 
 # Build
 npm run build:weapp  # Production build for WeChat
@@ -28,25 +28,25 @@ npm run lint:fix     # Auto-fix issues
 
 ## Architecture Decisions
 
-### Mock-First Development Strategy
-- All features developed against mock layer first (`src/mock/data/` and `src/services/`)
+### Production API Integration
+- Direct integration with production backend API (emagen.323424.xyz)
 - API endpoint configuration via `TARO_APP_API` environment variable
-- Default API: localhost:3001, Remote API: emagen.323424.xyz
-- Mock layer defines complete data contracts serving as frontend-backend specification
+- Production API: emagen.323424.xyz, Local API: localhost:3001 (for backend development)
+- TypeScript interfaces ensure type safety across frontend-backend communication
 
 ### Data Flow Architecture
 ```
-Pages → Services → Config (api.ts) → Mock/Real API
+Pages → Services → Config (api.ts) → Production API
          ↓
       TypeScript Types (src/types/index.ts)
 ```
 
 ### Service Layer Pattern
-Services in `src/services/` implement business logic with dual support:
-- Mock mode: Returns data from `src/mock/data/`
-- API mode: Makes real HTTP requests to backend
+Services in `src/services/` implement business logic with HTTP requests to backend:
+- Production mode: Makes HTTP requests to production API
+- Local development: Can connect to local backend for testing
 
-Example: `therapist.service.ts` demonstrates the pattern with location-based recommendations and pagination.
+Example: `therapist.service.ts` implements location-based recommendations and pagination with real API calls.
 
 ### State Management
 - Global state: Zustand stores
@@ -66,23 +66,23 @@ All models fully typed in `src/types/index.ts`:
 
 ### Adding New Features
 1. Define TypeScript interface in `src/types/index.ts`
-2. Create mock data in `src/mock/data/`
-3. Implement service layer with mock/API switching
-4. Build UI components and pages
-5. Write tests for service logic
+2. Implement service layer with API calls
+3. Build UI components and pages
+4. Write tests for service logic
+5. Test with production API
 
 ### API Integration
-When transitioning from mock to real API:
-1. Ensure backend matches TypeScript interfaces exactly
-2. Update `src/config/api.ts` with endpoint configuration
+Working with production API:
+1. Ensure backend implements TypeScript interfaces correctly
+2. Configure endpoints in `src/config/api.ts`
 3. Test with `npm run dev:api`
-4. Verify mock/API responses are identical
+4. Handle error cases and loading states
 
 ## Testing Approach
 
 - **Framework**: Jest with ts-jest
-- **Mock Taro APIs**: Already configured in `src/__mocks__/@tarojs/taro.js`
 - **Service Testing**: Focus on business logic (see `therapist.service.test.ts`)
+- **API Testing**: Test service layer with real API endpoints
 - **Location Testing**: Distance calculations critical for nearby features
 
 ## Project Structure
@@ -92,8 +92,7 @@ massage-app/
 ├── src/
 │   ├── pages/           # Taro pages (TabBar: appointment, gifts, profile)
 │   ├── components/      # Reusable UI components
-│   ├── services/        # Business logic with mock/API switching
-│   ├── mock/data/       # Mock data definitions
+│   ├── services/        # Business logic with API integration
 │   ├── types/           # TypeScript type definitions
 │   ├── config/          # API and app configuration
 │   └── utils/           # Helpers (location, formatting)
@@ -108,24 +107,19 @@ massage-app/
 - Therapist recommendations sorted by distance + rating
 - Store listing prioritizes proximity
 
-### Mock Data Completeness
-- Every field in TypeScript interfaces must have mock data
-- Mock services simulate realistic delays (200-500ms)
-- Pagination implemented in mock layer matching API specs
-
 ### Environment Configuration
 - API endpoint controlled by `TARO_APP_API` environment variable
-- Default API base URL: `http://localhost:3001/api/v2`
-- Remote API: `http://emagen.323424.xyz/api/v2`
+- Production API: `http://emagen.323424.xyz/api/v2` (default)
+- Local API: `http://localhost:3001/api/v2` (for backend development)
 - Configuration in `src/config/api.ts`
 
 ## Key Files to Understand
 
 1. **`src/types/index.ts`** - Complete data model definitions
 2. **`src/services/therapist.service.ts`** - Service layer pattern example
-3. **`src/config/api.ts`** - API configuration and switching logic
-4. **`src/mock/data/`** - Mock data structure and relationships
-5. **`src/pages/appointment/`** - Core booking flow implementation
+3. **`src/config/api.ts`** - API configuration and endpoint management
+4. **`src/pages/appointment/`** - Core booking flow implementation
+5. **`src/utils/location.ts`** - Location-based calculations and utilities
 
 ## 🚀 Complete Development and Debugging Guide
 
@@ -133,10 +127,10 @@ massage-app/
 
 #### 1️⃣ Start Development Server
 ```bash
-# Connect to remote API (recommended)
+# Connect to production API (recommended)
 npm run dev:api
 
-# Or use local backend (localhost:3001)
+# Or use local backend for backend development
 npm run dev:weapp
 ```
 
@@ -181,7 +175,7 @@ cd dist && python3 -m http.server 8082
 ```
 ERR_CONNECTION_REFUSED localhost:3001
 ```
-**Solution**: Use `npm run dev:api` to connect to remote backend
+**Solution**: Use `npm run dev:api` to connect to production backend
 
 #### 🔴 WebSocket Error
 ```
@@ -208,10 +202,10 @@ kill -9 [PID]
 
 #### ✅ Start Services
 ```bash
-# Mini-program (remote API)
+# Mini-program (production API)
 npm run dev:api
 
-# H5 development (remote API)
+# H5 development (production API)
 npm run dev:h5:api
 
 # H5 production build
@@ -255,13 +249,13 @@ Test Production Version
 
 | Purpose | Command | Port | Description |
 |---------|---------|------|-------------|
-| Mini-program Dev | `npm run dev:api` | - | Connect remote API |
+| Mini-program Dev | `npm run dev:api` | - | Connect production API |
 | H5 Dev | `npm run dev:h5:api` | 8081 | Hot reload dev |
 | H5 Build | `npm run build:h5` | - | Production build |
 | H5 Preview | `python3 -m http.server 8082` | 8082 | Static server |
 
 ### Core Principles
-- 🎯 Development: Use `dev:api` (auto-connects to remote)
+- 🎯 Development: Use `dev:api` (connects to production API)
 - 🎯 Debug: Check Network and Console panels
 - 🎯 Issues: Clear cache and restart first
 

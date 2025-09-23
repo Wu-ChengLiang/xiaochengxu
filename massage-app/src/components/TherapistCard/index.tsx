@@ -40,9 +40,6 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
             <View className="rating">
               <Text className="icon">⭐</Text>
               <Text className="rating-text">{therapist.rating}分</Text>
-              <Text className="service-count">
-                服务{therapist.serviceCount}次
-              </Text>
             </View>
             <BookingButton 
               size="small"
