@@ -12,6 +12,7 @@ import {
   WechatLoginResult,
   UserInfo
 } from '@/utils/user'
+import PhoneAuth from '@/components/PhoneAuth'
 import LogoImg from '@/assets/icons/logo.png'
 import './index.scss'
 
@@ -95,13 +96,12 @@ const Mine: React.FC = () => {
       path: '/pages/order/list/index',
       arrow: true
     },
-    // {
-    //   icon: 'money',
-    //   title: '我的券包',
-    //   path: '/pages/mine/coupons/index',
-    //   badge: '3',
-    //   arrow: true
-    // },
+    {
+      icon: 'money',
+      title: '我的券包',
+      path: '/pages/mine/vouchers/index',
+      arrow: true
+    },
     // {
     //   icon: 'gift',
     //   title: '邀请有奖',
@@ -135,7 +135,7 @@ const Mine: React.FC = () => {
       const loginResult = await wechatLogin()
 
       if (loginResult.needBindPhone) {
-        // 需要绑定手机号
+        // 需要绑定手机号 - 设置openid供PhoneAuth组件使用
         setCurrentOpenid(loginResult.openid)
         setShowBindPhoneModal(true)
       } else if (loginResult.userInfo) {
@@ -262,11 +262,34 @@ const Mine: React.FC = () => {
             )}
           </View>
           {userInfo && (
-            <View className="balance-info" onClick={handleBalanceClick}>
-              <Text className="balance-label">余额: </Text>
-              <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
-              <AtIcon value="chevron-right" size="16" color="#fff" />
-            </View>
+            <>
+              {/* 手机号信息和换绑功能 */}
+              <View className="phone-info">
+                <Text className="phone-label">手机号: </Text>
+                <Text className="phone-number">{maskPhone(userInfo.phone)}</Text>
+                <PhoneAuth
+                  type="change"
+                  buttonText="换绑"
+                  buttonSize="mini"
+                  buttonType="default"
+                  onSuccess={(phone) => {
+                    console.log('换绑成功，新手机号:', phone)
+                    Taro.showToast({
+                      title: '换绑成功',
+                      icon: 'success'
+                    })
+                    // 刷新用户信息
+                    initUser()
+                  }}
+                />
+              </View>
+              {/* 余额信息 */}
+              <View className="balance-info" onClick={handleBalanceClick}>
+                <Text className="balance-label">余额: </Text>
+                <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
+                <AtIcon value="chevron-right" size="16" color="#fff" />
+              </View>
+            </>
           )}
         </View>
       </View>
@@ -299,34 +322,44 @@ const Mine: React.FC = () => {
         ))}
       </View>
 
-      {/* 手机号绑定弹窗 */}
+      {/* 手机号绑定弹窗 - 使用微信手机号组件 */}
       <AtModal
         isOpened={showBindPhoneModal}
         onCancel={handleCancelBindPhone}
-        onConfirm={handleBindPhone}
       >
         <AtModalHeader>绑定手机号</AtModalHeader>
         <AtModalContent>
           <View className="bind-phone-content">
             <Text className="bind-phone-tips">
-              请输入您的手机号，用于账号登录和信息接收
+              使用微信绑定的手机号快速登录
             </Text>
-            <Input
-              className="phone-input"
-              type="number"
-              placeholder="请输入手机号"
-              value={phoneInput}
-              onInput={(e) => setPhoneInput(e.detail.value)}
-              maxlength={11}
-              disabled={bindingPhone}
-            />
+            <View className="phone-auth-wrapper">
+              <PhoneAuth
+                type="bind"
+                openid={currentOpenid}
+                onSuccess={(phone) => {
+                  console.log('绑定成功，手机号:', phone)
+                  setShowBindPhoneModal(false)
+                  setPhoneInput('')
+                  // 刷新用户信息
+                  const latestUserInfo = getCurrentUserInfo()
+                  if (latestUserInfo) {
+                    setUserInfo(latestUserInfo)
+                    fetchBalance()
+                  }
+                }}
+                onCancel={() => {
+                  console.log('用户取消绑定')
+                }}
+              />
+            </View>
+            <Text className="bind-phone-privacy">
+              授权后将获取您的微信手机号用于账号登录
+            </Text>
           </View>
         </AtModalContent>
         <AtModalAction>
-          <Button onClick={handleCancelBindPhone}>取消</Button>
-          <Button onClick={handleBindPhone} disabled={bindingPhone}>
-            {bindingPhone ? '绑定中...' : '确认绑定'}
-          </Button>
+          <Button onClick={handleCancelBindPhone}>稍后绑定</Button>
         </AtModalAction>
       </AtModal>
     </View>

@@ -17,6 +17,7 @@ export interface UserInfo {
   balance?: number
   totalSpent?: number
   totalVisits?: number
+  discountRate?: number  // 用户折扣率，如 0.68 表示68折
 }
 
 /**
@@ -117,7 +118,7 @@ export const wechatLogin = async (): Promise<WechatLoginResult> => {
 }
 
 /**
- * 绑定手机号
+ * 绑定手机号（手动输入）
  */
 export const bindPhone = async (openid: string, phone: string) => {
   try {
@@ -153,6 +154,82 @@ export const bindPhone = async (openid: string, phone: string) => {
 }
 
 /**
+ * 使用微信手机号组件绑定手机号
+ * @param openid 微信openid
+ * @param code 微信手机号授权code
+ */
+export const bindPhoneWx = async (openid: string, code: string) => {
+  try {
+    const response = await post('/users/bind-phone-wx', {
+      openid,
+      code
+    })
+
+    if (response.data) {
+      // 绑定成功后，获取完整用户信息并保存
+      if (response.data.phone) {
+        const userInfo = await fetchUserInfo(response.data.phone)
+        if (userInfo) {
+          setUserInfo(userInfo)
+        }
+      }
+      return response.data
+    }
+
+    throw new Error('手机号绑定失败')
+  } catch (error: any) {
+    console.error('微信手机号绑定失败:', error)
+
+    if (error?.response?.data?.error?.message) {
+      throw new Error(error.response.data.error.message)
+    } else if (error?.message) {
+      throw error
+    } else {
+      throw new Error('手机号绑定失败，请重试')
+    }
+  }
+}
+
+/**
+ * 使用微信手机号组件换绑手机号
+ * @param userId 用户ID
+ * @param oldPhone 旧手机号
+ * @param code 微信手机号授权code
+ */
+export const changePhoneWx = async (userId: number, oldPhone: string, code: string) => {
+  try {
+    const response = await post('/users/change-phone-wx', {
+      userId,
+      oldPhone,
+      code
+    })
+
+    if (response.data) {
+      // 换绑成功后，更新本地用户信息
+      if (response.data.phone) {
+        const userInfo = await fetchUserInfo(response.data.phone)
+        if (userInfo) {
+          setUserInfo(userInfo)
+        }
+      }
+      return response.data
+    }
+
+    throw new Error('手机号换绑失败')
+  } catch (error: any) {
+    console.error('微信手机号换绑失败:', error)
+
+    if (error?.response?.data?.error?.message) {
+      throw new Error(error.response.data.error.message)
+    } else if (error?.message) {
+      throw error
+    } else {
+      throw new Error('手机号换绑失败，请重试')
+    }
+  }
+}
+
+/**
  * 从API获取用户信息
  */
 export const fetchUserInfo = async (phone?: string): Promise<UserInfo | null> => {
@@ -182,7 +259,8 @@ export const fetchUserInfo = async (phone?: string): Promise<UserInfo | null> =>
         memberLevel: response.data.memberLevel,
         balance: response.data.balance,
         totalSpent: response.data.totalSpent,
-        totalVisits: response.data.totalVisits
+        totalVisits: response.data.totalVisits,
+        discountRate: response.data.discount_rate || response.data.discountRate
       }
 
       // 保存到本地缓存
