@@ -107,6 +107,147 @@ class OrderService {
   }
 
   /**
+   * 补全订单的门店和技师信息
+   * @param order 订单对象
+   * @private
+   */
+  private async enrichOrderWithStoreAndTherapistInfo(order: OrderData): Promise<void> {
+    try {
+      const promises: Promise<any>[] = []
+
+      // 并发获取门店信息
+      if (order.storeId && !order.storeName) {
+        promises.push(
+          get(`/stores/${order.storeId}`)
+            .then(storeResponse => {
+              const store = storeResponse.data
+              order.storeName = store.name
+              order.storeAddress = store.address
+            })
+            .catch(error => {
+              console.error(`获取门店信息失败 (storeId: ${order.storeId}):`, error)
+              // 失败时不设置，避免undefined覆盖可能存在的extraData值
+            })
+        )
+      }
+
+      // 并发获取技师信息
+      if (order.therapistId && !order.therapistAvatar) {
+        promises.push(
+          get(`/therapists/${order.therapistId}`)
+            .then(therapistResponse => {
+              const therapist = therapistResponse.data
+              order.therapistAvatar = therapist.avatar
+              // 如果extraData中没有技师姓名，则使用API返回的姓名
+              if (!order.therapistName) {
+                order.therapistName = therapist.name
+              }
+            })
+            .catch(error => {
+              console.error(`获取技师信息失败 (therapistId: ${order.therapistId}):`, error)
+              // 失败时使用默认头像
+              if (!order.therapistAvatar) {
+                order.therapistAvatar = 'https://img.yzcdn.cn/vant/cat.jpeg'
+              }
+            })
+        )
+      }
+
+      // 等待所有API调用完成
+      if (promises.length > 0) {
+        await Promise.allSettled(promises)
+      }
+    } catch (error) {
+      console.error('补全订单信息失败:', error)
+      // 不抛出错误，确保订单详情仍能正常返回
+    }
+  }
+
+  /**
+   * 批量补全订单列表的门店和技师信息
+   * @param orders 订单列表
+   * @private
+   */
+  private async enrichOrderListWithStoreAndTherapistInfo(orders: OrderData[]): Promise<void> {
+    try {
+      // 收集需要获取的门店ID和技师ID（去重）
+      const storeIds = new Set<string>()
+      const therapistIds = new Set<string>()
+
+      orders.forEach(order => {
+        if (order.storeId && !order.storeName) {
+          storeIds.add(order.storeId.toString())
+        }
+        if (order.therapistId && !order.therapistAvatar) {
+          therapistIds.add(order.therapistId.toString())
+        }
+      })
+
+      // 并发获取所有需要的门店和技师信息
+      const promises: Promise<any>[] = []
+      const storeMap = new Map<string, any>()
+      const therapistMap = new Map<string, any>()
+
+      // 批量获取门店信息
+      Array.from(storeIds).forEach(storeId => {
+        promises.push(
+          get(`/stores/${storeId}`)
+            .then(response => {
+              storeMap.set(storeId, response.data)
+            })
+            .catch(error => {
+              console.error(`批量获取门店信息失败 (storeId: ${storeId}):`, error)
+            })
+        )
+      })
+
+      // 批量获取技师信息
+      Array.from(therapistIds).forEach(therapistId => {
+        promises.push(
+          get(`/therapists/${therapistId}`)
+            .then(response => {
+              therapistMap.set(therapistId, response.data)
+            })
+            .catch(error => {
+              console.error(`批量获取技师信息失败 (therapistId: ${therapistId}):`, error)
+            })
+        )
+      })
+
+      // 等待所有API调用完成
+      if (promises.length > 0) {
+        await Promise.allSettled(promises)
+      }
+
+      // 将获取到的信息填充到订单中
+      orders.forEach(order => {
+        // 填充门店信息
+        if (order.storeId && !order.storeName) {
+          const store = storeMap.get(order.storeId.toString())
+          if (store) {
+            order.storeName = store.name
+            order.storeAddress = store.address
+          }
+        }
+
+        // 填充技师信息
+        if (order.therapistId && !order.therapistAvatar) {
+          const therapist = therapistMap.get(order.therapistId.toString())
+          if (therapist) {
+            order.therapistAvatar = therapist.avatar
+            if (!order.therapistName) {
+              order.therapistName = therapist.name
+            }
+          }
+        }
+      })
+    } catch (error) {
+      console.error('批量补全订单列表信息失败:', error)
+      // 不抛出错误，确保订单列表仍能正常返回
+    }
+  }
+
+  /**
    * 创建预约订单（通过预约接口）
    * @param params 创建订单参数
    * @returns 订单和预约信息
@@ -244,6 +385,9 @@ class OrderService {
         order.appointmentTime = order.extraData.startTime
         order.duration = order.extraData.duration
         order.serviceName = order.extraData.serviceName || order.title
+
+        // 🚀 自动获取完整的门店和技师信息
+        await this.enrichOrderWithStoreAndTherapistInfo(order)
       }
 
       return order
@@ -277,7 +421,7 @@ class OrderService {
       const response = await get<OrderListResponse>('/orders', params)
 
       // 处理订单数据
-      return response.data.list.map(order => {
+      const orders = response.data.list.map(order => {
         // 转换金额单位（分转元）
         if (order.amount) {
           order.totalAmount = order.amount / 100
@@ -288,21 +432,26 @@ class OrderService {
           order.therapistId = order.extraData.therapistId
           order.therapistName = order.extraData.therapistName
           order.storeId = order.extraData.storeId
-          order.storeName = order.extraData.storeName || '上海万象城店'
-          order.storeAddress = order.extraData.storeAddress || '闵行区吴中路1599号'
+          order.storeName = order.extraData.storeName // 移除硬编码默认值
+          order.storeAddress = order.extraData.storeAddress // 移除硬编码默认值
           order.appointmentDate = order.extraData.appointmentDate
           order.appointmentTime = order.extraData.startTime
           order.duration = order.extraData.duration
           order.serviceName = order.extraData.serviceName || order.title
         }
 
-        // 添加默认值
+        // 添加默认头像（如果没有的话）
         if (!order.therapistAvatar) {
           order.therapistAvatar = 'https://img.yzcdn.cn/vant/cat.jpeg'
         }
 
         return order
       })
+
+      // 🚀 批量补全门店和技师信息
+      await this.enrichOrderListWithStoreAndTherapistInfo(orders)
+
+      return orders
     } catch (error: any) {
       console.error('获取订单列表失败:', error)
       return []
