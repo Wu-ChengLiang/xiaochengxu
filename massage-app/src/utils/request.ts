@@ -61,7 +61,12 @@ export async function request<T = any>(
     // 业务错误处理
     if (result.code !== 0) {
       console.error(`API业务错误: ${url}`, result);
-      throw new Error(result.message || '请求失败');
+      const error: any = new Error(result.message || '请求失败');
+      error.response = {
+        status: response.statusCode,
+        data: result
+      };
+      throw error;
     }
 
     return result;

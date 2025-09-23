@@ -136,9 +136,19 @@ export const bindPhone = async (openid: string, phone: string) => {
     }
 
     throw new Error('手机号绑定失败')
-  } catch (error) {
+  } catch (error: any) {
     console.error('手机号绑定失败:', error)
-    throw error
+
+    // 尝试提取更详细的错误信息
+    if (error?.response?.data?.error?.message) {
+      throw new Error(error.response.data.error.message)
+    } else if (error?.response?.status === 500) {
+      throw new Error('该手机号已被占用')
+    } else if (error?.message) {
+      throw error
+    } else {
+      throw new Error('手机号绑定失败，请重试')
+    }
   }
 }
 

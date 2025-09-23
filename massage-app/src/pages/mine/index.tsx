@@ -196,11 +196,25 @@ const Mine: React.FC = () => {
         title: '绑定成功',
         icon: 'success'
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('手机号绑定失败:', error)
+
+      // 根据错误类型显示不同的提示
+      let errorMessage = '绑定失败，请重试'
+
+      // 检查是否是手机号已被占用的错误
+      if (error?.message?.includes('已') || error?.response?.data?.error?.message?.includes('已')) {
+        errorMessage = '该手机号已被使用'
+      } else if (error?.response?.status === 500 || error?.message?.includes('500')) {
+        errorMessage = '该手机号已被占用'
+      } else if (error?.message?.includes('网络')) {
+        errorMessage = '网络错误，请稍后重试'
+      }
+
       Taro.showToast({
-        title: '绑定失败，请重试',
-        icon: 'error'
+        title: errorMessage,
+        icon: 'none',
+        duration: 2000
       })
     } finally {
       setBingingPhone(false)
