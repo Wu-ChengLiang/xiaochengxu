@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import { get, post } from '@/utils/request'
+import { getCurrentUserId, getCurrentUserPhone } from '@/utils/user'
 
 /**
  * 订单数据接口
@@ -99,10 +100,9 @@ class OrderService {
    * 获取当前用户信息
    */
   private getUserInfo() {
-    const userInfo = Taro.getStorageSync('userInfo')
     return {
-      userId: userInfo?.id || 1,
-      userPhone: userInfo?.phone || '13800138000'
+      userId: getCurrentUserId(),
+      userPhone: getCurrentUserPhone()
     }
   }
 

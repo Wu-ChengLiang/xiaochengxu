@@ -3,20 +3,31 @@ import { View, Text, Image, Button } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { walletService } from '@/services/wallet.service'
+import { getCurrentUserInfo, maskPhone, initDefaultUserInfo, UserInfo } from '@/utils/user'
 import LogoImg from '@/assets/icons/logo.png'
 import './index.scss'
 
 const Mine: React.FC = () => {
   const [balance, setBalance] = useState(0)
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
 
   useEffect(() => {
+    // 初始化默认用户信息（开发环境）
+    initDefaultUserInfo()
+    fetchUserInfo()
     fetchBalance()
   }, [])
 
   // 页面显示时刷新余额
   useDidShow(() => {
+    fetchUserInfo()
     fetchBalance()
   })
+
+  const fetchUserInfo = () => {
+    const currentUserInfo = getCurrentUserInfo()
+    setUserInfo(currentUserInfo)
+  }
 
   const fetchBalance = async () => {
     const currentBalance = await walletService.getBalance()
@@ -85,7 +96,7 @@ const Mine: React.FC = () => {
               src={LogoImg}
               mode="aspectFill"
             />
-            <Text className="phone">193****9506</Text>
+            <Text className="phone">{maskPhone(userInfo?.phone || '')}</Text>
           </View>
           <Button className="balance-info" onClick={() => handleBalanceClick()}>
             <Text className="balance-label">余额: </Text>

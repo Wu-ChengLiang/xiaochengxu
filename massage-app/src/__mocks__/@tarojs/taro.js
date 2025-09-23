@@ -15,6 +15,9 @@ module.exports = {
     makePhoneCall: jest.fn(),
     openLocation: jest.fn(),
     showToast: jest.fn(),
-    navigateTo: jest.fn()
+    navigateTo: jest.fn(),
+    getStorageSync: jest.fn(),
+    setStorageSync: jest.fn(),
+    removeStorageSync: jest.fn()
   }
 }

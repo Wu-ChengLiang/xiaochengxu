@@ -1,5 +1,6 @@
 import { get, post } from '@/utils/request'
 import Taro from '@tarojs/taro'
+import { getCurrentUserId, getCurrentUserPhone } from '@/utils/user'
 
 /**
  * 交易记录类型
@@ -59,8 +60,7 @@ class WalletService {
    * @returns 用户ID
    */
   private getCurrentUserId(): number {
-    const userInfo = Taro.getStorageSync('userInfo')
-    return userInfo?.id || 1  // 默认用户ID为1（开发环境）
+    return getCurrentUserId()
   }
 
   /**
@@ -152,12 +152,11 @@ class WalletService {
   async createRechargeOrder(amount: number, bonus: number = 0) {
     try {
       const userId = this.getCurrentUserId()
-      const userInfo = Taro.getStorageSync('userInfo')
 
       const orderData = {
         orderType: 'recharge',
         userId: userId,
-        userPhone: userInfo?.phone || '13800138000',
+        userPhone: getCurrentUserPhone(),
         title: bonus > 0 ? `充值${amount}元，赠送${bonus}元` : `充值${amount}元`,
         amount: amount * 100, // 转换为分
         paymentMethod: 'wechat',
@@ -265,10 +264,8 @@ class WalletService {
    */
   async refundToBalance(orderNo: string, amount: number, reason: string = '订单退款') {
     try {
-      const userInfo = Taro.getStorageSync('userInfo')
-
       const response = await post('/users/wallet/refund', {
-        phone: userInfo?.phone || '13800138000',
+        phone: getCurrentUserPhone(),
         amount: amount * 100, // 转换为分
         orderNo: orderNo,
         description: reason
