@@ -1,0 +1,216 @@
+.new-user-voucher-modal {
+  padding: 32rpx;
+  position: relative;
+  overflow: hidden;
+
+  // 庆祝背景动画
+  .celebration-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+
+    .confetti {
+      position: absolute;
+      font-size: 40rpx;
+      animation: float 3s ease-in-out infinite;
+
+      &.confetti-1 {
+        top: 20rpx;
+        left: 40rpx;
+        animation-delay: 0s;
+      }
+
+      &.confetti-2 {
+        top: 40rpx;
+        right: 60rpx;
+        animation-delay: 0.5s;
+      }
+
+      &.confetti-3 {
+        bottom: 100rpx;
+        left: 80rpx;
+        animation-delay: 1s;
+      }
+
+      &.confetti-4 {
+        bottom: 80rpx;
+        right: 40rpx;
+        animation-delay: 1.5s;
+      }
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20rpx) rotate(10deg);
+    }
+  }
+
+  // 头部
+  .modal-header {
+    text-align: center;
+    margin-bottom: 40rpx;
+    position: relative;
+    z-index: 1;
+
+    .welcome-text {
+      font-size: 28rpx;
+      color: #666;
+      display: block;
+      margin-bottom: 12rpx;
+    }
+
+    .congrats-text {
+      font-size: 36rpx;
+      font-weight: bold;
+      color: #333;
+      display: block;
+    }
+  }
+
+  // 优惠券展示
+  .voucher-display {
+    margin-bottom: 40rpx;
+    position: relative;
+    z-index: 1;
+
+    .voucher-card-preview {
+      background: linear-gradient(135deg, #ff6b6b, #ff4444);
+      border-radius: 16rpx;
+      padding: 32rpx;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 8rpx 24rpx rgba(255, 68, 68, 0.3);
+
+      .discount-area {
+        width: 160rpx;
+        text-align: center;
+        border-right: 2rpx dashed rgba(255, 255, 255, 0.5);
+        margin-right: 32rpx;
+
+        .discount-value {
+          font-size: 64rpx;
+          font-weight: bold;
+          display: block;
+        }
+
+        .discount-label {
+          font-size: 28rpx;
+          display: block;
+          margin-top: -8rpx;
+        }
+      }
+
+      .voucher-details {
+        flex: 1;
+
+        .voucher-title {
+          font-size: 32rpx;
+          font-weight: bold;
+          display: block;
+          margin-bottom: 8rpx;
+        }
+
+        .voucher-subtitle {
+          font-size: 28rpx;
+          display: block;
+          margin-bottom: 12rpx;
+          opacity: 0.95;
+        }
+
+        .voucher-desc {
+          font-size: 24rpx;
+          display: block;
+          opacity: 0.9;
+        }
+      }
+    }
+  }
+
+  // 优惠说明
+  .benefits-list {
+    background: #fef8f8;
+    border-radius: 12rpx;
+    padding: 24rpx;
+    margin-bottom: 40rpx;
+    position: relative;
+    z-index: 1;
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16rpx;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .benefit-icon {
+        font-size: 28rpx;
+        margin-right: 12rpx;
+      }
+
+      .benefit-text {
+        font-size: 28rpx;
+        color: #666;
+      }
+    }
+  }
+
+  // 操作按钮
+  .modal-actions {
+    position: relative;
+    z-index: 1;
+
+    .primary-btn {
+      background: linear-gradient(135deg, #ff6b6b, #ff4444);
+      color: #fff;
+      height: 88rpx;
+      line-height: 88rpx;
+      text-align: center;
+      border-radius: 44rpx;
+      font-size: 32rpx;
+      font-weight: bold;
+      margin-bottom: 24rpx;
+      box-shadow: 0 8rpx 24rpx rgba(255, 68, 68, 0.3);
+
+      &:active {
+        transform: scale(0.98);
+      }
+    }
+
+    .secondary-btn {
+      background: #fff;
+      color: #ff4444;
+      height: 88rpx;
+      line-height: 86rpx;
+      text-align: center;
+      border-radius: 44rpx;
+      font-size: 32rpx;
+      border: 2rpx solid #ff4444;
+      margin-bottom: 24rpx;
+
+      &:active {
+        background: #fef8f8;
+      }
+    }
+
+    .close-btn {
+      color: #999;
+      text-align: center;
+      font-size: 28rpx;
+      padding: 16rpx;
+
+      &:active {
+        color: #666;
+      }
+    }
+  }
+}

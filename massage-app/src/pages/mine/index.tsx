@@ -13,13 +13,21 @@ import {
   UserInfo
 } from '@/utils/user'
 import PhoneAuth from '@/components/PhoneAuth'
+import NewUserVoucherModal from '@/components/NewUserVoucherModal'
 import LogoImg from '@/assets/icons/logo.png'
+import { voucherService } from '@/services/voucher.service'
 import './index.scss'
 
 const Mine: React.FC = () => {
   const [balance, setBalance] = useState(0)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(false)
+
+  // 新人礼券弹窗
+  const [showNewUserVoucher, setShowNewUserVoucher] = useState(false)
+  const [voucherInfo, setVoucherInfo] = useState<{ discountPercentage: number }>({
+    discountPercentage: 0
+  })
 
   // 手机号绑定弹窗状态
   const [showBindPhoneModal, setShowBindPhoneModal] = useState(false)
@@ -142,6 +150,10 @@ const Mine: React.FC = () => {
         // 登录成功
         setUserInfo(loginResult.userInfo)
         fetchBalance()
+
+        // 检查是否为新用户并显示礼券弹窗
+        checkAndShowNewUserVoucher()
+
         Taro.showToast({
           title: '登录成功',
           icon: 'success'
@@ -232,6 +244,34 @@ const Mine: React.FC = () => {
     Taro.navigateTo({
       url: '/pages/mine/balance/index'
     })
+  }
+
+  // 检查并显示新用户礼券弹窗
+  const checkAndShowNewUserVoucher = () => {
+    const voucherInfo = voucherService.getNewUserVoucherInfo()
+    if (voucherInfo.hasVoucher && voucherInfo.discountPercentage) {
+      // 检查是否已经显示过（避免重复显示）
+      const hasShown = Taro.getStorageSync('newUserVoucherShown')
+      if (!hasShown) {
+        setVoucherInfo({ discountPercentage: voucherInfo.discountPercentage })
+        setTimeout(() => {
+          setShowNewUserVoucher(true)
+        }, 1500) // 延迟显示，让用户先看到登录成功
+      }
+    }
+  }
+
+  // 处理关闭新人礼券弹窗
+  const handleCloseNewUserVoucher = () => {
+    setShowNewUserVoucher(false)
+    // 标记已显示
+    Taro.setStorageSync('newUserVoucherShown', true)
+  }
+
+  // 处理使用新人礼券
+  const handleUseNewUserVoucher = () => {
+    setShowNewUserVoucher(false)
+    Taro.setStorageSync('newUserVoucherShown', true)
   }
 
   return (
@@ -362,6 +402,14 @@ const Mine: React.FC = () => {
           <Button onClick={handleCancelBindPhone}>稍后绑定</Button>
         </AtModalAction>
       </AtModal>
+
+      {/* 新人礼券弹窗 */}
+      <NewUserVoucherModal
+        isOpened={showNewUserVoucher}
+        discountPercentage={voucherInfo.discountPercentage}
+        onClose={handleCloseNewUserVoucher}
+        onUse={handleUseNewUserVoucher}
+      />
     </View>
   )
 }

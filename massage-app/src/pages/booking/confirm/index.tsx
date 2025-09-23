@@ -6,6 +6,9 @@ import { storeService } from '@/services/store'
 import { therapistService } from '@/services/therapist'
 import { walletService } from '@/services/wallet.service'
 import { paymentService } from '@/services/payment.service'
+import { voucherService } from '@/services/voucher.service'
+import { calculateDiscountPrice } from '@/types/voucher'
+import { getCurrentUserInfo } from '@/utils/user'
 import './index.scss'
 
 interface CartItem {
@@ -40,6 +43,8 @@ const OrderConfirmPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'balance'>('wechat')
   const [userBalance, setUserBalance] = useState(0) // 用户余额
   const [balanceLoading, setBalanceLoading] = useState(false)
+  const [userDiscountRate, setUserDiscountRate] = useState<number | null>(null) // 用户折扣率
+  const [hasVoucher, setHasVoucher] = useState(false) // 是否有优惠券
   const timerRef = useRef<any>(null)
 
   useEffect(() => {
@@ -52,6 +57,8 @@ const OrderConfirmPage: React.FC = () => {
       fetchTherapistAndStoreInfo()
       // 获取用户余额
       fetchUserBalance()
+      // 获取用户折扣信息
+      fetchUserDiscount()
     } catch (error) {
       Taro.showToast({
         title: '数据解析失败',
@@ -89,6 +96,21 @@ const OrderConfirmPage: React.FC = () => {
       }
     }
   }, [loading, cartItems])
+
+  // 获取用户折扣信息
+  const fetchUserDiscount = async () => {
+    try {
+      const userInfo = getCurrentUserInfo()
+      if (userInfo && userInfo.discountRate) {
+        setUserDiscountRate(userInfo.discountRate)
+        // 检查是否有优惠券
+        const vouchers = await voucherService.getMyVouchers()
+        setHasVoucher(vouchers.length > 0)
+      }
+    } catch (error) {
+      console.error('获取用户折扣信息失败:', error)
+    }
+  }
 
   // 获取用户余额
   const fetchUserBalance = async () => {
@@ -157,7 +179,35 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const getTotalPrice = () => {
+    const originalTotal = cartItems.reduce((sum, item) => sum + item.price, 0)
+    // 如果有折扣率，计算折后价
+    if (userDiscountRate && userDiscountRate < 1) {
+      const discountInfo = calculateDiscountPrice(originalTotal, userDiscountRate)
+      return discountInfo.finalPrice
+    }
+    // 否则使用原价或已有的折扣价
     return cartItems.reduce((sum, item) => sum + (item.discountPrice || item.price), 0)
+  }
+
+  // 获取原价（用于展示划线价）
+  const getOriginalPrice = () => {
+    return cartItems.reduce((sum, item) => sum + item.price, 0)
+  }
+
+  // 获取节省金额
+  const getSavedAmount = () => {
+    const originalTotal = getOriginalPrice()
+    const finalTotal = getTotalPrice()
+    return originalTotal - finalTotal
+  }
+
+  // 获取折扣描述
+  const getDiscountDisplay = () => {
+    if (userDiscountRate && userDiscountRate < 1) {
+      const percentage = Math.round(userDiscountRate * 100)
+      return `${percentage}折`
+    }
+    return ''
   }
 
   // 检查余额是否充足
@@ -408,7 +458,20 @@ const OrderConfirmPage: React.FC = () => {
       {/* 底部支付栏 */}
       <View className="payment-bar">
         <View className="price-info">
-          <Text className="total-price">¥ {getTotalPrice()}</Text>
+          {userDiscountRate && userDiscountRate < 1 && getSavedAmount() > 0 ? (
+            <View className="price-with-discount">
+              <View className="discount-info">
+                <Text className="discount-tag">{getDiscountDisplay()}</Text>
+                <Text className="saved-amount">已优惠 ¥{getSavedAmount()}</Text>
+              </View>
+              <View className="price-display">
+                <Text className="original-price">¥{getOriginalPrice()}</Text>
+                <Text className="total-price">¥{getTotalPrice()}</Text>
+              </View>
+            </View>
+          ) : (
+            <Text className="total-price">¥{getTotalPrice()}</Text>
+          )}
           <Text className="countdown">支付倒计时: {formatCountdown(countdown)}</Text>
         </View>
         <View className="pay-button" onClick={handlePayment}>

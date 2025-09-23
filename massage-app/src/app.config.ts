@@ -17,7 +17,8 @@ export default {
     'pages/gift/order-confirm/index',
     'pages/mine/about/index',
     'pages/mine/recharge/index',
-    'pages/mine/balance/index'
+    'pages/mine/balance/index',
+    'pages/mine/vouchers/index'
   ],
   window: {
     backgroundTextStyle: 'light',

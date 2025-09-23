@@ -244,6 +244,47 @@
     .price-info {
       flex: 1;
 
+      .price-with-discount {
+        .discount-info {
+          display: flex;
+          align-items: center;
+          gap: 12rpx;
+          margin-bottom: 8rpx;
+
+          .discount-tag {
+            background: linear-gradient(135deg, #ff6b6b, #ff4444);
+            color: #fff;
+            padding: 4rpx 12rpx;
+            border-radius: 20rpx;
+            font-size: 24rpx;
+            font-weight: 500;
+          }
+
+          .saved-amount {
+            font-size: 24rpx;
+            color: #ff4444;
+          }
+        }
+
+        .price-display {
+          display: flex;
+          align-items: baseline;
+          gap: 12rpx;
+
+          .original-price {
+            font-size: 28rpx;
+            color: #999;
+            text-decoration: line-through;
+          }
+
+          .total-price {
+            font-size: 40rpx;
+            font-weight: 600;
+            color: #a40035;
+          }
+        }
+      }
+
       .total-price {
         font-size: 40rpx;
         font-weight: 600;
@@ -255,6 +296,7 @@
       .countdown {
         font-size: 24rpx;
         color: #666;
+        margin-top: 8rpx;
       }
     }
 
