@@ -218,9 +218,10 @@ const TherapistBookingPage: React.FC = () => {
       <ScrollView className="main-content" scrollY>
         <TherapistInfo therapist={therapist} />
         {store && <StoreInfo store={store} />}
-        <BookingSelector 
+        <BookingSelector
           ref={bookingSelectorRef}
           services={mockServices}
+          therapistId={therapistId}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
         />

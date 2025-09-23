@@ -23,25 +23,10 @@ const SymptomServiceCard: React.FC<SymptomServiceCardProps> = ({
   isInCart = false,
   className
 }) => {
-  const availabilityText = {
-    available: '空闲',
-    busy: '繁忙',
-    full: '爆满'
-  }
-
-  const availabilityClass = {
-    available: 'status-available',
-    busy: 'status-busy',
-    full: 'status-full'
-  }
-
   return (
     <View className={classNames('symptom-service-card', className)}>
       <View className="service-header">
         <Text className="service-name">{service.name}</Text>
-        <Text className={classNames('service-status', availabilityClass[service.availability])}>
-          {availabilityText[service.availability]}
-        </Text>
       </View>
       
       <Text className="service-description">{service.description}</Text>

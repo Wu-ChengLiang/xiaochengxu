@@ -1,5 +1,6 @@
-import React, { useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
+import { therapistService } from '@/services/therapist'
 import './index.scss'
 
 interface Service {
@@ -13,10 +14,12 @@ interface Service {
 interface TimeSlot {
   time: string
   available: boolean
+  status?: 'available' | 'busy' | 'break'
 }
 
 interface BookingSelectorProps {
   services: Service[]
+  therapistId?: string
   onServiceSelect: (service: Service) => void
   onTimeSelect: (date: string, time: string) => void
 }
@@ -25,15 +28,18 @@ export interface BookingSelectorHandle {
   clearSelectedTime: () => void
 }
 
-const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(({ 
-  services, 
-  onServiceSelect, 
-  onTimeSelect 
+const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(({
+  services,
+  therapistId,
+  onServiceSelect,
+  onTimeSelect
 }, ref) => {
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
   const [selectedService, setSelectedService] = useState<Service | null>(null)
   const [selectedDate, setSelectedDate] = useState<string>('')
   const [selectedTime, setSelectedTime] = useState<string>('')
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[][]>([])  // 存储从API获取的时间段
+  const [loadingSlots, setLoadingSlots] = useState(false)
 
   // 暴露方法给父组件
   useImperativeHandle(ref, () => ({
@@ -41,6 +47,124 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
       setSelectedTime('')
     }
   }), [])
+
+  // 当选择日期和服务时，获取可用时段
+  useEffect(() => {
+    if (selectedDate && therapistId && selectedService) {
+      fetchAvailableSlots()
+    }
+  }, [selectedDate, selectedService, therapistId])
+
+  // 页面重新可见时刷新时间段数据
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && selectedDate && therapistId && selectedService) {
+        console.log('页面重新可见，刷新时间段数据')
+        fetchAvailableSlots()
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [selectedDate, therapistId, selectedService])
+
+  const fetchAvailableSlots = async () => {
+    if (!therapistId || !selectedDate || !selectedService) return
+
+    setLoadingSlots(true)
+    try {
+      const result = await therapistService.getAvailableSlots(
+        therapistId,
+        selectedDate,
+        selectedService.duration
+      )
+
+      console.log('获取到的可用时段数据：', result)
+
+      // 如果API返回了有效的slots数据
+      if (result && result.slots && result.slots.length > 0) {
+        // 使用API返回的数据
+        const grid = []
+
+        // 创建一个映射，方便查找整点的可用性
+        const hourAvailability = new Map()
+        result.slots.forEach(slot => {
+          const hour = slot.time.split(':')[0]
+          hourAvailability.set(hour, { available: slot.available, status: slot.status })
+        })
+
+        for (let hour = 9; hour <= 21; hour++) {
+          const hourStr = hour.toString().padStart(2, '0')
+          const hourSlots = []
+
+          // 获取该小时的可用性（从整点数据推断）
+          const hourData = hourAvailability.get(hourStr) || { available: true, status: 'available' }
+
+          for (let minute = 0; minute < 60; minute += 10) {
+            const time = `${hourStr}:${minute.toString().padStart(2, '0')}`
+
+            // 如果是整点，直接使用API返回的数据
+            // 如果不是整点，使用该小时整点的可用性
+            const slot = result.slots.find(s => s.time === time)
+
+            if (slot) {
+              // 如果API返回了这个具体时间点的数据，使用它
+              hourSlots.push({
+                time,
+                available: slot.available,
+                status: slot.status
+              })
+            } else {
+              // 否则使用该小时整点的可用性
+              hourSlots.push({
+                time,
+                available: hourData.available,
+                status: hourData.status
+              })
+            }
+          }
+          grid.push(hourSlots)
+        }
+        setTimeSlots(grid)
+      } else {
+        // 如果API没有返回有效数据，默认全部可用
+        console.log('API未返回有效时段数据，使用默认全部可用')
+        const grid = []
+        for (let hour = 9; hour <= 21; hour++) {
+          const hourSlots = []
+          for (let minute = 0; minute < 60; minute += 10) {
+            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+            hourSlots.push({
+              time,
+              available: true,
+              status: 'available' as const
+            })
+          }
+          grid.push(hourSlots)
+        }
+        setTimeSlots(grid)
+      }
+    } catch (error) {
+      console.error('Failed to fetch available slots:', error)
+      // 如果获取失败，使用默认全部可用
+      const grid = []
+      for (let hour = 9; hour <= 21; hour++) {
+        const hourSlots = []
+        for (let minute = 0; minute < 60; minute += 10) {
+          const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
+          hourSlots.push({
+            time,
+            available: true,
+            status: 'available' as const
+          })
+        }
+        grid.push(hourSlots)
+      }
+      setTimeSlots(grid)
+    } finally {
+      setLoadingSlots(false)
+    }
+  }
 
   // 生成日期列表（今天+接下来4天）
   const generateDateList = () => {
@@ -68,18 +192,27 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
 
   // 生成时间网格数据（按小时分组）
   const generateTimeGrid = () => {
+    // 如果有从API获取的数据，使用API数据
+    if (timeSlots.length > 0) {
+      const grid = timeSlots.map((hourSlots, index) => {
+        const hour = 9 + index
+        return {
+          hour: `${hour}:00`,
+          slots: hourSlots
+        }
+      })
+      return grid
+    }
+
+    // 否则返回默认的全部可用时段
     const grid = []
-    
     for (let hour = 9; hour <= 21; hour++) {
       const hourSlots = []
       for (let minute = 0; minute < 60; minute += 10) {
         const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        // 模拟可用性（实际应该从后端获取）
-        const available = Math.random() > 0.3 // 70%的时段可用
-        
         hourSlots.push({
           time,
-          available
+          available: true
         })
       }
       grid.push({
@@ -87,7 +220,6 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
         slots: hourSlots
       })
     }
-    
     return grid
   }
 
@@ -121,8 +253,9 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
 
   const handleDateSelect = (dateKey: string) => {
     setSelectedDate(dateKey)
-    // 重置时间选择
+    // 重置时间选择和时间段数据
     setSelectedTime('')
+    setTimeSlots([])  // 清空之前的时间段数据，触发重新获取
   }
 
   const handleTimeSelect = (time: string, available: boolean) => {
@@ -200,7 +333,12 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
           {selectedDate && (
             <ScrollView className="time-grid-container" scrollY>
               <View className="time-grid-wrapper">
-                {timeGrid.map((row, rowIndex) => (
+                {loadingSlots ? (
+                  <View className="loading-slots">
+                    <Text>加载可用时段...</Text>
+                  </View>
+                ) : (
+                  timeGrid.map((row, rowIndex) => (
                   <View key={rowIndex} className="time-row">
                     <Text className="hour-label">{row.hour}</Text>
                     <View className="time-slots">
@@ -221,7 +359,8 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
                       ))}
                     </View>
                   </View>
-                ))}
+                ))
+                )}
               </View>
             </ScrollView>
           )}
