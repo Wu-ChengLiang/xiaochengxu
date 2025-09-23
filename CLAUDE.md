@@ -10,8 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Development
-npm run dev:weapp    # Start with mock data (default)
-npm run dev:api      # Start with real API
+npm run dev:weapp    # Start development (uses localhost:3001 by default)
+npm run dev:api      # Start with remote API (emagen.323424.xyz)
 
 # Build
 npm run build:weapp  # Production build for WeChat
@@ -30,7 +30,8 @@ npm run lint:fix     # Auto-fix issues
 
 ### Mock-First Development Strategy
 - All features developed against mock layer first (`src/mock/data/` and `src/services/`)
-- API switching via `TARO_APP_USE_MOCK` environment variable
+- API endpoint configuration via `TARO_APP_API` environment variable
+- Default API: localhost:3001, Remote API: emagen.323424.xyz
 - Mock layer defines complete data contracts serving as frontend-backend specification
 
 ### Data Flow Architecture
@@ -113,9 +114,10 @@ massage-app/
 - Pagination implemented in mock layer matching API specs
 
 ### Environment Configuration
-- Mock mode controlled by `TARO_APP_USE_MOCK` environment variable
-- API base URL configurable in `src/config/api.ts`
-- Service layer automatically switches based on environment
+- API endpoint controlled by `TARO_APP_API` environment variable
+- Default API base URL: `http://localhost:3001/api/v2`
+- Remote API: `http://emagen.323424.xyz/api/v2`
+- Configuration in `src/config/api.ts`
 
 ## Key Files to Understand
 
@@ -124,3 +126,140 @@ massage-app/
 3. **`src/config/api.ts`** - API configuration and switching logic
 4. **`src/mock/data/`** - Mock data structure and relationships
 5. **`src/pages/appointment/`** - Core booking flow implementation
+
+## 🚀 Complete Development and Debugging Guide
+
+### 一、WeChat Mini-Program Development (Recommended)
+
+#### 1️⃣ Start Development Server
+```bash
+# Connect to remote API (recommended)
+npm run dev:api
+
+# Or use local backend (localhost:3001)
+npm run dev:weapp
+```
+
+#### 2️⃣ Open WeChat DevTools
+- Import project: Select `dist` directory
+- Compile mode: Choose "Normal Compile"
+- Preview: Click "Preview" or "Remote Debug"
+
+#### 3️⃣ Debugging
+- Console Panel: View log output
+- Network Panel: Monitor API requests
+- AppData Panel: Inspect data state
+
+### 二、H5 Browser Development
+
+#### 1️⃣ Start Development Server (Hot Reload)
+```bash
+# Development mode (port 8082)
+npm run dev:h5:api
+# Access: http://localhost:8082
+```
+
+#### 2️⃣ Production Build Server (Optional)
+```bash
+# Build first
+TARO_APP_API=http://emagen.323424.xyz/api/v2 npm run build:h5
+
+# Python static server (port 8081)
+cd dist && python3 -m http.server 8081
+# Access: http://localhost:8081
+```
+
+#### 3️⃣ Browser Debugging
+- Press F12 for DevTools
+- Network: View API requests
+- Console: Check errors
+- Hard refresh: Ctrl+Shift+R (clear cache)
+
+### 三、Common Issues & Solutions
+
+#### 🔴 API Connection Error
+```
+ERR_CONNECTION_REFUSED localhost:3001
+```
+**Solution**: Use `npm run dev:api` to connect to remote backend
+
+#### 🔴 WebSocket Error
+```
+WebSocket connection failed
+```
+**Solution**: Port conflict, clean processes and restart
+
+#### 🔴 Port Already in Use
+```bash
+# Check port usage
+lsof -i :8081
+
+# Kill process
+kill -9 [PID]
+```
+
+### 四、Complete Debugging Checklist
+
+#### ✅ Pre-launch Check
+1. Confirm no port conflicts
+2. Choose correct start command
+3. Verify API configuration
+
+#### ✅ Start Services
+```bash
+# Mini-program (remote API)
+npm run dev:api
+
+# H5 development (remote API)
+npm run dev:h5:api
+
+# H5 production build
+export TARO_APP_API=http://emagen.323424.xyz/api/v2
+npm run build:h5
+python3 -m http.server 8081
+```
+
+#### ✅ Verify Running
+- Mini-program: Check in WeChat DevTools
+- H5 Dev: http://localhost:8082
+- H5 Prod: http://localhost:8081
+
+#### ✅ Debugging Tips
+1. Check network requests: Confirm API address
+2. Review Console: See error details
+3. Clear cache: Solve resource loading issues
+4. Check logs: Use BashOutput for service output
+
+### 五、Recommended Workflow
+
+```
+Start
+  ↓
+Choose Platform (Mini-program/H5)
+  ↓
+Start Development Server
+  ↓
+Open Debug Tools
+  ↓
+Modify Code → Auto Hot Reload
+  ↓
+Debug API/UI
+  ↓
+Build Production Version
+  ↓
+Test Production Version
+```
+
+### 六、Quick Command Reference
+
+| Purpose | Command | Port | Description |
+|---------|---------|------|-------------|
+| Mini-program Dev | `npm run dev:api` | - | Connect remote API |
+| H5 Dev | `npm run dev:h5:api` | 8082 | Hot reload dev |
+| H5 Build | `npm run build:h5` | - | Production build |
+| H5 Preview | `python3 -m http.server` | 8081 | Static server |
+
+### Core Principles
+- 🎯 Development: Use `dev:api` (auto-connects to remote)
+- 🎯 Debug: Check Network and Console panels
+- 🎯 Issues: Clear cache and restart first
