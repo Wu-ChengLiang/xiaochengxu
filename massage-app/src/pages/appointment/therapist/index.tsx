@@ -9,7 +9,6 @@ import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
 import ShoppingCart from './components/ShoppingCart'
-import ReviewList from './components/ReviewList'
 import type { Therapist, Store } from '@/types'
 import './index.scss'
 
@@ -261,7 +260,12 @@ const TherapistBookingPage: React.FC = () => {
   return (
     <View className="therapist-booking-page">
       <ScrollView className="main-content" scrollY>
-        <TherapistInfo therapist={therapist} stats={reviewStats} />
+        <TherapistInfo
+          therapist={therapist}
+          stats={reviewStats}
+          reviews={reviews}
+          reviewsLoading={reviewsLoading}
+        />
         {store && <StoreInfo store={store} />}
         <BookingSelector
           ref={bookingSelectorRef}
@@ -269,11 +273,6 @@ const TherapistBookingPage: React.FC = () => {
           therapistId={therapistId}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
-        />
-        <ReviewList
-          reviews={reviews}
-          stats={reviewStats}
-          loading={reviewsLoading}
         />
       </ScrollView>
       <ShoppingCart 
