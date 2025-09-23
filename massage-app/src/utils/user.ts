@@ -98,7 +98,7 @@ export const wechatLogin = async (): Promise<WechatLoginResult> => {
     const { code } = await Taro.login()
 
     // 2. 调用后端微信登录API
-    const response = await post('/api/v2/users/wechat-login', { code })
+    const response = await post('/users/wechat-login', { code })
 
     if (response.data) {
       // 如果有完整用户信息，保存到本地
@@ -121,7 +121,7 @@ export const wechatLogin = async (): Promise<WechatLoginResult> => {
  */
 export const bindPhone = async (openid: string, phone: string) => {
   try {
-    const response = await post('/api/v2/users/bind-phone', {
+    const response = await post('/users/bind-phone', {
       openid,
       phone
     })
@@ -158,7 +158,7 @@ export const fetchUserInfo = async (phone?: string): Promise<UserInfo | null> =>
       return null
     }
 
-    const response = await get(`/api/v2/users/info?phone=${phone}`)
+    const response = await get(`/users/info?phone=${phone}`)
 
     if (response.data) {
       const userInfo: UserInfo = {
