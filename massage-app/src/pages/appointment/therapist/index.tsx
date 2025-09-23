@@ -3,11 +3,13 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
+import { reviewService, ReviewData, ReviewStats } from '@/services/review'
 import { symptomServices } from '@/mock/data/symptoms'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
 import ShoppingCart from './components/ShoppingCart'
+import ReviewList from './components/ReviewList'
 import type { Therapist, Store } from '@/types'
 import './index.scss'
 
@@ -32,6 +34,11 @@ const TherapistBookingPage: React.FC = () => {
   const [store, setStore] = useState<Store | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // 评价相关状态
+  const [reviews, setReviews] = useState<ReviewData[]>([])
+  const [reviewStats, setReviewStats] = useState<ReviewStats | null>(null)
+  const [reviewsLoading, setReviewsLoading] = useState(false)
 
   // 预约选择状态
   const [cartItems, setCartItems] = useState<CartItem[]>([])
@@ -58,6 +65,13 @@ const TherapistBookingPage: React.FC = () => {
   useEffect(() => {
     loadData()
   }, [therapistId, storeId])
+
+  // 加载评价数据
+  useEffect(() => {
+    if (therapistId) {
+      loadReviews()
+    }
+  }, [therapistId])
 
   const loadData = async () => {
     try {
@@ -96,6 +110,37 @@ const TherapistBookingPage: React.FC = () => {
       setError('加载数据失败，请重试')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadReviews = async () => {
+    if (!therapistId) return
+
+    try {
+      setReviewsLoading(true)
+
+      // 并行获取评价列表和统计数据
+      const [reviewsResponse, statsResponse] = await Promise.all([
+        reviewService.getTherapistReviews(therapistId, 1, 10),
+        reviewService.getReviewStats(therapistId)
+      ])
+
+      setReviews(reviewsResponse.list || [])
+      setReviewStats(statsResponse)
+
+      // 如果有评价统计，更新技师的评分
+      if (statsResponse && therapist) {
+        setTherapist({
+          ...therapist,
+          rating: statsResponse.averageRating,
+          ratingCount: statsResponse.totalCount
+        })
+      }
+    } catch (error) {
+      console.error('加载评价数据失败:', error)
+      // 静默处理错误，不影响主要功能
+    } finally {
+      setReviewsLoading(false)
     }
   }
 
@@ -216,7 +261,7 @@ const TherapistBookingPage: React.FC = () => {
   return (
     <View className="therapist-booking-page">
       <ScrollView className="main-content" scrollY>
-        <TherapistInfo therapist={therapist} />
+        <TherapistInfo therapist={therapist} stats={reviewStats} />
         {store && <StoreInfo store={store} />}
         <BookingSelector
           ref={bookingSelectorRef}
@@ -224,6 +269,11 @@ const TherapistBookingPage: React.FC = () => {
           therapistId={therapistId}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
+        />
+        <ReviewList
+          reviews={reviews}
+          stats={reviewStats}
+          loading={reviewsLoading}
         />
       </ScrollView>
       <ShoppingCart 

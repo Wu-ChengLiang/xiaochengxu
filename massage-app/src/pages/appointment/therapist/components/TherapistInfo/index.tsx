@@ -1,20 +1,24 @@
 import React, { useState } from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import type { Therapist } from '@/types'
+import type { ReviewStats } from '@/services/review'
 import './index.scss'
 
 interface TherapistInfoProps {
   therapist: Therapist
+  stats?: ReviewStats | null
 }
 
-const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
+const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist, stats }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-  
+
   // 从API获取推拿师信息，提供合理的默认值
+  // 优先使用评价统计中的数据
   const therapistDetail = {
     level: 'LV4', // 暂时保持固定，后续可从API获取
-    rating: therapist.rating || 4.8,
-    salesCount: therapist.serviceCount || 1000,
+    rating: stats?.averageRating || therapist.rating || 4.8,
+    serviceCount: therapist.serviceCount || 0, // 使用API返回的真实服务次数
+    reviewCount: stats?.totalCount || 0,
     description: therapist.bio || '专业推拿师，经验丰富，擅长各类疼痛调理和康复治疗',
     ...therapist
   }
@@ -46,7 +50,7 @@ const TherapistInfo: React.FC<TherapistInfoProps> = ({ therapist }) => {
             </View>
             <View className="divider">|</View>
             <View className="sales">
-              <Text className="sales-text">销量{therapistDetail.salesCount}单</Text>
+              <Text className="sales-text">服务{therapistDetail.serviceCount}次</Text>
             </View>
           </View>
         </View>
