@@ -3,6 +3,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
+import { getLocationService } from '@/services/location'
 import { reviewService, ReviewData, ReviewStats } from '@/services/review'
 import { symptomServices } from '@/mock/data/symptoms'
 import TherapistInfo from './components/TherapistInfo'
@@ -86,9 +87,10 @@ const TherapistBookingPage: React.FC = () => {
         return
       }
 
-      const [therapistRes, storeData] = await Promise.all([
+      const [therapistRes, storeData, userLocation] = await Promise.all([
         therapistService.getTherapistDetail(therapistId),
-        storeService.getStoreDetail(storeId)
+        storeService.getStoreDetail(storeId),
+        getLocationService.getCurrentLocation()
       ])
 
       console.log('Store data response:', storeData)
@@ -96,7 +98,23 @@ const TherapistBookingPage: React.FC = () => {
 
       // 根据API返回的实际结构处理数据
       const therapistData = therapistRes.data || therapistRes
-      const storeDataFinal = storeData?.data || storeData
+      const storeDataRaw = storeData?.data || storeData
+
+      // 计算门店距离
+      let storeDataFinal = { ...storeDataRaw }
+      if (storeDataRaw?.latitude && storeDataRaw?.longitude) {
+        const distance = getLocationService.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          storeDataRaw.latitude,
+          storeDataRaw.longitude
+        )
+        storeDataFinal = {
+          ...storeDataRaw,
+          distance
+        }
+        console.log('🔍 计算门店距离:', { distance, userLocation, storeLatLng: { lat: storeDataRaw.latitude, lng: storeDataRaw.longitude } })
+      }
 
       setTherapist(therapistData)
       setStore(storeDataFinal)

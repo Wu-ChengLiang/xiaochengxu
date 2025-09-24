@@ -122,9 +122,11 @@ const Appointment: React.FC = () => {
       {/* 头部位置区域 */}
       <View className="header">
         <View className="location">
-          <Text className="icon">
-            {locationStatus === 'loading' ? '📍' : locationStatus === 'success' ? '📍' : '⚠️'}
-          </Text>
+          <View className="icon">
+            {locationStatus === 'loading' && <View className="icon-location loading" />}
+            {locationStatus === 'success' && <View className="icon-location success" />}
+            {locationStatus === 'error' && <View className="icon-warning" />}
+          </View>
           <Text className={`text ${locationStatus}`}>{locationText}</Text>
           {locationStatus === 'error' && (
             <Text className="retry-btn" onClick={loadData}>重试</Text>
@@ -138,7 +140,8 @@ const Appointment: React.FC = () => {
         <View className="section-header">
           <Text className="section-title">门店预约</Text>
           <Text className="more-link" onClick={handleMoreStores}>
-            更多门店 {'>>'}
+            更多门店
+            <View className="arrow-icon" />
           </Text>
         </View>
         <View className="store-list">
@@ -157,7 +160,8 @@ const Appointment: React.FC = () => {
         <View className="section-header">
           <Text className="section-title">推拿师预约</Text>
           <Text className="more-link" onClick={handleMoreSymptoms}>
-            更多症状 {'>>'}
+            更多症状
+            <View className="arrow-icon" />
           </Text>
         </View>
         <View className="therapist-list">
@@ -185,7 +189,7 @@ const Appointment: React.FC = () => {
             <Text className="city-arrow">▼</Text>
           </View>
           <View className="search-box">
-            <Text className="search-icon">🔍</Text>
+            <View className="search-icon" />
             <Input 
               className="search-input"
               placeholder="搜索门店"

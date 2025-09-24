@@ -49,7 +49,7 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
           <View className="info-header">
             <Text className="therapist-name">{therapist.name}</Text>
             <View className="distance">
-              <Text className="icon">📍</Text>
+              <View className="location-icon" />
               <Text className="distance-text">
                 {therapist.distance !== undefined && therapist.distance !== null
                   ? `${therapist.distance}km`
@@ -69,7 +69,7 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
 
           <View className="therapist-footer">
             <View className="rating">
-              <Text className="icon">⭐</Text>
+              <View className="star-icon" />
               <Text className="rating-text">{getRatingDisplay()}</Text>
             </View>
             <BookingButton

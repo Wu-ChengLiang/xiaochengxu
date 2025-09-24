@@ -67,7 +67,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
           
           <View className="store-footer">
             <View className="distance">
-              <Text className="icon">📍</Text>
+              <View className="location-icon" />
               <Text className="distance-text">{store.distance}km</Text>
             </View>
             <BookingButton 

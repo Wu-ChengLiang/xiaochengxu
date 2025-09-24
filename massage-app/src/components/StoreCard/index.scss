@@ -93,11 +93,41 @@
         .distance {
           display: flex;
           align-items: center;
-          
+          gap: 8rpx;
+
+          .location-icon {
+            width: 24rpx;
+            height: 24rpx;
+            position: relative;
+            flex-shrink: 0;
+
+            &::before {
+              content: '';
+              position: absolute;
+              top: 2rpx;
+              left: 2rpx;
+              width: 20rpx;
+              height: 20rpx;
+              border-radius: 50% 50% 50% 0;
+              border: 2rpx solid var(--text-weak);
+              transform: rotate(-45deg);
+            }
+
+            &::after {
+              content: '';
+              position: absolute;
+              top: 8rpx;
+              left: 8rpx;
+              width: 8rpx;
+              height: 8rpx;
+              border-radius: 50%;
+              background: var(--text-weak);
+            }
+          }
+
           .distance-text {
             font-size: 24px;
             color: var(--text-weak);
-            margin-left: 4px;
           }
         }
         
