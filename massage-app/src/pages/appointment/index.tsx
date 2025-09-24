@@ -81,11 +81,10 @@ const Appointment: React.FC = () => {
       )
       setAllStores(allStoresData.list)
       
-      // 获取推荐推拿师（传递用户位置以计算距离）
-      const recommendedTherapists = await therapistService.getRecommendedTherapists(
+      // 获取推荐推拿师（使用新的带距离计算的方法）
+      const recommendedTherapists = await therapistService.getRecommendedTherapistsWithDistance(
         1,
-        10,
-        location
+        10
       )
       setTherapists(recommendedTherapists.list)
       

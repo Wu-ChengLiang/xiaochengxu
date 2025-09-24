@@ -1,5 +1,7 @@
 import { request } from '@/utils/request'
 import type { Therapist, PageData } from '@/types'
+import { storeService } from './store'
+import { getLocationService } from './location'
 
 class TherapistService {
   // 获取推荐推拿师
@@ -20,7 +22,85 @@ class TherapistService {
       return { list: [], total: 0, page: 1, pageSize: 10, hasMore: false }
     }
   }
-  
+
+  // 获取推荐推拿师并计算距离
+  async getRecommendedTherapistsWithDistance(
+    page: number = 1,
+    pageSize: number = 10
+  ): Promise<PageData<Therapist & { distance: number | null }>> {
+    try {
+      // 1. 获取用户位置
+      const userLocation = await getLocationService.getCurrentLocation()
+
+      // 2. 获取推拿师列表（传入用户位置）
+      const data = await request('/therapists/recommended', {
+        data: {
+          page,
+          pageSize,
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude
+        }
+      })
+
+      console.log('✅ 推荐推拿师API调用成功:', data)
+
+      const therapists = data.data?.list || []
+
+      // 3. 为每个推拿师计算距离
+      const therapistsWithDistance = await Promise.all(
+        therapists.map(async (therapist: Therapist) => {
+          try {
+            // 获取推拿师对应门店信息
+            const storeData = await storeService.getStoreDetail(therapist.storeId)
+            const store = storeData?.data || storeData
+
+            let distance: number | null = null
+
+            // 如果门店有位置信息，计算距离
+            if (store?.location?.latitude && store?.location?.longitude) {
+              distance = getLocationService.calculateDistance(
+                userLocation.latitude,
+                userLocation.longitude,
+                store.location.latitude,
+                store.location.longitude
+              )
+            }
+
+            return {
+              ...therapist,
+              distance
+            }
+          } catch (error) {
+            console.warn(`获取技师 ${therapist.id} 门店信息失败:`, error)
+            return {
+              ...therapist,
+              distance: null
+            }
+          }
+        })
+      )
+
+      // 4. 按距离排序（距离近的排在前面，null值排在后面）
+      therapistsWithDistance.sort((a, b) => {
+        if (a.distance === null && b.distance === null) return 0
+        if (a.distance === null) return 1
+        if (b.distance === null) return -1
+        return a.distance - b.distance
+      })
+
+      return {
+        list: therapistsWithDistance,
+        total: data.data?.total || therapistsWithDistance.length,
+        page: data.data?.page || page,
+        pageSize: data.data?.pageSize || pageSize,
+        hasMore: data.data?.hasMore || false
+      }
+    } catch (error) {
+      console.log('⚠️ 推荐推拿师距离计算API调用失败:', error)
+      return { list: [], total: 0, page: 1, pageSize: 10, hasMore: false }
+    }
+  }
+
   // 根据门店获取推拿师
   async getTherapistsByStore(
     storeId: string,
@@ -39,7 +119,8 @@ class TherapistService {
       list: therapistArray,
       total: therapistArray.length,
       page: 1,
-      pageSize: therapistArray.length
+      pageSize: therapistArray.length,
+      hasMore: false
     }
   }
   

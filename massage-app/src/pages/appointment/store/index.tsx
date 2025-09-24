@@ -118,7 +118,12 @@ const StoreAppointmentPage: React.FC = () => {
           <View className="store-details">
             <View className="name-row">
               <Text className="store-name">{store.name}</Text>
-              <Text className="distance">{store.distance || 9.0}km</Text>
+              <Text className="distance">
+                {store.distance !== undefined && store.distance !== null
+                  ? `${store.distance}km`
+                  : '距离未知'
+                }
+              </Text>
             </View>
             <View className="hours-row">
               <Text className="business-hours">

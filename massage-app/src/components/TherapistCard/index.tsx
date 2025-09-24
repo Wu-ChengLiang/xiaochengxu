@@ -50,7 +50,12 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
             <Text className="therapist-name">{therapist.name}</Text>
             <View className="distance">
               <Text className="icon">📍</Text>
-              <Text className="distance-text">{therapist.distance}km</Text>
+              <Text className="distance-text">
+                {therapist.distance !== undefined && therapist.distance !== null
+                  ? `${therapist.distance}km`
+                  : '距离未知'
+                }
+              </Text>
             </View>
           </View>
 
