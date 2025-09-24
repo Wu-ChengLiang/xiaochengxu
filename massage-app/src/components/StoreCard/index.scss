@@ -1,26 +1,41 @@
 .store-card {
   padding: 0 24rpx 20rpx;  // 使用rpx单位确保真机一致性
-  
+
   .card-content {
     display: flex;
-    background: transparent;
-    padding: 0;
+    background: #fff;
+    padding: 24rpx;
+    border-radius: 16rpx;
+    box-shadow: 0 4rpx 16rpx rgba(164, 0, 53, 0.08);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2rpx);
+      box-shadow: 0 8rpx 24rpx rgba(164, 0, 53, 0.12);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2rpx 8rpx rgba(164, 0, 53, 0.15);
+    }
     
     .store-image-wrapper {
       width: 200rpx;
       height: 160rpx;
-      border-radius: 12rpx;  // 使用rpx单位
+      border-radius: 16rpx;  // 统一使用16rpx圆角
       overflow: hidden;
       flex-shrink: 0;
       margin-right: 20rpx;
       // 关键：确保圆角生效
       position: relative;
       z-index: 1;
-      
+      box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+
       .store-image {
         width: 100%;
         height: 100%;
         display: block;
+        object-fit: cover;
       }
     }
     

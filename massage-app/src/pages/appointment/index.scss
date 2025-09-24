@@ -153,8 +153,8 @@
   .stores-section {
     background: var(--bg-primary);
     margin: 20rpx;
-    border-radius: 16rpx;
-    box-shadow: var(--shadow-sm);
+    border-radius: 20rpx;
+    box-shadow: 0 8rpx 32rpx rgba(164, 0, 53, 0.1);
     overflow: hidden;
     
     .store-list {
@@ -165,8 +165,8 @@
   .therapists-section {
     background: var(--bg-primary);
     margin: 20rpx;
-    border-radius: 16rpx;
-    box-shadow: var(--shadow-sm);
+    border-radius: 20rpx;
+    box-shadow: 0 8rpx 32rpx rgba(164, 0, 53, 0.1);
     overflow: hidden;
     
     .therapist-list {
@@ -203,6 +203,7 @@
       background: #fff;
       border-radius: var(--radius-full);
       padding: 16rpx 24rpx;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
       
       .search-icon {
         width: 32rpx;
