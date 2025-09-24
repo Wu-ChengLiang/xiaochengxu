@@ -47,36 +47,6 @@
           align-items: center;
           gap: 8rpx;
 
-          .location-icon {
-            width: 24rpx;
-            height: 24rpx;
-            position: relative;
-            flex-shrink: 0;
-
-            &::before {
-              content: '';
-              position: absolute;
-              top: 2rpx;
-              left: 2rpx;
-              width: 20rpx;
-              height: 20rpx;
-              border-radius: 50% 50% 50% 0;
-              border: 2rpx solid var(--text-weak);
-              transform: rotate(-45deg);
-            }
-
-            &::after {
-              content: '';
-              position: absolute;
-              top: 8rpx;
-              left: 8rpx;
-              width: 8rpx;
-              height: 8rpx;
-              border-radius: 50%;
-              background: var(--text-weak);
-            }
-          }
-
           .distance-text {
             font-size: 24px;
             color: var(--text-weak);
@@ -114,39 +84,6 @@
           display: flex;
           align-items: center;
           gap: 8rpx;
-
-          .star-icon {
-            width: 24rpx;
-            height: 24rpx;
-            position: relative;
-            flex-shrink: 0;
-
-            &::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 0;
-              height: 0;
-              border-left: 8rpx solid transparent;
-              border-right: 8rpx solid transparent;
-              border-bottom: 6rpx solid #faad14;
-            }
-
-            &::after {
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 50%;
-              transform: translateX(-50%);
-              width: 0;
-              height: 0;
-              border-left: 8rpx solid transparent;
-              border-right: 8rpx solid transparent;
-              border-top: 6rpx solid #faad14;
-            }
-          }
 
           .rating-text {
             font-size: 24px;

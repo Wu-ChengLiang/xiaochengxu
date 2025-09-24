@@ -113,7 +113,6 @@ const TherapistBookingPage: React.FC = () => {
           ...storeDataRaw,
           distance
         }
-        console.log('🔍 计算门店距离:', { distance, userLocation, storeLatLng: { lat: storeDataRaw.latitude, lng: storeDataRaw.longitude } })
       }
 
       setTherapist(therapistData)

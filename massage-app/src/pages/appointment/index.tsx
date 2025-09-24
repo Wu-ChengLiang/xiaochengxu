@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Taro from '@tarojs/taro'
 import { View, Text, Input } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
+import { AtButton, AtIcon } from 'taro-ui'
 import { getLocationService } from '@/services/location'
 import { storeService } from '@/services/store'
 import { therapistService } from '@/services/therapist'
@@ -123,9 +123,9 @@ const Appointment: React.FC = () => {
       <View className="header">
         <View className="location">
           <View className="icon">
-            {locationStatus === 'loading' && <View className="icon-location loading" />}
-            {locationStatus === 'success' && <View className="icon-location success" />}
-            {locationStatus === 'error' && <View className="icon-warning" />}
+            {locationStatus === 'loading' && <AtIcon value="loading-3" size="16" color="#666" />}
+            {locationStatus === 'success' && <AtIcon value="map-pin" size="16" color="#52c41a" />}
+            {locationStatus === 'error' && <AtIcon value="alert-circle" size="16" color="#ff4d4f" />}
           </View>
           <Text className={`text ${locationStatus}`}>{locationText}</Text>
           {locationStatus === 'error' && (
@@ -141,7 +141,7 @@ const Appointment: React.FC = () => {
           <Text className="section-title">门店预约</Text>
           <Text className="more-link" onClick={handleMoreStores}>
             更多门店
-            <View className="arrow-icon" />
+            <AtIcon value="chevron-right" size="14" color="#a40035" />
           </Text>
         </View>
         <View className="store-list">
@@ -161,7 +161,7 @@ const Appointment: React.FC = () => {
           <Text className="section-title">推拿师预约</Text>
           <Text className="more-link" onClick={handleMoreSymptoms}>
             更多症状
-            <View className="arrow-icon" />
+            <AtIcon value="chevron-right" size="14" color="#a40035" />
           </Text>
         </View>
         <View className="therapist-list">
@@ -189,7 +189,7 @@ const Appointment: React.FC = () => {
             <Text className="city-arrow">▼</Text>
           </View>
           <View className="search-box">
-            <View className="search-icon" />
+            <AtIcon value="search" size="16" color="#999" />
             <Input 
               className="search-input"
               placeholder="搜索门店"

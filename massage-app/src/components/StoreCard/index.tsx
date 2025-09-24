@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
+import { AtIcon } from 'taro-ui'
 import BookingButton from '@/components/BookingButton'
 import type { Store } from '@/types'
 import storeImage from '@/assets/images/store/caodongli/store.jpg'
@@ -67,10 +68,12 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
           </View>
           
           <View className="store-footer">
-            <View className="distance">
-              <View className="location-icon" />
-              <Text className="distance-text">{store.distance}km</Text>
-            </View>
+            {store.distance !== undefined && store.distance !== null && (
+              <View className="distance">
+                <AtIcon value="map-pin" size="12" color="#999" />
+                <Text className="distance-text">{store.distance}km</Text>
+              </View>
+            )}
             <BookingButton 
               size="small"
             />

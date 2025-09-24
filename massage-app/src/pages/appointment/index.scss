@@ -16,75 +16,6 @@
       
       .icon {
         margin-right: 8rpx;
-
-        .icon-location {
-          width: 24rpx;
-          height: 24rpx;
-          border-radius: 50%;
-          display: inline-block;
-          position: relative;
-
-          &::before {
-            content: '';
-            position: absolute;
-            top: 2rpx;
-            left: 2rpx;
-            width: 20rpx;
-            height: 20rpx;
-            border-radius: 50%;
-            border: 3rpx solid;
-          }
-
-          &::after {
-            content: '';
-            position: absolute;
-            top: 8rpx;
-            left: 8rpx;
-            width: 8rpx;
-            height: 8rpx;
-            border-radius: 50%;
-          }
-
-          &.loading {
-            &::before {
-              border-color: #666;
-              animation: pulse 1.5s infinite;
-            }
-            &::after {
-              background: #666;
-            }
-          }
-
-          &.success {
-            &::before {
-              border-color: #52c41a;
-            }
-            &::after {
-              background: #52c41a;
-            }
-          }
-        }
-
-        .icon-warning {
-          width: 24rpx;
-          height: 24rpx;
-          border-radius: 4rpx;
-          background: #ff4d4f;
-          display: inline-block;
-          position: relative;
-
-          &::before {
-            content: '!';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 16rpx;
-            font-weight: bold;
-            line-height: 1;
-          }
-        }
       }
       
       .text {
@@ -133,19 +64,6 @@
       display: flex;
       align-items: center;
       gap: 8rpx;
-
-      .arrow-icon {
-        width: 12rpx;
-        height: 12rpx;
-        border-right: 2rpx solid #a40035;
-        border-top: 2rpx solid #a40035;
-        transform: rotate(45deg);
-        transition: transform 0.2s ease;
-      }
-
-      &:active .arrow-icon {
-        transform: rotate(45deg) scale(0.9);
-      }
     }
   }
 
@@ -197,34 +115,8 @@
       padding: 16rpx 24rpx;
       box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
       
-      .search-icon {
-        width: 32rpx;
-        height: 32rpx;
+      .at-icon {
         margin-right: 12rpx;
-        position: relative;
-
-        &::before {
-          content: '';
-          position: absolute;
-          top: 4rpx;
-          left: 4rpx;
-          width: 16rpx;
-          height: 16rpx;
-          border: 2rpx solid #999;
-          border-radius: 50%;
-        }
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 20rpx;
-          left: 20rpx;
-          width: 2rpx;
-          height: 8rpx;
-          background: #999;
-          transform: rotate(45deg);
-          border-radius: 1rpx;
-        }
       }
       
       .search-input {

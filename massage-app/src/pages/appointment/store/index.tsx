@@ -3,8 +3,10 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { View, Text, Image } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { storeService } from '@/services/store'
+import { getLocationService } from '@/services/location'
 import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
+import storeDetailImage from '@/assets/images/store/caodongli/store2.jpg'
 import './index.scss'
 
 
@@ -23,8 +25,29 @@ const StoreAppointmentPage: React.FC = () => {
 
   const loadStoreData = async () => {
     try {
-      const storeRes = await storeService.getStoreDetail(id!)
-      setStore(storeRes.data)
+      const [storeRes, userLocation] = await Promise.all([
+        storeService.getStoreDetail(id!),
+        getLocationService.getCurrentLocation()
+      ])
+
+      const storeDataRaw = storeRes.data
+
+      // 计算门店距离
+      let storeDataFinal = { ...storeDataRaw }
+      if (storeDataRaw?.latitude && storeDataRaw?.longitude) {
+        const distance = getLocationService.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          storeDataRaw.latitude,
+          storeDataRaw.longitude
+        )
+        storeDataFinal = {
+          ...storeDataRaw,
+          distance
+        }
+      }
+
+      setStore(storeDataFinal)
     } catch (error) {
       Taro.showToast({
         title: '加载失败',
@@ -107,7 +130,8 @@ const StoreAppointmentPage: React.FC = () => {
       <View className="store-header">
         <Image
           className="store-image"
-          src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
+          src={storeDetailImage}
+          // src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
           mode="aspectFill"
         />
       </View>
@@ -118,12 +142,9 @@ const StoreAppointmentPage: React.FC = () => {
           <View className="store-details">
             <View className="name-row">
               <Text className="store-name">{store.name}</Text>
-              <Text className="distance">
-                {store.distance !== undefined && store.distance !== null
-                  ? `${store.distance}km`
-                  : '距离未知'
-                }
-              </Text>
+              {store.distance !== undefined && store.distance !== null && (
+                <Text className="distance">{store.distance}km</Text>
+              )}
             </View>
             <View className="hours-row">
               <Text className="business-hours">

@@ -34,12 +34,9 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
         <View className="store-details">
           <View className="name-row">
             <Text className="store-name">{store.name}</Text>
-            <Text className="distance">
-              {store.distance !== undefined && store.distance !== null
-                ? `${store.distance}km`
-                : '距离未知'
-              }
-            </Text>
+            {store.distance !== undefined && store.distance !== null && (
+              <Text className="distance">{store.distance}km</Text>
+            )}
           </View>
           
           <View className="hours-row">

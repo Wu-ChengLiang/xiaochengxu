@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image } from '@tarojs/components'
+import { AtIcon } from 'taro-ui'
 import BookingButton from '@/components/BookingButton'
 import { reviewService } from '@/services/review'
 import type { Therapist } from '@/types'
@@ -48,15 +49,12 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
         <View className="therapist-info">
           <View className="info-header">
             <Text className="therapist-name">{therapist.name}</Text>
-            <View className="distance">
-              <View className="location-icon" />
-              <Text className="distance-text">
-                {therapist.distance !== undefined && therapist.distance !== null
-                  ? `${therapist.distance}km`
-                  : '距离未知'
-                }
-              </Text>
-            </View>
+            {therapist.distance !== undefined && therapist.distance !== null && (
+              <View className="distance">
+                <AtIcon value="map-pin" size="12" color="#999" />
+                <Text className="distance-text">{therapist.distance}km</Text>
+              </View>
+            )}
           </View>
 
           <View className="expertise-tags">
@@ -69,7 +67,7 @@ const TherapistCard: React.FC<TherapistCardProps> = ({ therapist, onClick }) => 
 
           <View className="therapist-footer">
             <View className="rating">
-              <View className="star-icon" />
+              <AtIcon value="star-2" size="12" color="#faad14" />
               <Text className="rating-text">{getRatingDisplay()}</Text>
             </View>
             <BookingButton
