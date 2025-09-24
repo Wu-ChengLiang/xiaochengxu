@@ -31,6 +31,9 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
 
   const handleGetPhoneNumber = async (e: any) => {
     console.log('手机号授权回调:', e.detail)
+    console.log('获取到code:', e.detail.code)
+    console.log('当前时间:', new Date().toISOString())
+    console.log('当前openid:', openid)
 
     if (e.detail.errMsg === 'getPhoneNumber:ok') {
       // 用户同意授权
@@ -44,6 +47,9 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
         return
       }
 
+      console.log('准备发送请求，code:', code)
+      console.log('请求时间:', new Date().toISOString())
+
       try {
         Taro.showLoading({ title: '处理中...' })
 
@@ -54,10 +60,12 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
             throw new Error('缺少openid参数')
           }
 
+          console.log('发送绑定请求，参数:', { openid, code })
           const response = await post('/users/bind-phone-wx', {
             openid,
             code
           })
+          console.log('绑定响应:', response)
 
           result = response.data
 
@@ -110,6 +118,12 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
       } catch (error: any) {
         Taro.hideLoading()
         console.error('手机号操作失败:', error)
+        console.error('错误详情:', {
+          message: error.message,
+          response: error.response,
+          status: error.response?.status,
+          data: error.response?.data
+        })
 
         // 显示具体错误信息
         const errorMsg = error.message || (type === 'bind' ? '绑定失败' : '换绑失败')

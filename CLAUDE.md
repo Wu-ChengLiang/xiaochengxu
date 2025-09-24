@@ -350,3 +350,103 @@ This setup allows you to:
 1. Develop with hot reload on port 8081
 2. Test production build on port 8082
 3. Compare development vs production behavior side by side
+
+## 🔍 Remote Server and Database Debugging Guide
+
+### Environment Architecture
+
+#### Database Environments
+- **Local Database**: `/home/chengliang/workspace/xiaochengxu/backend/database/mingyi.db`
+  - Used for local development and testing
+  - Data is independent and does not sync with remote
+
+- **Remote Database**: Deployed on server
+  - API Address: `http://emagen.323424.xyz/api/v2`
+  - Production environment data
+  - Frontend connects to this by default
+
+⚠️ **Important**: Local database and remote database data are independent and do not sync automatically!
+
+### Common Issues and Solutions
+
+#### 1. User Does Not Exist Error (500/404)
+**Problem**:
+```
+GET http://emagen.323424.xyz/api/v2/users/wallet/balance?userId=35
+500 (Internal Server Error)
+```
+
+**Root Cause**:
+- User ID does not exist in remote database
+- Users created locally do not sync to remote
+- Frontend cached incorrect user ID
+
+**Solution**:
+```bash
+# 1. Verify if user exists
+curl -X GET "http://emagen.323424.xyz/api/v2/users/info?phone=手机号"
+
+# 2. Create user (via bind-phone endpoint)
+curl -X POST "http://emagen.323424.xyz/api/v2/users/bind-phone" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "openid": "wx_test_xxx",
+    "phone": "手机号",
+    "sessionKey": "test_session_key"
+  }'
+```
+
+#### 2. Data Synchronization Issues
+**Symptoms**:
+- Local database operations succeed but API queries fail
+- Cannot see recharge/user creation in frontend
+
+**Diagnostic Steps**:
+```bash
+# Check remote API user
+curl "http://emagen.323424.xyz/api/v2/users/info?phone=19357509502"
+
+# Check local database
+python3 -c "
+import sqlite3
+conn = sqlite3.connect('/home/chengliang/workspace/xiaochengxu/backend/database/mingyi.db')
+cursor = conn.cursor()
+cursor.execute('SELECT * FROM users WHERE phone=?', ('19357509502',))
+print(cursor.fetchone())
+"
+```
+
+### API Debugging Commands
+
+#### User Management
+```bash
+# Get user info
+curl -X GET "http://emagen.323424.xyz/api/v2/users/info?phone=13800138000"
+
+# Create user (bind phone)
+curl -X POST "http://emagen.323424.xyz/api/v2/users/bind-phone" \
+  -H "Content-Type: application/json" \
+  -d '{"openid": "wx_test_xxx", "phone": "手机号", "sessionKey": "test"}'
+
+# Check balance
+curl -X GET "http://emagen.323424.xyz/api/v2/users/wallet/balance?userId=1"
+```
+
+#### Recharge Operations
+```bash
+# Create recharge order
+curl -X POST "http://emagen.323424.xyz/api/v2/orders/create" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderType": "recharge",
+    "userId": 1,
+    "title": "充值1000元",
+    "amount": 100000,
+    "paymentMethod": "wechat",
+    "extraData": {
+      "rechargeAmount": 100000,
+      "bonus": 10000,
+      "actualAmount": 110000
+    }
+  }'
+```
