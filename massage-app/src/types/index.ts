@@ -21,6 +21,10 @@ export interface Store {
   address: string
   phone: string
   businessHours: string  // "10:00-22:00" 格式
+  // API直接返回经纬度字段，不是嵌套的location对象
+  latitude?: number
+  longitude?: number
+  // 兼容旧的location格式
   location?: {
     latitude: number
     longitude: number

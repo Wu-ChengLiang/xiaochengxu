@@ -57,12 +57,13 @@ class TherapistService {
             let distance: number | null = null
 
             // 如果门店有位置信息，计算距离
-            if (store?.location?.latitude && store?.location?.longitude) {
+            // API返回的位置数据直接在store对象上，不是嵌套的location对象
+            if (store?.latitude && store?.longitude) {
               distance = getLocationService.calculateDistance(
                 userLocation.latitude,
                 userLocation.longitude,
-                store.location.latitude,
-                store.location.longitude
+                store.latitude,
+                store.longitude
               )
             }
 

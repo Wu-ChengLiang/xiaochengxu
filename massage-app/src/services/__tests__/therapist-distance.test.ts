@@ -57,19 +57,15 @@ describe('Therapist Distance Calculation', () => {
           id: 'store1',
           name: '静安店',
           address: '上海市静安区',
-          location: {
-            latitude: 31.2404,
-            longitude: 121.4837
-          }
+          latitude: 31.2404,
+          longitude: 121.4837
         },
         'store2': {
           id: 'store2',
           name: '浦东店',
           address: '上海市浦东新区',
-          location: {
-            latitude: 31.2504,
-            longitude: 121.5037
-          }
+          latitude: 31.2504,
+          longitude: 121.5037
         }
       }
 
@@ -141,7 +137,7 @@ describe('Therapist Distance Calculation', () => {
           'mid-store': { latitude: 31.2504, longitude: 121.4937 }
         }
         return Promise.resolve({
-          data: { location: locations[storeId] }
+          data: locations[storeId]
         } as any)
       })
 
@@ -183,7 +179,7 @@ describe('Therapist Distance Calculation', () => {
       mockStoreService.getStoreDetail.mockImplementation((storeId) => {
         if (storeId === 'store-with-location') {
           return Promise.resolve({
-            data: { location: { latitude: 31.2404, longitude: 121.4837 } }
+            data: { latitude: 31.2404, longitude: 121.4837 }
           } as any)
         }
         return Promise.resolve({ data: {} } as any)
@@ -220,7 +216,7 @@ describe('Therapist Distance Calculation', () => {
       })
 
       mockStoreService.getStoreDetail.mockResolvedValue({
-        data: { location: { latitude: 31.2404, longitude: 121.4837 } }
+        data: { latitude: 31.2404, longitude: 121.4837 }
       } as any)
 
       mockLocationService.calculateDistance.mockReturnValue(1.5)

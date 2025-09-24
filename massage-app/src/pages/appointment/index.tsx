@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Taro from '@tarojs/taro'
-import { View, Text, Image, Swiper, SwiperItem, Input } from '@tarojs/components'
+import { View, Text, Input } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import { getLocationService } from '@/services/location'
 import { storeService } from '@/services/store'
@@ -11,8 +11,6 @@ import BottomSheet from '@/components/BottomSheet'
 import type { Store, Therapist } from '@/types'
 import './index.scss'
 
-// 导入本地图片
-import bannerGoodnight from '@/assets/images/banners/goodnight.jpg'
 
 const Appointment: React.FC = () => {
   const [loading, setLoading] = useState(true)
@@ -25,16 +23,6 @@ const Appointment: React.FC = () => {
   const [showStoreSheet, setShowStoreSheet] = useState(false)  // 控制门店弹出层
   const [searchValue, setSearchValue] = useState('')  // 搜索框值
 
-  // 优惠活动数据（Mock）
-  const banners = [
-    {
-      id: 1,
-      image: bannerGoodnight,
-      title: '晚安好眠',
-      subtitle: '深度放松助眠服务',
-      link: ''
-    }
-  ]
 
   useEffect(() => {
     loadData()
@@ -128,12 +116,6 @@ const Appointment: React.FC = () => {
     })
   }
 
-  const handleBannerClick = (banner: any) => {
-    // 跳转到优惠专区页面
-    Taro.navigateTo({
-      url: '/pages/promotion/index'
-    })
-  }
 
   return (
     <View className="appointment-page">
@@ -150,25 +132,6 @@ const Appointment: React.FC = () => {
         </View>
       </View>
       
-      {/* 优惠活动轮播 */}
-      <View className="banner-section">
-        <Text className="section-title">优惠预约</Text>
-        <Swiper
-          className="banner-swiper"
-          autoplay
-          interval={3000}
-          indicatorDots
-          indicatorActiveColor="#D9455F"
-        >
-          {banners.map((banner) => (
-            <SwiperItem key={banner.id}>
-              <View className="banner-item" onClick={() => handleBannerClick(banner)}>
-                <Image className="banner-image" src={banner.image} mode="aspectFill" />
-              </View>
-            </SwiperItem>
-          ))}
-        </Swiper>
-      </View>
       
       {/* 门店预约 */}
       <View className="stores-section">

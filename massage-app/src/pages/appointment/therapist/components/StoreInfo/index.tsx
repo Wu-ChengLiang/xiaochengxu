@@ -18,10 +18,10 @@ const StoreInfo: React.FC<StoreInfoProps> = ({ store }) => {
   }
 
   const handleShowLocation = () => {
-    if (store.location) {
+    if (store.latitude && store.longitude) {
       Taro.openLocation({
-        latitude: store.location.latitude,
-        longitude: store.location.longitude,
+        latitude: store.latitude,
+        longitude: store.longitude,
         name: store.name,
         address: store.address
       })

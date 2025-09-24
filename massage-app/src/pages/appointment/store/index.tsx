@@ -50,10 +50,10 @@ const StoreAppointmentPage: React.FC = () => {
   }
 
   const handleShowLocation = () => {
-    if (store?.location) {
+    if (store?.latitude && store?.longitude) {
       Taro.openLocation({
-        latitude: store.location.latitude,
-        longitude: store.location.longitude,
+        latitude: store.latitude,
+        longitude: store.longitude,
         name: store.name,
         address: store.address
       })
@@ -152,21 +152,6 @@ const StoreAppointmentPage: React.FC = () => {
       <View className="appointment-section">
         <Text className="section-title">预约时间</Text>
         
-        {/* 特价时段提示 */}
-        <View className="promotion-tips">
-          <View className="tip-item main">
-            <Text className="discount">9.5折</Text>
-            <View className="tip-content">
-              <Text className="tip-title">提前30分钟</Text>
-              <Text className="tip-desc">10:00开始</Text>
-            </View>
-          </View>
-          <View className="tip-item">
-            <Text className="discount">9.0折</Text>
-            <Text className="tip-desc">错峰预约</Text>
-            <Text className="tip-desc">点击前往</Text>
-          </View>
-        </View>
 
         {/* 三列时间选择器 */}
         <TimePickerScroller onTimeChange={handleTimeChange} />

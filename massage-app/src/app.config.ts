@@ -6,7 +6,6 @@ export default {
     'pages/appointment/store/index',
     'pages/appointment/therapist/index',
     'pages/appointment/symptom/index',
-    'pages/promotion/index',
     'pages/booking/confirm/index',
     'pages/booking/success/index',
     'pages/order/list/index',
