@@ -1,6 +1,6 @@
 .appointment-page {
   min-height: 100vh;
-  background-color: var(--bg-secondary);
+  background-color: #f8f9fa;
   padding-bottom: 100px; // 留出 TabBar 空间
 
   .header {
@@ -118,7 +118,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-md);
+    padding: 0 20rpx var(--spacing-md);
     
     .section-title {
       font-size: 30px;
@@ -151,24 +151,16 @@
 
 
   .stores-section {
-    background: var(--bg-primary);
-    margin: 20rpx;
-    border-radius: 20rpx;
-    box-shadow: 0 8rpx 32rpx rgba(164, 0, 53, 0.1);
-    overflow: hidden;
-    
+    margin: 20rpx 0;
+
     .store-list {
       // 不设置固定高度，让内容自然展开
     }
   }
 
   .therapists-section {
-    background: var(--bg-primary);
-    margin: 20rpx;
-    border-radius: 20rpx;
-    box-shadow: 0 8rpx 32rpx rgba(164, 0, 53, 0.1);
-    overflow: hidden;
-    
+    margin: 20rpx 0;
+
     .therapist-list {
       // 不设置固定高度，让内容自然展开
     }

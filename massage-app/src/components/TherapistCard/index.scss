@@ -8,16 +8,9 @@
     padding: 24rpx;
     border-radius: 16rpx;
     box-shadow: 0 4rpx 16rpx rgba(164, 0, 53, 0.08);
-    transition: all 0.3s ease;
-
-    &:hover {
-      transform: translateY(-2rpx);
-      box-shadow: 0 8rpx 24rpx rgba(164, 0, 53, 0.12);
-    }
 
     &:active {
-      transform: translateY(0);
-      box-shadow: 0 2rpx 8rpx rgba(164, 0, 53, 0.15);
+      opacity: 0.8;
     }
     
     .therapist-avatar {
