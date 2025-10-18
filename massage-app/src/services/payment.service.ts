@@ -52,6 +52,7 @@ class PaymentService {
 
   /**
    * 模拟微信支付（个人小程序测试用）
+   * 使用真实的支付接口 /api/v2/orders/pay
    */
   private async mockWechatPayment(options: PaymentOptions): Promise<boolean> {
     try {
@@ -71,27 +72,39 @@ class PaymentService {
         // 模拟网络延迟
         await this.delay(1500)
 
-        // 调用后端更新订单状态
-        await post('/orders/mock-pay', {
+        console.log('💳 模拟微信支付请求参数:', {
           orderNo: options.orderNo,
-          paymentStatus: 'paid'
+          paymentMethod: 'wechat'
         })
+
+        // 调用真实的支付接口
+        const response = await post('/orders/pay', {
+          orderNo: options.orderNo,
+          paymentMethod: 'wechat'
+        })
+
+        console.log('💳 模拟微信支付响应:', response)
 
         Taro.hideLoading()
-        Taro.showToast({
-          title: '支付成功',
-          icon: 'success'
-        })
 
-        return true
+        if (response.code === 0) {
+          Taro.showToast({
+            title: '支付成功',
+            icon: 'success'
+          })
+          return true
+        } else {
+          throw new Error(response.message || '支付失败')
+        }
       } else {
         console.log('用户取消模拟支付')
         return false
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('💳 模拟微信支付失败:', error)
       Taro.hideLoading()
       Taro.showToast({
-        title: '支付失败',
+        title: error.message || '支付失败',
         icon: 'none'
       })
       throw error
