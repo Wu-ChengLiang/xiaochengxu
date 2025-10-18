@@ -4,6 +4,7 @@ import Taro from '@tarojs/taro'
 import './index.scss'
 
 interface CartItem {
+  id?: string  // 唯一标识符（可选，向后兼容）
   serviceId: string
   serviceName: string
   duration: number
