@@ -6,22 +6,63 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 推拿预约小程序 (Massage Appointment Mini-Program) - A WeChat mini-program built with Taro 3.x + React + TypeScript. A production-ready application connecting to real backend APIs for massage appointment booking and management.
 
+**Monorepo Structure**:
+- `massage-app/` - Taro 3.x frontend (WeChat mini-program + H5)
+- `backend/` - Node.js backend with SQLite database
+- `api-docs/` - API specifications (always read before implementing features)
+- `docs/` - Product requirements (PRD) and technical architecture documents
+
+## Quick Start
+
+**Before any implementation**:
+1. Read relevant API docs in `api-docs/` (e.g., `01-门店API.md` for store features)
+2. Check `massage-app/src/types/index.ts` for existing type definitions
+3. Review `docs/产品需求文档PRD.md` for product context
+
+**Common workflows**:
+```bash
+# Start development (most common)
+cd massage-app && npm run dev:api
+
+# Run tests
+cd massage-app && npm test
+
+# Debug H5 in browser
+cd massage-app && npm run dev:h5:api
+# Then open http://localhost:8081
+```
+
 ## Essential Commands
 
+**IMPORTANT**: All commands must be run from `massage-app/` directory:
 ```bash
-# Development
-npm run dev:api      # Start development with production API (emagen.323424.xyz)
-npm run dev:weapp    # Start with local API (localhost:3001) - for backend development
+cd /home/chengliang/workspace/xiaochengxu/massage-app
+```
 
-# Build
+### Development
+```bash
+npm run dev:api      # WeChat mini-program with production API (recommended)
+npm run dev:weapp    # WeChat mini-program with local API (localhost:3001)
+npm run dev:h5:api   # H5 browser development with hot reload (port 8081)
+npm run dev:h5       # H5 with local API
+```
+
+### Build
+```bash
 npm run build:weapp  # Production build for WeChat
+npm run build:h5     # Production build for H5
+```
 
-# Testing
-npm test             # Run all tests
-npm test -- --watch  # Watch mode
-npm test -- therapist.service.test  # Run specific test
+### Testing
+```bash
+npm test                              # Run all tests
+npm test -- --watch                   # Watch mode
+npm test -- therapist.service.test    # Run specific test file
+npm test -- --testNamePattern="pattern"  # Run tests matching pattern
+```
 
-# Code Quality
+### Code Quality
+```bash
 npm run lint         # Check code style
 npm run lint:fix     # Auto-fix issues
 ```
@@ -167,17 +208,42 @@ interface ApiRequest {
 ## Project Structure
 
 ```
-massage-app/
-├── src/
-│   ├── pages/           # Taro pages (TabBar: appointment, gifts, profile)
-│   ├── components/      # Reusable UI components
-│   ├── services/        # Business logic with API integration
-│   ├── types/           # TypeScript type definitions
-│   ├── config/          # API and app configuration
-│   └── utils/           # Helpers (location, formatting)
-├── api-docs/            # API documentation (read first before implementing)
-├── config/              # Taro build configuration
-└── project.config.json  # WeChat mini-program settings
+xiaochengxu/                          # Root directory
+├── massage-app/                      # Frontend (Taro 3.x + React + TypeScript)
+│   ├── src/
+│   │   ├── pages/                   # Page components
+│   │   │   ├── appointment/         # 预约页 (appointment, store, symptom, therapist)
+│   │   │   ├── booking/             # 预约流程 (confirm, success)
+│   │   │   ├── gift/                # 好礼页 (cards, products)
+│   │   │   ├── mine/                # 我的页 (profile, balance, recharge)
+│   │   │   └── order/               # 订单管理 (list, detail)
+│   │   ├── components/              # Reusable UI components
+│   │   ├── services/                # API service layer (store, therapist, order, etc.)
+│   │   │   └── __tests__/           # Service unit tests
+│   │   ├── types/                   # TypeScript interfaces (index.ts, voucher.ts)
+│   │   ├── config/                  # Configuration (api.ts)
+│   │   ├── utils/                   # Utilities (request.ts, location.ts, user.ts)
+│   │   └── mock/                    # Mock data for development
+│   ├── config/                      # Taro build configuration
+│   ├── dist/                        # Build output (WeChat/H5)
+│   ├── jest.config.js               # Test configuration
+│   ├── package.json                 # Dependencies and scripts
+│   └── project.config.json          # WeChat mini-program settings
+├── backend/                          # Backend services
+│   └── database/                    # SQLite database files
+├── api-docs/                         # API specifications (⚠️ READ FIRST)
+│   ├── 00-通用规范.md
+│   ├── 01-门店API.md
+│   ├── 02-推拿师API.md
+│   ├── 03-预约API.md
+│   ├── 04-用户API.md
+│   ├── 06-订单支付API.md
+│   ├── 07-评价API.md
+│   └── 08-微信手机号API.md
+└── docs/                             # Product and architecture docs
+    ├── 产品需求文档PRD.md
+    ├── 技术架构设计文档.md
+    └── 数据库设计文档.md
 ```
 
 ## Critical Implementation Details
@@ -186,6 +252,7 @@ massage-app/
 - Distance calculation uses Haversine formula (`utils/location.ts`)
 - Therapist recommendations sorted by distance + rating
 - Store listing prioritizes proximity
+- API returns `latitude`/`longitude` directly on Store objects (not nested in `location` property)
 
 ### Environment Configuration
 - API endpoint controlled by `TARO_APP_API` environment variable
@@ -193,14 +260,82 @@ massage-app/
 - Local API: `http://localhost:3001/api/v2` (for backend development)
 - Configuration in `src/config/api.ts`
 
+### Error Handling Patterns
+- Service layer catches errors and logs them with context (e.g., `console.log('⚠️ API调用失败:', error)`)
+- Services provide fallback behavior when APIs fail (e.g., return empty arrays or default time slots)
+- Request layer (`utils/request.ts`) throws errors with response data attached for upper layers to handle
+- API responses follow format: `{ code: 0, message: 'success', data: T }`
+
+### Payment and Wallet System
+- All amounts stored in **cents** (分), not yuan (e.g., 10000 = 100 yuan)
+- Wallet balance supports both `balance` and `frozenBalance`
+- Payment methods: `wechat` (WeChat Pay) or `balance` (wallet balance)
+- Order types: `service` (booking), `product` (gift shop), `recharge` (top-up)
+- WeChat Pay integration returns `wxPayParams` for mini-program payment API
+
 ## Key Files to Understand
 
-1. **`api-docs/`** - API documentation (ALWAYS read first before implementation)
-2. **`src/types/index.ts`** - Complete data model definitions
-3. **`src/services/therapist.service.ts`** - Service layer pattern example
-4. **`src/config/api.ts`** - API configuration and endpoint management
-5. **`src/pages/appointment/`** - Core booking flow implementation
-6. **`src/utils/location.ts`** - Location-based calculations and utilities
+### Critical Files (Read First)
+1. **`api-docs/README.md`** - API overview and quick start (⚠️ ALWAYS read before implementation)
+2. **`massage-app/src/types/index.ts`** - Complete TypeScript type definitions for all models
+3. **`massage-app/src/config/api.ts`** - API endpoint configuration
+4. **`massage-app/src/utils/request.ts`** - HTTP request wrapper with error handling
+
+### Architecture Examples
+5. **`massage-app/src/services/therapist.ts`** - Service layer pattern with location-based logic
+6. **`massage-app/src/services/wallet.service.ts`** - Wallet and balance management
+7. **`massage-app/src/services/order.ts`** - Order creation and payment flow
+8. **`massage-app/src/utils/location.ts`** - Haversine distance calculations
+
+### Page Flow Examples
+9. **`massage-app/src/pages/appointment/`** - Main appointment page and store/therapist selection
+10. **`massage-app/src/pages/booking/confirm/`** - Booking confirmation flow
+11. **`massage-app/src/pages/mine/recharge/`** - Balance recharge with WeChat Pay integration
+
+## Common Patterns and Best Practices
+
+### Service Layer Pattern
+All business logic lives in `src/services/`:
+```typescript
+class TherapistService {
+  async getRecommendedTherapists(page, pageSize, userLocation) {
+    const data = await request('/therapists/recommended', { data: {...} })
+    return data.data // Extract data from ApiResponse wrapper
+  }
+}
+export const therapistService = new TherapistService()
+```
+
+### Type Safety
+- Always import types from `@/types` or `@/types/index`
+- Use `PageData<T>` for paginated responses
+- Use `ApiResponse<T>` for API responses
+- Never use `any` - define proper interfaces
+
+### API Response Unwrapping
+Backend returns: `{ code: 0, message: 'success', data: {...} }`
+Services should return `data.data` to pages, not the full response.
+
+### Distance Calculation
+```typescript
+// Services that need distance must:
+// 1. Get user location from getLocationService
+// 2. Fetch items with location data
+// 3. Calculate distance for each item
+// 4. Sort by distance (null values last)
+```
+
+### Testing Strategy
+- Test files in `src/services/__tests__/`
+- Focus on business logic, not API mocking
+- Use real API endpoints when possible
+- Test distance calculations with realistic coordinates
+
+### User Management
+- User identification via phone number (WeChat phone binding)
+- User ID stored in localStorage/Taro.storage after login
+- Balance operations require valid userId
+- Check user exists in remote DB before operations (see debugging section)
 
 ## 🚀 Complete Development and Debugging Guide
 
