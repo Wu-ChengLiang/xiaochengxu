@@ -4,28 +4,6 @@ import Taro from '@tarojs/taro'
 import './index.scss'
 
 const About: React.FC = () => {
-  const handleLogout = () => {
-    Taro.showModal({
-      title: '提示',
-      content: '确定要退出登录吗？',
-      success: (res) => {
-        if (res.confirm) {
-          // TODO: 实现退出登录逻辑
-          Taro.showToast({
-            title: '已退出登录',
-            icon: 'success',
-            duration: 2000,
-            success: () => {
-              setTimeout(() => {
-                Taro.switchTab({ url: '/pages/appointment/index' })
-              }, 2000)
-            }
-          })
-        }
-      }
-    })
-  }
-
   const handleJoinCall = () => {
     Taro.makePhoneCall({
       phoneNumber: '13701757685'
@@ -41,7 +19,7 @@ const About: React.FC = () => {
           </View>
           <Text className="brand-name">上海名医堂</Text>
         </View>
-        <Text className="version">版本号：5.1.20</Text>
+        <Text className="version">版本号：1.0</Text>
       </View>
 
       <View className="culture-section">
@@ -57,12 +35,6 @@ const About: React.FC = () => {
       <View className="contact-section" onClick={handleJoinCall}>
         <Text className="contact-label">加盟热线：</Text>
         <Text className="contact-number">13701757685</Text>
-      </View>
-
-      <View className="button-section">
-        <Button className="logout-btn" onClick={handleLogout}>
-          退出账户
-        </Button>
       </View>
     </View>
   )
