@@ -22,10 +22,7 @@ interface ShoppingCartProps {
   therapist?: any
   onCheckout: () => void
   onMaskClick?: () => void
-  onContinue?: () => void
-  hasPendingAction?: boolean
   onRemoveItem?: (index: number) => void
-  simpleClearMode?: boolean  // 简化模式：点击遮罩清空购物车
 }
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({
@@ -33,10 +30,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   therapist,
   onCheckout,
   onMaskClick,
-  onContinue,
-  hasPendingAction = false,
-  onRemoveItem,
-  simpleClearMode = false
+  onRemoveItem
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [countdown, setCountdown] = useState(180) // 3分钟 = 180秒
@@ -114,24 +108,9 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
   }
 
   const handleMaskClick = () => {
-    if (simpleClearMode) {
-      // 简化模式：直接清空购物车
-      if (onMaskClick) {
-        onMaskClick()
-      }
-    } else {
-      // 原有逻辑：如果有待处理操作且提供了撤销函数，执行撤销
-      if (onMaskClick && hasPendingAction) {
-        onMaskClick()
-      }
-    }
-    setIsExpanded(false)
-  }
-
-  const handleContinue = () => {
-    // 执行继续预约操作
-    if (onContinue) {
-      onContinue()
+    // 点击遮罩：清空购物车并关闭弹窗
+    if (onMaskClick) {
+      onMaskClick()
     }
     setIsExpanded(false)
   }
@@ -176,8 +155,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
       {isExpanded && (
         <View className="cart-expanded">
           <View className="expanded-header">
-            <Text className="title">已选推拿师({items.length})位</Text>
-            <Text className="action" onClick={handleContinue}>继续预约</Text>
+            <Text className="title">预约详情</Text>
           </View>
 
           {/* 服务详情 */}
