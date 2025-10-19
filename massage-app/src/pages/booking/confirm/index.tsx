@@ -294,7 +294,7 @@ const OrderConfirmPage: React.FC = () => {
 
       Taro.hideLoading()
 
-      // 根据支付方式调用不同的支付方法
+      // 调用统一支付接口
       const paymentSuccess = await paymentService.pay({
         orderNo: order.orderNo,
         amount: order.totalAmount ? order.totalAmount * 100 : getTotalPrice() * 100, // 转换为分
@@ -313,46 +313,9 @@ const OrderConfirmPage: React.FC = () => {
             url: `/pages/booking/success/index?orderNo=${order.orderNo}`
           })
         }, 1500)
-      } else {
-        // 生产环境调用真实支付
-        Taro.requestPayment({
-          ...paymentParams,
-          success: async () => {
-            // 更新订单状态为已支付
-            await orderService.updateOrderStatus(order.orderNo, 'paid')
-            
-            Taro.showToast({
-              title: '支付成功',
-              icon: 'success',
-              duration: 1500
-            })
-            
-            setTimeout(() => {
-              Taro.redirectTo({
-                url: `/pages/booking/success/index?orderNo=${order.orderNo}`
-              })
-            }, 1500)
-          },
-          fail: (err) => {
-            console.error('支付失败:', err)
-            if (err.errMsg !== 'requestPayment:fail cancel') {
-              // 如果是缺少total_fee的错误，给出更明确的提示
-              if (err.errMsg && err.errMsg.includes('total_fee')) {
-                Taro.showToast({
-                  title: '支付参数错误：缺少金额信息',
-                  icon: 'none',
-                  duration: 2500
-                })
-              } else {
-                Taro.showToast({
-                  title: '支付失败',
-                  icon: 'none'
-                })
-              }
-            }
-          }
-        })
       }
+      // 注意: 如果支付失败或用户取消, paymentService.pay() 内部已经显示错误提示
+      // 不需要额外处理
     } catch (error) {
       Taro.hideLoading()
       Taro.showToast({
