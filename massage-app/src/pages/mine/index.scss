@@ -95,6 +95,14 @@
         }
       }
 
+      // 余额和定位横向布局容器
+      .balance-location-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
       .balance-info {
         display: flex;
         align-items: center;
@@ -105,6 +113,7 @@
         margin: 0;
         color: #fff;
         cursor: pointer;
+        flex-shrink: 0;
 
         &:active {
           opacity: 0.8;
@@ -114,6 +123,21 @@
           font-size: 32px;
           font-weight: bold;
           margin-right: 8px;
+        }
+      }
+
+      .location-info {
+        display: flex;
+        align-items: center;
+        padding: 8px 16px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        flex-shrink: 0;
+
+        .location-text {
+          font-size: 24px;
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 400;
         }
       }
     }

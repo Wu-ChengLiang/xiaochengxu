@@ -3,48 +3,6 @@
   background-color: #f8f9fa;
   padding-bottom: 100px; // 留出 TabBar 空间
 
-  .header {
-    background: var(--bg-primary);
-    padding: var(--spacing-md);
-    
-    .location {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-weak);
-      font-size: 24px;
-      
-      .icon {
-        margin-right: 8rpx;
-      }
-      
-      .text {
-        margin-left: 4px;
-        
-        &.loading {
-          color: #666;
-        }
-        
-        &.success {
-          color: #52c41a;
-        }
-        
-        &.error {
-          color: #ff4d4f;
-        }
-      }
-      
-      .retry-btn {
-        margin-left: 8px;
-        color: #a40035;
-        font-size: 22px;
-        padding: 2px 8px;
-        border-radius: 4px;
-        background-color: rgba(217, 69, 95, 0.1);
-      }
-    }
-  }
-
   .section-header {
     display: flex;
     justify-content: space-between;

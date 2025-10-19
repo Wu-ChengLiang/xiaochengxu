@@ -3,6 +3,7 @@ import { View, Text, Image, Button, Input } from '@tarojs/components'
 import { AtIcon, AtModal, AtModalHeader, AtModalContent, AtModalAction } from 'taro-ui'
 import Taro, { useDidShow } from '@tarojs/taro'
 import { walletService } from '@/services/wallet.service'
+import { getLocationService } from '@/services/location'
 import {
   getCurrentUserInfo,
   maskPhone,
@@ -22,6 +23,7 @@ const Mine: React.FC = () => {
   const [balance, setBalance] = useState(0)
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null)
   const [loading, setLoading] = useState(false)
+  const [locationEnabled, setLocationEnabled] = useState(false)
 
   // 新人礼券弹窗
   const [showNewUserVoucher, setShowNewUserVoucher] = useState(false)
@@ -37,12 +39,24 @@ const Mine: React.FC = () => {
 
   useEffect(() => {
     initUser()
+    checkLocation()
   }, [])
 
   // 页面显示时刷新数据
   useDidShow(() => {
     refreshUserData()
+    checkLocation()
   })
+
+  // 检查定位状态
+  const checkLocation = async () => {
+    try {
+      await getLocationService.getCurrentLocation()
+      setLocationEnabled(true)
+    } catch (error) {
+      setLocationEnabled(false)
+    }
+  }
 
   // 初始化用户信息
   const initUser = async () => {
@@ -323,11 +337,18 @@ const Mine: React.FC = () => {
                   }}
                 />
               </View>
-              {/* 余额信息 */}
-              <View className="balance-info" onClick={handleBalanceClick}>
-                <Text className="balance-label">余额: </Text>
-                <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
-                <AtIcon value="chevron-right" size="16" color="#fff" />
+              {/* 余额和定位信息 */}
+              <View className="balance-location-row">
+                <View className="balance-info" onClick={handleBalanceClick}>
+                  <Text className="balance-label">余额: </Text>
+                  <Text className="balance-amount">¥ {balance.toFixed(2)}</Text>
+                  <AtIcon value="chevron-right" size="16" color="#fff" />
+                </View>
+                <View className="location-info">
+                  <Text className="location-text">
+                    {locationEnabled ? '定位已启用' : '定位未启用'}
+                  </Text>
+                </View>
               </View>
             </>
           )}

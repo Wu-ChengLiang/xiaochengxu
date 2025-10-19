@@ -17,9 +17,6 @@ const Appointment: React.FC = () => {
   const [stores, setStores] = useState<Store[]>([])
   const [allStores, setAllStores] = useState<Store[]>([])  // 所有门店数据
   const [therapists, setTherapists] = useState<Therapist[]>([])
-  const [userLocation, setUserLocation] = useState({ latitude: 0, longitude: 0 })
-  const [locationStatus, setLocationStatus] = useState<'loading' | 'success' | 'error'>('loading')
-  const [locationText, setLocationText] = useState('正在获取位置...')
   const [showStoreSheet, setShowStoreSheet] = useState(false)  // 控制门店弹出层
   const [searchValue, setSearchValue] = useState('')  // 搜索框值
 
@@ -31,56 +28,38 @@ const Appointment: React.FC = () => {
   const loadData = async () => {
     try {
       setLoading(true)
-      setLocationStatus('loading')
-      setLocationText('正在获取位置...')
-      
+
       // 获取用户位置
       const location = await getLocationService.getCurrentLocation()
-      setUserLocation(location)
-      
-      // 判断是否是默认位置（上海市中心）
-      if (location.latitude === 31.2304 && location.longitude === 121.4737) {
-        setLocationStatus('error')
-        setLocationText('定位失败，使用默认位置')
-      } else {
-        setLocationStatus('success')
-        setLocationText('定位成功')
-        // 2秒后显示为具体位置（这里可以后续接入逆地理编码）
-        setTimeout(() => {
-          setLocationText('上海市')
-        }, 2000)
-      }
-      
+
       // 获取附近门店（只显示最近的2家）
       const nearbyStores = await storeService.getNearbyStores(
-        location.latitude, 
-        location.longitude, 
-        1, 
+        location.latitude,
+        location.longitude,
+        1,
         2
       )
       setStores(nearbyStores.list)
-      
+
       // 获取所有门店数据（用于更多门店）
       const allStoresData = await storeService.getNearbyStores(
-        location.latitude, 
-        location.longitude, 
-        1, 
+        location.latitude,
+        location.longitude,
+        1,
         20  // 获取更多数据
       )
       setAllStores(allStoresData.list)
-      
+
       // 获取推荐推拿师（使用新的带距离计算的方法）
       const recommendedTherapists = await therapistService.getRecommendedTherapistsWithDistance(
         1,
         10
       )
       setTherapists(recommendedTherapists.list)
-      
+
     } catch (error) {
       console.error('加载数据失败:', error)
-      setLocationStatus('error')
-      setLocationText('定位失败')
-      
+
       Taro.showToast({
         title: '加载失败，请重试',
         icon: 'none'
@@ -119,22 +98,6 @@ const Appointment: React.FC = () => {
 
   return (
     <View className="appointment-page">
-      {/* 头部位置区域 */}
-      <View className="header">
-        <View className="location">
-          <View className="icon">
-            {locationStatus === 'loading' && <AtIcon value="loading-3" size="16" color="#666" />}
-            {locationStatus === 'success' && <AtIcon value="map-pin" size="16" color="#52c41a" />}
-            {locationStatus === 'error' && <AtIcon value="alert-circle" size="16" color="#ff4d4f" />}
-          </View>
-          <Text className={`text ${locationStatus}`}>{locationText}</Text>
-          {locationStatus === 'error' && (
-            <Text className="retry-btn" onClick={loadData}>重试</Text>
-          )}
-        </View>
-      </View>
-      
-      
       {/* 门店预约 */}
       <View className="stores-section">
         <View className="section-header">
