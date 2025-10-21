@@ -3,7 +3,7 @@ import { View, Text, Image } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 import BookingButton from '@/components/BookingButton'
 import type { Store } from '@/types'
-import storeImage from '@/assets/images/store/caodongli/store.jpg'
+import { ASSETS_CONFIG } from '@/config/assets'
 import './index.scss'
 
 interface StoreCardProps {
@@ -44,7 +44,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
         <View className="store-image-wrapper">
           <Image
             className="store-image"
-            src={storeImage}
+            src={ASSETS_CONFIG.store.store1}
             mode="aspectFill"
           />
         </View>

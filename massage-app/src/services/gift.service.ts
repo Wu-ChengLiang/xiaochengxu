@@ -7,6 +7,7 @@ import {
   PayOrderRequest
 } from '@/types'
 import { post } from '@/utils/request'
+import { ASSETS_CONFIG } from '@/config/assets'
 
 // 静态礼卡数据（替代mock）
 const GIFT_CARDS: GiftCard[] = [
@@ -14,7 +15,7 @@ const GIFT_CARDS: GiftCard[] = [
     id: 'member-card',
     type: 'member',
     name: '会员礼卡',
-    image: '/assets/images/gift/card/member-card.png',
+    image: ASSETS_CONFIG.giftCard.member,
     description: '尊享会员专属优惠',
     features: [
       '全门店通用',
@@ -28,7 +29,7 @@ const GIFT_CARDS: GiftCard[] = [
     id: 'electronic-card',
     type: 'electronic',
     name: '电子礼卡',
-    image: '/assets/images/gift/card/gift-card.png',
+    image: ASSETS_CONFIG.giftCard.electronic,
     description: '便捷的电子礼品卡',
     features: [
       '即买即用',
@@ -45,7 +46,7 @@ const PRODUCTS: Product[] = [
   {
     id: 'pillow',
     name: '护颈助眠小枕',
-    image: '/assets/images/gift/product/neck-pillow.png',
+    image: ASSETS_CONFIG.product.pillow,
     price: 299.00,
     originalPrice: 399.00,
     unit: '个',
@@ -66,7 +67,7 @@ const PRODUCTS: Product[] = [
   {
     id: 'therapy',
     name: '药食同源理疗包',
-    image: '/assets/images/gift/product/health-food.png',
+    image: ASSETS_CONFIG.product.therapy,
     price: 199.00,
     originalPrice: 299.00,
     unit: '套',

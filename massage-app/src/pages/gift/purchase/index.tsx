@@ -76,7 +76,7 @@ const GiftCardPurchase: React.FC = () => {
       <View className="card-preview">
         <Image 
           className="card-image"
-          src="/assets/images/gift/card/gift-card.png"
+          src="https://mingyitang1024.com/static/card/gift-card.png"
           mode="aspectFit"
         />
         <View className="card-content">

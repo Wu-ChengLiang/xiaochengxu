@@ -6,7 +6,7 @@ import { storeService } from '@/services/store'
 import { getLocationService } from '@/services/location'
 import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
-import storeDetailImage from '@/assets/images/store/caodongli/store2.jpg'
+import { ASSETS_CONFIG } from '@/config/assets'
 import './index.scss'
 
 
@@ -130,7 +130,7 @@ const StoreAppointmentPage: React.FC = () => {
       <View className="store-header">
         <Image
           className="store-image"
-          src={storeDetailImage}
+          src={ASSETS_CONFIG.store.store2}
           // src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
           mode="aspectFill"
         />

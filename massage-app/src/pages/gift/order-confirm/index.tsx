@@ -140,7 +140,7 @@ const OrderConfirm: React.FC = () => {
           <View className="card-preview">
             <Image 
               className="card-thumb"
-              src="/assets/images/gift/card/gift-card.png"
+              src="https://mingyitang1024.com/static/card/gift-card.png"
               mode="aspectFill"
             />
             <View className="card-badge">

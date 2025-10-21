@@ -1,10 +1,12 @@
+import { ASSETS_CONFIG } from '@/config/assets'
+
 // 礼卡数据
 export const giftCards = [
   {
     id: 'member-card',
     type: 'member',
     name: '会员礼卡',
-    image: '/assets/images/gift/card/member-card.png',
+    image: ASSETS_CONFIG.giftCard.member,
     description: '尊享会员专属优惠',
     features: [
       '全门店通用',
@@ -18,7 +20,7 @@ export const giftCards = [
     id: 'electronic-card',
     type: 'electronic',
     name: '电子礼卡',
-    image: '/assets/images/gift/card/gift-card.png',
+    image: ASSETS_CONFIG.giftCard.electronic,
     description: '便捷的电子礼品卡',
     features: [
       '即买即用',
@@ -35,7 +37,7 @@ export const products = [
   {
     id: 'pillow',
     name: '护颈助眠小枕',
-    image: '/assets/images/gift/product/neck-pillow.png',
+    image: ASSETS_CONFIG.product.pillow,
     price: 299.00,
     originalPrice: 399.00,
     unit: '个',
@@ -56,7 +58,7 @@ export const products = [
   {
     id: 'therapy',
     name: '药食同源理疗包',
-    image: '/assets/images/gift/product/health-food.png',
+    image: ASSETS_CONFIG.product.therapy,
     price: 199.00,
     originalPrice: 299.00,
     unit: '套',
