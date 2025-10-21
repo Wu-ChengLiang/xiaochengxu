@@ -76,24 +76,37 @@ const Recharge: React.FC = () => {
       // 创建充值订单
       const order = await walletService.createRechargeOrder(amount, bonus)
 
+      console.log('💰 充值订单创建成功:', order)
+      console.log('💰 订单号:', order.orderNo)
+      console.log('💰 支付参数:', order.wxPayParams)
+
       // 调起微信支付
       if (order.wxPayParams) {
-        await walletService.handleWechatPay(order.wxPayParams)
+        // 使用统一支付服务
+        const paymentSuccess = await paymentService.pay({
+          orderNo: order.orderNo,
+          amount: amount * 100, // 转换为分
+          paymentMethod: 'wechat',
+          title: `充值${amount}元${bonus > 0 ? `(赠${bonus}元)` : ''}`,
+          wxPayParams: order.wxPayParams
+        } as any)
 
-        Taro.showToast({
-          title: '充值成功',
-          icon: 'success',
-          duration: 2000
-        })
+        if (paymentSuccess) {
+          Taro.showToast({
+            title: '充值成功',
+            icon: 'success',
+            duration: 2000
+          })
 
-        setTimeout(() => {
-          Taro.navigateBack()
-        }, 2000)
+          setTimeout(() => {
+            Taro.navigateBack()
+          }, 2000)
+        }
       } else {
         throw new Error('获取支付参数失败')
       }
     } catch (error: any) {
-      if (error.message?.includes('用户取消')) {
+      if (error.message?.includes('用户取消') || error.errMsg?.includes('cancel')) {
         Taro.showToast({
           title: '支付已取消',
           icon: 'none'

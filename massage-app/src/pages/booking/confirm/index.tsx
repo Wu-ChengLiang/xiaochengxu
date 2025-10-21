@@ -291,6 +291,7 @@ const OrderConfirmPage: React.FC = () => {
 
       console.log('✅ 订单创建成功:', result)
       console.log('✅ 订单号:', order.orderNo)
+      console.log('✅ 支付参数:', order.wxPayParams)
 
       Taro.hideLoading()
 
@@ -299,8 +300,9 @@ const OrderConfirmPage: React.FC = () => {
         orderNo: order.orderNo,
         amount: order.totalAmount ? order.totalAmount * 100 : getTotalPrice() * 100, // 转换为分
         paymentMethod: paymentMethod,
-        title: `${firstItem.serviceName} - ${firstItem.therapistName}`
-      })
+        title: `${firstItem.serviceName} - ${firstItem.therapistName}`,
+        wxPayParams: order.wxPayParams  // 传递后端返回的微信支付参数
+      } as any)
 
       if (paymentSuccess) {
         // 支付成功后更新余额显示

@@ -20,10 +20,10 @@ interface PaymentOptions {
 
 class PaymentService {
   private config: PaymentConfig = {
-    // 个人小程序默认配置
-    useMockPayment: true,
+    // 企业小程序真实支付配置
+    useMockPayment: false,  // 关闭模拟支付
     enableBalancePayment: true,
-    enableWechatPayment: false
+    enableWechatPayment: true  // 启用真实微信支付
   }
 
   /**
@@ -158,17 +158,24 @@ class PaymentService {
 
   /**
    * 真实微信支付（需要企业认证）
+   * 注意：wxPayParams 已经在创建订单时由后端返回
    */
   private async payWithWechat(options: PaymentOptions): Promise<boolean> {
     try {
-      // 获取支付参数
-      const { data } = await post('/orders/wechat-pay-params', {
-        orderNo: options.orderNo
-      })
+      console.log('💳 开始真实微信支付，订单号:', options.orderNo)
 
-      const { wxPayParams } = data
+      // ⚠️ 重要：wxPayParams 应该由创建订单接口返回，而不是单独获取
+      // 如果没有传入支付参数，需要从订单服务获取
+      // 这里假设调用方已经在options中附带了wxPayParams
+      const wxPayParams = (options as any).wxPayParams
 
-      // 调起微信支付
+      if (!wxPayParams) {
+        throw new Error('缺少微信支付参数，请先创建订单')
+      }
+
+      console.log('💳 微信支付参数:', wxPayParams)
+
+      // 调起微信支付SDK
       await Taro.requestPayment({
         timeStamp: wxPayParams.timeStamp,
         nonceStr: wxPayParams.nonceStr,
@@ -176,6 +183,8 @@ class PaymentService {
         signType: wxPayParams.signType as any,
         paySign: wxPayParams.paySign
       })
+
+      console.log('💳 用户完成支付，等待微信回调后端更新订单状态')
 
       Taro.showToast({
         title: '支付成功',
@@ -185,10 +194,11 @@ class PaymentService {
       return true
     } catch (error: any) {
       if (error.errMsg === 'requestPayment:fail cancel') {
-        console.log('用户取消支付')
+        console.log('💳 用户取消支付')
         return false
       }
 
+      console.error('💳 微信支付失败:', error)
       Taro.showToast({
         title: '支付失败',
         icon: 'none'
