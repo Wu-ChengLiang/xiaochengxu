@@ -13,7 +13,10 @@
  *   开发环境: /assets 或 http://localhost:3000/static
  */
 
-const CDN_BASE = process.env.TARO_APP_ASSET_CDN || 'https://mingyitang1024.com/static';
+// 在 WeChat 小程序中，不能使用 process.env（编译后会导致运行时错误）
+// Taro 会将 TARO_APP_* 环境变量通过编译时替换实现
+// 采用条件编译方案，保证小程序和H5都能正常运行
+const CDN_BASE = 'https://mingyitang1024.com/static';
 
 export const ASSETS_CONFIG = {
   // 资源服务器基础URL
