@@ -295,6 +295,25 @@ const OrderConfirmPage: React.FC = () => {
 
       Taro.hideLoading()
 
+      // ✅ 检查订单创建结果
+      if (!order || !order.orderNo) {
+        throw new Error('订单创建失败，未返回订单号')
+      }
+
+      // ✅ 微信支付需要检查wxPayParams
+      if (paymentMethod === 'wechat') {
+        if (!order.wxPayParams) {
+          throw new Error('微信支付参数缺失，请检查用户登录状态或尝试余额支付')
+        }
+        console.log('✅ 微信支付参数完整性检查:', {
+          timeStamp: !!order.wxPayParams.timeStamp,
+          nonceStr: !!order.wxPayParams.nonceStr,
+          package: !!order.wxPayParams.package,
+          signType: !!order.wxPayParams.signType,
+          paySign: !!order.wxPayParams.paySign
+        })
+      }
+
       // 调用统一支付接口
       const paymentSuccess = await paymentService.pay({
         orderNo: order.orderNo,
@@ -319,10 +338,16 @@ const OrderConfirmPage: React.FC = () => {
       // 注意: 如果支付失败或用户取消, paymentService.pay() 内部已经显示错误提示
       // 不需要额外处理
     } catch (error) {
+      console.error('❌ 支付流程错误:', error)
       Taro.hideLoading()
-      Taro.showToast({
-        title: error.message || '订单创建失败',
-        icon: 'none'
+
+      // ✅ 显示更详细的错误信息
+      const errorMessage = error.message || error.errMsg || '订单创建失败'
+      Taro.showModal({
+        title: '支付失败',
+        content: errorMessage,
+        showCancel: false,
+        confirmText: '知道了'
       })
     }
   }

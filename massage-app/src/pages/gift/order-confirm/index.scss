@@ -113,6 +113,11 @@
         }
       }
 
+      &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
       .method-info {
         display: flex;
         align-items: center;
@@ -121,6 +126,17 @@
         .method-name {
           font-size: 30px;
           color: #333;
+        }
+
+        .balance-amount {
+          font-size: 26px;
+          color: #666;
+          margin-left: 8px;
+
+          .insufficient {
+            color: #f56c6c;
+            font-size: 24px;
+          }
         }
       }
     }

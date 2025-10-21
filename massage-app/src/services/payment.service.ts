@@ -173,7 +173,22 @@ class PaymentService {
         throw new Error('缺少微信支付参数，请先创建订单')
       }
 
-      console.log('💳 微信支付参数:', wxPayParams)
+      // ✅ 验证支付参数完整性
+      const requiredFields = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign']
+      const missingFields = requiredFields.filter(field => !wxPayParams[field])
+
+      if (missingFields.length > 0) {
+        console.error('❌ 微信支付参数不完整，缺少字段:', missingFields)
+        throw new Error(`微信支付参数缺失: ${missingFields.join(', ')}`)
+      }
+
+      console.log('💳 微信支付参数:', {
+        timeStamp: wxPayParams.timeStamp,
+        nonceStr: wxPayParams.nonceStr?.substring(0, 8) + '...',
+        package: wxPayParams.package,
+        signType: wxPayParams.signType,
+        paySign: wxPayParams.paySign?.substring(0, 16) + '...'
+      })
 
       // 调起微信支付SDK
       await Taro.requestPayment({
@@ -199,9 +214,16 @@ class PaymentService {
       }
 
       console.error('💳 微信支付失败:', error)
+      console.error('💳 错误详情:', {
+        errMsg: error.errMsg,
+        errCode: error.errCode,
+        message: error.message
+      })
+
       Taro.showToast({
-        title: '支付失败',
-        icon: 'none'
+        title: error.errMsg || error.message || '支付失败',
+        icon: 'none',
+        duration: 3000
       })
       throw error
     }
