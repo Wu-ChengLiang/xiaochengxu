@@ -1,10 +1,8 @@
-import Taro from '@tarojs/taro'
 import {
   GiftCard,
   Product,
   CreateOrderRequest,
-  OrderResponse,
-  PayOrderRequest
+  OrderResponse
 } from '@/types'
 import { post } from '@/utils/request'
 import { ASSETS_CONFIG } from '@/config/assets'
@@ -205,48 +203,4 @@ export class GiftService {
     }
   }
 
-  /**
-   * 支付订单
-   */
-  static async payOrder(params: PayOrderRequest): Promise<OrderResponse> {
-    try {
-      const response = await post('/orders/pay', params, {
-        showLoading: true,
-        loadingTitle: '支付中...'
-      })
-
-      return response.data
-    } catch (error: any) {
-      console.error('支付订单失败:', error)
-      throw new Error(error.message || '支付失败')
-    }
-  }
-
-  /**
-   * 处理微信支付
-   */
-  static async handleWechatPay(wxPayParams: {
-    prepayId: string
-    timeStamp: string
-    nonceStr: string
-    package: string
-    signType: string
-    paySign: string
-  }): Promise<void> {
-    return new Promise((resolve, reject) => {
-      Taro.requestPayment({
-        timeStamp: wxPayParams.timeStamp,
-        nonceStr: wxPayParams.nonceStr,
-        package: wxPayParams.package,
-        signType: wxPayParams.signType as any,
-        paySign: wxPayParams.paySign,
-        success: () => {
-          resolve()
-        },
-        fail: (err) => {
-          reject(new Error(err.errMsg || '支付失败'))
-        }
-      })
-    })
-  }
 }

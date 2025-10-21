@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
-import { GiftService } from '@/services/gift.service'
 import { paymentService } from '@/services/payment.service'
 import { walletService } from '@/services/wallet.service'
 import './index.scss'
@@ -83,25 +82,14 @@ const OrderConfirm: React.FC = () => {
         totalAmount
       })
 
-      // 先调用后端创建/获取订单，获取wxPayParams（如果是微信支付）
-      Taro.showLoading({ title: '准备支付...' })
-
-      const orderResult = await GiftService.payOrder({
-        orderNo: orderNo as string,
-        paymentMethod: paymentMethod
-      })
-
-      console.log('🎁 订单支付接口返回:', orderResult)
-      Taro.hideLoading()
-
       // 使用统一的支付服务处理支付
+      // paymentService 内部会调用后端获取支付参数
       const paymentSuccess = await paymentService.pay({
         orderNo: orderNo as string,
         amount: totalAmount * 100, // 转换为分
         paymentMethod: paymentMethod,
-        title: `电子礼卡 ¥${amount} × ${quantity}`,
-        wxPayParams: orderResult.wxPayParams  // 传递后端返回的微信支付参数
-      } as any)
+        title: `电子礼卡 ¥${amount} × ${quantity}`
+      })
 
       if (paymentSuccess) {
         // 支付成功后更新余额显示

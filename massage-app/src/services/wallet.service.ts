@@ -237,25 +237,6 @@ class WalletService {
   }
 
   /**
-   * 处理微信支付
-   * @param wxPayParams 微信支付参数
-   * @returns Promise
-   */
-  async handleWechatPay(wxPayParams: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-      Taro.requestPayment({
-        timeStamp: wxPayParams.timeStamp,
-        nonceStr: wxPayParams.nonceStr,
-        package: wxPayParams.package,
-        signType: wxPayParams.signType,
-        paySign: wxPayParams.paySign,
-        success: () => resolve(),
-        fail: (err) => reject(new Error(err.errMsg || '支付失败'))
-      })
-    })
-  }
-
-  /**
    * 退款到余额
    * @param orderNo 订单号
    * @param amount 退款金额（元）

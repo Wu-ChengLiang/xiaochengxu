@@ -3,6 +3,7 @@ import { View, Text, Image, Button, Swiper, SwiperItem } from '@tarojs/component
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import { GiftService } from '@/services/gift.service'
+import { paymentService } from '@/services/payment.service'
 import { Product } from '@/types'
 import './index.scss'
 
@@ -44,6 +45,7 @@ const ProductDetail: React.FC = () => {
     try {
       Taro.showLoading({ title: '创建订单...' })
 
+      // 创建商品订单
       const order = await GiftService.createProductOrder({
         productId: productInfo.id,
         quantity,
@@ -52,18 +54,37 @@ const ProductDetail: React.FC = () => {
 
       Taro.hideLoading()
 
-      if (order.paymentMethod === 'wechat' && order.wxPayParams) {
-        await GiftService.handleWechatPay(order.wxPayParams)
+      // 使用统一的支付服务处理支付
+      const paymentSuccess = await paymentService.pay({
+        orderNo: order.orderNo,
+        amount: productInfo.price * 100 * quantity,
+        paymentMethod: 'wechat',
+        title: productInfo.name,
+        wxPayParams: order.wxPayParams
+      })
+
+      if (paymentSuccess) {
         Taro.showToast({
-          title: '支付成功',
-          icon: 'success'
+          title: '购买成功',
+          icon: 'success',
+          duration: 1500
         })
+
+        setTimeout(() => {
+          Taro.navigateBack()
+        }, 1500)
       }
+      // 如果支付失败或用户取消，paymentService 内部已处理提示
     } catch (error: any) {
       Taro.hideLoading()
-      Taro.showToast({
-        title: error.message || '购买失败',
-        icon: 'none'
+
+      // 显示详细错误信息
+      const errorMessage = error.message || error.errMsg || '购买失败'
+      Taro.showModal({
+        title: '购买失败',
+        content: errorMessage,
+        showCancel: false,
+        confirmText: '知道了'
       })
     }
   }
