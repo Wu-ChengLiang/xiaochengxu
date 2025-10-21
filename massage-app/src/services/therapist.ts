@@ -2,6 +2,7 @@ import { request } from '@/utils/request'
 import type { Therapist, PageData } from '@/types'
 import { storeService } from './store'
 import { getLocationService } from './location'
+import { normalizeImageUrl } from '@/utils/image'
 
 class TherapistService {
   // 获取推荐推拿师
@@ -46,9 +47,15 @@ class TherapistService {
 
       const therapists = data.data?.list || []
 
-      // 3. 为每个推拿师计算距离
+      // 3. 规范化推拿师头像URL（HTTP→HTTPS）
+      const normalizedTherapists = therapists.map((therapist: Therapist) => ({
+        ...therapist,
+        avatar: normalizeImageUrl(therapist.avatar)
+      }))
+
+      // 4. 为每个推拿师计算距离
       const therapistsWithDistance = await Promise.all(
-        therapists.map(async (therapist: Therapist) => {
+        normalizedTherapists.map(async (therapist: Therapist) => {
           try {
             // 获取推拿师对应门店信息
             const storeData = await storeService.getStoreDetail(therapist.storeId)

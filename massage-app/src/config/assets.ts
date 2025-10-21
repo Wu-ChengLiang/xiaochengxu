@@ -7,44 +7,51 @@
  * - 支持环境变量切换（生产/开发）
  * - 所有页面共用一份配置，保持一致性
  *
- * 环境变量说明：
- * - TARO_APP_ASSET_CDN: 资源服务器地址
- *   生产环境: https://mingyitang1024.com/static
- *   开发环境: /assets 或 http://localhost:3000/static
+ * 说明：
+ * - 礼卡、商品图片：由后端提供的静态CDN路径
+ * - 推拿师头像：由API返回的avatar_url字段，自动转换为HTTPS
+ * - 门店图片：由API返回的images字段，自动转换为HTTPS
+ * - 用户头像：由API返回的avatar字段，自动转换为HTTPS
  */
+
+import { normalizeImageUrl } from '@/utils/image'
 
 // 在 WeChat 小程序中，不能使用 process.env（编译后会导致运行时错误）
 // Taro 会将 TARO_APP_* 环境变量通过编译时替换实现
-// 采用条件编译方案，保证小程序和H5都能正常运行
+// 采用硬编码方案，保证小程序和H5都能正常运行
 const CDN_BASE = 'https://mingyitang1024.com/static';
 
 export const ASSETS_CONFIG = {
   // 资源服务器基础URL
   baseUrl: CDN_BASE,
 
-  // 礼卡图片
+  // 礼卡图片 - ✅ 已在服务器上验证存在
   giftCard: {
-    member: `${CDN_BASE}/card/member-card.png`,
-    electronic: `${CDN_BASE}/card/gift-card.png`
+    member: `${CDN_BASE}/card/member-card.png`,  // ✅ 200 OK
+    electronic: `${CDN_BASE}/card/gift-card.png`  // ✅ 200 OK
   },
 
-  // 周边商品图片
+  // 周边商品图片 - ⚠️ 暂不在服务器上
+  // 当前策略：显示礼卡，不显示商品图片（由后端处理）
   product: {
-    pillow: `${CDN_BASE}/product/neck-pillow.png`,
-    therapy: `${CDN_BASE}/product/health-food.png`
+    pillow: '',  // 暂无 - 后端可返回product API
+    therapy: ''  // 暂无 - 后端可返回product API
   },
 
-  // 推荐banner
+  // 推荐banner - ⚠️ 暂不在服务器上
+  // 当前策略：由后端或页面处理banner数据
   banners: {
-    goodnight: `${CDN_BASE}/banners/goodnight.jpg`
+    goodnight: ''  // 暂无
   },
 
-  // 门店图片
-  store: {
-    caodongli: `${CDN_BASE}/store/caodongli/caodongli.jpg`,
-    store1: `${CDN_BASE}/store/caodongli/store.jpg`,
-    store2: `${CDN_BASE}/store/caodongli/store2.jpg`
-  }
+  // 推拿师头像 - ✅ 已在服务器上验证存在
+  // 路径: /static/therapists/老师收集中文原版/{门店名}/{老师名}.jpg
+  therapists: {
+    baseUrl: `${CDN_BASE}/therapists/老师收集中文原版`
+  },
+
+  // 默认图片 - 用于缺失的图片URL
+  default: `${CDN_BASE}/default.png`
 };
 
 /**
@@ -54,7 +61,12 @@ export const ASSETS_CONFIG = {
  * @param path 资源相对路径，如 '/card/member-card.png'
  * @returns 完整的资源URL
  */
-export const getAssetUrl = (path: string): string => {
+export const getAssetUrl = (path: string | null | undefined): string => {
+  // 如果路径为空，返回默认图片
+  if (!path) {
+    return ASSETS_CONFIG.default;
+  }
+
   // 如果已经是完整URL，直接返回
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;

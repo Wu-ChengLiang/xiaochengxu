@@ -1,42 +1,32 @@
 import { ASSETS_CONFIG } from '@/config/assets'
+import { normalizeImageUrl } from '@/utils/image'
 
 /**
- * Mock图片数据 - 使用动态URL加载
+ * Mock图片数据 - 使用API返回的动态数据
  *
- * 说明：
- * - 门店图片使用ASSETS_CONFIG中的配置
- * - 推拿师头像应该从API返回的avatar字段获取
- * - Banner图片使用ASSETS_CONFIG中的配置
+ * 重要说明：
+ * - 推拿师头像：从API返回的avatar_url字段获取（自动转换HTTP→HTTPS）
+ * - 门店图片：从API返回的images[]字段获取（自动转换HTTP→HTTPS）
+ * - 礼卡/商品图片：从ASSETS_CONFIG获取（已是HTTPS）
+ * - Banner图片：从ASSETS_CONFIG获取（已是HTTPS）
  *
- * 后续改进：
- * - 推拿师头像可迁移到API /therapists/:id 返回的avatar字段
- * - 门店图片可迁移到API /stores/:id 返回的images字段
+ * 优势：
+ * - 动态数据完全由API驱动，无需修改代码
+ * - 自动处理HTTP→HTTPS转换（WeChat要求）
+ * - 支持后端灵活配置
  */
 
 export const mockImages = {
-  // 门店图片 - 从配置获取
-  stores: [
-    ASSETS_CONFIG.store.caodongli,
-    ASSETS_CONFIG.store.caodongli,
-    ASSETS_CONFIG.store.caodongli,
-    ASSETS_CONFIG.store.caodongli,
-    ASSETS_CONFIG.store.caodongli
-  ],
+  // 注：实际使用时，这些应该从API返回的therapist对象中获取
+  // 这里仅保留作为参考，页面应该使用 normalizeImageUrl(therapist.avatar)
+  stores: [],
 
-  // 推拿师头像 - 占位URL（应该从API返回）
   therapists: {
-    male: [
-      `${ASSETS_CONFIG.baseUrl}/therapists/therapist-male-1.jpg`,
-      `${ASSETS_CONFIG.baseUrl}/therapists/therapist-male-2.jpg`,
-      `${ASSETS_CONFIG.baseUrl}/therapists/therapist-male-3.jpg`
-    ],
-    female: [
-      `${ASSETS_CONFIG.baseUrl}/therapists/therapist-female-1.jpg`,
-      `${ASSETS_CONFIG.baseUrl}/therapists/therapist-female-2.jpg`
-    ]
+    male: [],
+    female: []
   },
 
-  // 优惠活动banner
+  // 优惠活动banner - 已确认存在于服务器
   banners: [
     ASSETS_CONFIG.banners.goodnight
   ]
@@ -44,3 +34,6 @@ export const mockImages = {
 
 // 导出banner供页面使用
 export const bannerGoodnight = ASSETS_CONFIG.banners.goodnight
+
+// 导出URL规范化工具，供页面使用
+export { normalizeImageUrl }

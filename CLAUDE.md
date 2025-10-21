@@ -556,6 +556,72 @@ print(cursor.fetchone())
 "
 ```
 
+## 🖼️ WeChat 图片优化指南
+
+### 问题背景
+- 微信要求所有图片必须使用 **HTTPS** 协议
+- 本地打包的图片会增加bundle大小，超过2MB限制
+- 推拿师头像和门店图片来自 API，可能返回HTTP URL
+
+### 解决方案
+
+#### 1️⃣ **图片URL规范化** (`src/utils/image.ts`)
+```typescript
+// 自动转换 HTTP → HTTPS
+normalizeImageUrl('http://8.133.16.64/therapist.jpg')
+// → 'https://8.133.16.64/therapist.jpg'
+```
+
+#### 2️⃣ **分类管理图片**
+
+| 图片类型 | 来源 | 处理方式 |
+|---------|------|---------|
+| 推拿师头像 | API avatar_url | 服务层自动规范化 |
+| 门店图片 | API images[] | 服务层自动规范化 |
+| 礼卡/商品 | 配置 ASSETS_CONFIG | 已是HTTPS |
+| tabBar图标 | 本地打包 | 88KB可接受 |
+
+#### 3️⃣ **服务层自动处理**
+```typescript
+// therapist.service.ts - 自动转换API返回的图片
+const normalizedTherapists = therapists.map(t => ({
+  ...t,
+  avatar: normalizeImageUrl(t.avatar)
+}))
+
+// store.service.ts - 自动转换API返回的图片
+image: normalizeImageUrl(store.image),
+images: store.images?.map(img => normalizeImageUrl(img))
+```
+
+#### 4️⃣ **页面使用（无需额外处理）**
+```tsx
+// 组件自动接收已规范化的URL
+<Image src={therapist.avatar} />  // ✅ 已是HTTPS
+<Image src={store.image} />       // ✅ 已是HTTPS
+```
+
+### 最佳实践
+1. **所有动态图片必须在服务层规范化**（src/services/）
+2. **静态图片使用 ASSETS_CONFIG**（src/config/assets.ts）
+3. **TabBar图标可保留本地**（88KB，可忽略）
+4. **不要在页面层处理URL转换**，服务层统一处理
+
+### 常见错误
+❌ 在页面中使用HTTP URL
+```tsx
+<Image src="http://example.com/image.jpg" />  // 会报404
+```
+
+✅ 在服务层转换
+```tsx
+// 服务层
+avatar: normalizeImageUrl(apiResponse.avatar)
+
+// 页面使用
+<Image src={therapist.avatar} />  // 已是HTTPS
+```
+
 ### API Debugging Commands
 
 #### User Management

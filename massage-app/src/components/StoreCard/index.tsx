@@ -4,6 +4,7 @@ import { AtIcon } from 'taro-ui'
 import BookingButton from '@/components/BookingButton'
 import type { Store } from '@/types'
 import { ASSETS_CONFIG } from '@/config/assets'
+import { normalizeImageUrl } from '@/utils/image'
 import './index.scss'
 
 interface StoreCardProps {
@@ -44,7 +45,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ store, onClick }) => {
         <View className="store-image-wrapper">
           <Image
             className="store-image"
-            src={ASSETS_CONFIG.store.store1}
+            src={normalizeImageUrl(store.image)}
             mode="aspectFill"
           />
         </View>

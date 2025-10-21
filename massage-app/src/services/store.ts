@@ -1,5 +1,6 @@
 import { request } from '@/utils/request'
 import type { Store, PageData } from '@/types'
+import { normalizeImageUrl } from '@/utils/image'
 
 class StoreService {
   // 获取附近门店
@@ -18,7 +19,16 @@ class StoreService {
 
       // 检查响应结构
       if (data && data.data && data.data.list) {
-        return data.data
+        // 规范化图片URL（HTTP→HTTPS）
+        const normalizedStores = data.data.list.map((store: Store) => ({
+          ...store,
+          image: normalizeImageUrl(store.image),
+          images: store.images?.map(img => normalizeImageUrl(img))
+        }))
+        return {
+          ...data.data,
+          list: normalizedStores
+        }
       } else {
         // 如果API不存在，返回mock数据
         console.log('⚠️ API不存在，使用mock数据')
@@ -48,7 +58,19 @@ class StoreService {
     try {
       const data = await request(`/stores/${storeId}`)
       console.log('✅ 门店详情API调用成功:', data)
-      return data  // 直接返回data，不需要data.data
+
+      // 规范化图片URL（HTTP→HTTPS）
+      if (data?.data) {
+        return {
+          ...data,
+          data: {
+            ...data.data,
+            image: normalizeImageUrl(data.data.image),
+            images: data.data.images?.map((img: string) => normalizeImageUrl(img))
+          }
+        }
+      }
+      return data
     } catch (error) {
       console.log('⚠️ 门店详情API调用失败:', error)
       return null

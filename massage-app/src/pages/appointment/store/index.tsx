@@ -7,6 +7,7 @@ import { getLocationService } from '@/services/location'
 import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
 import { ASSETS_CONFIG } from '@/config/assets'
+import { normalizeImageUrl } from '@/utils/image'
 import './index.scss'
 
 
@@ -130,8 +131,8 @@ const StoreAppointmentPage: React.FC = () => {
       <View className="store-header">
         <Image
           className="store-image"
-          src={ASSETS_CONFIG.store.store2}
-          // src={store.images?.[0] || store.image || '/static/images/default-store.jpg'}
+          src={normalizeImageUrl(store.images?.[0] || store.image)}
+          // src={store.images?.[0] || store.image || ASSETS_CONFIG.store.default}
           mode="aspectFill"
         />
       </View>
