@@ -3,7 +3,7 @@
  */
 const axios = require('axios')
 
-const API_BASE = 'http://emagen.323424.xyz/api/v2'
+const API_BASE = 'http://mingyitang1024.com/api/v2'
 
 async function testReviewAPI() {
   console.log('开始测试真实的评价API...\n')

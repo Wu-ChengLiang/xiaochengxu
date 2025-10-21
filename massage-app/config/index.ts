@@ -17,7 +17,7 @@ export default defineConfig<'vite'>({
   plugins: ['@tarojs/plugin-platform-weapp', '@tarojs/plugin-platform-h5'],
   defineConstants: {
     'process.env.TARO_APP_USE_MOCK': JSON.stringify(process.env.TARO_APP_USE_MOCK || 'true'),
-    'process.env.TARO_APP_API': JSON.stringify(process.env.TARO_APP_API || 'http://emagen.323424.xyz/api/v2'),
+    'process.env.TARO_APP_API': JSON.stringify(process.env.TARO_APP_API || 'http://mingyitang1024.com/api/v2'),
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
   },
   copy: {

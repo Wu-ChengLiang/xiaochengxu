@@ -256,7 +256,7 @@ xiaochengxu/                          # Root directory
 
 ### Environment Configuration
 - API endpoint controlled by `TARO_APP_API` environment variable
-- Production API: `http://emagen.323424.xyz/api/v2` (default)
+- Production API: `http://mingyitang1024.com/api/v2` (default)
 - Local API: `http://localhost:3001/api/v2` (for backend development)
 - Configuration in `src/config/api.ts`
 
@@ -372,7 +372,7 @@ npm run dev:h5:api
 #### 2️⃣ Production Build Server (Optional)
 ```bash
 # Build first
-TARO_APP_API=http://emagen.323424.xyz/api/v2 npm run build:h5
+TARO_APP_API=http://mingyitang1024.com/api/v2 npm run build:h5
 
 # Python static server (port 8082)
 cd dist && python3 -m http.server 8082
@@ -425,7 +425,7 @@ npm run dev:api
 npm run dev:h5:api
 
 # H5 production build
-export TARO_APP_API=http://emagen.323424.xyz/api/v2
+export TARO_APP_API=http://mingyitang1024.com/api/v2
 npm run build:h5
 cd dist && python3 -m http.server 8082
 ```
@@ -496,7 +496,7 @@ This setup allows you to:
   - Data is independent and does not sync with remote
 
 - **Remote Database**: Deployed on server
-  - API Address: `http://emagen.323424.xyz/api/v2`
+  - API Address: `http://mingyitang1024.com/api/v2`
   - Production environment data
   - Frontend connects to this by default
 
@@ -507,7 +507,7 @@ This setup allows you to:
 #### 1. User Does Not Exist Error (500/404)
 **Problem**:
 ```
-GET http://emagen.323424.xyz/api/v2/users/wallet/balance?userId=35
+GET http://mingyitang1024.com/api/v2/users/wallet/balance?userId=35
 500 (Internal Server Error)
 ```
 
@@ -519,10 +519,10 @@ GET http://emagen.323424.xyz/api/v2/users/wallet/balance?userId=35
 **Solution**:
 ```bash
 # 1. Verify if user exists
-curl -X GET "http://emagen.323424.xyz/api/v2/users/info?phone=手机号"
+curl -X GET "http://mingyitang1024.com/api/v2/users/info?phone=手机号"
 
 # 2. Create user (via bind-phone endpoint)
-curl -X POST "http://emagen.323424.xyz/api/v2/users/bind-phone" \
+curl -X POST "http://mingyitang1024.com/api/v2/users/bind-phone" \
   -H "Content-Type: application/json" \
   -d '{
     "openid": "wx_test_xxx",
@@ -539,7 +539,7 @@ curl -X POST "http://emagen.323424.xyz/api/v2/users/bind-phone" \
 **Diagnostic Steps**:
 ```bash
 # Check remote API user
-curl "http://emagen.323424.xyz/api/v2/users/info?phone=19357509502"
+curl "http://mingyitang1024.com/api/v2/users/info?phone=19357509502"
 
 # Check local database
 python3 -c "
@@ -556,21 +556,21 @@ print(cursor.fetchone())
 #### User Management
 ```bash
 # Get user info
-curl -X GET "http://emagen.323424.xyz/api/v2/users/info?phone=13800138000"
+curl -X GET "http://mingyitang1024.com/api/v2/users/info?phone=13800138000"
 
 # Create user (bind phone)
-curl -X POST "http://emagen.323424.xyz/api/v2/users/bind-phone" \
+curl -X POST "http://mingyitang1024.com/api/v2/users/bind-phone" \
   -H "Content-Type: application/json" \
   -d '{"openid": "wx_test_xxx", "phone": "手机号", "sessionKey": "test"}'
 
 # Check balance
-curl -X GET "http://emagen.323424.xyz/api/v2/users/wallet/balance?userId=1"
+curl -X GET "http://mingyitang1024.com/api/v2/users/wallet/balance?userId=1"
 ```
 
 #### Recharge Operations
 ```bash
 # Create recharge order
-curl -X POST "http://emagen.323424.xyz/api/v2/orders/create" \
+curl -X POST "http://mingyitang1024.com/api/v2/orders/create" \
   -H "Content-Type: application/json" \
   -d '{
     "orderType": "recharge",
