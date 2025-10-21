@@ -25,23 +25,38 @@ export const ASSETS_CONFIG = {
   // 资源服务器基础URL
   baseUrl: CDN_BASE,
 
-  // 礼卡图片 - ✅ 已在服务器上验证存在
+  // 礼卡图片 - ✅ 已在服务器上验证存在 (200 OK)
   giftCard: {
-    member: `${CDN_BASE}/card/member-card.png`,  // ✅ 200 OK
-    electronic: `${CDN_BASE}/card/gift-card.png`  // ✅ 200 OK
+    member: `${CDN_BASE}/card/member-card.png`,
+    electronic: `${CDN_BASE}/card/gift-card.png`
   },
 
-  // 周边商品图片 - ⚠️ 暂不在服务器上
-  // 当前策略：显示礼卡，不显示商品图片（由后端处理）
+  // 周边商品图片 - ✅ 已在服务器上验证存在
+  // 暖贴类 (nuantie) - 保暖贴
   product: {
-    pillow: '',  // 暂无 - 后端可返回product API
-    therapy: ''  // 暂无 - 后端可返回product API
+    // 原有占位符，可继续使用或由后端API返回
+    pillow: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,     // 护息贴（原neck-pillow）
+    therapy: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,    // 新爱贴（原health-food）
+
+    // 暖贴类其他产品
+    nuantie: {
+      huxi: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,
+      xinai: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,
+      yaofu: `${CDN_BASE}/gift/product/nuantie/yaofu.jpg`
+    },
+
+    // 艾酒类产品
+    aijiu: {
+      xinaibing: `${CDN_BASE}/gift/product/aijiu/xinaibing.jpg`,
+      xinaizhu: `${CDN_BASE}/gift/product/aijiu/xinaizhu.jpg`,
+      xinaitiao: `${CDN_BASE}/gift/product/aijiu/xinaitiao.jpg`
+    }
   },
 
-  // 推荐banner - ⚠️ 暂不在服务器上
-  // 当前策略：由后端或页面处理banner数据
+  // 推荐banner - ⚠️ 暂无
+  // 由后端通过API返回或由页面处理
   banners: {
-    goodnight: ''  // 暂无
+    goodnight: ''
   },
 
   // 推拿师头像 - ✅ 已在服务器上验证存在
