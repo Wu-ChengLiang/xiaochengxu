@@ -39,52 +39,86 @@ const GIFT_CARDS: GiftCard[] = [
   }
 ]
 
+// 暖贴产品数据
+const NUANTIE_PRODUCTS: Product[] = [
+  {
+    id: 'nuantie-waist',
+    name: '蕲艾腰腹暖贴',
+    image: 'http://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '贴',
+    description: '自发热艾草暖护腰贴',
+    features: ['自发热艾草', '暖护腰贴', '道地蕲艾'],
+    specifications: {}
+  },
+  {
+    id: 'nuantie-knee',
+    name: '蕲艾护膝暖贴',
+    image: 'http://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '贴',
+    description: '自发热艾草护膝 驱寒保暖',
+    features: ['自发热艾草', '护膝', '驱寒保暖'],
+    specifications: {}
+  },
+  {
+    id: 'nuantie-moxa',
+    name: '蕲艾灸贴',
+    image: 'http://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '贴',
+    description: '自发热艾草精油穴位灸贴',
+    features: ['自发热艾草', '精油穴位灸贴', '道地蕲艾'],
+    specifications: {}
+  }
+]
+
+// 艾条产品数据
+const AIJIU_PRODUCTS: Product[] = [
+  {
+    id: 'aijiu-stick',
+    name: '蕲艾条',
+    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '条',
+    description: '艾灸艾条 3年陈艾',
+    features: ['3年陈艾', '艾灸艾条', '道地蕲艾'],
+    specifications: {}
+  },
+  {
+    id: 'aijiu-moxa-ball',
+    name: '蕲艾饼',
+    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '饼',
+    description: '道地蕲艾泡脚泡澡艾草饼',
+    features: ['泡脚泡澡', '艾草饼', '道地蕲艾'],
+    specifications: {}
+  },
+  {
+    id: 'aijiu-column',
+    name: '新艾柱',
+    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg',
+    price: 9900,      // ¥99
+    originalPrice: 9900,
+    unit: '柱',
+    description: '李时珍故里特产新艾柱',
+    features: ['新艾柱', '李时珍故里特产', '艾灸'],
+    specifications: {}
+  }
+]
+
 // 静态商品数据（替代mock）
 // ✅ 注意：price 和 originalPrice 使用整数分为单位，不使用小数
 // 例如: 299.00元 = 29900分，19900分 = 199元
 const PRODUCTS: Product[] = [
-  {
-    id: 'pillow',
-    name: '护颈助眠小枕',
-    image: ASSETS_CONFIG.product.pillow,
-    price: 29900,      // ✅ 改为分为单位 (299元 = 29900分)
-    originalPrice: 39900,  // ✅ 改为分为单位 (399元 = 39900分)
-    unit: '个',
-    description: '人体工学设计，缓解颈部压力',
-    features: [
-      '记忆棉材质',
-      '人体工学设计',
-      '可拆洗枕套',
-      '透气排汗'
-    ],
-    specifications: {
-      '材质': '记忆棉+天鹅绒',
-      '尺寸': '50cm x 30cm x 10cm',
-      '重量': '1.2kg',
-      '颜色': '灰色/米色'
-    }
-  },
-  {
-    id: 'therapy',
-    name: '药食同源理疗包',
-    image: ASSETS_CONFIG.product.therapy,
-    price: 19900,      // ✅ 改为分为单位 (199元 = 19900分)
-    originalPrice: 29900,  // ✅ 改为分为单位 (299元 = 29900分)
-    unit: '套',
-    description: '传统中药配方，祛寒除湿',
-    features: [
-      '纯中药配方',
-      '热敷理疗',
-      '可重复使用',
-      '便携设计'
-    ],
-    specifications: {
-      '成分': '艾草、生姜、当归等',
-      '规格': '单包200g，一套3包',
-      '使用方法': '微波加热2-3分钟',
-      '有效期': '生产日期起24个月'
-    }
-  }
+  ...NUANTIE_PRODUCTS,
+  ...AIJIU_PRODUCTS
 ]
 
 /**
@@ -126,6 +160,20 @@ export class GiftService {
    */
   static getProductById(id: string): Product | undefined {
     return PRODUCTS.find(product => product.id === id)
+  }
+
+  /**
+   * 获取暖贴产品列表
+   */
+  static getNuantieProducts(): Product[] {
+    return NUANTIE_PRODUCTS
+  }
+
+  /**
+   * 获取艾条产品列表
+   */
+  static getAijiuProducts(): Product[] {
+    return AIJIU_PRODUCTS
   }
 
   /**

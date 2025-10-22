@@ -6,7 +6,6 @@ import './index.scss'
 
 const Gift: React.FC = () => {
   const giftCards = GiftService.getAllGiftCards()
-  const products = GiftService.getAllProducts()
 
   const handleCardClick = (cardId: string) => {
     Taro.navigateTo({
@@ -14,9 +13,15 @@ const Gift: React.FC = () => {
     })
   }
 
-  const handleProductClick = (productId: string) => {
+  const handleNuantieClick = () => {
     Taro.navigateTo({
-      url: `/pages/gift/product-detail/index?id=${productId}`
+      url: '/pages/gift/nuantie/index'
+    })
+  }
+
+  const handleAijiuClick = () => {
+    Taro.navigateTo({
+      url: '/pages/gift/aijiu/index'
     })
   }
 
@@ -27,13 +32,13 @@ const Gift: React.FC = () => {
         <Text className="section-title">名医堂礼卡</Text>
         <View className="gift-cards">
           {giftCards.map((card) => (
-            <View 
+            <View
               key={card.id}
               className="gift-card"
               onClick={() => handleCardClick(card.id)}
             >
-              <Image 
-                className="card-image" 
+              <Image
+                className="card-image"
                 src={card.image}
                 mode="aspectFill"
               />
@@ -46,26 +51,43 @@ const Gift: React.FC = () => {
       <View className="section">
         <Text className="section-title">名医堂产品</Text>
         <View className="products">
-          {products.map((product) => (
-            <View 
-              key={product.id}
-              className="product-card"
-              onClick={() => handleProductClick(product.id)}
-            >
-              <Image 
-                className="product-image" 
-                src={product.image}
-                mode="aspectFill"
-              />
-              <View className="product-info">
-                <Text className="product-name">{product.name}</Text>
-                <View className="price-row">
-                  <Text className="price">¥{product.price.toFixed(2)}</Text>
-                  <Text className="unit">起</Text>
-                </View>
+          {/* 暖贴 */}
+          <View
+            className="product-card"
+            onClick={handleNuantieClick}
+          >
+            <Image
+              className="product-image"
+              src="http://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg"
+              mode="aspectFill"
+            />
+            <View className="product-info">
+              <Text className="product-name">暖贴</Text>
+              <View className="price-row">
+                <Text className="price">¥99</Text>
+                <Text className="unit">起</Text>
               </View>
             </View>
-          ))}
+          </View>
+
+          {/* 艾条 */}
+          <View
+            className="product-card"
+            onClick={handleAijiuClick}
+          >
+            <Image
+              className="product-image"
+              src="http://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg"
+              mode="aspectFill"
+            />
+            <View className="product-info">
+              <Text className="product-name">艾条</Text>
+              <View className="price-row">
+                <Text className="price">¥99</Text>
+                <Text className="unit">起</Text>
+              </View>
+            </View>
+          </View>
         </View>
       </View>
     </View>
