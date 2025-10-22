@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "礼卡详情",
+  "navigationBarTitleText": "暖贴",
   "usingComponents": {
     "comp": "../../../comp"
   }
