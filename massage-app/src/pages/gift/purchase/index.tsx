@@ -47,8 +47,7 @@ const GiftCardPurchase: React.FC = () => {
     }
 
     try {
-      Taro.showLoading({ title: '创建订单...' })
-
+      // ✅ GiftService.createGiftCardOrder() 内部已处理 loading，不需要在这里重复
       const order = await GiftService.createGiftCardOrder({
         cardId: cardId as string,
         amount: amount * 100, // 转换为分
@@ -56,8 +55,6 @@ const GiftCardPurchase: React.FC = () => {
         paymentMethod: 'wechat',
         customMessage: '世界上最好的爸爸'
       })
-
-      Taro.hideLoading()
 
       // ✅ 方案A：直接在购买页进行支付，不跳转到订单确认页
       console.log('🎁 订单创建成功，准备支付:', {
@@ -88,8 +85,8 @@ const GiftCardPurchase: React.FC = () => {
         }, 1500)
       }
     } catch (error: any) {
-      Taro.hideLoading()
       console.error('❌ 礼卡购买失败:', error)
+      Taro.hideLoading()  // ✅ 确保加载状态被隐藏
       Taro.showToast({
         title: error.message || '购买失败',
         icon: 'none'
