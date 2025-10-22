@@ -165,33 +165,13 @@ POST /api/v2/users/wechat-login
 
 ### 4.2 绑定手机号
 
-```
-POST /api/v2/users/bind-phone
-```
+⚠️ **手机号绑定已迁移至 Doc 08** - 使用微信官方的快速验证组件
 
-### 请求参数
-```json
-{
-  "openid": "wx_openid",
-  "encryptedData": "微信手机号加密数据",
-  "iv": "加密向量",
-  "sessionKey": "会话密钥"
-}
-```
+详见：[08-微信手机号API.md](./08-微信手机号API.md)
 
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "userId": 123,                // 用户ID
-    "phone": "13800138000",       // 解密得到的手机号
-    "isNewUser": true,            // 是否新用户
-    "membershipNumber": "M202401001"  // 会员号（新用户自动生成）
-  }
-}
-```
+**推荐使用的端点：**
+- 绑定手机号：`POST /api/v2/users/bind-phone-wx`
+- 换绑手机号：`POST /api/v2/users/change-phone-wx`
 
 ---
 
@@ -286,8 +266,8 @@ CREATE INDEX idx_users_openid ON users(openid);
 2. 后端用 code 换取 openid 和 session_key
 3. 检查 openid 是否已绑定手机号
 4. 如未绑定：
-   - 提示用户授权手机号
-   - 解密手机号并绑定
+   - 提示用户使用微信手机号快速验证组件（见 Doc 08）
+   - 前端调用 `POST /api/v2/users/bind-phone-wx` 绑定
 5. 如已绑定：
    - 直接使用手机号作为用户标识
    - 返回用户信息和余额
