@@ -135,8 +135,10 @@ class PaymentService {
 
       if (response.code === 0) {
         // 显示新余额
+        // ✅ API返回的balance已经是分为单位，需要转为元显示
+        const balanceInYuan = (response.data.balance || 0) / 100
         Taro.showToast({
-          title: `支付成功\n余额：¥${(response.data.balance / 100).toFixed(2)}`,
+          title: `支付成功\n余额：¥${balanceInYuan.toFixed(2)}`,
           icon: 'success',
           duration: 2000
         })

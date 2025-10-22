@@ -34,8 +34,8 @@ export interface RechargeOption {
  * 余额响应数据
  */
 interface BalanceResponse {
-  balance: number     // 余额（元）
-  totalSpent: number  // 总消费
+  balance: number     // 余额（分）- API返回的原始单位
+  totalSpent: number  // 总消费（分）
   totalVisits: number // 总访问次数
 }
 
