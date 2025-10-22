@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro';
 import { API_CONFIG } from '@/config/api';
+import { ERROR_CODES, getErrorMessage, isAuthError } from '@/constants/error-codes';
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -59,9 +60,25 @@ export async function request<T = any>(
     const result = response.data as ApiResponse<T>;
 
     // 业务错误处理
-    if (result.code !== 0) {
-      console.error(`API业务错误: ${url}`, result);
-      const error: any = new Error(result.message || '请求失败');
+    if (result.code !== ERROR_CODES.SUCCESS) {
+      console.error(`API业务错误: ${url}`, {
+        code: result.code,
+        message: result.message,
+        data: result
+      });
+
+      // 处理认证相关错误
+      if (isAuthError(result.code)) {
+        // 清除本地认证信息并跳转到登录页
+        console.warn('认证过期，跳转到登录页');
+        Taro.removeStorageSync('userInfo');
+        Taro.removeStorageSync('userToken');
+        // TODO: 导航到登录页 (根据实际应用架构调整)
+      }
+
+      const errorMessage = getErrorMessage(result.code, result.message);
+      const error: any = new Error(errorMessage);
+      error.code = result.code;
       error.response = {
         status: response.statusCode,
         data: result

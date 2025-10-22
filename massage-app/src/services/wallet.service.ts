@@ -20,8 +20,8 @@ export interface Transaction {
  */
 export interface RechargeOption {
   id: number
-  amount: number      // 金额（分）
-  bonus: number       // 赠送金额（分）
+  amount: number      // 金额（元）✅ 已转换为元用于显示
+  bonus: number       // 赠送金额（元）✅ 已转换为元用于显示
   label: string       // 显示标签
   sortOrder?: number
   isActive?: boolean

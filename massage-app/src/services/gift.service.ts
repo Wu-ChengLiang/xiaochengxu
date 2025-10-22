@@ -40,13 +40,15 @@ const GIFT_CARDS: GiftCard[] = [
 ]
 
 // 静态商品数据（替代mock）
+// ✅ 注意：price 和 originalPrice 使用整数分为单位，不使用小数
+// 例如: 299.00元 = 29900分，19900分 = 199元
 const PRODUCTS: Product[] = [
   {
     id: 'pillow',
     name: '护颈助眠小枕',
     image: ASSETS_CONFIG.product.pillow,
-    price: 299.00,
-    originalPrice: 399.00,
+    price: 29900,      // ✅ 改为分为单位 (299元 = 29900分)
+    originalPrice: 39900,  // ✅ 改为分为单位 (399元 = 39900分)
     unit: '个',
     description: '人体工学设计，缓解颈部压力',
     features: [
@@ -66,8 +68,8 @@ const PRODUCTS: Product[] = [
     id: 'therapy',
     name: '药食同源理疗包',
     image: ASSETS_CONFIG.product.therapy,
-    price: 199.00,
-    originalPrice: 299.00,
+    price: 19900,      // ✅ 改为分为单位 (199元 = 19900分)
+    originalPrice: 29900,  // ✅ 改为分为单位 (299元 = 29900分)
     unit: '套',
     description: '传统中药配方，祛寒除湿',
     features: [
@@ -128,9 +130,10 @@ export class GiftService {
 
   /**
    * 创建礼卡购买订单
+   * @param params.amount 礼卡面值（分为单位）
    */
   static async createGiftCardOrder(params: {
-    amount: number
+    amount: number      // ✅ 分为单位
     quantity: number
     paymentMethod: 'wechat' | 'balance'
     customMessage?: string
@@ -139,13 +142,13 @@ export class GiftService {
       const orderData: CreateOrderRequest = {
         orderType: 'product',
         userId: getCurrentUserId(),
-        title: `电子礼卡 ¥${(params.amount / 100).toFixed(0)}`,
-        amount: params.amount * params.quantity,
+        title: `电子礼卡 ¥${(params.amount / 100).toFixed(2)}`,
+        amount: params.amount * params.quantity,  // ✅ 直接相乘，结果是分
         paymentMethod: params.paymentMethod,
         extraData: {
           productType: 'gift_card',
           cardType: 'electronic',
-          faceValue: params.amount,
+          faceValue: params.amount,  // ✅ 保持分为单位
           quantity: params.quantity,
           customMessage: params.customMessage || '世界上最好的爸爸'
         }
@@ -181,7 +184,7 @@ export class GiftService {
         orderType: 'product',
         userId: getCurrentUserId(),
         title: product.name,
-        amount: product.price * 100 * params.quantity, // 转换为分
+        amount: product.price * params.quantity,  // ✅ 直接相乘，结果是分（product.price已是分为单位）
         paymentMethod: params.paymentMethod,
         extraData: {
           productType: 'merchandise',
