@@ -182,9 +182,10 @@ export class GiftService {
     customMessage?: string
   }): Promise<OrderResponse> {
     try {
+      const userId = getCurrentUserId()
       const orderData: CreateOrderRequest = {
         orderType: 'product',
-        userId: getCurrentUserId(),
+        userId: userId,
         title: `电子礼卡 ¥${(params.amount / 100).toFixed(2)}`,
         amount: params.amount * params.quantity,  // ✅ 直接相乘，结果是分
         paymentMethod: params.paymentMethod,
@@ -199,14 +200,34 @@ export class GiftService {
         }
       }
 
+      // 🎁 调试日志
+      console.log('🎁 创建礼卡订单')
+      console.log('👤 当前用户ID:', userId)
+      console.log('📦 订单数据:', {
+        orderType: orderData.orderType,
+        userId: orderData.userId,
+        title: orderData.title,
+        amount: `${orderData.amount}分 (¥${(orderData.amount / 100).toFixed(2)})`,
+        paymentMethod: orderData.paymentMethod,
+        extraData: orderData.extraData
+      })
+
       const response = await post('/orders/create', orderData, {
         showLoading: true,
         loadingTitle: '创建订单中...'
       })
 
+      console.log('✅ 礼卡订单创建成功')
+      console.log('📋 订单响应:', {
+        orderNo: response.data.orderNo,
+        amount: `${response.data.amount}分 (¥${(response.data.amount / 100).toFixed(2)})`,
+        paymentStatus: response.data.paymentStatus,
+        hasWxPayParams: !!response.data.wxPayParams
+      })
+
       return response.data
     } catch (error: any) {
-      console.error('创建礼卡订单失败:', error)
+      console.error('❌ 创建礼卡订单失败:', error)
       throw new Error(error.message || '创建礼卡订单失败')
     }
   }

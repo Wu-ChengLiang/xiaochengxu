@@ -147,11 +147,12 @@ class WalletService {
   async createRechargeOrder(amount: number, bonus: number = 0) {
     try {
       const userId = this.getCurrentUserId()
+      const userPhone = getCurrentUserPhone()
 
       const orderData = {
         orderType: 'recharge',
         userId: userId,
-        userPhone: getCurrentUserPhone(),
+        userPhone: userPhone,
         title: bonus > 0 ? `充值${amount}元，赠送${bonus}元` : `充值${amount}元`,
         amount: amount * 100, // 转换为分
         paymentMethod: 'wechat',
@@ -162,14 +163,35 @@ class WalletService {
         }
       }
 
+      // 💰 调试日志
+      console.log('💰 创建充值订单')
+      console.log('👤 当前用户ID:', userId)
+      console.log('📞 用户手机号:', userPhone)
+      console.log('📦 订单数据:', {
+        orderType: orderData.orderType,
+        userId: orderData.userId,
+        title: orderData.title,
+        amount: `${orderData.amount}分 (¥${(orderData.amount / 100).toFixed(2)})`,
+        paymentMethod: orderData.paymentMethod,
+        extraData: orderData.extraData
+      })
+
       const response = await post('/orders/create', orderData, {
         showLoading: true,
         loadingTitle: '创建订单中...'
       })
 
+      console.log('✅ 充值订单创建成功')
+      console.log('📋 订单响应:', {
+        orderNo: response.data.orderNo,
+        amount: `${response.data.amount}分 (¥${(response.data.amount / 100).toFixed(2)})`,
+        paymentStatus: response.data.paymentStatus,
+        hasWxPayParams: !!response.data.wxPayParams
+      })
+
       return response.data
     } catch (error: any) {
-      console.error('创建充值订单失败:', error)
+      console.error('❌ 创建充值订单失败:', error)
       throw new Error(error.message || '创建充值订单失败')
     }
   }
