@@ -367,37 +367,7 @@ GET /api/v2/orders/{orderNo}
 }
 ```
 
-## 10. 取消订单
-
-### 接口地址
-```
-POST /api/v2/orders/cancel
-```
-
-### 请求参数
-```json
-{
-  "orderNo": "ORDER202401151234567",
-  "userId": 123,
-  "reason": "用户取消"
-}
-```
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "orderNo": "ORDER202401151234567",
-    "paymentStatus": "cancelled",
-    "refundAmount": 12800,
-    "cancelledAt": "2024-01-15T16:00:00.000Z"
-  }
-}
-```
-
-## 11. 获取交易记录
+## 10. 获取交易记录
 
 ### 接口地址
 ```
