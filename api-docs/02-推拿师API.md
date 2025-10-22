@@ -1,5 +1,19 @@
 # 推拿师相关API文档
 
+> **文档更新时间**: 2025-10-22
+> **验证状态**: ✅ 所有API已验证并与后端实现对齐
+
+## API 实现状态汇总
+
+| API | HTTP 方法 | 端点 | 实现状态 | 备注 |
+|-----|----------|------|--------|------|
+| 获取推荐推拿师列表 | GET | `/api/v2/therapists/recommended` | ✅ 正确 | 支持分页、位置排序 |
+| 根据门店获取推拿师 | GET | `/api/v2/stores/:storeId/therapists` | ✅ 正确 | 返回门店内推拿师列表 |
+| 获取推拿师详情 | GET | `/api/v2/therapists/:id` | ✅ 正确 | 返回weekSchedule（7天排班）、serviceCount |
+| 搜索推拿师 | GET | `/api/v2/therapists/search` | ✅ 正确 | 支持多条件搜索过滤 |
+
+---
+
 ## 1. 获取推荐推拿师列表
 
 ### 接口地址
@@ -112,41 +126,95 @@ GET /api/v2/therapists/:id
 |------|------|------|------|
 | id | string | 是 | 推拿师ID |
 
-### 响应数据
+### 响应数据（成功 200）
 ```json
 {
   "code": 0,
   "message": "success",
   "data": {
-    "id": "1",
-    "name": "张师傅",
-    "avatar": "/images/therapists/1.jpg",
-    "storeId": "1",
-    "storeName": "明医推拿（罗湖店）",
-    "storeAddress": "深圳市罗湖区东门南路1234号",
+    "id": "104",
+    "name": "朴老师",
+    "avatar": "https://mingyitang1024.com/static/therapists/老师收集中文原版/东方路店/朴老师.jpg",
+    "storeId": "27",
+    "storeName": "名医堂•颈肩腰腿特色调理（东方路店）",
+    "storeAddress": "东方路800号宝安大厦3楼梦佳速B区308室（电梯左侧）",
     "title": "高级推拿师",
-    "yearsOfExperience": 10,
-    "expertise": ["颈椎调理", "腰椎康复", "肩周炎治疗"],
-    "bio": "从事推拿行业10余年，擅长颈椎、腰椎调理...",  // 简介
-    "certificates": ["高级推拿师证", "中医康复理疗师证"],  // 资质证书
+    "yearsOfExperience": 15,
+    "expertise": ["脏腑", "脊柱", "疼痛", "艾灸"],
+    "bio": "从事推拿行业15年，专业技术精湛",
+    "certificates": ["高级推拿师证", "中医康复理疗师证"],
     "rating": 4.8,
-    "ratingCount": 128,
-    "serviceCount": 1580,  // 服务次数
+    "ratingCount": 100,
+    "serviceCount": 2500,
     "status": "available",
-    "weekSchedule": [  // 一周排班
+    "weekSchedule": [
       {
-        "date": "2024-01-20",
-        "dayOfWeek": "周一",
-        "workTime": "10:00-18:00",
+        "date": "2025-10-22",
+        "dayOfWeek": "周三",
+        "workTime": "9:00-21:00",
         "slots": [
+          { "time": "09:00", "available": true },
           { "time": "10:00", "available": true },
-          { "time": "11:00", "available": false }
+          { "time": "11:00", "available": true },
+          { "time": "12:00", "available": true },
+          { "time": "13:00", "available": true },
+          { "time": "14:00", "available": true },
+          { "time": "15:00", "available": true },
+          { "time": "16:00", "available": true },
+          { "time": "17:00", "available": true },
+          { "time": "18:00", "available": true },
+          { "time": "19:00", "available": true },
+          { "time": "20:00", "available": true }
+        ]
+      },
+      {
+        "date": "2025-10-23",
+        "dayOfWeek": "周四",
+        "workTime": "9:00-21:00",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "10:00", "available": true }
         ]
       }
     ]
   }
 }
 ```
+
+### 响应数据（推拿师不存在 404）
+```json
+{
+  "code": 1002,
+  "message": "技师不存在",
+  "data": null
+}
+```
+
+### 字段说明
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| id | string | 推拿师ID |
+| name | string | 推拿师姓名 |
+| avatar | string | 推拿师头像URL（HTTPS） |
+| storeId | string | 所属门店ID |
+| storeName | string | 所属门店名称 |
+| storeAddress | string | 门店地址 |
+| title | string | 职位/等级（如"高级推拿师"） |
+| yearsOfExperience | number | 从业年限 |
+| expertise | array | 专长列表 |
+| bio | string | 个人简介 |
+| certificates | array | 资格证书列表 |
+| rating | number | 平均评分（4.0-5.0） |
+| ratingCount | number | 评价数量 |
+| serviceCount | number | 服务次数 |
+| status | string | 状态：available(可约) / busy(忙碌) / rest(休息) |
+| weekSchedule | array | 一周排班信息（7天） |
+| weekSchedule[].date | string | 日期（YYYY-MM-DD） |
+| weekSchedule[].dayOfWeek | string | 星期（周一-周日） |
+| weekSchedule[].workTime | string | 工作时间（HH:MM-HH:MM） |
+| weekSchedule[].slots | array | 可预约时段列表 |
+| weekSchedule[].slots[].time | string | 时间（HH:MM） |
+| weekSchedule[].slots[].available | boolean | 是否可预约 |
 
 ## 4. 搜索推拿师
 
@@ -244,13 +312,42 @@ function transformTherapist(dbTherapist) {
 
 ## 测试用例
 
+### 1. 获取推荐推拿师列表
 ```bash
-# 获取推荐推拿师
-curl http://localhost:3001/api/v2/therapists/recommended
+# 请求
+curl -s "https://mingyitang1024.com/api/v2/therapists/recommended" | head -c 200
 
-# 获取门店推拿师
-curl http://localhost:3001/api/v2/stores/1/therapists
+# 预期响应：返回推拿师列表（code: 0）
+```
 
-# 搜索推拿师
-curl "http://localhost:3001/api/v2/therapists/search?expertise=颈椎调理"
+### 2. 获取推拿师详情（成功）
+```bash
+# 请求（ID: 104，存在的推拿师）
+curl -s "https://mingyitang1024.com/api/v2/therapists/104" | head -c 300
+
+# 预期响应：HTTP 200, code: 0, 返回推拿师详细信息
+```
+
+### 3. 获取推拿师详情（不存在）
+```bash
+# 请求（ID: 1，不存在的推拿师）
+curl -s "https://mingyitang1024.com/api/v2/therapists/1"
+
+# 预期响应：HTTP 404, code: 1002, message: "技师不存在"
+```
+
+### 4. 搜索推拿师
+```bash
+# 请求（搜索关键词）
+curl -s "https://mingyitang1024.com/api/v2/therapists/search?keyword=test"
+
+# 预期响应：HTTP 200, code: 0, 返回空列表（匹配逻辑的结果）
+```
+
+### 5. 获取门店推拿师
+```bash
+# 请求（门店ID: 27）
+curl -s "https://mingyitang1024.com/api/v2/stores/27/therapists"
+
+# 预期响应：HTTP 200, code: 0, 返回该门店的推拿师列表
 ```
