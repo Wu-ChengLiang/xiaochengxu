@@ -599,6 +599,46 @@ class OrderService {
   }
 
   /**
+   * 申请退款（通过订单API）
+   * @param orderNo 订单号
+   * @param reason 退款原因（可选）
+   * @returns 退款单信息
+   */
+  async requestRefund(orderNo: string, reason?: string): Promise<any> {
+    try {
+      const { userId } = this.getUserInfo()
+
+      const response = await post(`/orders/${orderNo}/refund`, {
+        userId,
+        reason: reason || '用户申请退款'
+      }, {
+        showLoading: true,
+        loadingTitle: '申请退款中...'
+      })
+
+      return response.data
+    } catch (error: any) {
+      console.error('申请退款失败:', error)
+      throw new Error(error.message || '申请退款失败')
+    }
+  }
+
+  /**
+   * 查询退款详情
+   * @param refundId 退款单号
+   * @returns 退款详情
+   */
+  async getRefundDetail(refundId: string): Promise<any> {
+    try {
+      const response = await get(`/refunds/${refundId}`)
+      return response.data
+    } catch (error: any) {
+      console.error('获取退款详情失败:', error)
+      throw new Error('退款单不存在或已删除')
+    }
+  }
+
+  /**
    * 重新预约（基于已有订单）
    * @param orderNo 原订单号
    * @returns 是否成功
