@@ -24,14 +24,10 @@ const Recharge: React.FC = () => {
       setRechargeOptions(options)
     } catch (error) {
       console.error('获取充值配置失败:', error)
-      // 使用默认配置
+      // 使用默认配置（与礼卡页面保持一致）
       setRechargeOptions([
-        { id: 1, amount: 100, bonus: 0, label: '100元', sortOrder: 1 },
-        { id: 2, amount: 200, bonus: 0, label: '200元', sortOrder: 2 },
-        { id: 3, amount: 500, bonus: 50, label: '500元', sortOrder: 3 },
-        { id: 4, amount: 1000, bonus: 100, label: '1000元', sortOrder: 4 },
-        { id: 5, amount: 2000, bonus: 300, label: '2000元', sortOrder: 5 },
-        { id: 6, amount: 5000, bonus: 1000, label: '5000元', sortOrder: 6 }
+        { id: 1, amount: 1000, bonus: 100, label: '¥1000', sortOrder: 1 },
+        { id: 2, amount: 3000, bonus: 500, label: '¥3000', sortOrder: 2 }
       ])
     }
   }

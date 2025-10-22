@@ -28,12 +28,6 @@ const CardDetail: React.FC = () => {
     })
   }
 
-  const handleGift = () => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
-  }
 
   if (loading) {
     return (
@@ -89,10 +83,6 @@ const CardDetail: React.FC = () => {
 
       {/* 底部操作栏 */}
       <View className="action-bar">
-        <Button className="action-btn gift-btn" onClick={handleGift}>
-          <AtIcon value="gift" size="20" />
-          <Text>赠送好友</Text>
-        </Button>
         <Button className="action-btn purchase-btn" onClick={handlePurchase}>
           <AtIcon value="shopping-cart" size="20" />
           <Text>立即购买</Text>

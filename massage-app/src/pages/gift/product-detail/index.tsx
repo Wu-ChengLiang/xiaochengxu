@@ -32,12 +32,6 @@ const ProductDetail: React.FC = () => {
     }
   }
 
-  const handleAddToCart = () => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
-  }
 
   const handleBuyNow = async () => {
     if (!productInfo) return
@@ -179,10 +173,6 @@ const ProductDetail: React.FC = () => {
 
       {/* 底部操作栏 */}
       <View className="action-bar">
-        <Button className="action-btn cart-btn" onClick={handleAddToCart}>
-          <AtIcon value="shopping-cart" size="20" />
-          <Text>加入购物车</Text>
-        </Button>
         <Button className="action-btn buy-btn" onClick={handleBuyNow}>
           立即购买
         </Button>

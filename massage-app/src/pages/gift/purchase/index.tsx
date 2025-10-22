@@ -1,29 +1,21 @@
 import React, { useState } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
-import { AtIcon, AtInputNumber } from 'taro-ui'
+import { AtIcon } from 'taro-ui'
 import { GiftService } from '@/services/gift.service'
 import './index.scss'
 
 const GiftCardPurchase: React.FC = () => {
-  const [selectedAmount, setSelectedAmount] = useState(200)
-  const [customAmount, setCustomAmount] = useState(0)
-  const [quantity, setQuantity] = useState(1)
+  const [selectedAmount, setSelectedAmount] = useState(1000)
+  const [quantity, setQuantity] = useState(1)  // 数量选择
 
   const predefinedAmounts = [
-    { value: 200, discount: null },
-    { value: 500, discount: 50 },
-    { value: 1000, discount: 100 },
-    { value: 2000, discount: 200 },
+    { value: 1000, label: '¥1000', bonus: '送100' },
+    { value: 3000, label: '¥3000', bonus: '送500' },
   ]
 
   const handleAmountSelect = (amount: number) => {
     setSelectedAmount(amount)
-    setCustomAmount(0)
-  }
-
-  const handleCustomAmount = () => {
-    setSelectedAmount(0)
   }
 
   const handleQuantityChange = (value: number) => {
@@ -31,10 +23,10 @@ const GiftCardPurchase: React.FC = () => {
   }
 
   const handlePurchase = async () => {
-    const amount = selectedAmount || customAmount
+    const amount = selectedAmount
     if (!amount) {
       Taro.showToast({
-        title: '请选择或输入金额',
+        title: '请选择面额',
         icon: 'none'
       })
       return
@@ -66,15 +58,14 @@ const GiftCardPurchase: React.FC = () => {
   }
 
   const getTotalPrice = () => {
-    const amount = selectedAmount || customAmount || 0
-    return amount * quantity
+    return selectedAmount * quantity
   }
 
   return (
     <View className="gift-card-purchase">
       {/* 礼卡展示 */}
       <View className="card-preview">
-        <Image 
+        <Image
           className="card-image"
           src="https://mingyitang1024.com/static/card/gift-card.png"
           mode="aspectFit"
@@ -90,7 +81,6 @@ const GiftCardPurchase: React.FC = () => {
             <Text>常乐</Text>
           </View>
         </View>
-        <Button className="diy-button">DIY自定义</Button>
       </View>
 
       {/* 面额选择 */}
@@ -103,15 +93,17 @@ const GiftCardPurchase: React.FC = () => {
               className={`amount-card ${selectedAmount === item.value ? 'active' : ''}`}
               onClick={() => handleAmountSelect(item.value)}
             >
-              <Text className="amount">¥{item.value}</Text>
-              {item.discount && (
-                <Text className="discount">返余额{item.discount}.00元</Text>
-              )}
+              <View className="amount-header">
+                <Text className="amount">{item.label}</Text>
+              </View>
+              <View className="amount-details">
+                <Text className="bonus">{item.bonus}</Text>
+              </View>
               {selectedAmount === item.value && (
                 <View className="quantity-control">
-                  <AtIcon 
-                    value="subtract-circle" 
-                    size="20" 
+                  <AtIcon
+                    value="subtract-circle"
+                    size="20"
                     color="#999"
                     onClick={(e) => {
                       e.stopPropagation()
@@ -119,9 +111,9 @@ const GiftCardPurchase: React.FC = () => {
                     }}
                   />
                   <Text className="quantity">{quantity}</Text>
-                  <AtIcon 
-                    value="add-circle" 
-                    size="20" 
+                  <AtIcon
+                    value="add-circle"
+                    size="20"
                     color="#a40035"
                     onClick={(e) => {
                       e.stopPropagation()
@@ -130,37 +122,12 @@ const GiftCardPurchase: React.FC = () => {
                   />
                 </View>
               )}
-              {!item.discount && selectedAmount !== item.value && (
+              {selectedAmount !== item.value && (
                 <AtIcon value="add-circle" size="24" color="#a40035" />
               )}
             </View>
           ))}
           
-          {/* 自定义金额 */}
-          <View 
-            className={`amount-card custom ${selectedAmount === 0 && customAmount > 0 ? 'active' : ''}`}
-            onClick={handleCustomAmount}
-          >
-            <Text className="custom-label">自定义金额</Text>
-            {selectedAmount === 0 && (
-              <AtInputNumber
-                min={1}
-                max={10000}
-                step={1}
-                value={customAmount}
-                onChange={(value) => setCustomAmount(value as number)}
-              />
-            )}
-            {selectedAmount !== 0 && (
-              <AtIcon value="add-circle" size="24" color="#999" />
-            )}
-          </View>
-
-          {/* 礼卡集采 */}
-          <View className="amount-card bulk">
-            <Text className="bulk-label">礼卡集采</Text>
-            <AtIcon value="chevron-right" size="20" color="#999" />
-          </View>
         </View>
       </View>
 
