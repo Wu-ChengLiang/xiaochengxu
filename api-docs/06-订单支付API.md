@@ -653,14 +653,14 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 
 ```bash
 # 获取余额
-curl "http://localhost:3001/api/v2/users/wallet/balance?phone=13800138000"
+curl "http://localhost:3001/api/v2/users/wallet/balance?userId=123"
 
 # 创建充值订单（微信支付）
 curl -X POST http://localhost:3001/api/v2/orders/create \
   -H "Content-Type: application/json" \
   -d '{
     "orderType": "recharge",
-    "userPhone": "13800138000",
+    "userId": 123,
     "title": "充值100元",
     "amount": 10000,
     "paymentMethod": "wechat",
@@ -674,7 +674,7 @@ curl -X POST http://localhost:3001/api/v2/orders/create \
   -H "Content-Type: application/json" \
   -d '{
     "orderType": "service",
-    "userPhone": "13800138000",
+    "userId": 123,
     "title": "颈部按摩60分钟",
     "amount": 12800,
     "paymentMethod": "balance",

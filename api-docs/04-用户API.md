@@ -330,16 +330,49 @@ CREATE TABLE phone_change_logs (
 ## 测试用例
 
 ```bash
-# 获取用户信息
+# 获取用户信息（通过手机号）
 curl "http://localhost:3001/api/v2/users/info?phone=13800138000"
+
+# 获取用户信息（通过openid）
+curl "http://localhost:3001/api/v2/users/info?openid=wx_openid_xxxxx"
 
 # 更新用户信息
 curl -X PUT http://localhost:3001/api/v2/users/info \
   -H "Content-Type: application/json" \
   -d '{
-    "phone": "13800138000",
-    "name": "张先生"
+    "userId": 123,
+    "username": "张先生"
   }'
+
+# 获取用户统计
+curl "http://localhost:3001/api/v2/users/statistics?userId=123"
+
+# 获取钱包余额
+curl "http://localhost:3001/api/v2/users/wallet/balance?userId=123"
+
+# 获取订单列表
+curl "http://localhost:3001/api/v2/orders?userId=123&page=1&pageSize=20"
+
+# 创建订单
+curl -X POST http://localhost:3001/api/v2/orders/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderType": "service",
+    "userId": 123,
+    "title": "颈部按摩60分钟",
+    "amount": 12800,
+    "paymentMethod": "balance",
+    "extraData": {
+      "therapistId": "1",
+      "storeId": "1",
+      "appointmentDate": "2024-01-20",
+      "startTime": "14:00",
+      "duration": 60
+    }
+  }'
+
+# 获取交易记录
+curl "http://localhost:3001/api/v2/users/wallet/transactions?userId=123&page=1&pageSize=20"
 ```
 
 ---
@@ -356,7 +389,7 @@ GET /api/v2/users/wallet/balance
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| userId | number | 是 | 用户ID |
+| userId | number | 是 | 用户ID（主键） |
 
 ### 响应数据
 ```json
@@ -385,12 +418,12 @@ POST /api/v2/orders/create
 ### 请求参数
 ```json
 {
-  "orderType": "service",     // service服务/product商品/recharge充值
-  "userId": 123,              // 用户ID（必填）
-  "title": "颈部按摩60分钟",   // 订单标题
-  "amount": 12800,            // 金额（分为单位）
-  "paymentMethod": "balance", // wechat微信支付/balance余额支付
-  "extraData": {
+  "orderType": "service",     // service服务/product商品/recharge充值（必填）
+  "userId": 123,              // 用户ID（主键），必填
+  "title": "颈部按摩60分钟",   // 订单标题（必填）
+  "amount": 12800,            // 金额（分为单位），必填
+  "paymentMethod": "balance", // wechat微信支付/balance余额支付（必填）
+  "extraData": {              // 附加数据（可选）
     // 不同类型订单的额外信息
     // 服务类：
     "therapistId": "1",
@@ -482,7 +515,7 @@ GET /api/v2/orders
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| userId | number | 是 | 用户ID |
+| userId | number | 是 | 用户ID（主键） |
 | status | string | 否 | 订单状态：pending/paid/failed/refunded |
 | orderType | string | 否 | 订单类型：service/product/recharge |
 | page | number | 否 | 页码，默认1 |
@@ -739,7 +772,7 @@ GET /api/v2/users/wallet/transactions
 ### 请求参数
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| userId | number | 是 | 用户ID |
+| userId | number | 是 | 用户ID（主键） |
 | page | number | 否 | 页码，默认1 |
 | pageSize | number | 否 | 每页数量，默认20 |
 | type | string | 否 | 交易类型：recharge/consume/refund |
