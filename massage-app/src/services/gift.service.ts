@@ -45,7 +45,7 @@ const NUANTIE_PRODUCTS: Product[] = [
   {
     id: 'nuantie-waist',
     name: '蕲艾腰腹暖贴',
-    image: 'http://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '贴',
@@ -56,7 +56,7 @@ const NUANTIE_PRODUCTS: Product[] = [
   {
     id: 'nuantie-knee',
     name: '蕲艾护膝暖贴',
-    image: 'http://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '贴',
@@ -67,7 +67,7 @@ const NUANTIE_PRODUCTS: Product[] = [
   {
     id: 'nuantie-moxa',
     name: '蕲艾灸贴',
-    image: 'http://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '贴',
@@ -82,7 +82,7 @@ const AIJIU_PRODUCTS: Product[] = [
   {
     id: 'aijiu-stick',
     name: '蕲艾条',
-    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '条',
@@ -93,7 +93,7 @@ const AIJIU_PRODUCTS: Product[] = [
   {
     id: 'aijiu-moxa-ball',
     name: '蕲艾饼',
-    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '饼',
@@ -104,7 +104,7 @@ const AIJIU_PRODUCTS: Product[] = [
   {
     id: 'aijiu-column',
     name: '新艾柱',
-    image: 'http://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg',
+    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg',
     price: 9900,      // ¥99
     originalPrice: 9900,
     unit: '柱',

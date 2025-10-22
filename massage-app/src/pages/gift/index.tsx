@@ -58,7 +58,7 @@ const Gift: React.FC = () => {
           >
             <Image
               className="product-image"
-              src="http://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg"
+              src="https://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg"
               mode="aspectFill"
             />
             <View className="product-info">
@@ -77,7 +77,7 @@ const Gift: React.FC = () => {
           >
             <Image
               className="product-image"
-              src="http://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg"
+              src="https://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg"
               mode="aspectFill"
             />
             <View className="product-info">
