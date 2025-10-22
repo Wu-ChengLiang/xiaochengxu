@@ -66,12 +66,15 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
 
     setIsSubmitting(true)
     try {
-      // 从orderInfo中获取appointmentId
-      // 如果extraData中有appointmentId，使用它；否则尝试其他字段
+      // 从orderInfo中获取appointmentId（优先级：直接字段 > extraData > 报错）
       const appointmentId =
-        (orderInfo.extraData?.appointmentId) ||
         (orderInfo as any).appointmentId ||
-        123 // 默认值，实际应该从订单数据获取
+        orderInfo.extraData?.appointmentId
+
+      // 验证appointmentId是否存在
+      if (!appointmentId) {
+        throw new Error('无法获取预约信息，无法提交评价。请稍后重试。')
+      }
 
       await onSubmit({
         appointmentId,

@@ -19,6 +19,7 @@ export interface OrderData {
   extraData?: any
 
   // 服务订单特有字段
+  appointmentId?: number  // 预约ID（用于评价）
   therapistId?: string
   therapistName?: string
   therapistAvatar?: string
@@ -480,6 +481,7 @@ class OrderService {
 
       // 从extraData中提取预约信息
       if (order.extraData) {
+        order.appointmentId = order.extraData.appointmentId
         order.therapistId = order.extraData.therapistId
         order.therapistName = order.extraData.therapistName
         order.storeId = order.extraData.storeId
@@ -537,6 +539,7 @@ class OrderService {
 
         // 从extraData中提取信息
         if (order.extraData) {
+          order.appointmentId = order.extraData.appointmentId
           order.therapistId = order.extraData.therapistId
           order.therapistName = order.extraData.therapistName
           order.storeId = order.extraData.storeId
