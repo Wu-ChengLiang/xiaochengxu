@@ -156,8 +156,9 @@ class WalletService {
         amount: amount * 100, // 转换为分
         paymentMethod: 'wechat',
         extraData: {
-          bonus: bonus * 100,  // 转换为分
-          actualRecharge: (amount + bonus) * 100
+          rechargeAmount: amount * 100,        // ✅ 按API文档使用 rechargeAmount
+          bonus: bonus * 100,                  // 转换为分
+          actualAmount: (amount + bonus) * 100 // ✅ 按API文档使用 actualAmount
         }
       }
 

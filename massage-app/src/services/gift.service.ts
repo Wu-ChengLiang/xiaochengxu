@@ -6,6 +6,7 @@ import {
 } from '@/types'
 import { post } from '@/utils/request'
 import { ASSETS_CONFIG } from '@/config/assets'
+import { getCurrentUserId } from '@/utils/user'
 
 // 静态礼卡数据（替代mock）
 const GIFT_CARDS: GiftCard[] = [
@@ -121,14 +122,6 @@ const PRODUCTS: Product[] = [
   ...AIJIU_PRODUCTS
 ]
 
-/**
- * 获取当前用户ID
- * TODO: 从全局状态或本地存储获取实际用户ID
- */
-const getCurrentUserId = (): number => {
-  // 临时使用固定用户ID，后续从用户状态管理获取
-  return 1
-}
 
 /**
  * 礼卡服务
@@ -197,10 +190,11 @@ export class GiftService {
         paymentMethod: params.paymentMethod,
         extraData: {
           productType: 'gift_card',
-          cardId: params.cardId,              // ✅ 新增：记录礼卡ID，方便未来扩展
-          cardType: 'electronic',
-          faceValue: params.amount,  // ✅ 保持分为单位
+          productId: params.cardId,           // ✅ 按API文档使用 productId
+          productName: '电子礼卡',             // ✅ 新增：商品名称（API文档必需）
           quantity: params.quantity,
+          cardType: 'electronic',
+          faceValue: params.amount,           // ✅ 保持分为单位
           customMessage: params.customMessage || '世界上最好的爸爸'
         }
       }
