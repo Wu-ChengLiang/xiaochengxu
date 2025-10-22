@@ -10,7 +10,6 @@ coverage/
 .nyc_output/
 
 # production
-# dist/  # 注释掉，允许提交 dist
 build/
 *.zip
 
@@ -51,5 +50,4 @@ project.tt.json
 project.qq.json
 project.quickapp.json
 
-# Build output
-# dist/  # 暂时注释掉，允许提交编译后的dist目录
+# Build output (dist is now tracked in git)
