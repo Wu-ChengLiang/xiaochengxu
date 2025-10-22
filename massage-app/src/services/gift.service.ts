@@ -178,9 +178,11 @@ export class GiftService {
 
   /**
    * 创建礼卡购买订单
+   * @param params.cardId 礼卡ID
    * @param params.amount 礼卡面值（分为单位）
    */
   static async createGiftCardOrder(params: {
+    cardId: string                      // ✅ 新增：礼卡ID
     amount: number      // ✅ 分为单位
     quantity: number
     paymentMethod: 'wechat' | 'balance'
@@ -195,6 +197,7 @@ export class GiftService {
         paymentMethod: params.paymentMethod,
         extraData: {
           productType: 'gift_card',
+          cardId: params.cardId,              // ✅ 新增：记录礼卡ID，方便未来扩展
           cardType: 'electronic',
           faceValue: params.amount,  // ✅ 保持分为单位
           quantity: params.quantity,

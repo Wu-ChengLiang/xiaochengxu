@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import { GiftService } from '@/services/gift.service'
+import { GiftCard } from '@/types'
 import './index.scss'
 
 const GiftCardPurchase: React.FC = () => {
+  const router = useRouter()
+  const { cardId } = router.params
+  const [cardInfo, setCardInfo] = useState<GiftCard | null>(null)
   const [selectedAmount, setSelectedAmount] = useState(1000)
   const [quantity, setQuantity] = useState(1)  // 数量选择
+
+  useEffect(() => {
+    if (cardId) {
+      const card = GiftService.getGiftCardById(cardId as string)
+      if (card) {
+        setCardInfo(card)
+      }
+    }
+  }, [cardId])
 
   const predefinedAmounts = [
     { value: 1000, label: '¥1000', bonus: '送100' },
@@ -36,6 +49,7 @@ const GiftCardPurchase: React.FC = () => {
       Taro.showLoading({ title: '创建订单...' })
 
       const order = await GiftService.createGiftCardOrder({
+        cardId: cardId as string,
         amount: amount * 100, // 转换为分
         quantity,
         paymentMethod: 'wechat',
@@ -61,25 +75,39 @@ const GiftCardPurchase: React.FC = () => {
     return selectedAmount * quantity
   }
 
+  if (!cardInfo) {
+    return (
+      <View className="gift-card-purchase">
+        <View className="loading">加载中...</View>
+      </View>
+    )
+  }
+
   return (
     <View className="gift-card-purchase">
-      {/* 礼卡展示 */}
-      <View className="card-preview">
-        <Image
-          className="card-image"
-          src="https://mingyitang1024.com/static/card/gift-card.png"
-          mode="aspectFit"
-        />
-        <View className="card-content">
-          <Text className="card-title">世界上</Text>
-          <Text className="card-subtitle">最好的爸爸</Text>
-          <Text className="card-label">HEALTH CARD</Text>
-          <View className="panda-illustration">
-            {/* 熊猫插画占位 */}
-          </View>
-          <View className="brand-tag">
-            <Text>常乐</Text>
-          </View>
+      {/* 卡片信息 */}
+      <View className="card-info-section">
+        <View className="card-image">
+          <Image
+            className="card-pic"
+            src={cardInfo.image}
+            mode="aspectFill"
+          />
+        </View>
+        <Text className="card-name">{cardInfo.name}</Text>
+        <Text className="card-desc">{cardInfo.description}</Text>
+      </View>
+
+      {/* 特色功能 */}
+      <View className="features-section">
+        <Text className="section-title">礼卡特色</Text>
+        <View className="features-list">
+          {cardInfo.features.map((feature: string, index: number) => (
+            <View key={index} className="feature-item">
+              <AtIcon value="check-circle" size="18" color="#a40035" />
+              <Text className="feature-text">{feature}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
@@ -133,9 +161,10 @@ const GiftCardPurchase: React.FC = () => {
 
       {/* 使用规则 */}
       <View className="rules-section">
-        <Text className="section-title">使用规则</Text>
+        <Text className="section-title">使用说明</Text>
         <View className="rules-content">
-          <Text className="rule-desc">返金额说明：</Text>
+          <Text className="rule-item">{cardInfo.terms}</Text>
+          <Text className="rule-desc" style={{ marginTop: '16px' }}>返金额说明：</Text>
           <Text className="rule-item">(1) 电子卡返余额在礼卡分享成功后，自动充值至购买人的常乐推拿会员余额中。</Text>
         </View>
       </View>

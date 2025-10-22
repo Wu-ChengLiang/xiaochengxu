@@ -9,7 +9,7 @@ const Gift: React.FC = () => {
 
   const handleCardClick = (cardId: string) => {
     Taro.navigateTo({
-      url: `/pages/gift/card-detail/index?id=${cardId}`
+      url: `/pages/gift/purchase/index?cardId=${cardId}`
     })
   }
 
