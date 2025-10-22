@@ -195,179 +195,9 @@ POST /api/v2/users/bind-phone
 
 ---
 
-# 钱包与订单API
+# 钱包相关API
 
-## 5. 获取钱包余额
-
-### 接口地址
-```
-GET /api/v2/users/wallet/balance
-```
-
-### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| userId | number | 是 | 用户ID（主键） |
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "balance": 12500,        // 可用余额（分为单位）
-    "totalSpent": 128000,    // 总消费
-    "totalVisits": 15        // 总访问次数
-  }
-}
-```
-
-## 6. 创建订单（统一接口）
-
-### 接口地址
-```
-POST /api/v2/orders/create
-```
-
-### 请求参数
-```json
-{
-  "orderType": "service",     // service服务/product商品/recharge充值
-  "userId": 123,              // 用户ID（主键），必填
-  "title": "颈部按摩60分钟",   // 订单标题
-  "amount": 12800,            // 金额（分为单位）
-  "paymentMethod": "balance", // wechat微信/balance余额支付
-  "extraData": {}             // 附加数据（可选）
-}
-```
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "orderNo": "ORDER202401151234567",
-    "orderType": "service",
-    "title": "颈部按摩60分钟",
-    "amount": 12800,
-    "paymentMethod": "balance",
-    "paymentStatus": "pending",
-    "createdAt": "2024-01-15T14:30:00.000Z"
-  }
-}
-```
-
-## 7. 支付订单
-
-### 接口地址
-```
-POST /api/v2/orders/pay
-```
-
-### 请求参数
-```json
-{
-  "orderNo": "ORDER202401151234567",
-  "paymentMethod": "balance"  // wechat或balance
-}
-```
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "orderNo": "ORDER202401151234567",
-    "paymentStatus": "paid",
-    "paidAt": "2024-01-15T14:35:00.000Z",
-    "balance": 4500
-  }
-}
-```
-
-## 8. 获取订单列表
-
-### 接口地址
-```
-GET /api/v2/orders
-```
-
-### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| userId | number | 是 | 用户ID（主键） |
-| status | string | 否 | 订单状态：pending/paid/failed/refunded |
-| orderType | string | 否 | 订单类型：service/product/recharge |
-| page | number | 否 | 页码，默认1 |
-| pageSize | number | 否 | 每页数量，默认20 |
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "list": [
-      {
-        "orderNo": "ORDER202401151234567",
-        "orderType": "service",
-        "userId": 123,
-        "userPhone": "13800138000",
-        "title": "颈部按摩60分钟",
-        "amount": 12800,
-        "paymentMethod": "balance",
-        "paymentStatus": "paid",
-        "extraData": {},
-        "paidAt": "2024-01-15T14:35:00.000Z",
-        "createdAt": "2024-01-15T14:30:00.000Z"
-      }
-    ],
-    "total": 25,
-    "page": 1,
-    "pageSize": 20,
-    "hasMore": true
-  }
-}
-```
-
-## 9. 获取订单详情
-
-### 接口地址
-```
-GET /api/v2/orders/{orderNo}
-```
-
-### 请求参数
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| orderNo | string | 是 | 订单号（路径参数） |
-
-### 响应数据
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "orderNo": "ORDER202401151234567",
-    "orderType": "service",
-    "userId": 123,
-    "userPhone": "13800138000",
-    "title": "颈部按摩60分钟",
-    "amount": 12800,
-    "paymentMethod": "balance",
-    "paymentStatus": "paid",
-    "extraData": {},
-    "paidAt": "2024-01-15T14:35:00.000Z",
-    "refundedAt": null,
-    "createdAt": "2024-01-15T14:30:00.000Z",
-    "updatedAt": "2024-01-15T14:35:00.000Z"
-  }
-}
-```
-
-## 10. 获取交易记录
+## 5. 获取交易记录
 
 ### 接口地址
 ```
@@ -426,38 +256,6 @@ curl -X PUT http://localhost:3001/api/v2/users/info \
 # 获取用户统计
 curl "http://localhost:3001/api/v2/users/statistics?userId=123"
 
-# 获取钱包余额
-curl "http://localhost:3001/api/v2/users/wallet/balance?userId=123"
-
-# 获取订单列表
-curl "http://localhost:3001/api/v2/orders?userId=123&page=1&pageSize=20"
-
-# 创建订单
-curl -X POST http://localhost:3001/api/v2/orders/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orderType": "service",
-    "userId": 123,
-    "title": "颈部按摩60分钟",
-    "amount": 12800,
-    "paymentMethod": "balance",
-    "extraData": {
-      "therapistId": "1",
-      "storeId": "1",
-      "appointmentDate": "2024-01-20",
-      "startTime": "14:00",
-      "duration": 60
-    }
-  }'
-
-# 支付订单
-curl -X POST http://localhost:3001/api/v2/orders/pay \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orderNo": "ORDER202401151234567",
-    "paymentMethod": "balance"
-  }'
-
 # 获取交易记录
 curl "http://localhost:3001/api/v2/users/wallet/transactions?userId=123&page=1&pageSize=20"
 ```
@@ -475,65 +273,7 @@ ALTER TABLE users ADD COLUMN session_key VARCHAR(255);
 CREATE INDEX idx_users_openid ON users(openid);
 ```
 
-## 钱包交易记录表
-```sql
-CREATE TABLE wallet_transactions (
-  id VARCHAR(50) PRIMARY KEY,
-  user_id INTEGER NOT NULL,
-  phone VARCHAR(20) NOT NULL,
-  type VARCHAR(20) NOT NULL,       // recharge/consume/refund
-  amount INTEGER NOT NULL,
-  balance_after INTEGER NOT NULL,
-  description VARCHAR(500) NOT NULL,
-  order_no VARCHAR(50),
-  extra_data TEXT,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-
-## 统一订单表
-```sql
-CREATE TABLE orders (
-  order_no VARCHAR(50) PRIMARY KEY,
-  order_type VARCHAR(20) NOT NULL,    // service/product/recharge
-  user_id INTEGER NOT NULL,
-  user_phone VARCHAR(20) NOT NULL,
-  title VARCHAR(200) NOT NULL,
-  amount INTEGER NOT NULL,
-  payment_method VARCHAR(20),         // wechat/balance
-  payment_status VARCHAR(20) NOT NULL DEFAULT 'pending',
-  extra_data TEXT,
-  wx_prepay_id VARCHAR(100),
-  wx_transaction_id VARCHAR(100),
-  paid_at DATETIME,
-  refunded_at DATETIME,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-
-## 充值配置表
-```sql
-CREATE TABLE recharge_configs (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  amount INTEGER NOT NULL,
-  bonus INTEGER NOT NULL DEFAULT 0,
-  label VARCHAR(100) NOT NULL,
-  sort_order INTEGER NOT NULL DEFAULT 0,
-  is_active BOOLEAN NOT NULL DEFAULT 1,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
-INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
-(10000, 0, '100元', 1),
-(20000, 0, '200元', 2),
-(50000, 5000, '500元（赠50元）', 3),
-(100000, 10000, '1000元（赠100元）', 4),
-(200000, 30000, '2000元（赠300元）', 5),
-(500000, 100000, '5000元（赠1000元）', 6);
-```
+> **注**：钱包交易记录表、订单表、充值配置表等数据库设计详见 `06-订单支付API.md`
 
 ---
 
@@ -541,36 +281,31 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 
 ## 核心业务流程
 
-### 统一订单创建
-1. 验证用户身份（userId）
-2. 创建订单记录
-3. 根据支付方式处理：
-   - 微信支付：调用微信统一下单
-   - 余额支付：检查余额，立即扣款
+### 微信登录流程
+1. 小程序调用 wx.login → 获取 code
+2. 后端用 code 换取 openid 和 session_key
+3. 检查 openid 是否已绑定手机号
+4. 如未绑定：
+   - 提示用户授权手机号
+   - 解密手机号并绑定
+5. 如已绑定：
+   - 直接使用手机号作为用户标识
+   - 返回用户信息和余额
 
-### 充值流程
-1. 创建充值类型订单
-2. 调用微信支付
-3. 支付成功后：
-   - 更新订单状态为已支付
-   - 增加用户余额（含赠送金额）
-   - 创建交易记录
-
-### 服务/商品订单支付流程
-1. 创建对应类型订单
-2. 根据支付方式处理
-3. 支付成功后执行业务逻辑
+### 用户标识优先级
+1. 优先使用 openid 查找对应的手机号
+2. 如果提供了手机号，直接使用
+3. 所有钱包操作都基于手机号
 
 ## 安全考虑
 
-1. **金额单位统一**：所有金额都用分为单位
-2. **事务处理**：余额变动必须在事务中进行
-3. **幂等性**：支付回调需要防重复处理
-4. **签名验证**：微信支付回调必须验证签名
+1. **手机号验证**：变更手机号需要短信验证
+2. **会话管理**：session_key 应加密存储
+3. **数据隐私**：用户敏感信息的保护
 
 ## 注意事项
 
 1. **向后兼容**：设计时考虑未来扩展
 2. **数据一致性**：用户手机号变更时的处理
-3. **性能优化**：统计查询可以定时计算，避免实时复杂查询
+3. **订单和支付**：详见 `06-订单支付API.md`
 
