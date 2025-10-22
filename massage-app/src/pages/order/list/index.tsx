@@ -46,10 +46,10 @@ const OrderListPage: React.FC = () => {
       setLoading(true)
       const status = statusMap[current]
 
-      // 获取所有订单，然后根据displayStatus筛选
+      // 获取所有订单（服务订单 + 产品订单），然后根据displayStatus筛选
       let orderList = await orderService.getOrderList(
         undefined, // 先不按paymentStatus筛选
-        'service', // 只获取服务类型订单
+        undefined, // 不过滤订单类型，同时获取服务订单和产品订单
         pageNum,
         100 // 获取更多以便筛选
       )
@@ -229,33 +229,74 @@ const OrderListPage: React.FC = () => {
   }
 
   const renderOrderItem = (order: OrderData) => (
-    <View 
+    <View
       key={order.orderNo}
-      className="order-item" 
+      className="order-item"
       onClick={() => handleOrderClick(order.orderNo)}
     >
       <View className="order-header">
-        <Text className="store-name">{order.storeName}</Text>
+        {/* 服务订单显示门店名 */}
+        {order.orderType === 'service' && (
+          <Text className="store-name">{order.storeName}</Text>
+        )}
+        {/* 产品订单显示产品名称 */}
+        {order.orderType === 'product' && (
+          <Text className="store-name">{order.title}</Text>
+        )}
         <Text className={`order-status ${getStatusClass(order)}`}>
           {getStatusText(order)}
         </Text>
       </View>
 
       <View className="order-content">
-        <Image 
-          className="therapist-avatar" 
-          src={order.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'} 
-        />
+        {/* 服务订单显示技师头像 */}
+        {order.orderType === 'service' && (
+          <Image
+            className="therapist-avatar"
+            src={order.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'}
+          />
+        )}
+        {/* 产品订单显示默认产品图片 */}
+        {order.orderType === 'product' && (
+          <Image
+            className="product-image"
+            src="https://img.yzcdn.cn/vant/cat.jpeg"
+          />
+        )}
+
         <View className="order-info">
-          <View className="info-row">
-            <Text className="therapist-name">{order.therapistName}</Text>
-            <Text className="service-name">{order.serviceName}</Text>
-          </View>
-          <View className="info-row">
-            <Text className="appointment-time">
-              预约时间：{formatDate(`${order.appointmentDate} ${order.appointmentTime}`)}
-            </Text>
-          </View>
+          {/* 服务订单信息 */}
+          {order.orderType === 'service' && (
+            <>
+              <View className="info-row">
+                <Text className="therapist-name">{order.therapistName}</Text>
+                <Text className="service-name">{order.serviceName}</Text>
+              </View>
+              <View className="info-row">
+                <Text className="appointment-time">
+                  预约时间：{formatDate(`${order.appointmentDate} ${order.appointmentTime}`)}
+                </Text>
+              </View>
+            </>
+          )}
+
+          {/* 产品订单信息 */}
+          {order.orderType === 'product' && (
+            <>
+              <View className="info-row">
+                <Text className="service-name">{order.title}</Text>
+                {order.extraData?.quantity && (
+                  <Text className="quantity">×{order.extraData.quantity}</Text>
+                )}
+              </View>
+              <View className="info-row">
+                <Text className="appointment-time">
+                  购买时间：{formatDate(order.createdAt)}
+                </Text>
+              </View>
+            </>
+          )}
+
           <View className="info-row">
             <Text className="order-no">订单号：{order.orderNo}</Text>
           </View>
@@ -280,8 +321,8 @@ const OrderListPage: React.FC = () => {
             </>
           )}
 
-          {/* 待服务订单：显示取消 */}
-          {(order.displayStatus || order.paymentStatus) === 'paid' && (
+          {/* 待服务订单：仅服务订单显示取消 */}
+          {(order.displayStatus || order.paymentStatus) === 'paid' && order.orderType === 'service' && (
             <View className="button cancel" onClick={(e) => handleCancelOrder(e, order)}>
               取消订单
             </View>
@@ -290,8 +331,15 @@ const OrderListPage: React.FC = () => {
           {/* 服务中订单：不显示操作按钮 */}
           {(order.displayStatus || order.paymentStatus) === 'serving' && null}
 
-          {/* 已完成/已取消订单：显示再次预约 */}
-          {(['completed', 'cancelled', 'refunded'].includes(order.displayStatus || order.paymentStatus)) && (
+          {/* 已完成订单：仅服务订单显示再次预约 */}
+          {(order.displayStatus === 'completed') && order.orderType === 'service' && (
+            <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
+              再次预约
+            </View>
+          )}
+
+          {/* 已取消/已退款订单：仅服务订单显示再次预约 */}
+          {(['cancelled', 'refunded'].includes(order.displayStatus || order.paymentStatus)) && order.orderType === 'service' && (
             <View className="button rebook" onClick={(e) => handleRebookOrder(e, order)}>
               再次预约
             </View>
