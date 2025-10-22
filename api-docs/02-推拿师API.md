@@ -173,13 +173,27 @@ GET /api/v2/therapists/:id
         "workTime": "9:00-21:00",
         "slots": [
           { "time": "09:00", "available": true },
-          { "time": "10:00", "available": true }
+          { "time": "10:00", "available": true },
+          { "time": "11:00", "available": true },
+          { "time": "12:00", "available": true },
+          { "time": "13:00", "available": true },
+          { "time": "14:00", "available": true },
+          { "time": "15:00", "available": true },
+          { "time": "16:00", "available": true },
+          { "time": "17:00", "available": true },
+          { "time": "18:00", "available": true },
+          { "time": "19:00", "available": true },
+          { "time": "20:00", "available": true }
         ]
       }
     ]
   }
 }
 ```
+
+### 说明
+- **weekSchedule**：返回接下来7天的排班信息（示例显示2天，实际为7天）
+- **slots**：按小时生成（hourly slots），每个工作时间点一个
 
 ### 响应数据（推拿师不存在 404）
 ```json

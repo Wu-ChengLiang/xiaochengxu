@@ -113,6 +113,51 @@ GET /api/v2/stores/:id
 }
 ```
 
+## 2.1 获取门店推拿师列表
+
+### 接口地址
+```
+GET /api/v2/stores/:storeId/therapists
+```
+
+### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| storeId | string | 是 | 门店ID |
+| status | string | 否 | 状态筛选 |
+
+### 响应数据
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": [
+    {
+      "id": "104",
+      "name": "朴老师",
+      "avatar": "https://mingyitang1024.com/static/therapists/...",
+      "title": "高级推拿师",
+      "yearsOfExperience": 15,
+      "expertise": ["脏腑", "脊柱"],
+      "rating": 4.8,
+      "status": "available",
+      "todaySchedule": {
+        "date": "2025-10-22",
+        "slots": [
+          { "time": "09:00", "available": true },
+          { "time": "10:00", "available": true },
+          // ... 按小时生成（hourly slots），工作时间内每个小时一个
+          { "time": "20:00", "available": true }
+        ]
+      }
+    }
+  ]
+}
+```
+
+### 说明
+- **todaySchedule**：当天排班信息，slots按小时生成（工作时间内每小时一个时段）
+
 ## 3. 搜索门店
 
 ### 接口地址
