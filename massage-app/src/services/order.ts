@@ -29,8 +29,8 @@ export interface OrderData {
   serviceId?: string
   serviceName?: string
   duration?: number
-  appointmentDate?: string
-  appointmentTime?: string
+  appointmentDate?: string  // ✅ 预约日期 (YYYY-MM-DD)
+  startTime?: string        // ✅ 改为 startTime（与API对齐）
   appointmentStatus?: 'pending' | 'confirmed' | 'serving' | 'completed' | 'cancelled'  // 预约状态
 
   // 计算字段
@@ -52,6 +52,7 @@ interface OrderListResponse {
 
 /**
  * 创建订单参数
+ * ✅ 时间字段与API对齐
  */
 export interface CreateOrderParams {
   therapistId: string
@@ -62,7 +63,7 @@ export interface CreateOrderParams {
   price: number
   discountPrice?: number
   appointmentDate: string
-  appointmentTime: string
+  appointmentTime: string  // ✅ 保留这个字段名用于页面兼容性，service层会映射到 startTime
   therapistName: string
   therapistAvatar?: string
   addons?: Array<{
@@ -143,8 +144,8 @@ class OrderService {
       }
 
       // 没有预约状态时，根据时间推断
-      if (order.appointmentDate && order.appointmentTime) {
-        const appointmentDateTime = new Date(`${order.appointmentDate} ${order.appointmentTime}`)
+      if (order.appointmentDate && order.startTime) {
+        const appointmentDateTime = new Date(`${order.appointmentDate} ${order.startTime}`)
         const endDateTime = new Date(appointmentDateTime.getTime() + (order.duration || 60) * 60000)
         const now = new Date()
 
@@ -393,7 +394,7 @@ class OrderService {
         serviceName: params.serviceName,
         duration: params.duration,
         appointmentDate: params.appointmentDate,
-        appointmentTime: params.appointmentTime
+        startTime: params.appointmentTime  // ✅ 映射到 startTime
         // ✅ amount 已经从API返回，单位为分
       }
 
@@ -484,7 +485,7 @@ class OrderService {
         order.therapistName = order.extraData.therapistName
         order.storeId = order.extraData.storeId
         order.appointmentDate = order.extraData.appointmentDate
-        order.appointmentTime = order.extraData.startTime
+        order.startTime = order.extraData.startTime  // ✅ 改为 startTime
         order.duration = order.extraData.duration
         order.serviceName = order.extraData.serviceName || order.title
 
@@ -542,7 +543,7 @@ class OrderService {
           order.storeName = order.extraData.storeName // 移除硬编码默认值
           order.storeAddress = order.extraData.storeAddress // 移除硬编码默认值
           order.appointmentDate = order.extraData.appointmentDate
-          order.appointmentTime = order.extraData.startTime
+          order.startTime = order.extraData.startTime  // ✅ 改为 startTime
           order.duration = order.extraData.duration
           order.serviceName = order.extraData.serviceName || order.title
 
@@ -681,7 +682,7 @@ class OrderService {
         pendingPayment: orders.filter((o: OrderData) => o.paymentStatus === 'pending').length,
         paid: orders.filter((o: OrderData) => o.paymentStatus === 'paid').length,
         completed: orders.filter((o: OrderData) => o.paymentStatus === 'paid' &&
-          new Date(o.appointmentDate + ' ' + o.appointmentTime) < new Date()).length,
+          new Date(o.appointmentDate + ' ' + o.startTime) < new Date()).length,  // ✅ 改为 startTime
         cancelled: orders.filter((o: OrderData) => o.paymentStatus === 'cancelled').length
       }
     } catch (error) {

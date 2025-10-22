@@ -5,6 +5,7 @@ import { AtIcon, AtSteps } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
 import { reviewService } from '@/services/review'
 import { ReviewModal } from '@/components/Review'
+import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import './index.scss'
 
 const OrderDetailPage: React.FC = () => {
@@ -298,7 +299,7 @@ const OrderDetailPage: React.FC = () => {
           <View className="info-item">
             <Text className="label">预约时间</Text>
             <Text className="value highlight">
-              {orderInfo.appointmentDate} {orderInfo.appointmentTime}
+              {orderInfo.appointmentDate} {orderInfo.startTime}  {/* ✅ 改为 startTime */}
             </Text>
           </View>
         </View>
@@ -329,7 +330,7 @@ const OrderDetailPage: React.FC = () => {
             <Text className="service-name">{orderInfo.serviceName}</Text>
             <Text className="service-duration">服务时长：{orderInfo.duration}分钟</Text>
           </View>
-          <Text className="price">¥{orderInfo.totalAmount.toFixed(2)}</Text>
+          <Text className="price">{formatAmount(orderInfo.amount)}</Text>  {/* ✅ 改为使用 formatAmount 转换 amount 字段 */}
         </View>
       </View>
 

@@ -3,6 +3,7 @@ import { View, Text, Image } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
+import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import './index.scss'
 
 const BookingSuccessPage: React.FC = () => {
@@ -95,12 +96,12 @@ const BookingSuccessPage: React.FC = () => {
             <View className="info-row">
               <Text className="label">预约时间</Text>
               <Text className="value">
-                {orderInfo.appointmentDate} {orderInfo.appointmentTime}
+                {orderInfo.appointmentDate} {orderInfo.startTime}  {/* ✅ 改为 startTime */}
               </Text>
             </View>
             <View className="info-row">
               <Text className="label">订单金额</Text>
-              <Text className="value price">¥{orderInfo.totalAmount}</Text>
+              <Text className="value price">{formatAmount(orderInfo.amount)}</Text>  {/* ✅ 改为使用 formatAmount 转换 amount 字段 */}
             </View>
           </View>
 

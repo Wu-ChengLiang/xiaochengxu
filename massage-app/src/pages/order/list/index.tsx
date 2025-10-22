@@ -274,7 +274,7 @@ const OrderListPage: React.FC = () => {
               </View>
               <View className="info-row">
                 <Text className="appointment-time">
-                  预约时间：{formatDate(`${order.appointmentDate} ${order.appointmentTime}`)}
+                  预约时间：{formatDate(`${order.appointmentDate} ${order.startTime}`)}  {/* ✅ 改为 startTime */}
                 </Text>
               </View>
             </>

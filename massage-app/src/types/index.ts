@@ -75,6 +75,7 @@ export interface Therapist {
 }
 
 // 预约模型
+// ✅ 时间字段与API对齐：appointmentDate + startTime 分开存储
 export interface Appointment {
   id: string
   userId: string
@@ -84,7 +85,9 @@ export interface Appointment {
   therapistName: string
   serviceId: string
   serviceName: string
-  appointmentTime: string
+  appointmentDate: string  // ✅ 改为 appointmentDate（日期 YYYY-MM-DD）
+  startTime: string        // ✅ 改为 startTime（时间 HH:mm）
+  endTime?: string         // ✅ 新增：结束时间（可选）
   duration: number  // 分钟
   price: number
   discountPrice?: number
