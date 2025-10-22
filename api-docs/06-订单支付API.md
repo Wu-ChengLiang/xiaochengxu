@@ -398,7 +398,7 @@ POST /api/v2/users/wallet/refund
 }
 ```
 
-## 9. 获取交易记录
+## 12. 获取交易记录
 
 ### 接口地址
 ```
@@ -447,7 +447,7 @@ GET /api/v2/users/wallet/transactions
 }
 ```
 
-## 10. 微信支付回调
+## 13. 微信支付回调
 
 ### 接口地址
 ```
