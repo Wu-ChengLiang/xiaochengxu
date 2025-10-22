@@ -265,7 +265,7 @@ const OrderListPage: React.FC = () => {
       <View className="order-footer">
         <View className="price-info">
           <Text className="label">实付：</Text>
-          <Text className="price">¥{order.totalAmount}</Text>
+          <Text className="price">¥{(order.totalAmount / 100).toFixed(2)}</Text>
         </View>
         <View className="action-buttons">
           {/* 待支付订单：显示支付和取消 */}

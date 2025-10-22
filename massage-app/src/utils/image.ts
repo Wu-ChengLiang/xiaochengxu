@@ -48,7 +48,7 @@ export const getDefaultImage = (): string => {
  * 注：在小程序中，最好在服务层处理，而不是在渲染时
  */
 export const isValidImageUrl = (url: string): boolean => {
-  return url && (url.startsWith('https://') || url.startsWith('http://') || url.startsWith('/'));
+  return !!(url && (url.startsWith('https://') || url.startsWith('http://') || url.startsWith('/')));
 };
 
 /**

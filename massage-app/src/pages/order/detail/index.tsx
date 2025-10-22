@@ -329,7 +329,7 @@ const OrderDetailPage: React.FC = () => {
             <Text className="service-name">{orderInfo.serviceName}</Text>
             <Text className="service-duration">服务时长：{orderInfo.duration}分钟</Text>
           </View>
-          <Text className="price">¥{orderInfo.totalAmount}</Text>
+          <Text className="price">¥{(orderInfo.totalAmount / 100).toFixed(2)}</Text>
         </View>
       </View>
 

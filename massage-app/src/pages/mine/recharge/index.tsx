@@ -3,6 +3,7 @@ import { View, Text, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
 import { walletService, RechargeOption } from '@/services/wallet.service'
+import { paymentService } from '@/services/payment.service'  // ✅ 添加缺失的导入
 import './index.scss'
 
 const Recharge: React.FC = () => {
@@ -83,9 +84,10 @@ const Recharge: React.FC = () => {
       // 调起微信支付
       if (order.wxPayParams) {
         // 使用统一支付服务
+        // ✅ order.amount 已经是分（wallet.service.ts 中已转换）
         const paymentSuccess = await paymentService.pay({
           orderNo: order.orderNo,
-          amount: amount * 100, // 转换为分
+          amount: order.amount || (amount * 100), // 使用订单中的金额（已是分）
           paymentMethod: 'wechat',
           title: `充值${amount}元${bonus > 0 ? `(赠${bonus}元)` : ''}`,
           wxPayParams: order.wxPayParams
