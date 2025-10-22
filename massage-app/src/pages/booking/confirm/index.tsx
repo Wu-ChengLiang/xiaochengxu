@@ -117,12 +117,13 @@ const OrderConfirmPage: React.FC = () => {
   const fetchUserBalance = async () => {
     try {
       setBalanceLoading(true)
-      const balance = await walletService.getBalance()
+      const balance = await walletService.getBalance()  // 返回值是元
       setUserBalance(balance)
 
       // 如果余额充足，默认选择余额支付
-      const totalPrice = getTotalPrice()
-      if (balance >= totalPrice / 100) { // 转换为元比较
+      // ✅ getTotalPrice()返回分，balance是元，需要转换为同一单位比较
+      const totalPrice = getTotalPrice()  // 分
+      if (balance >= totalPrice / 100) { // balance(元) >= totalPrice(分) / 100
         setPaymentMethod('balance')
       }
     } catch (error) {
@@ -317,7 +318,7 @@ const OrderConfirmPage: React.FC = () => {
       // 调用统一支付接口
       const paymentSuccess = await paymentService.pay({
         orderNo: order.orderNo,
-        amount: order.totalAmount ? order.totalAmount * 100 : getTotalPrice() * 100, // 转换为分
+        amount: order.totalAmount || getTotalPrice(), // ✅ 直接使用分为单位，不再乘以100
         paymentMethod: paymentMethod,
         title: `${firstItem.serviceName} - ${firstItem.therapistName}`,
         wxPayParams: order.wxPayParams  // 传递后端返回的微信支付参数

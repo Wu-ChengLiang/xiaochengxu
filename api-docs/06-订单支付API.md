@@ -3,9 +3,157 @@
 ## MVP版本说明
 
 此文档为订单支付系统的MVP（最小可行产品）版本，包含以下特性：
-- **统一订单管理**：所有支付（服务、商品、充值）都通过统一的订单系统
+- **一体化预约订单**：预约和订单同时创建（`POST /api/v2/appointments/create-with-order`）
 - **简化支付方式**：仅支持微信或余额支付（不支持混合支付）
 - **订单同步创建**：下单即创建订单记录，支付后更新状态
+
+### 注意：API端点变化
+- ❌ **已删除** `POST /api/v2/orders/create` - 通用订单创建API
+- ✅ **使用** `POST /api/v2/appointments/create-with-order` - 预约订单一体化创建（推荐）
+
+## 重要：金额单位规范
+
+**全系统统一规约**：
+- 所有前端请求：**分**为单位（已经是分，不需要再转换）
+- 所有数据库存储：**分**为单位
+- 所有API返回：**分**为单位
+- 微信API调用：**分**为单位
+
+### 金额转换规则
+```
+前端发送价格（分）→ 直接使用 → 数据库存储（分）→ API返回（分）→ 微信API（分）
+```
+
+**注意**：前端请求的 price 字段**已经是分为单位**，后端应直接使用，**不需要乘以100**。
+
+---
+
+# 预约订单创建API
+
+## 1. 创建预约并生成订单
+
+### 接口地址
+```
+POST /api/v2/appointments/create-with-order
+```
+
+### 说明
+这是**预约专用的一体化端点**，同时创建预约记录和关联的订单。与通用订单创建API不同，此端点：
+- 自动创建预约记录（appointments表）
+- 自动创建关联订单（orders表）
+- 支持自动选择最优优惠券
+- 对于微信支付，直接返回可用的支付参数
+
+### 请求参数
+```json
+{
+  "therapistId": 1,                    // 技师ID（必填）
+  "storeId": 1,                        // 门店ID（必填）
+  "userId": 123,                       // 用户ID（必填）
+  "userPhone": "13800138000",          // 用户电话（必填）
+  "userName": "张三",                  // 用户名称（可选）
+  "appointmentDate": "2024-12-25",     // 预约日期（必填，格式YYYY-MM-DD）
+  "startTime": "14:00",                // 开始时间（必填，格式HH:mm）
+  "duration": 60,                      // 服务时长（分钟，可选，默认60）
+  "price": 12800,                      // 价格（必填，单位：分）
+  "serviceName": "颈部按摩",           // 服务名称（必填）
+  "therapistName": "王师傅",           // 技师名称（必填）
+  "paymentMethod": "wechat",           // 支付方式（可选，默认wechat，支持：wechat/balance）
+  "serviceId": 1,                      // 服务ID（可选）
+  "serviceType": "massage"             // 服务类型（可选）
+}
+```
+
+### 响应数据
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "appointment": {
+      "id": 123,                       // 预约ID
+      "therapistId": 1,
+      "storeId": 1,
+      "appointmentDate": "2024-12-25",
+      "startTime": "14:00",
+      "endTime": "15:00",              // 自动计算
+      "price": 12800,                  // 金额（分）
+      "status": "pending",             // 预约状态
+      "orderNo": "ORDER202412251234567" // 关联订单号
+    },
+    "order": {
+      "orderNo": "ORDER202412251234567",  // 订单号
+      "orderType": "service",
+      "title": "预约王师傅-颈部按摩",
+      "originalAmount": 12800,        // 原价（分）
+      "amount": 12800,                // 实际金额（分），可能应用了优惠券或折扣
+      "paymentMethod": "wechat",
+      "paymentStatus": "pending",
+      "createdAt": "2024-12-25T06:00:00.000Z",
+      // 如果有优惠券，返回优惠信息
+      "voucherUsed": {
+        "voucherCode": "SAVE10",
+        "discountAmount": 1200         // 优惠金额（分）
+      },
+      // 仅当支付方式为微信时返回
+      "wxPayParams": {
+        "prepay_id": "wx_prepay_id",
+        "timeStamp": "1234567890",
+        "nonceStr": "random_string",
+        "package": "prepay_id=wx_prepay_id",
+        "signType": "RSA",
+        "paySign": "signature"
+      }
+    }
+  }
+}
+```
+
+### 实现说明
+1. **事务处理**：预约和订单创建在单个事务中，保证数据一致性
+2. **优惠券应用**：
+   - 自动检查用户可用优惠券
+   - 选择最优的优惠券（优惠金额最大）
+   - 若用户无优惠券，使用用户折扣率（discount_rate）
+3. **金额计算**：
+   - 前端发送价格已是分为单位：`price`（分）
+   - 后端直接使用：`originalAmount = price`（无需转换）
+   - 应用优惠后：`finalAmount = originalAmount - discountAmount`
+4. **微信支付**：
+   - 校验用户是否绑定openid
+   - 调用微信支付API获取预支付订单
+   - 返回签名后的支付参数供前端调用wx.requestPayment()
+5. **订单状态**：
+   - `payment_status`: pending（待支付）
+   - 支付后通过支付回调更新为paid
+6. **预约状态**：
+   - `status`: pending（待确认）
+   - `payment_status`: unpaid（待支付）
+   - 支付成功后payment_status更新为paid
+
+### 错误情况
+| 错误码 | 说明 |
+|--------|------|
+| 1001 | 技师不存在或已停职 / 用户不存在 / 服务不存在 |
+| 1003 | 该时间段已被预约 |
+| 其他 | 微信支付初始化失败 |
+
+### 特殊说明
+
+#### 关于重复预约检查
+系统会检查**该技师在同一时间段是否已被预约**（通过唯一索引约束）：
+- 技师 + 预约日期 + 开始时间 必须唯一
+- 若重复，返回1003错误
+
+#### 关于订单与预约的关系
+- 一个预约对应一个订单
+- 订单号存储在 appointments.order_no 字段
+- 订单的 extra_data 包含预约详情（用于订单列表查询）
+
+#### 关于优惠券使用
+- 优惠券绑定到订单的extra_data中
+- 使用后优惠券被标记为已使用（vouchers表）
+- 余额支付和微信支付都支持优惠券
 
 ---
 
@@ -447,7 +595,151 @@ GET /api/v2/users/wallet/transactions
 }
 ```
 
-## 13. 微信支付回调
+## 13. 申请退款
+
+### 接口地址
+```
+POST /api/v2/orders/:orderNo/refund
+```
+
+### 请求参数
+```json
+{
+  "userId": 123,              // 用户ID（必填）
+  "reason": "用户主动退款",    // 退款原因（可选）
+}
+```
+
+### 响应数据
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "refundId": "REF202401151234567",      // 退款单号
+    "orderNo": "ORDER202401151234567",     // 原订单号
+    "refundAmount": 12800,                 // 退款金额（分）
+    "paymentMethod": "wechat",             // 支付方式（决定了退款渠道）
+    "status": "pending",                   // pending处理中/success成功/failed失败
+    "reason": "用户主动退款",
+    "createdAt": "2024-01-15T16:00:00.000Z"
+  }
+}
+```
+
+### 实现说明
+- 验证订单所有权（userId必须与订单的user_id一致）
+- 只能退款已支付的订单（payment_status='paid'）
+- 根据支付方式自动确定退款渠道：
+  - 微信支付（payment_method='wechat'）：调用微信退款API，原路返回到微信钱包
+  - 余额支付（payment_method='balance'）：直接退款到用户平台余额
+- 创建退款记录（refunds表）
+- 返回退款单号供后续查询
+
+### 错误情况
+| 错误码 | 说明 |
+|--------|------|
+| 1001 | 参数错误/订单不存在 |
+| 1003 | 无权限/订单状态不符 |
+| 3001 | 微信支付API调用失败 |
+
+---
+
+## 14. 查询退款
+
+### 接口地址
+```
+GET /api/v2/refunds/:refundId
+```
+
+### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| refundId | string | 是 | 退款单号（路径参数） |
+
+### 响应数据
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "refundId": "REF202401151234567",      // 退款单号
+    "orderNo": "ORDER202401151234567",     // 原订单号
+    "userId": 123,
+    "userPhone": "13800138000",
+    "originalAmount": 12800,               // 原订单金额
+    "refundAmount": 12800,                 // 本次退款金额
+    "paymentMethod": "wechat",             // 支付方式（wechat原路返回/balance余额退款）
+    "status": "success",                   // pending/success/failed
+    "reason": "用户主动退款",
+    "failedReason": null,                  // 失败原因（如果失败）
+    "wxRefundId": "50000000012345",        // 微信退款单号（仅微信支付时有值）
+    "requestedAt": "2024-01-15T16:00:00.000Z",  // 申请时间
+    "processedAt": "2024-01-15T16:05:00.000Z",  // 处理完成时间
+    "createdAt": "2024-01-15T16:00:00.000Z"
+  }
+}
+```
+
+### 实现说明
+- 通过退款单号查询退款详情
+- 退款渠道由 paymentMethod 确定：
+  - paymentMethod='wechat'：原路返回到微信钱包
+  - paymentMethod='balance'：已退款到用户余额
+- 如果退款ID不存在，返回404错误
+
+---
+
+## 15. 获取用户退款列表
+
+### 接口地址
+```
+GET /api/v2/users/:userId/refunds
+```
+
+### 请求参数
+| 参数 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| userId | number | 是 | 用户ID（路径参数） |
+| status | string | 否 | 退款状态：pending/success/failed |
+| page | number | 否 | 页码，默认1 |
+| pageSize | number | 否 | 每页数量，默认20 |
+
+### 响应数据
+```json
+{
+  "code": 0,
+  "message": "success",
+  "data": {
+    "list": [
+      {
+        "refundId": "REF202401151234567",
+        "orderNo": "ORDER202401151234567",
+        "refundAmount": 12800,
+        "paymentMethod": "wechat",
+        "status": "success",
+        "reason": "用户主动退款",
+        "requestedAt": "2024-01-15T16:00:00.000Z",
+        "processedAt": "2024-01-15T16:05:00.000Z"
+      }
+    ],
+    "total": 5,
+    "page": 1,
+    "pageSize": 20,
+    "hasMore": false
+  }
+}
+```
+
+### 实现说明
+- 获取用户的所有退款记录
+- 按申请时间倒序排列
+- 支持按状态筛选
+- 分页查询
+
+---
+
+## 16. 微信支付回调
 
 ### 接口地址
 ```
@@ -459,6 +751,30 @@ POST /api/v2/payments/wechat/notify
 - 验证支付成功后自动充值余额
 - 更新充值订单状态
 - 创建交易记录
+
+### 重要：预约订单支付状态同步
+
+当通过 `create-with-order` 创建的**预约订单**支付成功时（payment_status: pending → paid）：
+1. 订单表 orders 会自动更新为 paid
+2. **预约表 appointments 的 payment_status 也会自动更新为 paid**
+3. 预约状态 appointments.status 保持为 pending（待确认）
+
+这确保了前端可以正确查询到已支付的预约信息。
+
+---
+
+## 17. 微信退款回调
+
+### 接口地址
+```
+POST /api/v2/payments/wechat/refund-notify
+```
+
+### 说明
+- 接收微信退款结果通知
+- 验证退款成功/失败
+- 更新退款记录状态
+- 更新订单payment_status为refunded
 
 ---
 
@@ -584,6 +900,56 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 (500000, 100000, '5000元（赠1000元）', 6);
 ```
 
+## 4. 退款记录表 (refunds) - 新建
+
+```sql
+CREATE TABLE refunds (
+  id VARCHAR(50) PRIMARY KEY,              -- REF开头的退款单号
+  order_no VARCHAR(50) NOT NULL,           -- 原订单号
+  user_id INTEGER NOT NULL,                -- 用户ID
+  user_phone VARCHAR(20) NOT NULL,         -- 用户电话（冗余存储）
+
+  -- 金额信息
+  original_amount INTEGER NOT NULL,        -- 原订单金额（分）
+  refund_amount INTEGER NOT NULL,          -- 本次退款金额（分）
+
+  -- 支付方式（决定退款渠道）
+  payment_method VARCHAR(20) NOT NULL,     -- wechat微信/balance余额
+  -- wechat: 原路返回到微信钱包
+  -- balance: 退款到用户平台余额
+
+  -- 微信退款信息（仅当payment_method='wechat'时有值）
+  wx_refund_id VARCHAR(100),               -- 微信退款单号
+
+  -- 退款原因
+  reason VARCHAR(500),                     -- 退款原因
+  failed_reason VARCHAR(500),              -- 失败原因（仅当退款失败时有值）
+
+  -- 退款状态流转
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending/success/failed
+  -- pending: 等待微信处理（仅微信支付）
+  -- success: 退款成功
+  -- failed: 退款失败（仅微信支付）
+
+  -- 时间戳
+  requested_at DATETIME NOT NULL,          -- 申请时间
+  processed_at DATETIME,                   -- 处理完成时间（仅成功或失败时有值）
+
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (order_no) REFERENCES orders(order_no)
+);
+
+-- 索引
+CREATE INDEX IF NOT EXISTS idx_refunds_order_no ON refunds(order_no);
+CREATE INDEX IF NOT EXISTS idx_refunds_user_id ON refunds(user_id);
+CREATE INDEX IF NOT EXISTS idx_refunds_status ON refunds(status);
+CREATE INDEX IF NOT EXISTS idx_refunds_wx_refund_id ON refunds(wx_refund_id);
+CREATE INDEX IF NOT EXISTS idx_refunds_requested_at ON refunds(requested_at);
+```
+
 ---
 
 # 实现要点
@@ -653,6 +1019,51 @@ INSERT INTO recharge_configs (amount, bonus, label, sort_order) VALUES
 3. 支付成功后执行业务逻辑（如创建预约记录）
 ```
 
+### 退款流程（方案A：严格的原路返回）
+```
+用户申请退款
+  ↓
+验证订单所有权和状态
+  ├─ 只能退款已支付的订单（payment_status='paid'）
+  ├─ 验证userId与order.user_id一致
+  └─ 同一订单只能退款一次
+  ↓
+根据 payment_method 自动确定退款渠道
+  ├─ payment_method='wechat' → 原路返回到微信钱包
+  │  ├─ 调用微信退款API（POST /v3/refund/domestic/refunds）
+  │  ├─ 创建refunds记录（status='pending'）
+  │  └─ 等待微信回调处理结果
+  │
+  └─ payment_method='balance' → 直接退款到用户平台余额
+     ├─ 增加users.balance（退款金额）
+     ├─ 创建wallet_transactions记录（type='refund'）
+     ├─ 更新orders.payment_status='refunded'
+     └─ 创建refunds记录（status='success'）
+  ↓
+（仅微信支付）微信发送退款结果回调通知
+  ↓
+验证回调签名 → 解密回调数据
+  ↓
+更新refunds表状态（success/failed）和processed_at
+  ↓
+更新orders.payment_status='refunded'
+  ↓
+完成
+
+说明：
+- 余额支付：退款流程同步完成，用户立即看到余额恢复（status='success'）
+- 微信支付：分两阶段
+  1. 立即创建pending状态的退款记录给用户反馈
+  2. 异步等待微信处理和回调，更新为success或failed（通常2-7天）
+```
+
+### 退款状态说明
+| 状态 | 说明 | 适用场景 |
+|------|------|---------|
+| pending | 等待处理 | 微信支付，已申请但未收到回调 |
+| success | 退款成功 | 所有场景，用户已获得退款 |
+| failed | 退款失败 | 微信支付，微信侧退款失败（如订单超期等） |
+
 ## 测试用例
 
 ```bash
@@ -710,5 +1121,30 @@ curl -X POST http://localhost:3001/api/v2/orders/cancel \
 
 # 获取交易记录
 curl "http://localhost:3001/api/v2/users/wallet/transactions?userId=123&page=1&pageSize=10"
+
+# 申请退款（微信支付订单）
+curl -X POST http://localhost:3001/api/v2/orders/ORDER202401151234569/refund \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": 123,
+    "reason": "用户变卦，不想要了"
+  }'
+
+# 申请退款（余额支付订单）
+curl -X POST http://localhost:3001/api/v2/orders/ORDER202401151234567/refund \
+  -H "Content-Type: application/json" \
+  -d '{
+    "userId": 123,
+    "reason": "订单取消"
+  }'
+
+# 查询退款详情
+curl "http://localhost:3001/api/v2/refunds/REF202401151234567"
+
+# 获取用户的退款列表
+curl "http://localhost:3001/api/v2/users/123/refunds?status=success&page=1&pageSize=10"
+
+# 获取用户的所有退款列表（包括处理中）
+curl "http://localhost:3001/api/v2/users/123/refunds?page=1&pageSize=10"
 ```
 

@@ -1,24 +1,30 @@
 # 预约相关API文档
 
-## 1. 创建预约
+## 1. 创建预约+订单（一体化）
 
 ### 接口地址
 ```
-POST /api/v2/appointments
+POST /api/v2/appointments/create-with-order
 ```
+
+### 说明
+同时创建预约和关联订单，支持微信或余额支付。**这是推荐的预约创建方式**。
 
 ### 请求参数
 ```json
 {
-  "therapistId": "1",
-  "storeId": "1",
-  "serviceType": "经络推拿",  // 服务名称
-  "appointmentDate": "2024-01-20",
-  "startTime": "14:00",
-  "duration": 60,  // 分钟
-  "userPhone": "13800138000",
-  "userName": "张先生",
-  "notes": "腰部不适"  // 可选备注
+  "therapistId": 1,                    // 技师ID（必填）
+  "storeId": 1,                        // 门店ID（必填）
+  "userId": 123,                       // 用户ID（必填）
+  "userPhone": "13800138000",          // 用户电话（必填）
+  "userName": "张三",                  // 用户名称（可选）
+  "appointmentDate": "2024-12-25",     // 预约日期（必填，YYYY-MM-DD）
+  "startTime": "14:00",                // 开始时间（必填，HH:mm）
+  "duration": 60,                      // 服务时长（分钟，可选，默认60）
+  "price": 12800,                      // 价格（必填，单位：分）
+  "serviceName": "颈部按摩",           // 服务名称（必填）
+  "therapistName": "王师傅",           // 技师名称（必填）
+  "paymentMethod": "wechat"            // 支付方式（可选，默认wechat，支持：wechat/balance）
 }
 ```
 
@@ -28,45 +34,45 @@ POST /api/v2/appointments
   "code": 0,
   "message": "success",
   "data": {
-    "id": "202401201400001",  // 预约单号
-    "status": "pending",  // 待确认
     "appointment": {
-      "therapistId": "1",
-      "therapistName": "张师傅",
-      "storeId": "1",
-      "storeName": "明医推拿（罗湖店）",
-      "storeAddress": "深圳市罗湖区东门南路1234号",
-      "storePhone": "0755-12345678",
-      "serviceType": "经络推拿",
-      "appointmentDate": "2024-01-20",
+      "id": 123,
+      "therapistId": 1,
+      "storeId": 1,
+      "appointmentDate": "2024-12-25",
       "startTime": "14:00",
       "endTime": "15:00",
-      "duration": 60,
-      "price": 12800,  // 分为单位
-      "paymentAmount": 12800,  // 实付金额
-      "createdAt": "2024-01-19T10:30:00.000Z"
+      "price": 12800,
+      "status": "pending",
+      "orderNo": "ORDER202412251234567"
+    },
+    "order": {
+      "orderNo": "ORDER202412251234567",
+      "orderType": "service",
+      "title": "预约王师傅-颈部按摩",
+      "originalAmount": 12800,
+      "amount": 12800,
+      "paymentMethod": "wechat",
+      "paymentStatus": "pending",
+      "createdAt": "2024-12-25T06:00:00.000Z",
+      "voucherUsed": null,
+      "wxPayParams": {
+        "prepay_id": "wx_prepay_id",
+        "timeStamp": "1234567890",
+        "nonceStr": "random_string",
+        "package": "prepay_id=wx_prepay_id",
+        "signType": "RSA",
+        "paySign": "signature"
+      }
     }
   }
 }
 ```
 
-### 实现要点
-
-1. **时间冲突检测**
-```sql
--- 检查推拿师在该时段是否有预约
-SELECT COUNT(*) FROM appointments 
-WHERE therapist_id = ? 
-AND appointment_date = ?
-AND status IN ('pending', 'confirmed')
-AND NOT (end_time <= ? OR start_time >= ?)
-```
-
-2. **预约单号生成**
-```javascript
-// 格式：日期时间 + 流水号
-// 202401201400001 = 2024年01月20日14:00 + 001
-```
+### 关键说明
+- 同时创建预约（appointments）和订单（orders）
+- 支付后通过回调自动同步预约状态
+- 支持优惠券自动应用
+- 微信支付时返回签名后的支付参数
 
 ## 2. 获取预约详情
 
