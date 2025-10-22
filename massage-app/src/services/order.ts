@@ -472,10 +472,10 @@ class OrderService {
       // 使用RESTful风格的API路径
       const response = await get(`/orders/${orderNo}`)
 
-      // ✅ API返回的amount已经是分为单位，直接保存，不再转换
+      // ✅ API返回的amount已经是分为单位，需要转换为元用于显示
       const order = response.data
       if (order.amount) {
-        order.totalAmount = order.amount  // ✅ 保持分为单位
+        order.totalAmount = order.amount / 100  // ✅ 转换为元用于显示
       }
 
       // 从extraData中提取预约信息
@@ -530,9 +530,9 @@ class OrderService {
 
       // 处理订单数据
       const orders = response.data.list.map(order => {
-        // ✅ API返回的amount已经是分为单位，直接保存，不再转换
+        // ✅ API返回的amount已经是分为单位，需要转换为元用于显示
         if (order.amount) {
-          order.totalAmount = order.amount  // ✅ 保持分为单位
+          order.totalAmount = order.amount / 100  // ✅ 转换为元用于显示
         }
 
         // 从extraData中提取信息
