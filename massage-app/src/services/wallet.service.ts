@@ -17,12 +17,13 @@ export interface Transaction {
 
 /**
  * 充值选项配置
+ * ✅ 所有金额字段都是分为单位（整数）
  */
 export interface RechargeOption {
   id: number
-  amount: number      // 金额（元）✅ 已转换为元用于显示
-  bonus: number       // 赠送金额（元）✅ 已转换为元用于显示
-  label: string       // 显示标签
+  amount: number      // 充值金额（分）✅ 分为单位
+  bonus: number       // 赠送金额（分）✅ 分为单位
+  label: string       // 显示标签（用于UI显示，如"100元"）
   sortOrder?: number
   isActive?: boolean
   description?: string
@@ -65,21 +66,21 @@ class WalletService {
 
   /**
    * 获取钱包余额
-   * @returns 余额信息
+   * ✅ 返回分为单位，由页面层使用 formatAmount() 转换为元显示
+   * @returns 余额信息（分为单位）
    */
   async getBalance(): Promise<number> {
     try {
       const userId = this.getCurrentUserId()
       const response = await get<BalanceResponse>('/users/wallet/balance', { userId })
 
-      // API返回的余额单位是分，需要转换为元
+      // ✅ 直接返回API数据（分为单位）
       const balanceInCents = response.data.balance || 0
-      const balanceInYuan = balanceInCents / 100
       console.log('💰 余额查询:', {
         分: balanceInCents,
-        元: balanceInYuan.toFixed(2)
+        元: (balanceInCents / 100).toFixed(2)
       })
-      return balanceInYuan
+      return balanceInCents
     } catch (error) {
       console.error('获取余额失败:', error)
       throw new Error('获取余额失败，请重试')
@@ -88,19 +89,15 @@ class WalletService {
 
   /**
    * 获取余额详情（包含统计信息）
-   * @returns 余额详情
+   * ✅ 返回分为单位，由页面层负责转换为元显示
+   * @returns 余额详情（分为单位）
    */
   async getBalanceDetails(): Promise<BalanceResponse> {
     try {
       const userId = this.getCurrentUserId()
       const response = await get<BalanceResponse>('/users/wallet/balance', { userId })
-      // 转换单位：分转换为元
-      const data = response.data
-      return {
-        balance: data.balance / 100,  // 分转元
-        totalSpent: data.totalSpent / 100,  // 分转元
-        totalVisits: data.totalVisits
-      }
+      // ✅ 直接返回API数据（分为单位），不转换
+      return response.data
     } catch (error) {
       console.error('获取余额详情失败:', error)
       throw new Error('获取余额详情失败，请重试')
@@ -109,18 +106,15 @@ class WalletService {
 
   /**
    * 获取充值配置选项
-   * @returns 充值配置列表
+   * ✅ 返回分为单位，页面层用 formatAmount() 转换为元显示
+   * @returns 充值配置列表（分为单位）
    */
   async getRechargeOptions(): Promise<RechargeOption[]> {
     try {
       const response = await get<RechargeOption[]>('/recharge/configs')
 
-      // API返回的数据已经是分为单位，需要转换为元用于显示
-      return response.data.map(option => ({
-        ...option,
-        amount: option.amount / 100,    // 转换为元
-        bonus: option.bonus / 100        // 转换为元
-      }))
+      // ✅ 直接返回API数据（分为单位）
+      return response.data
     } catch (error) {
       console.error('获取充值配置失败:', error)
       // 返回默认配置作为降级方案
@@ -130,16 +124,17 @@ class WalletService {
 
   /**
    * 获取默认充值配置（降级方案）
+   * ✅ 返回分为单位
    * @private
    */
   private getDefaultRechargeOptions(): RechargeOption[] {
     return [
-      { id: 1, amount: 100, bonus: 0, label: '100元', sortOrder: 1 },
-      { id: 2, amount: 200, bonus: 0, label: '200元', sortOrder: 2 },
-      { id: 3, amount: 500, bonus: 50, label: '500元', sortOrder: 3, promotionTag: '赠50元' },
-      { id: 4, amount: 1000, bonus: 100, label: '1000元', sortOrder: 4, promotionTag: '赠100元' },
-      { id: 5, amount: 2000, bonus: 300, label: '2000元', sortOrder: 5, promotionTag: '赠300元' },
-      { id: 6, amount: 5000, bonus: 1000, label: '5000元', sortOrder: 6, promotionTag: '赠1000元', isRecommended: true }
+      { id: 1, amount: 10000, bonus: 0, label: '100元', sortOrder: 1 },              // 100元 = 10000分
+      { id: 2, amount: 20000, bonus: 0, label: '200元', sortOrder: 2 },              // 200元 = 20000分
+      { id: 3, amount: 50000, bonus: 5000, label: '500元', sortOrder: 3, promotionTag: '赠50元' },    // 500元 = 50000分
+      { id: 4, amount: 100000, bonus: 10000, label: '1000元', sortOrder: 4, promotionTag: '赠100元' }, // 1000元 = 100000分
+      { id: 5, amount: 200000, bonus: 30000, label: '2000元', sortOrder: 5, promotionTag: '赠300元' }, // 2000元 = 200000分
+      { id: 6, amount: 500000, bonus: 100000, label: '5000元', sortOrder: 6, promotionTag: '赠1000元', isRecommended: true } // 5000元 = 500000分
     ]
   }
 
@@ -180,10 +175,11 @@ class WalletService {
 
   /**
    * 获取交易记录
+   * ✅ 返回分为单位
    * @param page 页码
    * @param pageSize 每页数量
    * @param type 交易类型（可选）
-   * @returns 交易记录列表
+   * @returns 交易记录列表（金额为分为单位）
    */
   async getTransactions(
     page: number = 1,
@@ -197,12 +193,8 @@ class WalletService {
 
       const response = await get<TransactionsResponse>('/users/wallet/transactions', params)
 
-      // 转换金额单位：分转元
-      return response.data.list.map(item => ({
-        ...item,
-        amount: item.amount / 100,
-        balance: item.balance / 100
-      }))
+      // ✅ 直接返回API数据（分为单位）
+      return response.data.list
     } catch (error) {
       console.error('获取交易记录失败:', error)
       return []
@@ -212,8 +204,8 @@ class WalletService {
   /**
    * 使用余额支付
    * @param orderNo 订单号
-   * @param amount 支付金额（元）
-   * @returns 支付结果
+   * @param amount 支付金额（分）
+   * @returns 支付结果（balance为分为单位）
    */
   async payWithBalance(orderNo: string, amount: number) {
     try {
@@ -227,7 +219,7 @@ class WalletService {
 
       return {
         success: true,
-        balance: response.data.balance / 100, // 转换为元
+        balance: response.data.balance,  // ✅ 返回分为单位
         message: '支付成功'
       }
     } catch (error: any) {
@@ -239,15 +231,15 @@ class WalletService {
   /**
    * 退款到余额
    * @param orderNo 订单号
-   * @param amount 退款金额（元）
+   * @param amount 退款金额（分）
    * @param reason 退款原因
-   * @returns 退款结果
+   * @returns 退款结果（balance为分为单位）
    */
   async refundToBalance(orderNo: string, amount: number, reason: string = '订单退款') {
     try {
       const response = await post('/users/wallet/refund', {
         phone: getCurrentUserPhone(),
-        amount: amount * 100, // 转换为分
+        amount: amount,  // ✅ 已经是分为单位，直接发送
         orderNo: orderNo,
         description: reason
       }, {
@@ -257,7 +249,7 @@ class WalletService {
 
       return {
         success: true,
-        balance: response.data.balance / 100, // 转换为元
+        balance: response.data.balance,  // ✅ 返回分为单位
         transactionId: response.data.transactionId,
         message: '退款成功'
       }

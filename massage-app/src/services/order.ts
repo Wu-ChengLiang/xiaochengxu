@@ -34,7 +34,7 @@ export interface OrderData {
   appointmentStatus?: 'pending' | 'confirmed' | 'serving' | 'completed' | 'cancelled'  // 预约状态
 
   // 计算字段
-  totalAmount?: number
+  // totalAmount 已弃用：应该使用 amount（分为单位），在UI层使用 formatAmount() 转换显示
   paymentDeadline?: string
   displayStatus?: string  // 综合显示状态
 }
@@ -393,8 +393,8 @@ class OrderService {
         serviceName: params.serviceName,
         duration: params.duration,
         appointmentDate: params.appointmentDate,
-        appointmentTime: params.appointmentTime,
-        totalAmount: (params.discountPrice || params.price)
+        appointmentTime: params.appointmentTime
+        // ✅ amount 已经从API返回，单位为分
       }
 
       return {
@@ -473,11 +473,9 @@ class OrderService {
       // 使用RESTful风格的API路径
       const response = await get(`/orders/${orderNo}`)
 
-      // ✅ API返回的amount已经是分为单位，需要转换为元用于显示
+      // ✅ API返回的amount已经是分为单位，保持分为单位返回
       const order = response.data
-      if (order.amount) {
-        order.totalAmount = order.amount / 100  // ✅ 转换为元用于显示
-      }
+      // amount 保持分为单位，由UI层使用 formatAmount() 转换显示
 
       // 从extraData中提取预约信息
       if (order.extraData) {
@@ -532,10 +530,8 @@ class OrderService {
 
       // 处理订单数据
       const orders = response.data.list.map(order => {
-        // ✅ API返回的amount已经是分为单位，需要转换为元用于显示
-        if (order.amount) {
-          order.totalAmount = order.amount / 100  // ✅ 转换为元用于显示
-        }
+        // ✅ API返回的amount已经是分为单位，保持分为单位返回
+        // amount 保持分为单位，由UI层使用 formatAmount() 转换显示
 
         // 从extraData中提取信息
         if (order.extraData) {
