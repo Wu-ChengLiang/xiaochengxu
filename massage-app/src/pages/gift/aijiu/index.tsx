@@ -30,6 +30,10 @@ const AijiuDetail: React.FC = () => {
     setQuantity(1)
   }
 
+  const handleSwiperChange = (e: any) => {
+    setCurrentIndex(e.detail.current)
+  }
+
   const handleQuantityChange = (type: 'increase' | 'decrease') => {
     if (type === 'increase') {
       setQuantity(quantity + 1)
@@ -104,19 +108,37 @@ const AijiuDetail: React.FC = () => {
       {showModal && (
         <View className="modal-overlay" onClick={handleCloseModal}>
           <View className="modal-content" onClick={(e) => e.stopPropagation()}>
-            {/* 上半部分：图片轮播 */}
+            {/* 上半部分：图片轮播卡片 */}
             <View className="modal-top">
-              <Swiper className="product-swiper" circular autoplay current={currentIndex}>
-                {products.map((product, index) => (
-                  <SwiperItem key={product.id}>
-                    <Image
-                      className="product-image"
-                      src={product.image}
-                      mode="aspectFill"
+              <View className="carousel-container">
+                <Swiper
+                  className="product-swiper"
+                  circular
+                  current={currentIndex}
+                  onChange={handleSwiperChange}
+                >
+                  {products.map((product, index) => (
+                    <SwiperItem key={product.id}>
+                      <Image
+                        className="product-image"
+                        src={product.image}
+                        mode="aspectFill"
+                      />
+                    </SwiperItem>
+                  ))}
+                </Swiper>
+
+                {/* 分页指示器 */}
+                <View className="pagination-dots">
+                  {products.map((_, index) => (
+                    <View
+                      key={index}
+                      className={`dot ${currentIndex === index ? 'active' : ''}`}
                     />
-                  </SwiperItem>
-                ))}
-              </Swiper>
+                  ))}
+                </View>
+              </View>
+
               <View className="close-btn" onClick={handleCloseModal}>
                 <AtIcon value="close" size="24" color="#fff" />
               </View>

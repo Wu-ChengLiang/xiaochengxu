@@ -101,27 +101,39 @@ const ProductDetail: React.FC = () => {
 
   return (
     <View className="product-detail-page">
-      {/* 商品图片轮播 */}
-      <Swiper className="product-swiper" circular autoplay>
-        <SwiperItem>
-          <Image 
-            className="product-image" 
-            src={productInfo.image}
-            mode="aspectFill"
-          />
-        </SwiperItem>
-      </Swiper>
+      {/* 商品图片轮播卡片 */}
+      <View className="product-carousel-card">
+        {/* 轮播图区域 */}
+        <Swiper className="product-swiper" circular>
+          <SwiperItem>
+            <Image
+              className="product-image"
+              src={productInfo.image}
+              mode="aspectFill"
+            />
+          </SwiperItem>
+        </Swiper>
 
-      {/* 商品信息 */}
-      <View className="product-info">
-        <View className="price-section">
-          <View className="price-row">
-            <Text className="price">¥{productInfo.price.toFixed(2)}</Text>
-            <Text className="original-price">¥{productInfo.originalPrice.toFixed(2)}</Text>
+        {/* 底部信息区域 */}
+        <View className="carousel-info">
+          <View className="info-content">
+            <Text className="product-name">{productInfo.name}</Text>
+            <View className="price-row">
+              <Text className="price">¥{productInfo.price.toFixed(2)}</Text>
+              <Text className="original-price">¥{productInfo.originalPrice.toFixed(2)}</Text>
+            </View>
           </View>
-          <Text className="unit">/{productInfo.unit}</Text>
+
+          {/* 分页指示器 */}
+          <View className="pagination-dots">
+            <View className="dot active" />
+          </View>
         </View>
-        <Text className="product-name">{productInfo.name}</Text>
+      </View>
+
+      {/* 商品描述信息 */}
+      <View className="product-info">
+        <Text className="unit">单位: {productInfo.unit}</Text>
         <Text className="product-desc">{productInfo.description}</Text>
       </View>
 
