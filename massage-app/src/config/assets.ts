@@ -31,27 +31,8 @@ export const ASSETS_CONFIG = {
     electronic: `${CDN_BASE}/card/gift-card.png`
   },
 
-  // 周边商品图片 - ✅ 已在服务器上验证存在
-  // 暖贴类 (nuantie) - 保暖贴
-  product: {
-    // 原有占位符，可继续使用或由后端API返回
-    pillow: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,     // 护息贴（原neck-pillow）
-    therapy: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,    // 新爱贴（原health-food）
-
-    // 暖贴类其他产品
-    nuantie: {
-      huxi: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,
-      xinai: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,
-      yaofu: `${CDN_BASE}/gift/product/nuantie/yaofu.jpg`
-    },
-
-    // 艾酒类产品
-    aijiu: {
-      xinaibing: `${CDN_BASE}/gift/product/aijiu/xinaibing.jpg`,
-      xinaizhu: `${CDN_BASE}/gift/product/aijiu/xinaizhu.jpg`,
-      xinaitiao: `${CDN_BASE}/gift/product/aijiu/xinaitiao.jpg`
-    }
-  },
+  // 周边商品图片 - 已删除（暖贴和艾条页面已下线）
+  product: {},
 
   // 推荐banner - ⚠️ 暂无
   // 由后端通过API返回或由页面处理

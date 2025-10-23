@@ -10,8 +10,6 @@ export default {
     'pages/booking/success/index',
     'pages/order/list/index',
     'pages/order/detail/index',
-    'pages/gift/aijiu/index',
-    'pages/gift/nuantie/index',
     'pages/gift/product-detail/index',
     'pages/gift/purchase/index',
     'pages/gift/order-confirm/index',

@@ -40,87 +40,10 @@ const GIFT_CARDS: GiftCard[] = [
   }
 ]
 
-// 暖贴产品数据
-const NUANTIE_PRODUCTS: Product[] = [
-  {
-    id: 'nuantie-waist',
-    name: '蕲艾腰腹暖贴',
-    image: 'https://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '贴',
-    description: '自发热艾草暖护腰贴',
-    features: ['自发热艾草', '暖护腰贴', '道地蕲艾'],
-    specifications: {}
-  },
-  {
-    id: 'nuantie-knee',
-    name: '蕲艾护膝暖贴',
-    image: 'https://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '贴',
-    description: '自发热艾草护膝 驱寒保暖',
-    features: ['自发热艾草', '护膝', '驱寒保暖'],
-    specifications: {}
-  },
-  {
-    id: 'nuantie-moxa',
-    name: '蕲艾灸贴',
-    image: 'https://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '贴',
-    description: '自发热艾草精油穴位灸贴',
-    features: ['自发热艾草', '精油穴位灸贴', '道地蕲艾'],
-    specifications: {}
-  }
-]
-
-// 艾条产品数据
-const AIJIU_PRODUCTS: Product[] = [
-  {
-    id: 'aijiu-stick',
-    name: '蕲艾条',
-    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '条',
-    description: '艾灸艾条 3年陈艾',
-    features: ['3年陈艾', '艾灸艾条', '道地蕲艾'],
-    specifications: {}
-  },
-  {
-    id: 'aijiu-moxa-ball',
-    name: '蕲艾饼',
-    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '饼',
-    description: '道地蕲艾泡脚泡澡艾草饼',
-    features: ['泡脚泡澡', '艾草饼', '道地蕲艾'],
-    specifications: {}
-  },
-  {
-    id: 'aijiu-column',
-    name: '新艾柱',
-    image: 'https://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg',
-    price: 9900,      // ¥99
-    originalPrice: 9900,
-    unit: '柱',
-    description: '李时珍故里特产新艾柱',
-    features: ['新艾柱', '李时珍故里特产', '艾灸'],
-    specifications: {}
-  }
-]
-
 // 静态商品数据（替代mock）
 // ✅ 注意：price 和 originalPrice 使用整数分为单位，不使用小数
 // 例如: 299.00元 = 29900分，19900分 = 199元
-const PRODUCTS: Product[] = [
-  ...NUANTIE_PRODUCTS,
-  ...AIJIU_PRODUCTS
-]
+const PRODUCTS: Product[] = []
 
 
 /**
@@ -155,19 +78,6 @@ export class GiftService {
     return PRODUCTS.find(product => product.id === id)
   }
 
-  /**
-   * 获取暖贴产品列表
-   */
-  static getNuantieProducts(): Product[] {
-    return NUANTIE_PRODUCTS
-  }
-
-  /**
-   * 获取艾条产品列表
-   */
-  static getAijiuProducts(): Product[] {
-    return AIJIU_PRODUCTS
-  }
 
   /**
    * 创建礼卡购买订单
