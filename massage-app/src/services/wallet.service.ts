@@ -149,12 +149,14 @@ class WalletService {
       const userId = this.getCurrentUserId()
       const userPhone = getCurrentUserPhone()
 
+      const amountInCents = amount * 100
+
       const orderData = {
         orderType: 'recharge',
         userId: userId,
         userPhone: userPhone,
         title: bonus > 0 ? `充值${amount}元，赠送${bonus}元` : `充值${amount}元`,
-        amount: amount * 100, // 转换为分
+        amount: amountInCents, // 转换为分
         paymentMethod: 'wechat',
         extraData: {
           rechargeAmount: amount * 100,        // ✅ 按API文档使用 rechargeAmount
