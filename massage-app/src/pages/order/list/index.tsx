@@ -133,9 +133,36 @@ const OrderListPage: React.FC = () => {
       // 获取支付参数
       const paymentParams = await orderService.getPaymentParams(order.orderNo)
 
-      // 调用微信支付
+      // ✅ 验证支付参数完整性
+      const requiredFields = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign']
+      const missingFields = requiredFields.filter(field => !paymentParams[field])
+
+      if (missingFields.length > 0) {
+        console.error('❌ 微信支付参数不完整，缺少字段:', missingFields, '完整参数:', paymentParams)
+        Taro.showToast({
+          title: `支付参数缺失: ${missingFields.join(', ')}`,
+          icon: 'none'
+        })
+        return
+      }
+
+      console.log('💳 微信支付参数验证通过:', {
+        timeStamp: paymentParams.timeStamp,
+        nonceStr: paymentParams.nonceStr?.substring(0, 8) + '...',
+        package: paymentParams.package,
+        signType: paymentParams.signType,
+        paySign: paymentParams.paySign?.substring(0, 16) + '...'
+      })
+
+      // ✅ 调用微信支付 - 确保传递所有必需参数
       Taro.requestPayment({
-        ...paymentParams,
+        timeStamp: paymentParams.timeStamp,
+        nonceStr: paymentParams.nonceStr,
+        package: paymentParams.package,
+        signType: paymentParams.signType as any,
+        paySign: paymentParams.paySign,
+        // ⚠️ 注意：total_fee 可能在后端的 package 字段中或需要从 order.amount 传入
+        ...(paymentParams.total_fee && { total_fee: paymentParams.total_fee }),
         success: async () => {
           // 更新订单状态
           await orderService.updateOrderStatus(order.orderNo, 'paid')
@@ -146,13 +173,22 @@ const OrderListPage: React.FC = () => {
           // 刷新订单列表
           fetchOrders()
         },
-        fail: (err) => {
-          if (err.errMsg !== 'requestPayment:fail cancel') {
-            Taro.showToast({
-              title: '支付失败',
-              icon: 'none'
-            })
+        fail: (err: any) => {
+          if (err.errMsg === 'requestPayment:fail cancel') {
+            console.log('💳 用户取消支付')
+            return
           }
+
+          console.error('💳 微信支付失败:', {
+            errMsg: err.errMsg,
+            errCode: err.errCode,
+            message: err.message
+          })
+          Taro.showToast({
+            title: err.errMsg || '支付失败',
+            icon: 'none',
+            duration: 3000
+          })
         }
       })
     } catch (error) {
@@ -175,15 +211,32 @@ const OrderListPage: React.FC = () => {
           try {
             const result = await orderService.cancelOrder(order.orderNo)
 
-            if (result.refundAmount && result.refundAmount > 0) {
+            // 🚀 改进：根据订单支付状态区分显示反馈
+            // 未支付订单取消：只显示"订单已取消"（无需提及退款）
+            // 已支付订单取消：显示具体退款金额
+            if (order.paymentStatus === 'pending') {
+              // 未支付订单：无资金流动，只是取消预约
               Taro.showToast({
-                title: `已取消，退款￥${(result.refundAmount / 100).toFixed(2)}`,
-                icon: 'success',
-                duration: 2500
+                title: '取消订单',
+                icon: 'success'
               })
+            } else if (order.paymentStatus === 'paid' && result.refundAmount && result.refundAmount > 0) {
+              // 已支付订单：明确显示退款金额
+              Taro.showToast({
+                title: `取消订单`,
+                icon: 'success'
+              })
+              // 显示退款详情（可选：在下一个toast中展示）
+              setTimeout(() => {
+                Taro.showToast({
+                  title: `退款￥${(result.refundAmount / 100).toFixed(2)}`,
+                  icon: 'success',
+                  duration: 2500
+                })
+              }, 500)
             } else {
               Taro.showToast({
-                title: '订单已取消',
+                title: '取消订单',
                 icon: 'success'
               })
             }

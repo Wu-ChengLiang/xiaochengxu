@@ -88,11 +88,38 @@ const OrderDetailPage: React.FC = () => {
       success: async (res) => {
         if (res.confirm) {
           try {
-            await orderService.cancelOrder(orderNo)
-            Taro.showToast({
-              title: '订单已取消',
-              icon: 'success'
-            })
+            const result = await orderService.cancelOrder(orderNo)
+
+            // 🚀 改进：根据订单支付状态区分显示反馈
+            // 未支付订单取消：只显示"取消订单"（无需提及退款）
+            // 已支付订单取消：显示具体退款金额
+            if (orderInfo?.paymentStatus === 'pending') {
+              // 未支付订单：无资金流动，只是取消预约
+              Taro.showToast({
+                title: '取消订单',
+                icon: 'success'
+              })
+            } else if (orderInfo?.paymentStatus === 'paid' && result.refundAmount && result.refundAmount > 0) {
+              // 已支付订单：明确显示退款金额
+              Taro.showToast({
+                title: `取消订单`,
+                icon: 'success'
+              })
+              // 显示退款详情（可选：在下一个toast中展示）
+              setTimeout(() => {
+                Taro.showToast({
+                  title: `退款￥${(result.refundAmount / 100).toFixed(2)}`,
+                  icon: 'success',
+                  duration: 2500
+                })
+              }, 500)
+            } else {
+              Taro.showToast({
+                title: '取消订单',
+                icon: 'success'
+              })
+            }
+
             setTimeout(() => {
               fetchOrderDetail()
             }, 1500)
