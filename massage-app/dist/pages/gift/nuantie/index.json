@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "暖贴",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+}
