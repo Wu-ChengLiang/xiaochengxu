@@ -375,7 +375,7 @@ class OrderService {
         duration: params.duration || 60,
         serviceId: params.serviceId,
         serviceName: params.serviceName,
-        price: params.discountPrice || params.price
+        price: (params.discountPrice || params.price) * 100  // ✅ 转换为分（params中是元）
       }
 
       // 调试日志 - 查看转换后的请求数据
