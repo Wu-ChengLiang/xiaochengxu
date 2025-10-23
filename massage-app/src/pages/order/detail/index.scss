@@ -174,18 +174,20 @@
       padding: 24px;
       display: flex;
       align-items: center;
+      gap: 16px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
+      // 🚀 改进：只在有图片时显示和留白
       .therapist-avatar {
         width: 100px;
         height: 100px;
         border-radius: 8px;
         flex-shrink: 0;
+        background: #f5f5f5;
       }
 
       .therapist-info {
         flex: 1;
-        margin-left: 20px;
 
         .therapist-name {
           font-size: 30px;

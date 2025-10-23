@@ -34,6 +34,25 @@ const OrderDetailPage: React.FC = () => {
 
     try {
       const order = await orderService.getOrderDetail(orderNo)
+
+      // 🚀 改进：添加数据验证和调试日志
+      console.log('📋 订单详情获取成功:', {
+        orderNo: order.orderNo,
+        amount: order.amount,
+        amountType: typeof order.amount,
+        therapistAvatar: order.therapistAvatar,
+        therapistName: order.therapistName,
+        displayStatus: order.displayStatus
+      })
+
+      // ✅ 数据完整性检查
+      if (!order.amount && order.amount !== 0) {
+        console.warn('⚠️ 警告：订单金额为空', { orderNo, amount: order.amount })
+      }
+      if (typeof order.amount !== 'number') {
+        console.error('❌ 错误：订单金额类型不正确', { orderNo, amount: order.amount, type: typeof order.amount })
+      }
+
       setOrderInfo(order)
 
       // 检查是否已评价（如果有appointmentId）
@@ -48,6 +67,7 @@ const OrderDetailPage: React.FC = () => {
       setLoading(false)
     } catch (error) {
       setLoading(false)
+      console.error('❌ 获取订单详情失败:', error)
       Taro.showToast({
         title: '获取订单失败',
         icon: 'none'
@@ -321,10 +341,12 @@ const OrderDetailPage: React.FC = () => {
       <View className="therapist-section">
         <Text className="section-title">推拿师信息</Text>
         <View className="therapist-card">
-          <Image 
-            className="therapist-avatar" 
-            src={orderInfo.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'} 
-          />
+          {orderInfo.therapistAvatar && (
+            <Image
+              className="therapist-avatar"
+              src={orderInfo.therapistAvatar}
+            />
+          )}
           <View className="therapist-info">
             <Text className="therapist-name">{orderInfo.therapistName}</Text>
             <Text className="service-name">{orderInfo.serviceName}</Text>

@@ -52,11 +52,25 @@ export function formatAmount(
     precision = 2
   } = options || {}
 
-  if (!amountInCents && amountInCents !== 0) {
+  // 🚀 改进：更清晰的容错处理，避免NaN
+  if (amountInCents === undefined || amountInCents === null) {
+    return `${symbol}0.00${suffix}`
+  }
+
+  // 验证是否为有效数字
+  if (typeof amountInCents !== 'number' || isNaN(amountInCents)) {
+    console.warn('⚠️ formatAmount: 无效的金额输入', { amountInCents, type: typeof amountInCents })
     return `${symbol}0.00${suffix}`
   }
 
   const yuan = centsToYuan(amountInCents)
+
+  // 防御性检查：确保结果不是NaN
+  if (isNaN(yuan)) {
+    console.error('❌ formatAmount: 金额转换结果为NaN', { amountInCents, yuan })
+    return `${symbol}0.00${suffix}`
+  }
+
   return `${symbol}${yuan.toFixed(precision)}${suffix}`
 }
 

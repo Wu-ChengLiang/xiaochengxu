@@ -1,1 +1,203 @@
-"use strict";var e=(e,s,t)=>new Promise((a,r)=>{var i=e=>{try{o(t.next(e))}catch(s){r(s)}},c=e=>{try{o(t.throw(e))}catch(s){r(s)}},o=e=>e.done?a(e.value):Promise.resolve(e.value).then(i,c);o((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),a=require("../../../common.js"),r="",i=()=>{const r=s.taroExports.useRouter(),{cardId:i}=r.params,[c,o]=s.reactExports.useState(null),[n,x]=s.reactExports.useState(1e3),[l,m]=s.reactExports.useState(1);s.reactExports.useEffect(()=>{if(i){const e=a.GiftService.getGiftCardById(i);e&&o(e)}},[i]);const u=[{value:1e3,label:"\xa51000",bonus:"\u9001100"},{value:3e3,label:"\xa53000",bonus:"\u9001500"}],j=e=>{x(e)},d=e=>{m(e)},p=()=>e(exports,null,function*(){const e=n;if(e)try{const t=yield a.GiftService.createGiftCardOrder({cardId:i,amount:100*e,quantity:l,paymentMethod:"wechat",customMessage:"\u4e16\u754c\u4e0a\u6700\u597d\u7684\u7238\u7238"});console.log("\ud83c\udf81 \u8ba2\u5355\u521b\u5efa\u6210\u529f\uff0c\u51c6\u5907\u652f\u4ed8:",{orderNo:t.orderNo,amount:e*l,quantity:l});const r=yield a.paymentService.pay({orderNo:t.orderNo,amount:e*l*100,paymentMethod:"wechat",title:`\u7535\u5b50\u793c\u5361 \xa5${e} \xd7 ${l}`,wxPayParams:t.wxPayParams});r&&(s.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success",duration:1500}),setTimeout(()=>{s.Taro.navigateBack()},1500))}catch(t){console.error("\u274c \u793c\u5361\u8d2d\u4e70\u5931\u8d25:",t),s.Taro.hideLoading(),s.Taro.showToast({title:t.message||"\u8d2d\u4e70\u5931\u8d25",icon:"none"})}else s.Taro.showToast({title:"\u8bf7\u9009\u62e9\u9762\u989d",icon:"none"})}),h=()=>n*l;return c?s.jsxRuntimeExports.jsxs(s.View,{className:"gift-card-purchase",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"card-info-section",children:[s.jsxRuntimeExports.jsx(s.View,{className:"card-image",children:s.jsxRuntimeExports.jsx(s.Image,{className:"card-pic",src:c.image,mode:"aspectFill"})}),s.jsxRuntimeExports.jsx(s.Text,{className:"card-name",children:c.name}),s.jsxRuntimeExports.jsx(s.Text,{className:"card-desc",children:c.description})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"features-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u793c\u5361\u7279\u8272"}),s.jsxRuntimeExports.jsx(s.View,{className:"features-list",children:c.features.map((e,a)=>s.jsxRuntimeExports.jsxs(s.View,{className:"feature-item",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"check-circle",size:"18",color:"#a40035"}),s.jsxRuntimeExports.jsx(s.Text,{className:"feature-text",children:e})]},a))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"amount-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u8bf7\u9009\u62e9\u9762\u989d"}),s.jsxRuntimeExports.jsx(s.View,{className:"amount-grid",children:u.map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:"amount-card "+(n===e.value?"active":""),onClick:()=>j(e.value),children:[s.jsxRuntimeExports.jsx(s.View,{className:"amount-header",children:s.jsxRuntimeExports.jsx(s.Text,{className:"amount",children:e.label})}),s.jsxRuntimeExports.jsx(s.View,{className:"amount-details",children:s.jsxRuntimeExports.jsx(s.Text,{className:"bonus",children:e.bonus})}),n===e.value&&s.jsxRuntimeExports.jsxs(s.View,{className:"quantity-control",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"subtract-circle",size:"20",color:"#999",onClick:e=>{e.stopPropagation(),l>1&&d(l-1)}}),s.jsxRuntimeExports.jsx(s.Text,{className:"quantity",children:l}),s.jsxRuntimeExports.jsx(t.AtIcon,{value:"add-circle",size:"20",color:"#a40035",onClick:e=>{e.stopPropagation(),d(l+1)}})]}),n!==e.value&&s.jsxRuntimeExports.jsx(t.AtIcon,{value:"add-circle",size:"24",color:"#a40035"})]},e.value))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"rules-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u4f7f\u7528\u8bf4\u660e"}),s.jsxRuntimeExports.jsxs(s.View,{className:"rules-content",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"rule-item",children:c.terms}),s.jsxRuntimeExports.jsx(s.Text,{className:"rule-desc",style:{marginTop:"16px"},children:"\u8fd4\u91d1\u989d\u8bf4\u660e\uff1a"}),s.jsxRuntimeExports.jsx(s.Text,{className:"rule-item",children:"(1) \u7535\u5b50\u5361\u8fd4\u4f59\u989d\u5728\u793c\u5361\u5206\u4eab\u6210\u529f\u540e\uff0c\u81ea\u52a8\u5145\u503c\u81f3\u8d2d\u4e70\u4eba\u7684\u5e38\u4e50\u63a8\u62ff\u4f1a\u5458\u4f59\u989d\u4e2d\u3002"})]})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"purchase-bar",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"price-info",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"shopping-bag-2",size:"24",color:"#a40035"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"total-price",children:["\xa5 ",h()]}),s.jsxRuntimeExports.jsx(s.View,{className:"quantity-badge",children:l})]}),s.jsxRuntimeExports.jsx(s.Button,{className:"purchase-btn",onClick:p,children:"\u53bb\u7ed3\u7b97"})]})]}):s.jsxRuntimeExports.jsx(s.View,{className:"gift-card-purchase",children:s.jsxRuntimeExports.jsx(s.View,{className:"loading",children:"\u52a0\u8f7d\u4e2d..."})})};var c={navigationBarTitleText:"\u7535\u5b50\u793c\u5361"};Page(s.createPageConfig(i,"pages/gift/purchase/index",{root:{cn:[]}},c||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const GiftCardPurchase = () => {
+  const router = taro.taroExports.useRouter();
+  const { cardId } = router.params;
+  const [cardInfo, setCardInfo] = taro.useState(null);
+  const [selectedAmount, setSelectedAmount] = taro.useState(1e3);
+  const [quantity, setQuantity] = taro.useState(1);
+  taro.useEffect(() => {
+    if (cardId) {
+      const card = common.GiftService.getGiftCardById(cardId);
+      if (card) {
+        setCardInfo(card);
+      }
+    }
+  }, [cardId]);
+  const predefinedAmounts = [
+    { value: 1e3, label: "¥1000", bonus: "送100" },
+    { value: 3e3, label: "¥3000", bonus: "送500" }
+  ];
+  const handleAmountSelect = (amount) => {
+    setSelectedAmount(amount);
+  };
+  const handleQuantityChange = (value) => {
+    setQuantity(value);
+  };
+  const handlePurchase = () => __async(exports, null, function* () {
+    const amount = selectedAmount;
+    if (!amount) {
+      taro.Taro.showToast({
+        title: "请选择面额",
+        icon: "none"
+      });
+      return;
+    }
+    try {
+      const order = yield common.GiftService.createGiftCardOrder({
+        cardId,
+        amount: amount * 100,
+        // 转换为分
+        quantity,
+        paymentMethod: "wechat",
+        customMessage: "世界上最好的爸爸"
+      });
+      console.log("🎁 订单创建成功，准备支付:", {
+        orderNo: order.orderNo,
+        amount: amount * quantity,
+        quantity
+      });
+      const paymentSuccess = yield common.paymentService.pay({
+        orderNo: order.orderNo,
+        amount: amount * quantity * 100,
+        // 转换为分
+        paymentMethod: "wechat",
+        title: `电子礼卡 ¥${amount} × ${quantity}`,
+        wxPayParams: order.wxPayParams
+        // ✅ 传递微信支付参数
+      });
+      if (paymentSuccess) {
+        taro.Taro.showToast({
+          title: "支付成功",
+          icon: "success",
+          duration: 1500
+        });
+        setTimeout(() => {
+          taro.Taro.navigateBack();
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("❌ 礼卡购买失败:", error);
+      taro.Taro.hideLoading();
+      taro.Taro.showToast({
+        title: error.message || "购买失败",
+        icon: "none"
+      });
+    }
+  });
+  const getTotalPrice = () => {
+    return selectedAmount * quantity;
+  };
+  if (!cardInfo) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "gift-card-purchase", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
+  }
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "gift-card-purchase", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "card-info-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "card-image", children: /* @__PURE__ */ taro.jsx(
+        taro.Image,
+        {
+          className: "card-pic",
+          src: cardInfo.image,
+          mode: "aspectFill"
+        }
+      ) }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "card-name", children: cardInfo.name }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "card-desc", children: cardInfo.description })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "features-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "礼卡特色" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "features-list", children: cardInfo.features.map(
+        (feature, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "feature-item", children: [
+          /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "check-circle", size: "18", color: "#a40035" }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "feature-text", children: feature })
+        ] }, index2)
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "amount-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "请选择面额" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "amount-grid", children: predefinedAmounts.map(
+        (item) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `amount-card ${selectedAmount === item.value ? "active" : ""}`,
+            onClick: () => handleAmountSelect(item.value),
+            children: [
+              /* @__PURE__ */ taro.jsx(taro.View, { className: "amount-header", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "amount", children: item.label }) }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: "amount-details", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "bonus", children: item.bonus }) }),
+              selectedAmount === item.value && /* @__PURE__ */ taro.jsxs(taro.View, { className: "quantity-control", children: [
+                /* @__PURE__ */ taro.jsx(
+                  vendors.AtIcon,
+                  {
+                    value: "subtract-circle",
+                    size: "20",
+                    color: "#999",
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      if (quantity > 1)
+                        handleQuantityChange(quantity - 1);
+                    }
+                  }
+                ),
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "quantity", children: quantity }),
+                /* @__PURE__ */ taro.jsx(
+                  vendors.AtIcon,
+                  {
+                    value: "add-circle",
+                    size: "20",
+                    color: "#a40035",
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      handleQuantityChange(quantity + 1);
+                    }
+                  }
+                )
+              ] }),
+              selectedAmount !== item.value && /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "add-circle", size: "24", color: "#a40035" })
+            ]
+          },
+          item.value
+        )
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "rules-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "使用说明" }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "rules-content", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "rule-item", children: cardInfo.terms }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "rule-desc", style: { marginTop: "16px" }, children: "返金额说明：" }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "rule-item", children: "(1) 电子卡返余额在礼卡分享成功后，自动充值至购买人的常乐推拿会员余额中。" })
+      ] })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "purchase-bar", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+        /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "shopping-bag-2", size: "24", color: "#a40035" }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥ ",
+          getTotalPrice()
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "quantity-badge", children: quantity })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.Button, { className: "purchase-btn", onClick: handlePurchase, children: "去结算" })
+    ] })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "电子礼卡",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(GiftCardPurchase, "pages/gift/purchase/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

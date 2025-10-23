@@ -83,26 +83,46 @@
     .order-content {
       display: flex;
       padding: 20px 0;
+      gap: 16px;
 
-      .therapist-avatar {
+      // 🚀 改进：只在有图片时显示和留白
+      .therapist-avatar,
+      .product-image {
         width: 100px;
         height: 100px;
         border-radius: 8px;
         flex-shrink: 0;
+        background: #f5f5f5;
       }
 
       .order-info {
         flex: 1;
-        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        // 🚀 改进：当没有图片时，不留空白空间
+        &.no-image {
+          margin-left: 0;
+        }
 
         .info-row {
           margin-bottom: 12px;
+
+          &:last-child {
+            margin-bottom: 0;
+          }
 
           .therapist-name {
             font-size: 28px;
             font-weight: bold;
             color: #333;
             margin-right: 16px;
+          }
+
+          .quantity {
+            font-size: 26px;
+            color: #999;
           }
 
           .service-name {

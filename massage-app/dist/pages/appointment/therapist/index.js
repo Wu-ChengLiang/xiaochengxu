@@ -1,1 +1,625 @@
-"use strict";var e=Object.defineProperty,t=Object.defineProperties,s=Object.getOwnPropertyDescriptors,a=Object.getOwnPropertySymbols,i=Object.prototype.hasOwnProperty,r=Object.prototype.propertyIsEnumerable,n=(t,s,a)=>s in t?e(t,s,{enumerable:!0,configurable:!0,writable:!0,value:a}):t[s]=a,o=(e,t)=>{for(var s in t||(t={}))i.call(t,s)&&n(e,s,t[s]);if(a)for(var s of a(t))r.call(t,s)&&n(e,s,t[s]);return e},c=(e,a)=>t(e,s(a)),l=(e,t,s)=>new Promise((a,i)=>{var r=e=>{try{o(s.next(e))}catch(t){i(t)}},n=e=>{try{o(s.throw(e))}catch(t){i(t)}},o=e=>e.done?a(e.value):Promise.resolve(e.value).then(r,n);o((s=s.apply(e,t)).next())});const x=require("../../../taro.js"),m=require("../../../common.js"),p=require("../../../vendors.js"),u="",d=({therapist:e,stats:t,reviews:s=[],reviewsLoading:a=!1})=>{const[i,r]=x.reactExports.useState(!1),n=o({level:"LV4",rating:(null==t?void 0:t.averageRating)||e.rating||4.8,serviceCount:e.serviceCount||0,reviewCount:(null==t?void 0:t.totalCount)||0,description:e.bio||"\u4e13\u4e1a\u63a8\u62ff\u5e08\uff0c\u7ecf\u9a8c\u4e30\u5bcc\uff0c\u64c5\u957f\u5404\u7c7b\u75bc\u75db\u8c03\u7406\u548c\u5eb7\u590d\u6cbb\u7597"},e);console.log("\ud83d\udd0d TherapistInfo Debug:",{therapistId:e.id,serviceCount:e.serviceCount,originalTherapist:e,therapistDetail:n});const c=()=>{r(!i)},l=e=>{const t=new Date(e),s=t.getMonth()+1,a=t.getDate();return`${s}\u6708${a}\u65e5`};return x.jsxRuntimeExports.jsxs(x.View,{className:"therapist-info",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"therapist-header",children:[x.jsxRuntimeExports.jsx(x.View,{className:"avatar-wrapper",children:x.jsxRuntimeExports.jsx(x.Image,{className:"avatar",src:e.avatar,mode:"aspectFill"})}),x.jsxRuntimeExports.jsx(x.View,{className:"basic-info",children:x.jsxRuntimeExports.jsxs(x.View,{className:"name-row",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"name",children:e.name}),x.jsxRuntimeExports.jsx(x.View,{className:"level",children:n.level})]})})]}),x.jsxRuntimeExports.jsxs(x.View,{className:"description-section",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"description "+(i?"expanded":"collapsed"),children:n.description}),i&&x.jsxRuntimeExports.jsxs(x.View,{className:"reviews-section",children:[t&&t.totalCount>0&&x.jsxRuntimeExports.jsx(x.View,{className:"review-stats-compact",children:x.jsxRuntimeExports.jsxs(x.View,{className:"stats-header",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"stats-title",children:"\u7528\u6237\u8bc4\u4ef7"}),x.jsxRuntimeExports.jsxs(x.View,{className:"rating-info",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"score",children:t.averageRating.toFixed(1)}),x.jsxRuntimeExports.jsx(p.AtRate,{value:t.averageRating,size:12}),x.jsxRuntimeExports.jsxs(x.Text,{className:"count",children:["(",t.totalCount,"\u6761)"]})]})]})}),x.jsxRuntimeExports.jsxs(x.View,{className:"review-list-compact",children:[a?x.jsxRuntimeExports.jsx(x.Text,{className:"loading-text",children:"\u52a0\u8f7d\u8bc4\u4ef7\u4e2d..."}):0===s.length?x.jsxRuntimeExports.jsx(x.Text,{className:"empty-text",children:"\u6682\u65e0\u8bc4\u4ef7"}):s.slice(0,3).map(e=>x.jsxRuntimeExports.jsxs(x.View,{className:"review-item-compact",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"review-header-compact",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"user-info-compact",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"user-name",children:e.userName||"\u533f\u540d\u7528\u6237"}),x.jsxRuntimeExports.jsx(p.AtRate,{value:e.rating,size:10})]}),x.jsxRuntimeExports.jsx(x.Text,{className:"review-date",children:l(e.createdAt)})]}),x.jsxRuntimeExports.jsx(x.Text,{className:"review-content-compact",children:e.content}),e.tags&&e.tags.length>0&&x.jsxRuntimeExports.jsx(x.View,{className:"review-tags-compact",children:e.tags.map((e,t)=>x.jsxRuntimeExports.jsx(x.Text,{className:"tag-compact",children:e},t))})]},e.reviewId)),s.length>3&&x.jsxRuntimeExports.jsx(x.Text,{className:"more-reviews",children:"\u4ec5\u663e\u793a\u6700\u8fd13\u6761\u8bc4\u4ef7"})]})]}),x.jsxRuntimeExports.jsxs(x.View,{className:"expand-toggle",onClick:c,children:[x.jsxRuntimeExports.jsx(x.Text,{className:"expand-text",children:i?"\u6536\u8d77":"\u5c55\u5f00"}),x.jsxRuntimeExports.jsx(x.Text,{className:"expand-icon "+(i?"up":"down"),children:i?"\u25b2":"\u25bc"})]})]})]})},j="",h=({store:e})=>{const t=()=>{e.phone&&x.Taro.makePhoneCall({phoneNumber:e.phone})},s=()=>{e.latitude&&e.longitude&&x.Taro.openLocation({latitude:e.latitude,longitude:e.longitude,name:e.name,address:e.address})};return x.jsxRuntimeExports.jsx(x.View,{className:"store-info",children:x.jsxRuntimeExports.jsxs(x.View,{className:"store-header",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"store-details",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"name-row",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"store-name",children:e.name}),void 0!==e.distance&&null!==e.distance&&x.jsxRuntimeExports.jsxs(x.Text,{className:"distance",children:[e.distance,"km"]})]}),x.jsxRuntimeExports.jsx(x.View,{className:"hours-row",children:x.jsxRuntimeExports.jsx(x.Text,{className:"business-hours",children:e.businessHours})}),x.jsxRuntimeExports.jsx(x.Text,{className:"address",children:e.address})]}),x.jsxRuntimeExports.jsxs(x.View,{className:"action-buttons",children:[x.jsxRuntimeExports.jsx(x.View,{className:"action-btn",onClick:t,children:"\ud83d\udcde"}),x.jsxRuntimeExports.jsx(x.View,{className:"action-btn",onClick:s,children:"\ud83d\udccd"})]})]})})},E="",v=x.reactExports.forwardRef(({services:e,therapistId:t,onServiceSelect:s,onTimeSelect:a},i)=>{const[r,n]=x.reactExports.useState(""),[o,c]=x.reactExports.useState(null),[p,u]=x.reactExports.useState(""),[d,j]=x.reactExports.useState(""),[h,E]=x.reactExports.useState([]),[v,g]=x.reactExports.useState(!1);x.reactExports.useImperativeHandle(i,()=>({clearSelectedTime:()=>{j("")}}),[]),x.reactExports.useEffect(()=>{p&&t&&o&&R()},[p,o,t]),x.reactExports.useEffect(()=>{const e=()=>{!x.taroDocumentProvider.hidden&&p&&t&&o&&(console.log("\u9875\u9762\u91cd\u65b0\u53ef\u89c1\uff0c\u5237\u65b0\u65f6\u95f4\u6bb5\u6570\u636e"),R())};return x.taroDocumentProvider.addEventListener("visibilitychange",e),()=>x.taroDocumentProvider.removeEventListener("visibilitychange",e)},[p,t,o]);const R=()=>l(exports,null,function*(){if(t&&p&&o){g(!0);try{const e=yield m.therapistService.getAvailableSlots(t,p,o.duration);if(console.log("\u83b7\u53d6\u5230\u7684\u53ef\u7528\u65f6\u6bb5\u6570\u636e\uff1a",e),e&&e.slots&&e.slots.length>0){const t=[],s=new Map;e.slots.forEach(e=>{const t=e.time.split(":")[0];s.set(t,{available:e.available,status:e.status})});for(let a=9;a<=21;a++){const i=a.toString().padStart(2,"0"),r=[],n=s.get(i)||{available:!0,status:"available"};for(let t=0;t<60;t+=10){const s=`${i}:${t.toString().padStart(2,"0")}`,a=e.slots.find(e=>e.time===s);a?r.push({time:s,available:a.available,status:a.status}):r.push({time:s,available:n.available,status:n.status})}t.push(r)}E(t)}else{console.log("API\u672a\u8fd4\u56de\u6709\u6548\u65f6\u6bb5\u6570\u636e\uff0c\u4f7f\u7528\u9ed8\u8ba4\u5168\u90e8\u53ef\u7528");const e=[];for(let t=9;t<=21;t++){const s=[];for(let e=0;e<60;e+=10){const a=`${t.toString().padStart(2,"0")}:${e.toString().padStart(2,"0")}`;s.push({time:a,available:!0,status:"available"})}e.push(s)}E(e)}}catch(e){console.error("Failed to fetch available slots:",e);const t=[];for(let s=9;s<=21;s++){const e=[];for(let t=0;t<60;t+=10){const a=`${s.toString().padStart(2,"0")}:${t.toString().padStart(2,"0")}`;e.push({time:a,available:!0,status:"available"})}t.push(e)}E(t)}finally{g(!1)}}}),w=()=>{const e=[],t=new Date;for(let s=0;s<5;s++){const a=new Date(t);a.setDate(t.getDate()+s);const i=a.getMonth()+1,r=a.getDate(),n=["\u5468\u65e5","\u5468\u4e00","\u5468\u4e8c","\u5468\u4e09","\u5468\u56db","\u5468\u4e94","\u5468\u516d"],o=n[a.getDay()];e.push({key:a.toISOString().split("T")[0],display:0===s?"\u4eca\u5929":`${i}\u6708${r}\u65e5`,weekDay:0===s?"":o})}return e},N=()=>{if(h.length>0){const e=h.map((e,t)=>{const s=9+t;return{hour:`${s}:00`,slots:e}});return e}const e=[];for(let t=9;t<=21;t++){const s=[];for(let e=0;e<60;e+=10){const a=`${t.toString().padStart(2,"0")}:${e.toString().padStart(2,"0")}`;s.push({time:a,available:!0})}e.push({hour:`${t}:00`,slots:s})}return e},S=e=>{if(!d||!o)return!1;const t=d,s=o.duration,a=e=>{const[t,s]=e.split(":").map(Number);return 60*t+s},i=a(t),r=a(e),n=i+s;return r>=i&&r<n},f=e=>{n(e.id),c(e),s(e),j("")},b=e=>{u(e),j(""),E([])},T=(e,t)=>{if(!t||!p||!o)return;const s=e=>{const[t,s]=e.split(":").map(Number);return 60*t+s},i=s(e),r=i+o.duration;r>1320||(j(e),a(p,e),setTimeout(()=>{const e=x.taroDocumentProvider.querySelector(".checkout-btn:not(.disabled)");e&&e.click()},300))},V=w(),y=N();return x.jsxRuntimeExports.jsxs(x.View,{className:"booking-selector",children:[x.jsxRuntimeExports.jsxs(x.View,{className:"service-section",children:[x.jsxRuntimeExports.jsx(x.View,{className:"section-title",children:"\u9009\u62e9\u670d\u52a1"}),x.jsxRuntimeExports.jsx(x.ScrollView,{className:"service-tabs",scrollX:!0,children:e.map(e=>x.jsxRuntimeExports.jsxs(x.View,{className:"service-tab "+(r===e.id?"active":""),onClick:()=>f(e),children:[x.jsxRuntimeExports.jsx(x.Text,{className:"service-name",children:e.name}),x.jsxRuntimeExports.jsxs(x.View,{className:"service-info",children:[x.jsxRuntimeExports.jsxs(x.Text,{className:"service-duration",children:[e.duration,"\u5206\u949f"]}),x.jsxRuntimeExports.jsxs(x.Text,{className:"price",children:["\xa5",e.discountPrice||e.price]})]})]},e.id))})]}),r&&x.jsxRuntimeExports.jsxs(x.View,{className:"datetime-section",children:[x.jsxRuntimeExports.jsx(x.ScrollView,{className:"date-tabs",scrollX:!0,children:V.map(e=>x.jsxRuntimeExports.jsxs(x.View,{className:"date-tab "+(p===e.key?"active":""),onClick:()=>b(e.key),children:[x.jsxRuntimeExports.jsx(x.Text,{className:"date-display",children:e.display}),e.weekDay&&x.jsxRuntimeExports.jsx(x.Text,{className:"week-day",children:e.weekDay})]},e.key))}),p&&x.jsxRuntimeExports.jsx(x.ScrollView,{className:"time-grid-container",scrollY:!0,children:x.jsxRuntimeExports.jsx(x.View,{className:"time-grid-wrapper",children:v?x.jsxRuntimeExports.jsx(x.View,{className:"loading-slots",children:x.jsxRuntimeExports.jsx(x.Text,{children:"\u52a0\u8f7d\u53ef\u7528\u65f6\u6bb5..."})}):y.map((e,t)=>x.jsxRuntimeExports.jsxs(x.View,{className:"time-row",children:[x.jsxRuntimeExports.jsx(x.Text,{className:"hour-label",children:e.hour}),x.jsxRuntimeExports.jsx(x.View,{className:"time-slots",children:e.slots.map((e,t)=>x.jsxRuntimeExports.jsx(x.View,{className:"time-slot "+(e.available?S(e.time)?"selected":"available":"disabled"),onClick:()=>T(e.time,e.available),children:x.jsxRuntimeExports.jsxs(x.Text,{className:"time-text",children:[":",e.time.split(":")[1]]})},t))})]},t))})})]})]})});v.displayName="BookingSelector";const g="",R=()=>{const e=x.taroExports.useRouter(),{therapistId:t,storeId:s}=e.params,[a,i]=x.reactExports.useState(null),[r,n]=x.reactExports.useState(null),[p,u]=x.reactExports.useState(!0),[j,E]=x.reactExports.useState(""),[g,R]=x.reactExports.useState([]),[w,N]=x.reactExports.useState(null),[S,f]=x.reactExports.useState(!1),[b,T]=x.reactExports.useState([]),[V,y]=x.reactExports.useState(null),k=x.reactExports.useRef(null),C=m.symptomServices.map(e=>({id:e.id,name:e.name,duration:e.duration,price:e.price,discountPrice:e.discountPrice,description:e.description,tag:e.tag}));x.reactExports.useEffect(()=>{P()},[t,s]),x.reactExports.useEffect(()=>{t&&D()},[t]);const P=()=>l(exports,null,function*(){try{if(u(!0),E(""),console.log("TherapistBookingPage params:",{therapistId:t,storeId:s}),!t||!s)return console.error("Missing required params:",{therapistId:t,storeId:s}),void E("\u53c2\u6570\u9519\u8bef\uff0c\u8bf7\u91cd\u65b0\u8fdb\u5165");const[e,a,r]=yield Promise.all([m.therapistService.getTherapistDetail(t),m.storeService.getStoreDetail(s),m.getLocationService.getCurrentLocation()]);console.log("Store data response:",a),console.log("Therapist data response:",e);const l=e.data||e,x=(null==a?void 0:a.data)||a;let p=o({},x);if((null==x?void 0:x.latitude)&&(null==x?void 0:x.longitude)){const e=m.getLocationService.calculateDistance(r.latitude,r.longitude,x.latitude,x.longitude);p=c(o({},x),{distance:e})}i(l),n(p),console.log("Store state after setting:",p),console.log("Therapist state after setting:",l)}catch(e){console.error("Failed to load data:",e),E("\u52a0\u8f7d\u6570\u636e\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5")}finally{u(!1)}}),D=()=>l(exports,null,function*(){if(t)try{f(!0);const[e,s]=yield Promise.all([m.reviewService.getTherapistReviews(t,1,10),m.reviewService.getReviewStats(t)]);R(e.list||[]),N(s),s&&a&&i(c(o({},a),{rating:s.averageRating,ratingCount:s.totalCount}))}catch(e){console.error("\u52a0\u8f7d\u8bc4\u4ef7\u6570\u636e\u5931\u8d25:",e)}finally{f(!1)}}),I=e=>{y(e)},$=(e,t)=>{if(!V||!a)return;const s=`${e}_${t}_${Date.now()}`,i={id:s,serviceId:V.id,serviceName:V.name,duration:V.duration,price:V.price,discountPrice:V.discountPrice,date:e,time:t,therapistId:a.id,therapistName:a.name,therapistAvatar:a.avatar};T([i]),x.Taro.showToast({title:"\u5df2\u9009\u62e9\u9884\u7ea6\u65f6\u95f4",icon:"success"})},O=()=>{var e;T([]),null==(e=k.current)||e.clearSelectedTime()},L=()=>{if(0===b.length)return;const e={therapistId:t,storeId:s,items:JSON.stringify(b)};x.Taro.navigateTo({url:`/pages/booking/confirm/index?${Object.entries(e).map(([e,t])=>`${e}=${encodeURIComponent(t)}`).join("&")}`})};return p?x.jsxRuntimeExports.jsx(x.View,{className:"therapist-booking-page",children:x.jsxRuntimeExports.jsx(x.View,{className:"loading",children:"\u52a0\u8f7d\u4e2d..."})}):!j&&a&&r?x.jsxRuntimeExports.jsxs(x.View,{className:"therapist-booking-page",children:[x.jsxRuntimeExports.jsxs(x.ScrollView,{className:"main-content",scrollY:!0,children:[x.jsxRuntimeExports.jsx(d,{therapist:a,stats:w,reviews:g,reviewsLoading:S}),r&&x.jsxRuntimeExports.jsx(h,{store:r}),x.jsxRuntimeExports.jsx(v,{ref:k,services:C,therapistId:t,onServiceSelect:I,onTimeSelect:$})]}),x.jsxRuntimeExports.jsx(m.ShoppingCart,{items:b,therapist:a,onCheckout:L,onMaskClick:O})]}):x.jsxRuntimeExports.jsx(x.View,{className:"therapist-booking-page",children:x.jsxRuntimeExports.jsx(x.View,{className:"error",children:j||"\u6570\u636e\u52a0\u8f7d\u5931\u8d25"})})};var w={navigationBarTitleText:"\u63a8\u62ff\u5e08\u9884\u7ea6"};Page(x.createPageConfig(R,"pages/appointment/therapist/index",{root:{cn:[]}},w||{}));
+"use strict";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const common = require("../../../common.js");
+const vendors = require("../../../vendors.js");
+const index$3 = "";
+const TherapistInfo = ({ therapist, stats, reviews = [], reviewsLoading = false }) => {
+  const [isExpanded, setIsExpanded] = taro.useState(false);
+  const therapistDetail = __spreadValues({
+    level: "LV4",
+    // 暂时保持固定，后续可从API获取
+    rating: (stats == null ? void 0 : stats.averageRating) || therapist.rating || 4.8,
+    serviceCount: therapist.serviceCount || 0,
+    // 使用API返回的真实服务次数
+    reviewCount: (stats == null ? void 0 : stats.totalCount) || 0,
+    description: therapist.bio || "专业推拿师，经验丰富，擅长各类疼痛调理和康复治疗"
+  }, therapist);
+  console.log("🔍 TherapistInfo Debug:", {
+    therapistId: therapist.id,
+    serviceCount: therapist.serviceCount,
+    originalTherapist: therapist,
+    therapistDetail
+  });
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}月${day}日`;
+  };
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-info", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-header", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "avatar-wrapper", children: /* @__PURE__ */ taro.jsx(
+        taro.Image,
+        {
+          className: "avatar",
+          src: therapist.avatar,
+          mode: "aspectFill"
+        }
+      ) }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "basic-info", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "name-row", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "name", children: therapist.name }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "level", children: therapistDetail.level })
+      ] }) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "description-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: `description ${isExpanded ? "expanded" : "collapsed"}`, children: therapistDetail.description }),
+      isExpanded && /* @__PURE__ */ taro.jsxs(taro.View, { className: "reviews-section", children: [
+        stats && stats.totalCount > 0 && /* @__PURE__ */ taro.jsx(taro.View, { className: "review-stats-compact", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "stats-header", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "stats-title", children: "用户评价" }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "rating-info", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "score", children: stats.averageRating.toFixed(1) }),
+            /* @__PURE__ */ taro.jsx(vendors.AtRate, { value: stats.averageRating, size: 12 }),
+            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "count", children: [
+              "(",
+              stats.totalCount,
+              "条)"
+            ] })
+          ] })
+        ] }) }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "review-list-compact", children: [
+          reviewsLoading ? /* @__PURE__ */ taro.jsx(taro.Text, { className: "loading-text", children: "加载评价中..." }) : reviews.length === 0 ? /* @__PURE__ */ taro.jsx(taro.Text, { className: "empty-text", children: "暂无评价" }) : reviews.slice(0, 3).map(
+            (review) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "review-item-compact", children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "review-header-compact", children: [
+                /* @__PURE__ */ taro.jsxs(taro.View, { className: "user-info-compact", children: [
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "user-name", children: review.userName || "匿名用户" }),
+                  /* @__PURE__ */ taro.jsx(vendors.AtRate, { value: review.rating, size: 10 })
+                ] }),
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "review-date", children: formatDate(review.createdAt) })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "review-content-compact", children: review.content }),
+              review.tags && review.tags.length > 0 && /* @__PURE__ */ taro.jsx(taro.View, { className: "review-tags-compact", children: review.tags.map(
+                (tag, index2) => /* @__PURE__ */ taro.jsx(taro.Text, { className: "tag-compact", children: tag }, index2)
+              ) })
+            ] }, review.reviewId)
+          ),
+          reviews.length > 3 && /* @__PURE__ */ taro.jsx(taro.Text, { className: "more-reviews", children: "仅显示最近3条评价" })
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "expand-toggle", onClick: toggleExpanded, children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "expand-text", children: isExpanded ? "收起" : "展开" }),
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: `expand-icon ${isExpanded ? "up" : "down"}`, children: isExpanded ? "▲" : "▼" })
+      ] })
+    ] })
+  ] });
+};
+const index$2 = "";
+const StoreInfo = ({ store }) => {
+  const handleCallStore = () => {
+    if (store.phone) {
+      taro.Taro.makePhoneCall({
+        phoneNumber: store.phone
+      });
+    }
+  };
+  const handleShowLocation = () => {
+    if (store.latitude && store.longitude) {
+      taro.Taro.openLocation({
+        latitude: store.latitude,
+        longitude: store.longitude,
+        name: store.name,
+        address: store.address
+      });
+    }
+  };
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "store-info", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-header", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "store-details", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "name-row", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: store.name }),
+        store.distance !== void 0 && store.distance !== null && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "distance", children: [
+          store.distance,
+          "km"
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "hours-row", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "business-hours", children: store.businessHours }) }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "address", children: store.address })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "action-buttons", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "action-btn", onClick: handleCallStore, children: "📞" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "action-btn", onClick: handleShowLocation, children: "📍" })
+    ] })
+  ] }) });
+};
+const index$1 = "";
+const BookingSelector = taro.forwardRef(({
+  services,
+  therapistId,
+  onServiceSelect,
+  onTimeSelect
+}, ref) => {
+  const [selectedServiceId, setSelectedServiceId] = taro.useState("");
+  const [selectedService, setSelectedService] = taro.useState(null);
+  const [selectedDate, setSelectedDate] = taro.useState("");
+  const [selectedTime, setSelectedTime] = taro.useState("");
+  const [timeSlots, setTimeSlots] = taro.useState([]);
+  const [loadingSlots, setLoadingSlots] = taro.useState(false);
+  taro.useImperativeHandle(ref, () => ({
+    clearSelectedTime: () => {
+      setSelectedTime("");
+    }
+  }), []);
+  taro.useEffect(() => {
+    if (selectedDate && therapistId && selectedService) {
+      fetchAvailableSlots();
+    }
+  }, [selectedDate, selectedService, therapistId]);
+  taro.useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!taro.taroDocumentProvider.hidden && selectedDate && therapistId && selectedService) {
+        console.log("页面重新可见，刷新时间段数据");
+        fetchAvailableSlots();
+      }
+    };
+    taro.taroDocumentProvider.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => taro.taroDocumentProvider.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [selectedDate, therapistId, selectedService]);
+  const fetchAvailableSlots = () => __async(exports, null, function* () {
+    if (!therapistId || !selectedDate || !selectedService)
+      return;
+    setLoadingSlots(true);
+    try {
+      const result = yield common.therapistService.getAvailableSlots(
+        therapistId,
+        selectedDate,
+        selectedService.duration
+      );
+      console.log("获取到的可用时段数据：", result);
+      if (result && result.slots && result.slots.length > 0) {
+        const grid = [];
+        const hourAvailability = /* @__PURE__ */ new Map();
+        result.slots.forEach((slot) => {
+          const hour = slot.time.split(":")[0];
+          hourAvailability.set(hour, { available: slot.available, status: slot.status });
+        });
+        for (let hour = 9; hour <= 21; hour++) {
+          const hourStr = hour.toString().padStart(2, "0");
+          const hourSlots = [];
+          const hourData = hourAvailability.get(hourStr) || { available: true, status: "available" };
+          for (let minute = 0; minute < 60; minute += 10) {
+            const time = `${hourStr}:${minute.toString().padStart(2, "0")}`;
+            const slot = result.slots.find((s) => s.time === time);
+            if (slot) {
+              hourSlots.push({
+                time,
+                available: slot.available,
+                status: slot.status
+              });
+            } else {
+              hourSlots.push({
+                time,
+                available: hourData.available,
+                status: hourData.status
+              });
+            }
+          }
+          grid.push(hourSlots);
+        }
+        setTimeSlots(grid);
+      } else {
+        console.log("API未返回有效时段数据，使用默认全部可用");
+        const grid = [];
+        for (let hour = 9; hour <= 21; hour++) {
+          const hourSlots = [];
+          for (let minute = 0; minute < 60; minute += 10) {
+            const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+            hourSlots.push({
+              time,
+              available: true,
+              status: "available"
+            });
+          }
+          grid.push(hourSlots);
+        }
+        setTimeSlots(grid);
+      }
+    } catch (error) {
+      console.error("Failed to fetch available slots:", error);
+      const grid = [];
+      for (let hour = 9; hour <= 21; hour++) {
+        const hourSlots = [];
+        for (let minute = 0; minute < 60; minute += 10) {
+          const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+          hourSlots.push({
+            time,
+            available: true,
+            status: "available"
+          });
+        }
+        grid.push(hourSlots);
+      }
+      setTimeSlots(grid);
+    } finally {
+      setLoadingSlots(false);
+    }
+  });
+  const generateDateList = () => {
+    const dates = [];
+    const today = /* @__PURE__ */ new Date();
+    for (let i = 0; i < 5; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const weekDays = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+      const weekDay = weekDays[date.getDay()];
+      dates.push({
+        key: date.toISOString().split("T")[0],
+        display: i === 0 ? "今天" : `${month}月${day}日`,
+        weekDay: i === 0 ? "" : weekDay
+      });
+    }
+    return dates;
+  };
+  const generateTimeGrid = () => {
+    if (timeSlots.length > 0) {
+      const grid2 = timeSlots.map((hourSlots, index2) => {
+        const hour = 9 + index2;
+        return {
+          hour: `${hour}:00`,
+          slots: hourSlots
+        };
+      });
+      return grid2;
+    }
+    const grid = [];
+    for (let hour = 9; hour <= 21; hour++) {
+      const hourSlots = [];
+      for (let minute = 0; minute < 60; minute += 10) {
+        const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        hourSlots.push({
+          time,
+          available: true
+        });
+      }
+      grid.push({
+        hour: `${hour}:00`,
+        slots: hourSlots
+      });
+    }
+    return grid;
+  };
+  const isTimeSlotSelected = (time) => {
+    if (!selectedTime || !selectedService)
+      return false;
+    const startTime = selectedTime;
+    const duration = selectedService.duration;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(startTime);
+    const currentMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + duration;
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  };
+  const handleServiceSelect = (service) => {
+    setSelectedServiceId(service.id);
+    setSelectedService(service);
+    onServiceSelect(service);
+    setSelectedTime("");
+  };
+  const handleDateSelect = (dateKey) => {
+    setSelectedDate(dateKey);
+    setSelectedTime("");
+    setTimeSlots([]);
+  };
+  const handleTimeSelect = (time, available) => {
+    if (!available || !selectedDate || !selectedService)
+      return;
+    const timeToMinutes = (timeStr) => {
+      const [hour, minute] = timeStr.split(":").map(Number);
+      return hour * 60 + minute;
+    };
+    const startMinutes = timeToMinutes(time);
+    const endMinutes = startMinutes + selectedService.duration;
+    if (endMinutes > 22 * 60) {
+      return;
+    }
+    setSelectedTime(time);
+    onTimeSelect(selectedDate, time);
+    setTimeout(() => {
+      const cartBtn = taro.taroDocumentProvider.querySelector(".checkout-btn:not(.disabled)");
+      if (cartBtn) {
+        cartBtn.click();
+      }
+    }, 300);
+  };
+  const dateList = generateDateList();
+  const timeGrid = generateTimeGrid();
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "booking-selector", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "section-title", children: "选择服务" }),
+      /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "service-tabs", scrollX: true, children: services.map(
+        (service) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `service-tab ${selectedServiceId === service.id ? "active" : ""}`,
+            onClick: () => handleServiceSelect(service),
+            children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: service.name }),
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-info", children: [
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "service-duration", children: [
+                  service.duration,
+                  "分钟"
+                ] }),
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+                  "¥",
+                  service.discountPrice || service.price
+                ] })
+              ] })
+            ]
+          },
+          service.id
+        )
+      ) })
+    ] }),
+    selectedServiceId && /* @__PURE__ */ taro.jsxs(taro.View, { className: "datetime-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "date-tabs", scrollX: true, children: dateList.map(
+        (date) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `date-tab ${selectedDate === date.key ? "active" : ""}`,
+            onClick: () => handleDateSelect(date.key),
+            children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "date-display", children: date.display }),
+              date.weekDay && /* @__PURE__ */ taro.jsx(taro.Text, { className: "week-day", children: date.weekDay })
+            ]
+          },
+          date.key
+        )
+      ) }),
+      selectedDate && /* @__PURE__ */ taro.jsx(taro.ScrollView, { className: "time-grid-container", scrollY: true, children: /* @__PURE__ */ taro.jsx(taro.View, { className: "time-grid-wrapper", children: loadingSlots ? /* @__PURE__ */ taro.jsx(taro.View, { className: "loading-slots", children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "加载可用时段..." }) }) : timeGrid.map(
+        (row, rowIndex) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "time-row", children: [
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "hour-label", children: row.hour }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "time-slots", children: row.slots.map(
+            (slot, slotIndex) => /* @__PURE__ */ taro.jsx(
+              taro.View,
+              {
+                className: `time-slot ${slot.available ? isTimeSlotSelected(slot.time) ? "selected" : "available" : "disabled"}`,
+                onClick: () => handleTimeSelect(slot.time, slot.available),
+                children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "time-text", children: [
+                  ":",
+                  slot.time.split(":")[1]
+                ] })
+              },
+              slotIndex
+            )
+          ) })
+        ] }, rowIndex)
+      ) }) })
+    ] })
+  ] });
+});
+BookingSelector.displayName = "BookingSelector";
+const index = "";
+const TherapistBookingPage = () => {
+  const router = taro.taroExports.useRouter();
+  const { therapistId, storeId } = router.params;
+  const [therapist, setTherapist] = taro.useState(null);
+  const [store, setStore] = taro.useState(null);
+  const [loading, setLoading] = taro.useState(true);
+  const [error, setError] = taro.useState("");
+  const [reviews, setReviews] = taro.useState([]);
+  const [reviewStats, setReviewStats] = taro.useState(null);
+  const [reviewsLoading, setReviewsLoading] = taro.useState(false);
+  const [cartItems, setCartItems] = taro.useState([]);
+  const [selectedService, setSelectedService] = taro.useState(null);
+  const bookingSelectorRef = taro.useRef(null);
+  const mockServices = common.symptomServices.map((service) => ({
+    id: service.id,
+    name: service.name,
+    duration: service.duration,
+    price: service.price,
+    discountPrice: service.discountPrice,
+    description: service.description,
+    tag: service.tag
+  }));
+  taro.useEffect(() => {
+    loadData();
+  }, [therapistId, storeId]);
+  taro.useEffect(() => {
+    if (therapistId) {
+      loadReviews();
+    }
+  }, [therapistId]);
+  const loadData = () => __async(exports, null, function* () {
+    try {
+      setLoading(true);
+      setError("");
+      console.log("TherapistBookingPage params:", { therapistId, storeId });
+      if (!therapistId || !storeId) {
+        console.error("Missing required params:", { therapistId, storeId });
+        setError("参数错误，请重新进入");
+        return;
+      }
+      const [therapistRes, storeData, userLocation] = yield Promise.all(
+        [
+          common.therapistService.getTherapistDetail(therapistId),
+          common.storeService.getStoreDetail(storeId),
+          common.getLocationService.getCurrentLocation()
+        ]
+      );
+      console.log("Store data response:", storeData);
+      console.log("Therapist data response:", therapistRes);
+      const therapistData = therapistRes.data || therapistRes;
+      const storeDataRaw = (storeData == null ? void 0 : storeData.data) || storeData;
+      let storeDataFinal = __spreadValues({}, storeDataRaw);
+      if ((storeDataRaw == null ? void 0 : storeDataRaw.latitude) && (storeDataRaw == null ? void 0 : storeDataRaw.longitude)) {
+        const distance = common.getLocationService.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          storeDataRaw.latitude,
+          storeDataRaw.longitude
+        );
+        storeDataFinal = __spreadProps(__spreadValues({}, storeDataRaw), {
+          distance
+        });
+      }
+      setTherapist(therapistData);
+      setStore(storeDataFinal);
+      console.log("Store state after setting:", storeDataFinal);
+      console.log("Therapist state after setting:", therapistData);
+    } catch (err) {
+      console.error("Failed to load data:", err);
+      setError("加载数据失败，请重试");
+    } finally {
+      setLoading(false);
+    }
+  });
+  const loadReviews = () => __async(exports, null, function* () {
+    if (!therapistId)
+      return;
+    try {
+      setReviewsLoading(true);
+      const [reviewsResponse, statsResponse] = yield Promise.all(
+        [
+          common.reviewService.getTherapistReviews(therapistId, 1, 10),
+          common.reviewService.getReviewStats(therapistId)
+        ]
+      );
+      setReviews(reviewsResponse.list || []);
+      setReviewStats(statsResponse);
+      if (statsResponse && therapist) {
+        setTherapist(__spreadProps(__spreadValues({}, therapist), {
+          rating: statsResponse.averageRating,
+          ratingCount: statsResponse.totalCount
+        }));
+      }
+    } catch (error2) {
+      console.error("加载评价数据失败:", error2);
+    } finally {
+      setReviewsLoading(false);
+    }
+  });
+  const handleServiceSelect = (service) => {
+    setSelectedService(service);
+  };
+  const handleTimeSelect = (date, time) => {
+    if (!selectedService || !therapist)
+      return;
+    const itemId = `${date}_${time}_${Date.now()}`;
+    const newItem = {
+      id: itemId,
+      serviceId: selectedService.id,
+      serviceName: selectedService.name,
+      duration: selectedService.duration,
+      price: selectedService.price,
+      discountPrice: selectedService.discountPrice,
+      date,
+      time,
+      therapistId: therapist.id,
+      therapistName: therapist.name,
+      therapistAvatar: therapist.avatar
+    };
+    setCartItems([newItem]);
+    taro.Taro.showToast({
+      title: "已选择预约时间",
+      icon: "success"
+    });
+  };
+  const handleCartMaskClick = () => {
+    var _a;
+    setCartItems([]);
+    (_a = bookingSelectorRef.current) == null ? void 0 : _a.clearSelectedTime();
+  };
+  const handleCheckout = () => {
+    if (cartItems.length === 0)
+      return;
+    const params = {
+      therapistId,
+      storeId,
+      items: JSON.stringify(cartItems)
+    };
+    taro.Taro.navigateTo({
+      url: `/pages/booking/confirm/index?${Object.entries(params).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join("&")}`
+    });
+  };
+  if (loading) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-booking-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
+  }
+  if (error || !therapist || !store) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "therapist-booking-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "error", children: error || "数据加载失败" }) });
+  }
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "therapist-booking-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.ScrollView, { className: "main-content", scrollY: true, children: [
+      /* @__PURE__ */ taro.jsx(
+        TherapistInfo,
+        {
+          therapist,
+          stats: reviewStats,
+          reviews,
+          reviewsLoading
+        }
+      ),
+      store && /* @__PURE__ */ taro.jsx(StoreInfo, { store }),
+      /* @__PURE__ */ taro.jsx(
+        BookingSelector,
+        {
+          ref: bookingSelectorRef,
+          services: mockServices,
+          therapistId,
+          onServiceSelect: handleServiceSelect,
+          onTimeSelect: handleTimeSelect
+        }
+      )
+    ] }),
+    /* @__PURE__ */ taro.jsx(
+      common.ShoppingCart,
+      {
+        items: cartItems,
+        therapist,
+        onCheckout: handleCheckout,
+        onMaskClick: handleCartMaskClick
+      }
+    )
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "推拿师预约",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(TherapistBookingPage, "pages/appointment/therapist/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

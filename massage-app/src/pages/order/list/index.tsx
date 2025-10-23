@@ -109,11 +109,28 @@ const OrderListPage: React.FC = () => {
 
   const handlePayOrder = async (e: any, order: OrderData) => {
     e.stopPropagation()
-    
+
+    // 🚀 改进：数据验证
+    console.log('💳 准备支付订单:', {
+      orderNo: order.orderNo,
+      amount: order.amount,
+      amountType: typeof order.amount
+    })
+
+    // 验证金额有效性
+    if (!order.amount || typeof order.amount !== 'number' || isNaN(order.amount)) {
+      Taro.showToast({
+        title: '订单金额无效，无法支付',
+        icon: 'none'
+      })
+      console.error('❌ 支付验证失败：无效的订单金额', { orderNo: order.orderNo, amount: order.amount })
+      return
+    }
+
     try {
       // 获取支付参数
       const paymentParams = await orderService.getPaymentParams(order.orderNo)
-      
+
       // 调用微信支付
       Taro.requestPayment({
         ...paymentParams,
@@ -137,6 +154,7 @@ const OrderListPage: React.FC = () => {
         }
       })
     } catch (error) {
+      console.error('❌ 获取支付参数失败:', error)
       Taro.showToast({
         title: '获取支付参数失败',
         icon: 'none'
@@ -250,21 +268,22 @@ const OrderListPage: React.FC = () => {
 
       <View className="order-content">
         {/* 服务订单显示技师头像 */}
-        {order.orderType === 'service' && (
+        {order.orderType === 'service' && order.therapistAvatar && (
           <Image
             className="therapist-avatar"
-            src={order.therapistAvatar || 'https://img.yzcdn.cn/vant/cat.jpeg'}
+            src={order.therapistAvatar}
           />
         )}
         {/* 产品订单显示默认产品图片 */}
         {order.orderType === 'product' && (
           <Image
             className="product-image"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            src="https://mingyitang1024.com/static/default.png"
           />
         )}
 
-        <View className="order-info">
+        <View className={`order-info ${!order.therapistAvatar && order.orderType === 'service' ? 'no-image' : ''}`}>
+          {/* 🚀 服务订单没有头像时显示占位符 */}
           {/* 服务订单信息 */}
           {order.orderType === 'service' && (
             <>

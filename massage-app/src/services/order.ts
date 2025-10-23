@@ -1,6 +1,7 @@
 import Taro from '@tarojs/taro'
 import { get, post } from '@/utils/request'
 import { getCurrentUserId, getCurrentUserPhone } from '@/utils/user'
+import { normalizeImageUrl } from '@/utils/image'  // 🚀 新增：图片URL规范化工具
 
 /**
  * 订单数据接口
@@ -483,6 +484,8 @@ class OrderService {
         order.appointmentId = order.extraData.appointmentId
         order.therapistId = order.extraData.therapistId
         order.therapistName = order.extraData.therapistName
+        // 🚀 新增：规范化技师头像URL为HTTPS
+        order.therapistAvatar = normalizeImageUrl(order.extraData.therapistAvatar)
         order.storeId = order.extraData.storeId
         order.appointmentDate = order.extraData.appointmentDate
         order.startTime = order.extraData.startTime  // ✅ 改为 startTime
@@ -539,6 +542,8 @@ class OrderService {
           order.appointmentId = order.extraData.appointmentId
           order.therapistId = order.extraData.therapistId
           order.therapistName = order.extraData.therapistName
+          // 🚀 新增：正确提取技师头像URL并规范化为HTTPS
+          order.therapistAvatar = normalizeImageUrl(order.extraData.therapistAvatar)
           order.storeId = order.extraData.storeId
           order.storeName = order.extraData.storeName // 移除硬编码默认值
           order.storeAddress = order.extraData.storeAddress // 移除硬编码默认值
@@ -549,11 +554,6 @@ class OrderService {
 
           // 🚀 读取预约状态（后端新增字段）
           order.appointmentStatus = order.extraData.appointmentStatus
-        }
-
-        // 添加默认头像（如果没有的话）
-        if (!order.therapistAvatar) {
-          order.therapistAvatar = 'https://img.yzcdn.cn/vant/cat.jpeg'
         }
 
         // 计算综合显示状态

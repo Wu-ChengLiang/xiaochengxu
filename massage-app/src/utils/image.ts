@@ -9,12 +9,17 @@
 
 /**
  * 转换图片URL为HTTPS
- * @param url 图片URL
- * @returns HTTPS格式的URL
+ * @param url 图片URL - 可能为 undefined/null
+ * @returns HTTPS格式的URL，或 undefined 如果输入无效
+ *
+ * 🚀 改进：不对 undefined/null 返回默认值
+ * 这样调用方可以区分"无值"和"有值"的情况
  */
-export const normalizeImageUrl = (url: string | undefined): string => {
+export const normalizeImageUrl = (url: string | undefined | null): string | undefined => {
+  // 🚀 改进：返回 undefined 而不是默认值
+  // 这样后续逻辑可以通过 !url 来正确判断是否需要获取真实数据
   if (!url) {
-    return getDefaultImage();
+    return undefined;
   }
 
   // 已经是HTTPS，直接返回
@@ -59,27 +64,27 @@ export class ImageUrlHelper {
   /**
    * 处理推拿师头像
    * @param avatarUrl API返回的头像URL（可能是HTTP）
-   * @returns HTTPS格式的URL
+   * @returns HTTPS格式的URL，或 undefined 如果输入无效
    */
-  static normalizeTherapistAvatar(avatarUrl: string | undefined): string {
+  static normalizeTherapistAvatar(avatarUrl: string | undefined): string | undefined {
     return normalizeImageUrl(avatarUrl);
   }
 
   /**
    * 处理门店图片
    * @param imageUrl API返回的门店图片URL
-   * @returns HTTPS格式的URL
+   * @returns HTTPS格式的URL，或 undefined 如果输入无效
    */
-  static normalizeStoreImage(imageUrl: string | undefined): string {
+  static normalizeStoreImage(imageUrl: string | undefined): string | undefined {
     return normalizeImageUrl(imageUrl);
   }
 
   /**
    * 处理用户头像
    * @param avatarUrl API返回的用户头像
-   * @returns HTTPS格式的URL
+   * @returns HTTPS格式的URL，或 undefined 如果输入无效
    */
-  static normalizeUserAvatar(avatarUrl: string | undefined): string {
+  static normalizeUserAvatar(avatarUrl: string | undefined): string | undefined {
     return normalizeImageUrl(avatarUrl);
   }
 }

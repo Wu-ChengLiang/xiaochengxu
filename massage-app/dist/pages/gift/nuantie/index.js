@@ -1,1 +1,192 @@
-"use strict";var e=(e,s,t)=>new Promise((a,i)=>{var r=e=>{try{n(t.next(e))}catch(s){i(s)}},c=e=>{try{n(t.throw(e))}catch(s){i(s)}},n=e=>e.done?a(e.value):Promise.resolve(e.value).then(r,c);n((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),a=require("../../../common.js"),i="",r=()=>{const[i,r]=s.reactExports.useState([]),[c,n]=s.reactExports.useState(null),[o,x]=s.reactExports.useState(1),[l,m]=s.reactExports.useState(0),[u,d]=s.reactExports.useState(!1);s.reactExports.useEffect(()=>{const e=a.GiftService.getNuantieProducts();r(e),e.length>0&&(n(e[0]),d(!0))},[]);const p=e=>{m(e),n(i[e]),x(1)},j=e=>{m(e.detail.current)},h=e=>{"increase"===e?x(o+1):"decrease"===e&&o>1&&x(o-1)},E=()=>e(exports,null,function*(){if(c)try{s.Taro.showLoading({title:"\u521b\u5efa\u8ba2\u5355..."});const e=yield a.GiftService.createProductOrder({productId:c.id,quantity:o,paymentMethod:"wechat"});s.Taro.hideLoading();const t=yield a.paymentService.pay({orderNo:e.orderNo,amount:100*c.price*o,paymentMethod:"wechat",title:c.name,wxPayParams:e.wxPayParams});t&&(s.Taro.showToast({title:"\u8d2d\u4e70\u6210\u529f",icon:"success",duration:1500}),setTimeout(()=>{s.Taro.navigateBack()},1500))}catch(e){s.Taro.hideLoading();const t=e.message||e.errMsg||"\u8d2d\u4e70\u5931\u8d25";s.Taro.showModal({title:"\u8d2d\u4e70\u5931\u8d25",content:t,showCancel:!1,confirmText:"\u77e5\u9053\u4e86"})}}),w=()=>{d(!1),s.Taro.navigateBack()};return c?s.jsxRuntimeExports.jsx(s.View,{className:"nuantie-page",children:u&&s.jsxRuntimeExports.jsx(s.View,{className:"modal-overlay",onClick:w,children:s.jsxRuntimeExports.jsxs(s.View,{className:"modal-content",onClick:e=>e.stopPropagation(),children:[s.jsxRuntimeExports.jsxs(s.View,{className:"modal-top",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"carousel-container",children:[s.jsxRuntimeExports.jsx(s.Swiper,{className:"product-swiper",circular:!0,current:l,onChange:j,children:i.map((e,t)=>s.jsxRuntimeExports.jsx(s.SwiperItem,{children:s.jsxRuntimeExports.jsx(s.Image,{className:"product-image",src:e.image,mode:"aspectFill"})},e.id))}),s.jsxRuntimeExports.jsx(s.View,{className:"pagination-dots",children:i.map((e,t)=>s.jsxRuntimeExports.jsx(s.View,{className:"dot "+(l===t?"active":"")},t))})]}),s.jsxRuntimeExports.jsx(s.View,{className:"close-btn",onClick:w,children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"close",size:"24",color:"#fff"})})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"modal-bottom",children:[s.jsxRuntimeExports.jsx(s.View,{className:"product-list",children:i.map((e,t)=>s.jsxRuntimeExports.jsxs(s.View,{className:"product-item "+(c.id===e.id?"active":""),onClick:()=>p(t),children:[s.jsxRuntimeExports.jsxs(s.View,{className:"product-header",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"product-name",children:e.name}),s.jsxRuntimeExports.jsxs(s.Text,{className:"product-price",children:["\xa5",(e.price/100).toFixed(0)]})]}),s.jsxRuntimeExports.jsx(s.Text,{className:"product-desc",children:e.description})]},e.id))}),s.jsxRuntimeExports.jsxs(s.View,{className:"quantity-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"label",children:"\u8d2d\u4e70\u6570\u91cf"}),s.jsxRuntimeExports.jsxs(s.View,{className:"quantity-selector",children:[s.jsxRuntimeExports.jsx(s.View,{className:"quantity-btn",onClick:()=>h("decrease"),children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"subtract",size:"20",color:1===o?"#ccc":"#333"})}),s.jsxRuntimeExports.jsx(s.Text,{className:"quantity-value",children:o}),s.jsxRuntimeExports.jsx(s.View,{className:"quantity-btn",onClick:()=>h("increase"),children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"add",size:"20",color:"#333"})})]})]}),s.jsxRuntimeExports.jsx(s.View,{className:"action-bar",children:s.jsxRuntimeExports.jsxs(s.Button,{className:"buy-btn",onClick:E,children:["\u7acb\u5373\u8d2d\u4e70 \xa5",(c.price/100*o).toFixed(0)]})})]})]})})}):s.jsxRuntimeExports.jsx(s.View,{className:"nuantie-page",children:s.jsxRuntimeExports.jsx(s.View,{className:"loading",children:"\u52a0\u8f7d\u4e2d..."})})};var c={navigationBarTitleText:"\u6696\u8d34"};Page(s.createPageConfig(r,"pages/gift/nuantie/index",{root:{cn:[]}},c||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const NuantieDetail = () => {
+  const [products, setProducts] = taro.useState([]);
+  const [selectedProduct, setSelectedProduct] = taro.useState(null);
+  const [quantity, setQuantity] = taro.useState(1);
+  const [currentIndex, setCurrentIndex] = taro.useState(0);
+  const [showModal, setShowModal] = taro.useState(false);
+  taro.useEffect(() => {
+    const nuantieProducts = common.GiftService.getNuantieProducts();
+    setProducts(nuantieProducts);
+    if (nuantieProducts.length > 0) {
+      setSelectedProduct(nuantieProducts[0]);
+      setShowModal(true);
+    }
+  }, []);
+  const handleProductSelect = (index2) => {
+    setCurrentIndex(index2);
+    setSelectedProduct(products[index2]);
+    setQuantity(1);
+  };
+  const handleSwiperChange = (e) => {
+    setCurrentIndex(e.detail.current);
+  };
+  const handleQuantityChange = (type) => {
+    if (type === "increase") {
+      setQuantity(quantity + 1);
+    } else if (type === "decrease" && quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+  const handleBuyNow = () => __async(exports, null, function* () {
+    if (!selectedProduct)
+      return;
+    try {
+      taro.Taro.showLoading({ title: "创建订单..." });
+      const order = yield common.GiftService.createProductOrder({
+        productId: selectedProduct.id,
+        quantity,
+        paymentMethod: "wechat"
+      });
+      taro.Taro.hideLoading();
+      const paymentSuccess = yield common.paymentService.pay({
+        orderNo: order.orderNo,
+        amount: selectedProduct.price * 100 * quantity,
+        paymentMethod: "wechat",
+        title: selectedProduct.name,
+        wxPayParams: order.wxPayParams
+      });
+      if (paymentSuccess) {
+        taro.Taro.showToast({
+          title: "购买成功",
+          icon: "success",
+          duration: 1500
+        });
+        setTimeout(() => {
+          taro.Taro.navigateBack();
+        }, 1500);
+      }
+    } catch (error) {
+      taro.Taro.hideLoading();
+      const errorMessage = error.message || error.errMsg || "购买失败";
+      taro.Taro.showModal({
+        title: "购买失败",
+        content: errorMessage,
+        showCancel: false,
+        confirmText: "知道了"
+      });
+    }
+  });
+  const handleCloseModal = () => {
+    setShowModal(false);
+    taro.Taro.navigateBack();
+  };
+  if (!selectedProduct) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "nuantie-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
+  }
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "nuantie-page", children: showModal && /* @__PURE__ */ taro.jsx(taro.View, { className: "modal-overlay", onClick: handleCloseModal, children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "modal-content", onClick: (e) => e.stopPropagation(), children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "modal-top", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "carousel-container", children: [
+        /* @__PURE__ */ taro.jsx(
+          taro.Swiper,
+          {
+            className: "product-swiper",
+            circular: true,
+            current: currentIndex,
+            onChange: handleSwiperChange,
+            children: products.map(
+              (product, index2) => /* @__PURE__ */ taro.jsx(taro.SwiperItem, { children: /* @__PURE__ */ taro.jsx(
+                taro.Image,
+                {
+                  className: "product-image",
+                  src: product.image,
+                  mode: "aspectFill"
+                }
+              ) }, product.id)
+            )
+          }
+        ),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "pagination-dots", children: products.map(
+          (_, index2) => /* @__PURE__ */ taro.jsx(
+            taro.View,
+            {
+              className: `dot ${currentIndex === index2 ? "active" : ""}`
+            },
+            index2
+          )
+        ) })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "close-btn", onClick: handleCloseModal, children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "close", size: "24", color: "#fff" }) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "modal-bottom", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "product-list", children: products.map(
+        (product, index2) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `product-item ${selectedProduct.id === product.id ? "active" : ""}`,
+            onClick: () => handleProductSelect(index2),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "product-header", children: [
+                /* @__PURE__ */ taro.jsx(taro.Text, { className: "product-name", children: product.name }),
+                /* @__PURE__ */ taro.jsxs(taro.Text, { className: "product-price", children: [
+                  "¥",
+                  (product.price / 100).toFixed(0)
+                ] })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "product-desc", children: product.description })
+            ]
+          },
+          product.id
+        )
+      ) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "quantity-section", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "label", children: "购买数量" }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "quantity-selector", children: [
+          /* @__PURE__ */ taro.jsx(
+            taro.View,
+            {
+              className: "quantity-btn",
+              onClick: () => handleQuantityChange("decrease"),
+              children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "subtract", size: "20", color: quantity === 1 ? "#ccc" : "#333" })
+            }
+          ),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "quantity-value", children: quantity }),
+          /* @__PURE__ */ taro.jsx(
+            taro.View,
+            {
+              className: "quantity-btn",
+              onClick: () => handleQuantityChange("increase"),
+              children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "add", size: "20", color: "#333" })
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "action-bar", children: /* @__PURE__ */ taro.jsxs(taro.Button, { className: "buy-btn", onClick: handleBuyNow, children: [
+        "立即购买 ¥",
+        (selectedProduct.price / 100 * quantity).toFixed(0)
+      ] }) })
+    ] })
+  ] }) }) });
+};
+var config = {
+  "navigationBarTitleText": "暖贴",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(NuantieDetail, "pages/gift/nuantie/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

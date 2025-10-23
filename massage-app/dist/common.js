@@ -1,1 +1,2781 @@
-"use strict";var e=Object.defineProperty,t=Object.defineProperties,r=Object.getOwnPropertyDescriptors,a=Object.getOwnPropertySymbols,n=Object.prototype.hasOwnProperty,o=Object.prototype.propertyIsEnumerable,s=(t,r,a)=>r in t?e(t,r,{enumerable:!0,configurable:!0,writable:!0,value:a}):t[r]=a,i=(e,t)=>{for(var r in t||(t={}))n.call(t,r)&&s(e,r,t[r]);if(a)for(var r of a(t))o.call(t,r)&&s(e,r,t[r]);return e},c=(e,a)=>t(e,r(a)),l=(e,t,r)=>new Promise((a,n)=>{var o=e=>{try{i(r.next(e))}catch(t){n(t)}},s=e=>{try{i(r.throw(e))}catch(t){n(t)}},i=e=>e.done?a(e.value):Promise.resolve(e.value).then(o,s);i((r=r.apply(e,t)).next())});const d=require("./taro.js"),u={baseURL:"https://mingyitang1024.com/api/v2",timeout:1e4,retry:3},p={SUCCESS:0,PARAM_ERROR:1001,INVALID_INPUT:1002,NOT_FOUND:1003,DUPLICATE:1004,INVALID_STATE:1005,OPERATION_FAILED:1006,INSUFFICIENT_BALANCE:1007,QUOTA_EXCEEDED:1008,INVALID_PHONE:1009,USER_NOT_FOUND:1010,UNAUTHORIZED:2001,FORBIDDEN:2002,TOKEN_EXPIRED:2003,INVALID_TOKEN:2004,SESSION_EXPIRED:2005,INTERNAL_ERROR:3001,SERVICE_UNAVAILABLE:3002,DATABASE_ERROR:3003,EXTERNAL_API_ERROR:3004,PAYMENT_ERROR:4001,PAYMENT_TIMEOUT:4002,SMS_ERROR:4003,WECHAT_ERROR:4004},h={[p.SUCCESS]:"\u64cd\u4f5c\u6210\u529f",[p.PARAM_ERROR]:"\u53c2\u6570\u9519\u8bef\uff0c\u8bf7\u68c0\u67e5\u8f93\u5165",[p.INVALID_INPUT]:"\u8f93\u5165\u683c\u5f0f\u4e0d\u6b63\u786e",[p.NOT_FOUND]:"\u8bf7\u6c42\u7684\u8d44\u6e90\u4e0d\u5b58\u5728",[p.DUPLICATE]:"\u64cd\u4f5c\u91cd\u590d\uff0c\u8bf7\u52ff\u91cd\u590d\u63d0\u4ea4",[p.INVALID_STATE]:"\u5f53\u524d\u72b6\u6001\u4e0d\u5141\u8bb8\u6b64\u64cd\u4f5c",[p.OPERATION_FAILED]:"\u64cd\u4f5c\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5",[p.INSUFFICIENT_BALANCE]:"\u4f59\u989d\u4e0d\u8db3\uff0c\u8bf7\u5145\u503c",[p.QUOTA_EXCEEDED]:"\u8d85\u51fa\u914d\u989d\u9650\u5236",[p.INVALID_PHONE]:"\u624b\u673a\u53f7\u683c\u5f0f\u4e0d\u6b63\u786e",[p.USER_NOT_FOUND]:"\u7528\u6237\u4e0d\u5b58\u5728",[p.UNAUTHORIZED]:"\u8bf7\u5148\u767b\u5f55",[p.FORBIDDEN]:"\u60a8\u65e0\u6743\u6267\u884c\u6b64\u64cd\u4f5c",[p.TOKEN_EXPIRED]:"\u767b\u5f55\u5df2\u8fc7\u671f\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55",[p.INVALID_TOKEN]:"\u65e0\u6548\u7684\u767b\u5f55\u72b6\u6001",[p.SESSION_EXPIRED]:"\u4f1a\u8bdd\u5df2\u8fc7\u671f\uff0c\u8bf7\u91cd\u65b0\u767b\u5f55",[p.INTERNAL_ERROR]:"\u670d\u52a1\u5668\u9519\u8bef\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",[p.SERVICE_UNAVAILABLE]:"\u670d\u52a1\u7ef4\u62a4\u4e2d\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",[p.DATABASE_ERROR]:"\u6570\u636e\u5e93\u9519\u8bef\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",[p.EXTERNAL_API_ERROR]:"\u7b2c\u4e09\u65b9\u670d\u52a1\u5f02\u5e38\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",[p.PAYMENT_ERROR]:"\u652f\u4ed8\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5",[p.PAYMENT_TIMEOUT]:"\u652f\u4ed8\u8d85\u65f6\uff0c\u8bf7\u91cd\u65b0\u652f\u4ed8",[p.SMS_ERROR]:"\u77ed\u4fe1\u53d1\u9001\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5",[p.WECHAT_ERROR]:"\u5fae\u4fe1\u63a5\u53e3\u5f02\u5e38\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5"};function m(e,t){return h[e]||t||"\u64cd\u4f5c\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u91cd\u8bd5"}function g(e){return[p.UNAUTHORIZED,p.TOKEN_EXPIRED,p.INVALID_TOKEN,p.SESSION_EXPIRED].includes(e)}function y(e){return l(this,arguments,function*(e,t={}){const{method:r="GET",data:a,header:n={},showLoading:o=!1,loadingTitle:s="\u52a0\u8f7d\u4e2d..."}=t;o&&d.Taro.showLoading({title:s,mask:!0});try{const t=yield d.Taro.request({url:`${u.baseURL}${e}`,method:r,data:a,header:i({"Content-Type":"application/json"},n),timeout:u.timeout});o&&d.Taro.hideLoading();const s=t.data;if(s.code!==p.SUCCESS){console.error(`API\u4e1a\u52a1\u9519\u8bef: ${e}`,{code:s.code,message:s.message,data:s}),g(s.code)&&(console.warn("\u8ba4\u8bc1\u8fc7\u671f\uff0c\u8df3\u8f6c\u5230\u767b\u5f55\u9875"),d.Taro.removeStorageSync("userInfo"),d.Taro.removeStorageSync("userToken"));const r=m(s.code,s.message),a=new Error(r);throw a.code=s.code,a.response={status:t.statusCode,data:s},a}return s}catch(c){throw o&&d.Taro.hideLoading(),console.error(`API\u7f51\u7edc\u9519\u8bef: ${e}`,c),c}})}const x=(e,t,r)=>{const a=t?"?"+Object.keys(t).filter(e=>void 0!==t[e]&&null!==t[e]).map(e=>`${e}=${encodeURIComponent(t[e])}`).join("&"):"";return y(e+a,c(i({},r),{method:"GET"}))},f=(e,t,r)=>y(e,c(i({},r),{method:"POST",data:t})),I="https://mingyitang1024.com/static",w={baseUrl:I,giftCard:{member:`${I}/card/member-card.png`,electronic:`${I}/card/gift-card.png`},product:{pillow:`${I}/gift/product/nuantie/huxi.jpg`,therapy:`${I}/gift/product/nuantie/xinai.jpg`,nuantie:{huxi:`${I}/gift/product/nuantie/huxi.jpg`,xinai:`${I}/gift/product/nuantie/xinai.jpg`,yaofu:`${I}/gift/product/nuantie/yaofu.jpg`},aijiu:{xinaibing:`${I}/gift/product/aijiu/xinaibing.jpg`,xinaizhu:`${I}/gift/product/aijiu/xinaizhu.jpg`,xinaitiao:`${I}/gift/product/aijiu/xinaitiao.jpg`}},banners:{goodnight:""},therapists:{baseUrl:`${I}/therapists/\u8001\u5e08\u6536\u96c6\u4e2d\u6587\u539f\u7248`},default:`${I}/default.png`},S=()=>{try{const e=d.Taro.getStorageSync("userInfo");return e||null}catch(e){return console.error("\u83b7\u53d6\u7528\u6237\u4fe1\u606f\u5931\u8d25:",e),null}},E=()=>{const e=S();return(null==e?void 0:e.id)||1},T=()=>{const e=S();return(null==e?void 0:e.phone)||"13800138000"},N=e=>{try{d.Taro.setStorageSync("userInfo",e)}catch(t){console.error("\u8bbe\u7f6e\u7528\u6237\u4fe1\u606f\u5931\u8d25:",t)}},v=e=>e?e.replace(/(\d{3})\d{4}(\d{4})/,"$1****$2"):"\u672a\u8bbe\u7f6e",R=()=>l(exports,null,function*(){try{const{code:e}=yield d.Taro.login(),t=yield f("/users/wechat-login",{code:e});if(t.data)return t.data.userInfo&&!t.data.needBindPhone&&N(t.data.userInfo),t.data;throw new Error("\u5fae\u4fe1\u767b\u5f55\u5931\u8d25\uff1a\u8fd4\u56de\u6570\u636e\u5f02\u5e38")}catch(e){throw console.error("\u5fae\u4fe1\u767b\u5f55\u5931\u8d25:",e),e}}),j=e=>l(exports,null,function*(){try{if(!e){const t=S();e=null==t?void 0:t.phone}if(!e)return console.warn("\u65e0\u6cd5\u83b7\u53d6\u7528\u6237\u4fe1\u606f\uff1a\u7f3a\u5c11\u624b\u673a\u53f7"),null;const t=yield x(`/users/info?phone=${e}`);if(t.data){const e={id:t.data.id,phone:t.data.phone,username:t.data.username,nickname:t.data.nickname,avatar:t.data.avatar,openid:t.data.openid,membershipNumber:t.data.membershipNumber,memberLevel:t.data.memberLevel,balance:t.data.balance,totalSpent:t.data.totalSpent,totalVisits:t.data.totalVisits,discountRate:t.data.discount_rate||t.data.discountRate};return N(e),e}return null}catch(t){return console.error("\u83b7\u53d6\u7528\u6237\u4fe1\u606f\u5931\u8d25:",t),null}}),P=()=>l(exports,null,function*(){try{const e=S();if(e&&e.phone){const t=yield j(e.phone);return t||e}const t=yield R();return!t.needBindPhone&&t.userInfo?t.userInfo:null}catch(e){return console.error("\u81ea\u52a8\u767b\u5f55\u5931\u8d25:",e),null}}),A=[{id:"member-card",type:"member",name:"\u4f1a\u5458\u793c\u5361",image:w.giftCard.member,description:"\u5c0a\u4eab\u4f1a\u5458\u4e13\u5c5e\u4f18\u60e0",features:["\u5168\u95e8\u5e97\u901a\u7528","\u957f\u671f\u6709\u6548","\u53ef\u7d2f\u8ba1\u79ef\u5206","\u4eab\u53d7\u4f1a\u5458\u4ef7"],terms:"\u672c\u5361\u4e3a\u4e0d\u8bb0\u540d\u5361\u7247\uff0c\u8bf7\u59a5\u5584\u4fdd\u7ba1"},{id:"electronic-card",type:"electronic",name:"\u7535\u5b50\u793c\u5361",image:w.giftCard.electronic,description:"\u4fbf\u6377\u7684\u7535\u5b50\u793c\u54c1\u5361",features:["\u5373\u4e70\u5373\u7528","\u53ef\u8f6c\u8d60\u597d\u53cb","\u7ebf\u4e0a\u8d2d\u4e70","\u626b\u7801\u4f7f\u7528"],terms:"\u7535\u5b50\u5361\u6709\u6548\u671f\u4e3a\u8d2d\u4e70\u4e4b\u65e5\u8d77\u4e00\u5e74\u5185"}],b=[{id:"nuantie-waist",name:"\u8572\u827e\u8170\u8179\u6696\u8d34",image:"https://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg",price:9900,originalPrice:9900,unit:"\u8d34",description:"\u81ea\u53d1\u70ed\u827e\u8349\u6696\u62a4\u8170\u8d34",features:["\u81ea\u53d1\u70ed\u827e\u8349","\u6696\u62a4\u8170\u8d34","\u9053\u5730\u8572\u827e"],specifications:{}},{id:"nuantie-knee",name:"\u8572\u827e\u62a4\u819d\u6696\u8d34",image:"https://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg",price:9900,originalPrice:9900,unit:"\u8d34",description:"\u81ea\u53d1\u70ed\u827e\u8349\u62a4\u819d \u9a71\u5bd2\u4fdd\u6696",features:["\u81ea\u53d1\u70ed\u827e\u8349","\u62a4\u819d","\u9a71\u5bd2\u4fdd\u6696"],specifications:{}},{id:"nuantie-moxa",name:"\u8572\u827e\u7078\u8d34",image:"https://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg",price:9900,originalPrice:9900,unit:"\u8d34",description:"\u81ea\u53d1\u70ed\u827e\u8349\u7cbe\u6cb9\u7a74\u4f4d\u7078\u8d34",features:["\u81ea\u53d1\u70ed\u827e\u8349","\u7cbe\u6cb9\u7a74\u4f4d\u7078\u8d34","\u9053\u5730\u8572\u827e"],specifications:{}}],D=[{id:"aijiu-stick",name:"\u8572\u827e\u6761",image:"https://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg",price:9900,originalPrice:9900,unit:"\u6761",description:"\u827e\u7078\u827e\u6761 3\u5e74\u9648\u827e",features:["3\u5e74\u9648\u827e","\u827e\u7078\u827e\u6761","\u9053\u5730\u8572\u827e"],specifications:{}},{id:"aijiu-moxa-ball",name:"\u8572\u827e\u997c",image:"https://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg",price:9900,originalPrice:9900,unit:"\u997c",description:"\u9053\u5730\u8572\u827e\u6ce1\u811a\u6ce1\u6fa1\u827e\u8349\u997c",features:["\u6ce1\u811a\u6ce1\u6fa1","\u827e\u8349\u997c","\u9053\u5730\u8572\u827e"],specifications:{}},{id:"aijiu-column",name:"\u65b0\u827e\u67f1",image:"https://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg",price:9900,originalPrice:9900,unit:"\u67f1",description:"\u674e\u65f6\u73cd\u6545\u91cc\u7279\u4ea7\u65b0\u827e\u67f1",features:["\u65b0\u827e\u67f1","\u674e\u65f6\u73cd\u6545\u91cc\u7279\u4ea7","\u827e\u7078"],specifications:{}}],O=[...b,...D];class ${static getAllGiftCards(){return A}static getGiftCardById(e){return A.find(t=>t.id===e)}static getAllProducts(){return O}static getProductById(e){return O.find(t=>t.id===e)}static getNuantieProducts(){return b}static getAijiuProducts(){return D}static createGiftCardOrder(e){return l(this,null,function*(){try{const t=E(),r={orderType:"product",userId:t,title:`\u7535\u5b50\u793c\u5361 \xa5${(e.amount/100).toFixed(2)}`,amount:e.amount*e.quantity,paymentMethod:e.paymentMethod,extraData:{productType:"gift_card",productId:e.cardId,productName:"\u7535\u5b50\u793c\u5361",quantity:e.quantity,cardType:"electronic",faceValue:e.amount,customMessage:e.customMessage||"\u4e16\u754c\u4e0a\u6700\u597d\u7684\u7238\u7238"}};console.log("\ud83c\udf81 \u521b\u5efa\u793c\u5361\u8ba2\u5355"),console.log("\ud83d\udc64 \u5f53\u524d\u7528\u6237ID:",t),console.log("\ud83d\udce6 \u8ba2\u5355\u6570\u636e:",{orderType:r.orderType,userId:r.userId,title:r.title,amount:`${r.amount}\u5206 (\xa5${(r.amount/100).toFixed(2)})`,paymentMethod:r.paymentMethod,extraData:r.extraData});const a=yield f("/orders/create",r,{showLoading:!0,loadingTitle:"\u521b\u5efa\u8ba2\u5355\u4e2d..."});return console.log("\u2705 \u793c\u5361\u8ba2\u5355\u521b\u5efa\u6210\u529f"),console.log("\ud83d\udccb \u8ba2\u5355\u54cd\u5e94:",{orderNo:a.data.orderNo,amount:`${a.data.amount}\u5206 (\xa5${(a.data.amount/100).toFixed(2)})`,paymentStatus:a.data.paymentStatus,hasWxPayParams:!!a.data.wxPayParams}),a.data}catch(t){throw console.error("\u274c \u521b\u5efa\u793c\u5361\u8ba2\u5355\u5931\u8d25:",t),new Error(t.message||"\u521b\u5efa\u793c\u5361\u8ba2\u5355\u5931\u8d25")}})}static createProductOrder(e){return l(this,null,function*(){try{const t=this.getProductById(e.productId);if(!t)throw new Error("\u5546\u54c1\u4e0d\u5b58\u5728");const r={orderType:"product",userId:E(),title:t.name,amount:t.price*e.quantity,paymentMethod:e.paymentMethod,extraData:{productType:"merchandise",productId:e.productId,quantity:e.quantity,specifications:t.specifications}},a=yield f("/orders/create",r,{showLoading:!0,loadingTitle:"\u521b\u5efa\u8ba2\u5355\u4e2d..."});return a.data}catch(t){throw console.error("\u521b\u5efa\u5546\u54c1\u8ba2\u5355\u5931\u8d25:",t),new Error(t.message||"\u521b\u5efa\u5546\u54c1\u8ba2\u5355\u5931\u8d25")}})}}class M{constructor(){this.config={useMockPayment:!1,enableBalancePayment:!0,enableWechatPayment:!0}}pay(e){return l(this,null,function*(){const{paymentMethod:t}=e;if(this.config.useMockPayment&&"wechat"===t)return this.mockWechatPayment(e);if("balance"===t)return this.payWithBalance(e);if("wechat"===t&&this.config.enableWechatPayment)return this.payWithWechat(e);throw new Error("\u4e0d\u652f\u6301\u7684\u652f\u4ed8\u65b9\u5f0f")})}mockWechatPayment(e){return l(this,null,function*(){try{const{confirm:t}=yield d.Taro.showModal({title:"\u6a21\u62df\u652f\u4ed8",content:`\u8ba2\u5355\u91d1\u989d\uff1a\xa5${(e.amount/100).toFixed(2)}\n${e.title||""}`,confirmText:"\u786e\u8ba4\u652f\u4ed8",cancelText:"\u53d6\u6d88\u652f\u4ed8",confirmColor:"#07c160"});if(t){d.Taro.showLoading({title:"\u652f\u4ed8\u4e2d..."}),yield this.delay(1500),console.log("\ud83d\udcb3 \u6a21\u62df\u5fae\u4fe1\u652f\u4ed8\u8bf7\u6c42\u53c2\u6570:",{orderNo:e.orderNo,paymentMethod:"wechat"});const t=yield f("/orders/pay",{orderNo:e.orderNo,paymentMethod:"wechat"});if(console.log("\ud83d\udcb3 \u6a21\u62df\u5fae\u4fe1\u652f\u4ed8\u54cd\u5e94:",t),d.Taro.hideLoading(),0===t.code)return d.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success"}),!0;throw new Error(t.message||"\u652f\u4ed8\u5931\u8d25")}return console.log("\u7528\u6237\u53d6\u6d88\u6a21\u62df\u652f\u4ed8"),!1}catch(t){throw console.error("\ud83d\udcb3 \u6a21\u62df\u5fae\u4fe1\u652f\u4ed8\u5931\u8d25:",t),d.Taro.hideLoading(),d.Taro.showToast({title:t.message||"\u652f\u4ed8\u5931\u8d25",icon:"none"}),t}})}payWithBalance(e){return l(this,null,function*(){try{d.Taro.showLoading({title:"\u652f\u4ed8\u4e2d..."}),console.log("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u8bf7\u6c42\u53c2\u6570:",{orderNo:e.orderNo,paymentMethod:"balance"});const t=yield f("/orders/pay",{orderNo:e.orderNo,paymentMethod:"balance"});if(console.log("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u54cd\u5e94:",t),d.Taro.hideLoading(),0===t.code){const e=(t.data.balance||0)/100;return d.Taro.showToast({title:`\u652f\u4ed8\u6210\u529f\n\u4f59\u989d\uff1a\xa5${e.toFixed(2)}`,icon:"success",duration:2e3}),!0}throw new Error(t.message||"\u4f59\u989d\u4e0d\u8db3")}catch(t){return console.error("\ud83d\udcb0 \u4f59\u989d\u652f\u4ed8\u5931\u8d25:",t),console.error("\ud83d\udcb0 \u9519\u8bef\u8be6\u60c5:",t.response||t.message),d.Taro.hideLoading(),d.Taro.showToast({title:t.message||"\u652f\u4ed8\u5931\u8d25",icon:"none"}),!1}})}payWithWechat(e){return l(this,null,function*(){var t,r;try{console.log("\ud83d\udcb3 \u5f00\u59cb\u771f\u5b9e\u5fae\u4fe1\u652f\u4ed8\uff0c\u8ba2\u5355\u53f7:",e.orderNo);const a=e.wxPayParams;if(!a)throw new Error("\u7f3a\u5c11\u5fae\u4fe1\u652f\u4ed8\u53c2\u6570\uff0c\u8bf7\u5148\u521b\u5efa\u8ba2\u5355");const n=["timeStamp","nonceStr","package","signType","paySign"],o=n.filter(e=>!a[e]);if(o.length>0)throw console.error("\u274c \u5fae\u4fe1\u652f\u4ed8\u53c2\u6570\u4e0d\u5b8c\u6574\uff0c\u7f3a\u5c11\u5b57\u6bb5:",o),new Error(`\u5fae\u4fe1\u652f\u4ed8\u53c2\u6570\u7f3a\u5931: ${o.join(", ")}`);return console.log("\ud83d\udcb3 \u5fae\u4fe1\u652f\u4ed8\u53c2\u6570:",{timeStamp:a.timeStamp,nonceStr:(null==(t=a.nonceStr)?void 0:t.substring(0,8))+"...",package:a.package,signType:a.signType,paySign:(null==(r=a.paySign)?void 0:r.substring(0,16))+"..."}),yield d.Taro.requestPayment({timeStamp:a.timeStamp,nonceStr:a.nonceStr,package:a.package,signType:a.signType,paySign:a.paySign}),console.log("\ud83d\udcb3 \u7528\u6237\u5b8c\u6210\u652f\u4ed8\uff0c\u7b49\u5f85\u5fae\u4fe1\u56de\u8c03\u540e\u7aef\u66f4\u65b0\u8ba2\u5355\u72b6\u6001"),d.Taro.showToast({title:"\u652f\u4ed8\u6210\u529f",icon:"success"}),!0}catch(a){if("requestPayment:fail cancel"===a.errMsg)return console.log("\ud83d\udcb3 \u7528\u6237\u53d6\u6d88\u652f\u4ed8"),!1;throw console.error("\ud83d\udcb3 \u5fae\u4fe1\u652f\u4ed8\u5931\u8d25:",a),console.error("\ud83d\udcb3 \u9519\u8bef\u8be6\u60c5:",{errMsg:a.errMsg,errCode:a.errCode,message:a.message}),d.Taro.showToast({title:a.errMsg||a.message||"\u652f\u4ed8\u5931\u8d25",icon:"none",duration:3e3}),a}})}checkPaymentEnvironment(){return l(this,null,function*(){d.Taro.getAccountInfoSync();const e=!this.config.enableWechatPayment;return{canUseWechatPay:!e&&this.config.enableWechatPayment,canUseBalance:this.config.enableBalancePayment,canUseMockPay:this.config.useMockPayment,message:e?"\u5f53\u524d\u4e3a\u4e2a\u4eba\u5c0f\u7a0b\u5e8f\uff0c\u4f7f\u7528\u6a21\u62df\u652f\u4ed8\u548c\u4f59\u989d\u652f\u4ed8":"\u4f01\u4e1a\u5c0f\u7a0b\u5e8f\uff0c\u652f\u6301\u5b8c\u6574\u652f\u4ed8\u529f\u80fd"}})}generateRechargeCode(e){return l(this,null,function*(){const t=yield f("/recharge/generate-code",{amount:e});return t.data})}delay(e){return new Promise(t=>setTimeout(t,e))}}const V=new M;class C{getCurrentUserId(){return E()}getBalance(){return l(this,null,function*(){try{const e=this.getCurrentUserId(),t=yield x("/users/wallet/balance",{userId:e}),r=t.data.balance||0;return console.log("\ud83d\udcb0 \u4f59\u989d\u67e5\u8be2:",{"\u5206":r,"\u5143":(r/100).toFixed(2)}),r}catch(e){throw console.error("\u83b7\u53d6\u4f59\u989d\u5931\u8d25:",e),new Error("\u83b7\u53d6\u4f59\u989d\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5")}})}getBalanceDetails(){return l(this,null,function*(){try{const e=this.getCurrentUserId(),t=yield x("/users/wallet/balance",{userId:e});return t.data}catch(e){throw console.error("\u83b7\u53d6\u4f59\u989d\u8be6\u60c5\u5931\u8d25:",e),new Error("\u83b7\u53d6\u4f59\u989d\u8be6\u60c5\u5931\u8d25\uff0c\u8bf7\u91cd\u8bd5")}})}getRechargeOptions(){return l(this,null,function*(){try{const e=yield x("/recharge/configs");return e.data}catch(e){return console.error("\u83b7\u53d6\u5145\u503c\u914d\u7f6e\u5931\u8d25:",e),this.getDefaultRechargeOptions()}})}getDefaultRechargeOptions(){return[{id:1,amount:1e4,bonus:0,label:"100\u5143",sortOrder:1},{id:2,amount:2e4,bonus:0,label:"200\u5143",sortOrder:2},{id:3,amount:5e4,bonus:5e3,label:"500\u5143",sortOrder:3,promotionTag:"\u8d6050\u5143"},{id:4,amount:1e5,bonus:1e4,label:"1000\u5143",sortOrder:4,promotionTag:"\u8d60100\u5143"},{id:5,amount:2e5,bonus:3e4,label:"2000\u5143",sortOrder:5,promotionTag:"\u8d60300\u5143"},{id:6,amount:5e5,bonus:1e5,label:"5000\u5143",sortOrder:6,promotionTag:"\u8d601000\u5143",isRecommended:!0}]}createRechargeOrder(e,t=0){return l(this,null,function*(){try{const r=this.getCurrentUserId(),a=T(),n={orderType:"recharge",userId:r,userPhone:a,title:t>0?`\u5145\u503c${e}\u5143\uff0c\u8d60\u9001${t}\u5143`:`\u5145\u503c${e}\u5143`,amount:100*e,paymentMethod:"wechat",extraData:{rechargeAmount:100*e,bonus:100*t,actualAmount:100*(e+t)}};console.log("\ud83d\udcb0 \u521b\u5efa\u5145\u503c\u8ba2\u5355"),console.log("\ud83d\udc64 \u5f53\u524d\u7528\u6237ID:",r),console.log("\ud83d\udcde \u7528\u6237\u624b\u673a\u53f7:",a),console.log("\ud83d\udce6 \u8ba2\u5355\u6570\u636e:",{orderType:n.orderType,userId:n.userId,title:n.title,amount:`${n.amount}\u5206 (\xa5${(n.amount/100).toFixed(2)})`,paymentMethod:n.paymentMethod,extraData:n.extraData});const o=yield f("/orders/create",n,{showLoading:!0,loadingTitle:"\u521b\u5efa\u8ba2\u5355\u4e2d..."});return console.log("\u2705 \u5145\u503c\u8ba2\u5355\u521b\u5efa\u6210\u529f"),console.log("\ud83d\udccb \u8ba2\u5355\u54cd\u5e94:",{orderNo:o.data.orderNo,amount:`${o.data.amount}\u5206 (\xa5${(o.data.amount/100).toFixed(2)})`,paymentStatus:o.data.paymentStatus,hasWxPayParams:!!o.data.wxPayParams}),o.data}catch(r){throw console.error("\u274c \u521b\u5efa\u5145\u503c\u8ba2\u5355\u5931\u8d25:",r),new Error(r.message||"\u521b\u5efa\u5145\u503c\u8ba2\u5355\u5931\u8d25")}})}getTransactions(e=1,t=20,r){return l(this,null,function*(){try{const a=this.getCurrentUserId(),n={userId:a,page:e,pageSize:t};r&&(n.type=r);const o=yield x("/users/wallet/transactions",n);return o.data.list}catch(a){return console.error("\u83b7\u53d6\u4ea4\u6613\u8bb0\u5f55\u5931\u8d25:",a),[]}})}payWithBalance(e,t){return l(this,null,function*(){try{const t=yield f("/orders/pay",{orderNo:e,paymentMethod:"balance"},{showLoading:!0,loadingTitle:"\u652f\u4ed8\u4e2d..."});return{success:!0,balance:t.data.balance,message:"\u652f\u4ed8\u6210\u529f"}}catch(t){throw console.error("\u4f59\u989d\u652f\u4ed8\u5931\u8d25:",t),new Error(t.message||"\u4f59\u989d\u4e0d\u8db3\u6216\u652f\u4ed8\u5931\u8d25")}})}refundToBalance(e,t,r="\u8ba2\u5355\u9000\u6b3e"){return l(this,null,function*(){try{const a=yield f("/users/wallet/refund",{phone:T(),amount:t,orderNo:e,description:r},{showLoading:!0,loadingTitle:"\u9000\u6b3e\u4e2d..."});return{success:!0,balance:a.data.balance,transactionId:a.data.transactionId,message:"\u9000\u6b3e\u6210\u529f"}}catch(a){throw console.error("\u9000\u6b3e\u5931\u8d25:",a),new Error(a.message||"\u9000\u6b3e\u5931\u8d25")}})}clearCache(){try{d.Taro.removeStorageSync("userInfo"),d.Taro.removeStorageSync("walletCache"),console.log("\u94b1\u5305\u7f13\u5b58\u5df2\u6e05\u7a7a")}catch(e){console.error("\u6e05\u7a7a\u7f13\u5b58\u5931\u8d25:",e)}}}const L=new C,U=e=>e?e.startsWith("https://")?e:e.startsWith("http://")?e.replace("http://","https://"):e.startsWith("/")?`https://mingyitang1024.com${e}`:`https://mingyitang1024.com/static${e.startsWith("/")?e:"/"+e}`:_(),_=()=>"https://mingyitang1024.com/static/default.png";class k{getUserInfo(){return{userId:E(),userPhone:T()}}getDisplayStatus(e){if("pending"===e.paymentStatus)return"pending";if("cancelled"===e.paymentStatus||"refunded"===e.paymentStatus)return e.paymentStatus;if("paid"===e.paymentStatus&&"service"===e.orderType){if(e.appointmentStatus)switch(e.appointmentStatus){case"completed":return"completed";case"serving":return"serving";case"cancelled":return"cancelled";case"pending":case"confirmed":default:return"paid"}if(e.appointmentDate&&e.startTime){const t=new Date(`${e.appointmentDate} ${e.startTime}`),r=new Date(t.getTime()+6e4*(e.duration||60)),a=new Date;if(r<a)return"paid"}}return e.paymentStatus}enrichOrderWithStoreAndTherapistInfo(e){return l(this,null,function*(){try{const t=[];e.storeId&&!e.storeName&&t.push(x(`/stores/${e.storeId}`).then(t=>{const r=t.data;e.storeName=r.name,e.storeAddress=r.address}).catch(t=>l(this,null,function*(){console.error(`\u83b7\u53d6\u95e8\u5e97\u4fe1\u606f\u5931\u8d25 (storeId: ${e.storeId}):`,t);const r=yield this.getDefaultStoreInfo();r?(e.storeName=`${r.name}\uff08\u66ff\u4ee3\u663e\u793a\uff09`,e.storeAddress=r.address):(e.storeName="\u95e8\u5e97\u4fe1\u606f\u6682\u65f6\u65e0\u6cd5\u83b7\u53d6",e.storeAddress="\u8bf7\u8054\u7cfb\u5ba2\u670d\u83b7\u53d6\u8be6\u60c5")}))),e.therapistId&&!e.therapistAvatar&&t.push(x(`/therapists/${e.therapistId}`).then(t=>{const r=t.data;e.therapistAvatar=r.avatar,e.therapistName||(e.therapistName=r.name)}).catch(t=>{console.error(`\u83b7\u53d6\u6280\u5e08\u4fe1\u606f\u5931\u8d25 (therapistId: ${e.therapistId}):`,t),e.therapistAvatar||(e.therapistAvatar="https://img.yzcdn.cn/vant/cat.jpeg")})),t.length>0&&(yield Promise.allSettled(t))}catch(t){console.error("\u8865\u5168\u8ba2\u5355\u4fe1\u606f\u5931\u8d25:",t)}})}getDefaultStoreInfo(){return l(this,null,function*(){var e,t;try{const r=yield x("/stores/nearby",{page:1,pageSize:1});if(null==(t=null==(e=r.data)?void 0:e.list)?void 0:t[0]){const e=r.data.list[0];return{name:e.name,address:e.address}}}catch(r){console.error("\u83b7\u53d6\u9ed8\u8ba4\u95e8\u5e97\u4fe1\u606f\u5931\u8d25:",r)}return null})}enrichOrderListWithStoreAndTherapistInfo(e){return l(this,null,function*(){try{const t=new Set,r=new Set;e.forEach(e=>{e.storeId&&!e.storeName&&t.add(e.storeId.toString()),e.therapistId&&!e.therapistAvatar&&r.add(e.therapistId.toString())});const a=[],n=new Map,o=new Map,s=new Set;Array.from(t).forEach(e=>{a.push(x(`/stores/${e}`).then(t=>{n.set(e,t.data)}).catch(t=>{console.warn(`\u95e8\u5e97\u4e0d\u5b58\u5728\uff0c\u5c06\u8fc7\u6ee4\u76f8\u5173\u8ba2\u5355 (storeId: ${e}):`,t.message),s.add(e)}))}),Array.from(r).forEach(e=>{a.push(x(`/therapists/${e}`).then(t=>{o.set(e,t.data)}).catch(t=>{console.error(`\u6279\u91cf\u83b7\u53d6\u6280\u5e08\u4fe1\u606f\u5931\u8d25 (therapistId: ${e}):`,t)}))}),a.length>0&&(yield Promise.allSettled(a));const i=e.filter(e=>!e.storeId||!s.has(e.storeId.toString())||(console.warn(`\u8fc7\u6ee4\u65e0\u6548\u8ba2\u5355: ${e.orderNo}\uff08\u95e8\u5e97 ${e.storeId} \u4e0d\u5b58\u5728\uff09`),!1));return i.forEach(e=>{if(e.storeId&&!e.storeName){const t=n.get(e.storeId.toString());t&&(e.storeName=t.name,e.storeAddress=t.address)}if(e.therapistId&&!e.therapistAvatar){const t=o.get(e.therapistId.toString());t?(e.therapistAvatar=t.avatar,e.therapistName||(e.therapistName=t.name)):e.therapistAvatar="https://img.yzcdn.cn/vant/cat.jpeg"}}),i}catch(t){return console.error("\u6279\u91cf\u8865\u5168\u8ba2\u5355\u5217\u8868\u4fe1\u606f\u5931\u8d25:",t),e}})}createAppointmentOrder(e){return l(this,null,function*(){try{const{userId:t,userPhone:r}=this.getUserInfo();console.log("\ud83d\udcdd \u521b\u5efa\u8ba2\u5355\u539f\u59cb\u53c2\u6570:",e),console.log("\ud83d\udcdd therapistId\u7c7b\u578b:",typeof e.therapistId,"\u503c:",e.therapistId);const a={therapistId:Number(e.therapistId),storeId:Number(e.storeId),userId:t,userPhone:r,appointmentDate:e.appointmentDate,startTime:e.appointmentTime,duration:e.duration||60,serviceId:e.serviceId,serviceName:e.serviceName,price:e.discountPrice||e.price};console.log("\ud83d\udce4 \u5b9e\u9645\u53d1\u9001\u7684\u8bf7\u6c42\u6570\u636e:",a),console.log("\ud83d\udce4 \u8f6c\u6362\u540e\u7684therapistId:",a.therapistId,"\u662f\u5426\u4e3aNaN:",isNaN(a.therapistId));const n=yield f("/appointments/create-with-order",a,{showLoading:!0,loadingTitle:"\u521b\u5efa\u8ba2\u5355\u4e2d..."}),o=c(i({},n.data.order),{therapistName:e.therapistName,therapistAvatar:e.therapistAvatar,serviceName:e.serviceName,duration:e.duration,appointmentDate:e.appointmentDate,startTime:e.appointmentTime});return{order:o,appointment:n.data.appointment}}catch(t){throw console.error("\u521b\u5efa\u8ba2\u5355\u5931\u8d25:",t),new Error(t.message||"\u521b\u5efa\u8ba2\u5355\u5931\u8d25")}})}getPaymentParams(e){return l(this,null,function*(){try{const t=yield f("/orders/pay",{orderNo:e,paymentMethod:"wechat"});return t.data.wxPayParams?t.data.wxPayParams:{timeStamp:String(Math.floor(Date.now()/1e3)),nonceStr:Math.random().toString(36).substr(2,15),package:`prepay_id=${Math.random().toString(36).substr(2,15)}`,signType:"MD5",paySign:Math.random().toString(36).substr(2,32)}}catch(t){throw console.error("\u83b7\u53d6\u652f\u4ed8\u53c2\u6570\u5931\u8d25:",t),new Error("\u83b7\u53d6\u652f\u4ed8\u53c2\u6570\u5931\u8d25")}})}updateOrderStatus(e,t){return l(this,null,function*(){try{const t=yield f("/orders/pay",{orderNo:e,paymentMethod:"balance"});return{orderNo:e,paymentStatus:"paid",paidAt:t.data.paidAt||(new Date).toISOString()}}catch(t){throw console.error("\u66f4\u65b0\u8ba2\u5355\u72b6\u6001\u5931\u8d25:",t),new Error(t.message||"\u652f\u4ed8\u5931\u8d25")}})}getOrderDetail(e){return l(this,null,function*(){try{const t=yield x(`/orders/${e}`),r=t.data;return r.extraData&&(r.appointmentId=r.extraData.appointmentId,r.therapistId=r.extraData.therapistId,r.therapistName=r.extraData.therapistName,r.therapistAvatar=U(r.extraData.therapistAvatar),r.storeId=r.extraData.storeId,r.appointmentDate=r.extraData.appointmentDate,r.startTime=r.extraData.startTime,r.duration=r.extraData.duration,r.serviceName=r.extraData.serviceName||r.title,r.appointmentStatus=r.extraData.appointmentStatus,yield this.enrichOrderWithStoreAndTherapistInfo(r)),r.displayStatus=this.getDisplayStatus(r),r}catch(t){throw console.error("\u83b7\u53d6\u8ba2\u5355\u8be6\u60c5\u5931\u8d25:",t),new Error("\u8ba2\u5355\u4e0d\u5b58\u5728\u6216\u5df2\u5220\u9664")}})}getOrderList(e,t,r=1,a=20){return l(this,null,function*(){try{const{userId:n}=this.getUserInfo(),o={userId:n,page:r,pageSize:a};e&&(o.status=e),t&&(o.orderType=t);const s=yield x("/orders",o),i=s.data.list.map(e=>(e.extraData&&(e.appointmentId=e.extraData.appointmentId,e.therapistId=e.extraData.therapistId,e.therapistName=e.extraData.therapistName,e.therapistAvatar=U(e.extraData.therapistAvatar),e.storeId=e.extraData.storeId,e.storeName=e.extraData.storeName,e.storeAddress=e.extraData.storeAddress,e.appointmentDate=e.extraData.appointmentDate,e.startTime=e.extraData.startTime,e.duration=e.extraData.duration,e.serviceName=e.extraData.serviceName||e.title,e.appointmentStatus=e.extraData.appointmentStatus),e.displayStatus=this.getDisplayStatus(e),e)),c=yield this.enrichOrderListWithStoreAndTherapistInfo(i);return c}catch(n){return console.error("\u83b7\u53d6\u8ba2\u5355\u5217\u8868\u5931\u8d25:",n),[]}})}cancelOrder(e,t="\u7528\u6237\u53d6\u6d88"){return l(this,null,function*(){try{const{userId:r}=this.getUserInfo(),a=yield f("/orders/cancel",{orderNo:e,userId:r,reason:t},{showLoading:!0,loadingTitle:"\u53d6\u6d88\u4e2d..."});return a.data}catch(r){throw console.error("\u53d6\u6d88\u8ba2\u5355\u5931\u8d25:",r),new Error(r.message||"\u53d6\u6d88\u8ba2\u5355\u5931\u8d25")}})}requestRefund(e,t){return l(this,null,function*(){try{const{userId:r}=this.getUserInfo(),a=yield f(`/orders/${e}/refund`,{userId:r,reason:t||"\u7528\u6237\u7533\u8bf7\u9000\u6b3e"},{showLoading:!0,loadingTitle:"\u7533\u8bf7\u9000\u6b3e\u4e2d..."});return a.data}catch(r){throw console.error("\u7533\u8bf7\u9000\u6b3e\u5931\u8d25:",r),new Error(r.message||"\u7533\u8bf7\u9000\u6b3e\u5931\u8d25")}})}getRefundDetail(e){return l(this,null,function*(){try{const t=yield x(`/refunds/${e}`);return t.data}catch(t){throw console.error("\u83b7\u53d6\u9000\u6b3e\u8be6\u60c5\u5931\u8d25:",t),new Error("\u9000\u6b3e\u5355\u4e0d\u5b58\u5728\u6216\u5df2\u5220\u9664")}})}rebookOrder(e){return l(this,null,function*(){try{const t=yield this.getOrderDetail(e);return d.Taro.setStorageSync("rebookOrderInfo",{therapistId:t.therapistId,therapistName:t.therapistName,storeId:t.storeId,storeName:t.storeName,serviceId:t.serviceId,serviceName:t.serviceName,duration:t.duration}),!0}catch(t){return console.error("\u91cd\u65b0\u9884\u7ea6\u5931\u8d25:",t),!1}})}getOrderStatistics(){return l(this,null,function*(){try{const{userId:e}=this.getUserInfo(),t=yield x("/orders",{userId:e,page:1,pageSize:100}),r=t.data.list;return{total:r.length,pendingPayment:r.filter(e=>"pending"===e.paymentStatus).length,paid:r.filter(e=>"paid"===e.paymentStatus).length,completed:r.filter(e=>"paid"===e.paymentStatus&&new Date(e.appointmentDate+" "+e.startTime)<new Date).length,cancelled:r.filter(e=>"cancelled"===e.paymentStatus).length}}catch(e){return console.error("\u83b7\u53d6\u8ba2\u5355\u7edf\u8ba1\u5931\u8d25:",e),{total:0,pendingPayment:0,paid:0,completed:0,cancelled:0}}})}}const z=new k;function B(e){return e||0===e?Math.round(e)/100:0}function W(e,t){const{symbol:r="\uffe5",suffix:a="\u5143",precision:n=2}=t||{};if(!e&&0!==e)return`${r}0.00${a}`;const o=B(e);return`${r}${o.toFixed(n)}${a}`}class F{getNearbyStores(e,t,r=1,a=10){return l(this,null,function*(){try{const n=yield y("/stores/nearby",{data:{latitude:e,longitude:t,page:r,pageSize:a}});if(console.log("\u2705 \u95e8\u5e97\u5217\u8868API\u8c03\u7528\u6210\u529f:",n),n&&n.data&&n.data.list){const e=n.data.list.map(e=>{var t;return c(i({},e),{image:U(e.image),images:null==(t=e.images)?void 0:t.map(e=>U(e))})});return c(i({},n.data),{list:e})}return console.log("\u26a0\ufe0f API\u4e0d\u5b58\u5728\uff0c\u4f7f\u7528mock\u6570\u636e"),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}catch(n){return console.log("\u26a0\ufe0f \u95e8\u5e97API\u8c03\u7528\u5931\u8d25\uff0c\u4f7f\u7528mock\u6570\u636e:",n),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}})}getStoreDetail(e){return l(this,null,function*(){var t;try{const r=yield y(`/stores/${e}`);return console.log("\u2705 \u95e8\u5e97\u8be6\u60c5API\u8c03\u7528\u6210\u529f:",r),(null==r?void 0:r.data)?c(i({},r),{data:c(i({},r.data),{image:U(r.data.image),images:null==(t=r.data.images)?void 0:t.map(e=>U(e))})}):r}catch(r){return console.log("\u26a0\ufe0f \u95e8\u5e97\u8be6\u60c5API\u8c03\u7528\u5931\u8d25:",r),null}})}searchStores(e,t=1,r=10){return l(this,null,function*(){try{const a=yield y("/stores/search",{data:{keyword:e,page:t,pageSize:r}});return console.log("\u2705 \u95e8\u5e97\u641c\u7d22API\u8c03\u7528\u6210\u529f:",a),a.data||{list:[],total:0,page:1,pageSize:10,hasMore:!1}}catch(a){return console.log("\u26a0\ufe0f \u95e8\u5e97\u641c\u7d22API\u8c03\u7528\u5931\u8d25:",a),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}})}getStoresByStatus(e,t=1,r=10){return l(this,null,function*(){try{const a=yield y("/stores/filter",{data:{status:e,page:t,pageSize:r}});return console.log("\u2705 \u95e8\u5e97\u7b5b\u9009API\u8c03\u7528\u6210\u529f:",a),a.data||{list:[],total:0,page:1,pageSize:10,hasMore:!1}}catch(a){return console.log("\u26a0\ufe0f \u95e8\u5e97\u7b5b\u9009API\u8c03\u7528\u5931\u8d25:",a),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}})}}const q=new F;class X{getCurrentLocation(){return l(this,null,function*(){try{const t=yield d.Taro.getSetting(),r=(null==t?void 0:t.authSetting)||{};let a;r["scope.userLocation"]||(yield d.Taro.authorize({scope:"scope.userLocation"}));try{a=yield d.Taro.getLocation({type:"gcj02",isHighAccuracy:!0})}catch(e){console.warn("gcj02\u5750\u6807\u7cfb\u4e0d\u652f\u6301\uff0c\u5c1d\u8bd5wgs84:",e),a=yield d.Taro.getLocation({type:"wgs84"})}return{latitude:a.latitude,longitude:a.longitude}}catch(t){console.error("\u83b7\u53d6\u4f4d\u7f6e\u5931\u8d25:",t);const e=(null==t?void 0:t.errMsg)||"";return(e.includes("auth deny")||e.includes("authorize:fail"))&&d.Taro.showModal({title:"\u63d0\u793a",content:"\u9700\u8981\u83b7\u53d6\u60a8\u7684\u4f4d\u7f6e\u4fe1\u606f\u6765\u63a8\u8350\u9644\u8fd1\u95e8\u5e97",confirmText:"\u53bb\u8bbe\u7f6e",success:e=>{e.confirm&&d.Taro.openSetting()}}),console.log("\u4f7f\u7528\u9ed8\u8ba4\u4f4d\u7f6e\uff1a\u4e0a\u6d77\u5e02\u4e2d\u5fc3"),{latitude:31.2304,longitude:121.4737}}})}calculateDistance(e,t,r,a){const n=Math.PI/180,o=6371,s=(r-e)*n,i=(a-t)*n,c=Math.sin(s/2)*Math.sin(s/2)+Math.cos(e*n)*Math.cos(r*n)*Math.sin(i/2)*Math.sin(i/2),l=2*Math.atan2(Math.sqrt(c),Math.sqrt(1-c));return Number((o*l).toFixed(1))}formatDistance(e){return e<1?`${Math.round(1e3*e)}m`:`${e}km`}}const H=new X;class G{getRecommendedTherapists(e=1,t=10,r){return l(this,null,function*(){try{const a=yield y("/therapists/recommended",{data:{page:e,pageSize:t,latitude:null==r?void 0:r.latitude,longitude:null==r?void 0:r.longitude}});return console.log("\u2705 \u63a8\u8350\u63a8\u62ff\u5e08API\u8c03\u7528\u6210\u529f:",a),a.data||{list:[],total:0,page:1,pageSize:10,hasMore:!1}}catch(a){return console.log("\u26a0\ufe0f \u63a8\u8350\u63a8\u62ff\u5e08API\u8c03\u7528\u5931\u8d25\uff0c\u4f7f\u7528mock\u6570\u636e:",a),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}})}getRecommendedTherapistsWithDistance(e=1,t=10){return l(this,null,function*(){var r,a,n,o,s;try{const d=yield H.getCurrentLocation(),u=yield y("/therapists/recommended",{data:{page:e,pageSize:t,latitude:d.latitude,longitude:d.longitude}});console.log("\u2705 \u63a8\u8350\u63a8\u62ff\u5e08API\u8c03\u7528\u6210\u529f:",u);const p=(null==(r=u.data)?void 0:r.list)||[],h=p.map(e=>c(i({},e),{avatar:U(e.avatar)})),m=yield Promise.all(h.map(e=>l(this,null,function*(){try{const t=yield q.getStoreDetail(e.storeId),r=(null==t?void 0:t.data)||t;let a=null;return(null==r?void 0:r.latitude)&&(null==r?void 0:r.longitude)&&(a=H.calculateDistance(d.latitude,d.longitude,r.latitude,r.longitude)),c(i({},e),{distance:a})}catch(t){return console.warn(`\u83b7\u53d6\u6280\u5e08 ${e.id} \u95e8\u5e97\u4fe1\u606f\u5931\u8d25:`,t),c(i({},e),{distance:null})}})));return m.sort((e,t)=>null===e.distance&&null===t.distance?0:null===e.distance?1:null===t.distance?-1:e.distance-t.distance),{list:m,total:(null==(a=u.data)?void 0:a.total)||m.length,page:(null==(n=u.data)?void 0:n.page)||e,pageSize:(null==(o=u.data)?void 0:o.pageSize)||t,hasMore:(null==(s=u.data)?void 0:s.hasMore)||!1}}catch(d){return console.log("\u26a0\ufe0f \u63a8\u8350\u63a8\u62ff\u5e08\u8ddd\u79bb\u8ba1\u7b97API\u8c03\u7528\u5931\u8d25:",d),{list:[],total:0,page:1,pageSize:10,hasMore:!1}}})}getTherapistsByStore(e,t=1,r=10){return l(this,null,function*(){const a=yield y(`/stores/${e}/therapists`,{data:{page:t,pageSize:r}});console.log("\u2705 \u95e8\u5e97\u63a8\u62ff\u5e08API\u8c03\u7528\u6210\u529f:",a);const n=Array.isArray(a.data)?a.data:[];return{list:n,total:n.length,page:1,pageSize:n.length,hasMore:!1}})}getTherapistDetail(e){return l(this,null,function*(){try{const t=yield y(`/therapists/${e}`);return console.log("\u2705 \u63a8\u62ff\u5e08\u8be6\u60c5API\u8c03\u7528\u6210\u529f:",t),t}catch(t){throw console.log("\u26a0\ufe0f \u63a8\u62ff\u5e08\u8be6\u60c5API\u8c03\u7528\u5931\u8d25:",t),t}})}getTherapistsByExpertise(e,t=1,r=10){return l(this,null,function*(){const a=yield y("/therapists/search",{data:{expertise:e,page:t,pageSize:r}});return console.log("\u2705 \u4e13\u957f\u7b5b\u9009\u63a8\u62ff\u5e08API\u8c03\u7528\u6210\u529f:",a),a.data})}searchTherapists(e,t=1,r=10){return l(this,null,function*(){const a=yield y("/therapists/search",{data:{keyword:e,page:t,pageSize:r}});return console.log("\u2705 \u641c\u7d22\u63a8\u62ff\u5e08API\u8c03\u7528\u6210\u529f:",a),a.data})}getAvailableSlots(e,t,r=60){return l(this,null,function*(){try{const a=yield y("/appointments/available-slots",{data:{therapistId:e,date:t,duration:r}});return console.log("\u2705 \u83b7\u53d6\u53ef\u9884\u7ea6\u65f6\u6bb5API\u8c03\u7528\u6210\u529f:",a),a.data}catch(a){console.log("\u26a0\ufe0f \u83b7\u53d6\u53ef\u9884\u7ea6\u65f6\u6bb5API\u8c03\u7528\u5931\u8d25\uff0c\u8fd4\u56de\u9ed8\u8ba4\u5168\u90e8\u53ef\u7528:",a);const e=[];for(let t=9;t<=21;t++)for(let r=0;r<60;r+=10){const a=`${t.toString().padStart(2,"0")}:${r.toString().padStart(2,"0")}`;e.push({time:a,available:!0,status:"available"})}return{date:t,slots:e,workTime:{start:"09:00",end:"21:00"}}}})}}const K=new G;function Y(e,t){if(!e||e>=1)return null;const r=Math.round(100*(1-e)),a=new Date,n=new Date(a.getTime()+31536e6);return{id:`virtual_${t}_discount`,userId:t.toString(),type:"discount",name:r>=30?"\u65b0\u4eba\u4e13\u4eab\u5238":"\u4f1a\u5458\u6298\u6263\u5238",description:`\u5168\u573a\u670d\u52a1${Math.round(100*e)}\u6298`,discountRate:e,discountPercentage:r,validFrom:a.toISOString(),validTo:n.toISOString(),status:"unused",isAutoApply:!0}}function Z(e,t){const r=Math.round(e*t),a=e-r,n=Math.round(100*t);return{originalPrice:e,finalPrice:r,savedAmount:a,discountDisplay:`${n}\u6298`}}class Q{constructor(){this.vouchers=[],this.currentVoucher=null}getMyVouchers(){return l(this,null,function*(){const e=S();if(!e)return[];if(e.discountRate&&e.discountRate<1){const t=Y(e.discountRate,e.id.toString());if(t)return this.vouchers=[t],[t]}return[]})}getAvailableVouchers(e){return l(this,null,function*(){const t=yield this.getMyVouchers(),r=new Date;return t.filter(t=>{if("unused"!==t.status)return!1;const a=new Date(t.validFrom),n=new Date(t.validTo);return!(r<a||r>n)&&!(t.minAmount&&e<t.minAmount)})})}setCurrentVoucher(e){this.currentVoucher=e,e?d.Taro.setStorageSync("selectedVoucher",e):d.Taro.removeStorageSync("selectedVoucher")}getCurrentVoucher(){if(!this.currentVoucher)try{this.currentVoucher=d.Taro.getStorageSync("selectedVoucher")}catch(e){console.error("\u83b7\u53d6\u9009\u4e2d\u793c\u5238\u5931\u8d25:",e)}return this.currentVoucher}markVoucherAsUsed(e,t){const r=this.vouchers.find(t=>t.id===e);r&&(r.status="used",r.usedAt=(new Date).toISOString(),r.orderNo=t),this.setCurrentVoucher(null)}isNewUser(){const e=S();if(!e||!e.discountRate)return!1;const t=Math.round(100*(1-e.discountRate));return t>=30}getNewUserVoucherInfo(){const e=S();if(!e||!e.discountRate||e.discountRate>=1)return{hasVoucher:!1};const t=Math.round(100*(1-e.discountRate));return{hasVoucher:!0,discountPercentage:t,description:`\u606d\u559c\u83b7\u5f97\u65b0\u4eba\u4e13\u4eab${t}%\u4f18\u60e0\u5238\uff01`}}}const J=new Q;class ee{createReview(e){return l(this,null,function*(){if(e.content.length<1)throw new Error("\u8bc4\u4ef7\u5185\u5bb9\u4e0d\u80fd\u4e3a\u7a7a");if(e.content.length>500)throw new Error("\u8bc4\u4ef7\u5185\u5bb9\u4e0d\u80fd\u8d85\u8fc7500\u5b57");if(e.rating<1||e.rating>5)throw new Error("\u8bc4\u5206\u5fc5\u987b\u57281-5\u4e4b\u95f4");try{const t=yield f("/reviews",e,{showLoading:!0,loadingTitle:"\u63d0\u4ea4\u8bc4\u4ef7\u4e2d..."});return d.Taro.eventCenter.trigger("review:created",t.data),t.data}catch(t){throw console.error("\u521b\u5efa\u8bc4\u4ef7\u5931\u8d25:",t),new Error(t.message||"\u521b\u5efa\u8bc4\u4ef7\u5931\u8d25")}})}getTherapistReviews(e,t=1,r=10,a){return l(this,null,function*(){try{const n={page:t,pageSize:r};a&&(n.rating=a);const o=yield x(`/therapists/${e}/reviews`,n);return o.data}catch(n){return console.error("\u83b7\u53d6\u63a8\u62ff\u5e08\u8bc4\u4ef7\u5931\u8d25:",n),{list:[],total:0,page:t,pageSize:r,hasMore:!1}}})}getUserReviews(e,t=1,r=10){return l(this,null,function*(){try{const a=yield x(`/users/${e}/reviews`,{page:t,pageSize:r});return a.data}catch(a){return console.error("\u83b7\u53d6\u7528\u6237\u8bc4\u4ef7\u5931\u8d25:",a),{list:[],total:0,page:t,pageSize:r,hasMore:!1}}})}getReviewDetail(e){return l(this,null,function*(){try{const t=yield x(`/reviews/${e}`);return t.data}catch(t){throw console.error("\u83b7\u53d6\u8bc4\u4ef7\u8be6\u60c5\u5931\u8d25:",t),new Error(t.message||"\u8bc4\u4ef7\u4e0d\u5b58\u5728")}})}getReviewStats(e){return l(this,null,function*(){try{const t=yield x(`/therapists/${e}/review-stats`);return t.data}catch(t){return console.error("\u83b7\u53d6\u8bc4\u4ef7\u7edf\u8ba1\u5931\u8d25:",t),{totalCount:0,averageRating:0,ratingBreakdown:{1:0,2:0,3:0,4:0,5:0}}}})}checkCanReview(e){return l(this,null,function*(){var t;try{const r=yield d.Taro.request({url:`${u.baseURL}/reviews/${e}`,method:"GET",header:{"Content-Type":"application/json"},timeout:u.timeout}),a=r.data;return 1002===a.code?(console.log("\u8bc4\u4ef7\u4e0d\u5b58\u5728\uff0c\u53ef\u4ee5\u521b\u5efa\u8bc4\u4ef7"),!0):0!==a.code||!(null==(t=a.data)?void 0:t.reviewId)||(console.log("\u8bc4\u4ef7\u5df2\u5b58\u5728\uff0c\u4e0d\u80fd\u518d\u8bc4\u4ef7"),!1)}catch(r){return console.warn("\u68c0\u67e5\u8bc4\u4ef7\u72b6\u6001\u65f6\u53d1\u751f\u9519\u8bef\uff0c\u9ed8\u8ba4\u5141\u8bb8\u8bc4\u4ef7"),!0}})}batchCheckReviewStatus(e){return l(this,null,function*(){const t={},r=e.map(e=>l(this,null,function*(){const r=yield this.checkCanReview(e);t[e]=r}));return yield Promise.allSettled(r),t})}clearCache(){try{const e=d.Taro.getStorageInfoSync().keys;e.forEach(e=>{e.startsWith("review_cache_")&&d.Taro.removeStorageSync(e)})}catch(e){console.error("\u6e05\u9664\u8bc4\u4ef7\u7f13\u5b58\u5931\u8d25:",e)}}}const te=new ee,re=[{id:"1",name:"\u9888\u80a9\u8170\u817f\u75db\u8c03\u7406",order:1},{id:"2",name:"\u809d\u80c6\u813e\u80c3\u8c03\u7406",order:2},{id:"3",name:"\u5931\u7720\u8c03\u7406",order:3},{id:"4",name:"\u5bab\u5bd2\u75db\u7ecf\u8c03\u7406",order:4},{id:"5",name:"\u8159\u7b4b\u6839\u9ab6",order:5},{id:"6",name:"\u8fd0\u52a8\u62c9\u4f38",order:6},{id:"7",name:"\u4f53\u6001\u8c03\u7406",order:7}],ae=[{id:"s1",categoryId:"1",name:"\u3010\u4e0d\u6ee1\u610f\u9000\u3011\u9888\u80a9\u8170\u817f\u75db\u7279\u8272\u8c03\u740660\u5206\u949f",description:"\u4e13\u4e1a\u624b\u6cd5\u8c03\u7406\u5404\u7c7b\u75db\u75c7",duration:60,price:298,discountPrice:258,availability:"available",tag:"\u4e0d\u6ee1\u610f\u9000"},{id:"s2",categoryId:"1",name:"\u3010\u51ac\u5b63\u517b\u751f\u3011\u80a9\u9888\u8170\u80cc\u63a8\u62ff+\u70ed\u759760\u5206\u949f",description:"\u6e29\u7ecf\u901a\u7edc\uff0c\u9a71\u5bd2\u517b\u751f",duration:60,price:268,discountPrice:238,availability:"available",tag:"\u51ac\u5b63\u517b\u751f"},{id:"s3",categoryId:"1",name:"\u3010\u521d\u6b21\u4e13\u4eab\u3011\u80a9\u9888\u758f\u901a+\u808c\u8089\u653e\u677e",description:"\u65b0\u5ba2\u7279\u60e0\uff0c\u6df1\u5ea6\u653e\u677e",duration:60,price:198,discountPrice:98,availability:"available",tag:"\u521d\u6b21\u4e13\u4eab"},{id:"s4",categoryId:"2",name:"\u3010\u8212\u809d\u6da6\u80ba\u3011\u63a8\u62ff+\u827e\u7078\uff5c\u517b\u8eab\u4f34\u4fa390\u5206\u949f",description:"\u758f\u809d\u7406\u6c14\uff0c\u6da6\u80ba\u517b\u9634",duration:90,price:398,discountPrice:358,availability:"available",tag:"\u70ed\u9500"},{id:"s5",categoryId:"2",name:"\u3010\u4e13\u9879\u8c03\u7406\u3011\u7ea4\u517b\u7626\u8eab\xb7\u813e\u80c3\u810f\u8151\u8c03\u740660\u5206\u949f",description:"\u8c03\u7406\u813e\u80c3\uff0c\u5065\u5eb7\u7626\u8eab",duration:60,price:318,discountPrice:288,availability:"available",tag:"\u4e13\u9879\u8c03\u7406"},{id:"s6",categoryId:"3",name:"\u3010\u6df1\u5ea6\u653e\u677e\u3011\u5168\u8eab\u63a8\u62ff20\u5e74\u7ecf\u517860\u5206\u949f",description:"\u7ecf\u5178\u624b\u6cd5\uff0c\u6df1\u5ea6\u52a9\u7720",duration:60,price:268,discountPrice:238,availability:"available",tag:"\u7ecf\u5178"},{id:"s7",categoryId:"4",name:"\u3010\u7279\u8272\u517b\u751f\u3011\u5173\u5143\u7078\u624b\u5de5\u60ac\u707860\u5206\u949f",description:"\u6e29\u8865\u80be\u9633\uff0c\u8c03\u7406\u5bab\u5bd2",duration:60,price:288,discountPrice:258,availability:"available",tag:"\u7279\u8272"},{id:"s8",categoryId:"4",name:"\u3010\u672c\u5e97\u70ed\u9500\u3011\u7279\u8272\u94fa\u59dc\u5173\u5143\u707860\u5206\u949f",description:"\u94fa\u59dc\u6e29\u7078\uff0c\u6696\u5bab\u8c03\u7ecf",duration:60,price:298,discountPrice:268,availability:"busy",tag:"\u70ed\u9500"},{id:"s9",categoryId:"5",name:"\u3010\u4f53\u6001\u8c03\u6574\u3011\u5927\u5e08\u624b\u6cd5\u4e2d\u5f0f\u6574\u810a60\u5206\u949f",description:"\u6b63\u9aa8\u6574\u810a\uff0c\u8c03\u6574\u4f53\u6001",duration:60,price:398,discountPrice:368,availability:"available",tag:"\u5927\u5e08\u624b\u6cd5"},{id:"s10",categoryId:"6",name:"\u8fd0\u52a8\u6062\u590d\u62c9\u4f38",description:"\u4e13\u4e1a\u8fd0\u52a8\u540e\u6062\u590d",duration:45,price:198,discountPrice:168,availability:"available"},{id:"s11",categoryId:"7",name:"\u3010\u51c0\u6392\u5bd2\u6c14\u3011\u62d4\u7f50/\u522e\u75e7\u4e8c\u9009\u4e00",description:"\u795b\u6e7f\u6392\u5bd2\uff0c\u758f\u901a\u7ecf\u7edc",duration:30,price:128,discountPrice:98,availability:"available",tag:"\u4e8c\u9009\u4e00"},{id:"s12",categoryId:"7",name:"\u3010\u82b3\u9999\u6ecb\u517b\u3011\u6c89\u6d78\u5f0f\u7cbe\u6cb9SPA",description:"\u7cbe\u6cb9\u62a4\u7406\uff0c\u8eab\u5fc3\u653e\u677e",duration:90,price:428,discountPrice:398,availability:"available",tag:"\u7cbe\u6cb9SPA"}],ne="",oe=({items:e,therapist:t,onCheckout:r,onMaskClick:a,onRemoveItem:n})=>{const[o,s]=d.reactExports.useState(!1),[i,c]=d.reactExports.useState(180),l=d.reactExports.useRef(null),u=e.reduce((e,t)=>e+t.price,0),p=e.reduce((e,t)=>e+(t.discountPrice||t.price),0),h=u-p,m=e.length>0;d.reactExports.useEffect(()=>(m&&o?l.current=setInterval(()=>{c(e=>e<=1?(clearInterval(l.current),d.Taro.showToast({title:"\u652f\u4ed8\u8d85\u65f6\u4e86\u5466\uff0c\u5feb\u5feb\u91cd\u65b0\u4e0b\u5355\u5427~",icon:"none"}),s(!1),180):e-1)},1e3):l.current&&clearInterval(l.current),()=>{l.current&&clearInterval(l.current)}),[m,o]);const g=e=>{const t=Math.floor(e/60),r=e%60;return`${t.toString().padStart(2,"0")}:${r.toString().padStart(2,"0")}`},y=e=>{const t=new Date(e),r=new Date,a=t.toDateString()===r.toDateString();if(a)return"\u4eca\u5929";const n=t.getMonth()+1,o=t.getDate();return`${n}\u6708${o}\u65e5`},x=()=>{m?s(!0):d.Taro.showToast({title:"\u8bf7\u5148\u9009\u62e9\u670d\u52a1",icon:"none"})},f=()=>{a&&a(),s(!1)},I=()=>{r()};return d.jsxRuntimeExports.jsxs(d.jsxRuntimeExports.Fragment,{children:[o&&d.jsxRuntimeExports.jsx(d.View,{className:"cart-mask",onClick:f}),d.jsxRuntimeExports.jsx(d.View,{className:"shopping-cart",children:d.jsxRuntimeExports.jsxs(d.View,{className:"cart-bar",children:[d.jsxRuntimeExports.jsx(d.View,{className:"cart-info",children:m?d.jsxRuntimeExports.jsxs(d.jsxRuntimeExports.Fragment,{children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"total-price",children:["\xa5",p]}),h>0&&d.jsxRuntimeExports.jsxs(d.Text,{className:"savings",children:["\u5df2\u4f18\u60e0\xa5",h]})]}):d.jsxRuntimeExports.jsx(d.Text,{className:"empty-text",children:"\u8bf7\u9009\u62e9\u670d\u52a1\u9879\u76ee"})}),d.jsxRuntimeExports.jsx(d.View,{className:"checkout-btn "+(m?"":"disabled"),onClick:x,children:"\u53bb\u7ed3\u7b97"})]})}),o&&d.jsxRuntimeExports.jsxs(d.View,{className:"cart-expanded",children:[d.jsxRuntimeExports.jsx(d.View,{className:"expanded-header",children:d.jsxRuntimeExports.jsx(d.Text,{className:"title",children:"\u9884\u7ea6\u8be6\u60c5"})}),d.jsxRuntimeExports.jsx(d.View,{className:"service-list",children:e.map((e,r)=>d.jsxRuntimeExports.jsxs(d.View,{className:"service-item",children:[d.jsxRuntimeExports.jsx(d.Image,{className:"therapist-avatar",src:e.therapistAvatar||(null==t?void 0:t.avatar)||""}),d.jsxRuntimeExports.jsxs(d.View,{className:"service-info",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"info-header",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"therapist-name",children:e.therapistName}),d.jsxRuntimeExports.jsxs(d.Text,{className:"duration",children:[e.duration,"\u5206\u949f"]})]}),d.jsxRuntimeExports.jsx(d.View,{className:"info-detail",children:d.jsxRuntimeExports.jsx(d.Text,{className:"service-name",children:e.serviceName})}),d.jsxRuntimeExports.jsx(d.View,{className:"info-time",children:d.jsxRuntimeExports.jsxs(d.Text,{className:"time-text",children:[y(e.date)," ",e.time," \u81f3 ",(()=>{const[t,r]=e.time.split(":").map(Number),a=r+e.duration,n=t+Math.floor(a/60),o=a%60;return`${n}:${o.toString().padStart(2,"0")}`})()]})})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"item-actions",children:[d.jsxRuntimeExports.jsx(d.View,{className:"price-info",children:d.jsxRuntimeExports.jsxs(d.Text,{className:"price",children:["\xa5",e.discountPrice||e.price]})}),n&&d.jsxRuntimeExports.jsx(d.View,{className:"remove-btn",onClick:()=>n(r),children:"\u2715"})]})]},r))}),d.jsxRuntimeExports.jsxs(d.View,{className:"addon-section",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"section-title",children:"\u53ef\u9009\u589e\u503c\u9879\u76ee"}),d.jsxRuntimeExports.jsxs(d.View,{className:"addon-list",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"addon-item",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"addon-info",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"addon-name",children:"\u522e\u75e720\u5206\u949f"}),d.jsxRuntimeExports.jsx(d.Text,{className:"addon-price",children:"\xa5 99"})]}),d.jsxRuntimeExports.jsx(d.View,{className:"addon-action",children:"+"})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"addon-item",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"addon-info",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"addon-name",children:"\u52a0\u949f20\u5206\u949f"}),d.jsxRuntimeExports.jsx(d.Text,{className:"addon-price",children:"\xa5 99"})]}),d.jsxRuntimeExports.jsx(d.View,{className:"addon-action",children:"+"})]})]})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"checkout-section",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"price-summary",children:[d.jsxRuntimeExports.jsxs(d.View,{className:"cart-icon",children:[d.jsxRuntimeExports.jsx(d.Text,{className:"icon",children:"\ud83d\uded2"}),d.jsxRuntimeExports.jsx(d.View,{className:"badge",children:"1"})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"price-detail",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"final-price",children:["\xa5 ",p]}),u>p&&d.jsxRuntimeExports.jsxs(d.Text,{className:"original-price",children:["\xa5 ",u]})]}),d.jsxRuntimeExports.jsx(d.Text,{className:"discount-tip",children:"\u5df2\u4eab\u53d7\u6700\u5927\u4f18\u60e0\u51cf20\u5143"})]}),d.jsxRuntimeExports.jsxs(d.View,{className:"checkout-footer",children:[d.jsxRuntimeExports.jsxs(d.Text,{className:"countdown",children:["\u652f\u4ed8\u5012\u8ba1\u65f6: ",g(i)]}),d.jsxRuntimeExports.jsx(d.View,{className:"confirm-btn",onClick:I,children:"\u53bb\u7ed3\u7b97"})]})]})]})]})},se="",ie=({size:e="medium",text:t="\u9884\u7ea6"})=>d.jsxRuntimeExports.jsx(d.View,{className:`booking-button booking-button-${e}`,children:d.jsxRuntimeExports.jsx(d.Text,{className:"button-text",children:t})});exports.BookingButton=ie,exports.GiftService=$,exports.ShoppingCart=oe,exports.calculateDiscountPrice=Z,exports.checkAndAutoLogin=P,exports.fetchUserInfo=j,exports.formatAmount=W,exports.getCurrentUserInfo=S,exports.getLocationService=H,exports.maskPhone=v,exports.normalizeImageUrl=U,exports.orderService=z,exports.paymentService=V,exports.post=f,exports.request=y,exports.reviewService=te,exports.setUserInfo=N,exports.storeService=q,exports.symptomCategories=re,exports.symptomServices=ae,exports.therapistService=K,exports.voucherService=J,exports.walletService=L,exports.wechatLogin=R;
+"use strict";
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("./taro.js");
+const API_CONFIG = {
+  // 生产环境配置
+  // 注：在 WeChat 小程序中不能使用 process.env，会导致运行时错误
+  // 使用硬编码的默认值，结合 npm script 的 TARO_APP_API 环境变量完成编译时替换
+  baseURL: "https://mingyitang1024.com/api/v2",
+  timeout: 1e4,
+  retry: 3
+};
+const ERROR_CODES = {
+  // 成功
+  SUCCESS: 0,
+  // 1xxx - 客户端请求错误
+  PARAM_ERROR: 1001,
+  // 参数错误
+  INVALID_INPUT: 1002,
+  // 输入无效
+  NOT_FOUND: 1003,
+  // 资源不存在
+  DUPLICATE: 1004,
+  // 重复操作
+  INVALID_STATE: 1005,
+  // 无效的状态转换
+  OPERATION_FAILED: 1006,
+  // 操作失败
+  INSUFFICIENT_BALANCE: 1007,
+  // 余额不足
+  QUOTA_EXCEEDED: 1008,
+  // 配额超过
+  INVALID_PHONE: 1009,
+  // 无效的手机号
+  USER_NOT_FOUND: 1010,
+  // 用户不存在
+  // 2xxx - 身份认证和授权错误
+  UNAUTHORIZED: 2001,
+  // 未登录/无有效令牌
+  FORBIDDEN: 2002,
+  // 无权限访问
+  TOKEN_EXPIRED: 2003,
+  // 令牌已过期
+  INVALID_TOKEN: 2004,
+  // 无效的令牌
+  SESSION_EXPIRED: 2005,
+  // 会话已过期
+  // 3xxx - 服务器错误
+  INTERNAL_ERROR: 3001,
+  // 服务器内部错误
+  SERVICE_UNAVAILABLE: 3002,
+  // 服务不可用
+  DATABASE_ERROR: 3003,
+  // 数据库错误
+  EXTERNAL_API_ERROR: 3004,
+  // 外部API错误
+  // 4xxx - 第三方服务错误
+  PAYMENT_ERROR: 4001,
+  // 支付失败
+  PAYMENT_TIMEOUT: 4002,
+  // 支付超时
+  SMS_ERROR: 4003,
+  // 短信发送失败
+  WECHAT_ERROR: 4004
+  // 微信接口错误
+};
+const ERROR_MESSAGE_MAP = {
+  [ERROR_CODES.SUCCESS]: "操作成功",
+  [ERROR_CODES.PARAM_ERROR]: "参数错误，请检查输入",
+  [ERROR_CODES.INVALID_INPUT]: "输入格式不正确",
+  [ERROR_CODES.NOT_FOUND]: "请求的资源不存在",
+  [ERROR_CODES.DUPLICATE]: "操作重复，请勿重复提交",
+  [ERROR_CODES.INVALID_STATE]: "当前状态不允许此操作",
+  [ERROR_CODES.OPERATION_FAILED]: "操作失败，请重试",
+  [ERROR_CODES.INSUFFICIENT_BALANCE]: "余额不足，请充值",
+  [ERROR_CODES.QUOTA_EXCEEDED]: "超出配额限制",
+  [ERROR_CODES.INVALID_PHONE]: "手机号格式不正确",
+  [ERROR_CODES.USER_NOT_FOUND]: "用户不存在",
+  [ERROR_CODES.UNAUTHORIZED]: "请先登录",
+  [ERROR_CODES.FORBIDDEN]: "您无权执行此操作",
+  [ERROR_CODES.TOKEN_EXPIRED]: "登录已过期，请重新登录",
+  [ERROR_CODES.INVALID_TOKEN]: "无效的登录状态",
+  [ERROR_CODES.SESSION_EXPIRED]: "会话已过期，请重新登录",
+  [ERROR_CODES.INTERNAL_ERROR]: "服务器错误，请稍后重试",
+  [ERROR_CODES.SERVICE_UNAVAILABLE]: "服务维护中，请稍后重试",
+  [ERROR_CODES.DATABASE_ERROR]: "数据库错误，请稍后重试",
+  [ERROR_CODES.EXTERNAL_API_ERROR]: "第三方服务异常，请稍后重试",
+  [ERROR_CODES.PAYMENT_ERROR]: "支付失败，请重试",
+  [ERROR_CODES.PAYMENT_TIMEOUT]: "支付超时，请重新支付",
+  [ERROR_CODES.SMS_ERROR]: "短信发送失败，请稍后重试",
+  [ERROR_CODES.WECHAT_ERROR]: "微信接口异常，请稍后重试"
+};
+function getErrorMessage(code, defaultMessage) {
+  return ERROR_MESSAGE_MAP[code] || defaultMessage || "操作失败，请稍后重试";
+}
+function isAuthError(code) {
+  return [ERROR_CODES.UNAUTHORIZED, ERROR_CODES.TOKEN_EXPIRED, ERROR_CODES.INVALID_TOKEN, ERROR_CODES.SESSION_EXPIRED].includes(code);
+}
+function request(_0) {
+  return __async(this, arguments, function* (url, options = {}) {
+    const {
+      method = "GET",
+      data,
+      header = {},
+      showLoading = false,
+      loadingTitle = "加载中..."
+    } = options;
+    if (showLoading) {
+      taro.Taro.showLoading({
+        title: loadingTitle,
+        mask: true
+      });
+    }
+    try {
+      const response = yield taro.Taro.request({
+        url: `${API_CONFIG.baseURL}${url}`,
+        method,
+        data,
+        header: __spreadValues({
+          "Content-Type": "application/json"
+        }, header),
+        timeout: API_CONFIG.timeout
+      });
+      if (showLoading) {
+        taro.Taro.hideLoading();
+      }
+      const result = response.data;
+      if (result.code !== ERROR_CODES.SUCCESS) {
+        console.error(`API业务错误: ${url}`, {
+          code: result.code,
+          message: result.message,
+          data: result
+        });
+        if (isAuthError(result.code)) {
+          console.warn("认证过期，跳转到登录页");
+          taro.Taro.removeStorageSync("userInfo");
+          taro.Taro.removeStorageSync("userToken");
+        }
+        const errorMessage = getErrorMessage(result.code, result.message);
+        const error = new Error(errorMessage);
+        error.code = result.code;
+        error.response = {
+          status: response.statusCode,
+          data: result
+        };
+        throw error;
+      }
+      return result;
+    } catch (error) {
+      if (showLoading) {
+        taro.Taro.hideLoading();
+      }
+      console.error(`API网络错误: ${url}`, error);
+      throw error;
+    }
+  });
+}
+const get = (url, params, options) => {
+  const queryString = params ? "?" + Object.keys(params).filter((key) => params[key] !== void 0 && params[key] !== null).map((key) => `${key}=${encodeURIComponent(params[key])}`).join("&") : "";
+  return request(url + queryString, __spreadProps(__spreadValues({}, options), {
+    method: "GET"
+  }));
+};
+const post = (url, data, options) => {
+  return request(url, __spreadProps(__spreadValues({}, options), {
+    method: "POST",
+    data
+  }));
+};
+const CDN_BASE = "https://mingyitang1024.com/static";
+const ASSETS_CONFIG = {
+  // 资源服务器基础URL
+  baseUrl: CDN_BASE,
+  // 礼卡图片 - ✅ 已在服务器上验证存在 (200 OK)
+  giftCard: {
+    member: `${CDN_BASE}/card/member-card.png`,
+    electronic: `${CDN_BASE}/card/gift-card.png`
+  },
+  // 周边商品图片 - ✅ 已在服务器上验证存在
+  // 暖贴类 (nuantie) - 保暖贴
+  product: {
+    // 原有占位符，可继续使用或由后端API返回
+    pillow: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,
+    // 护息贴（原neck-pillow）
+    therapy: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,
+    // 新爱贴（原health-food）
+    // 暖贴类其他产品
+    nuantie: {
+      huxi: `${CDN_BASE}/gift/product/nuantie/huxi.jpg`,
+      xinai: `${CDN_BASE}/gift/product/nuantie/xinai.jpg`,
+      yaofu: `${CDN_BASE}/gift/product/nuantie/yaofu.jpg`
+    },
+    // 艾酒类产品
+    aijiu: {
+      xinaibing: `${CDN_BASE}/gift/product/aijiu/xinaibing.jpg`,
+      xinaizhu: `${CDN_BASE}/gift/product/aijiu/xinaizhu.jpg`,
+      xinaitiao: `${CDN_BASE}/gift/product/aijiu/xinaitiao.jpg`
+    }
+  },
+  // 推荐banner - ⚠️ 暂无
+  // 由后端通过API返回或由页面处理
+  banners: {
+    goodnight: ""
+  },
+  // 推拿师头像 - ✅ 已在服务器上验证存在
+  // 路径: /static/therapists/老师收集中文原版/{门店名}/{老师名}.jpg
+  therapists: {
+    baseUrl: `${CDN_BASE}/therapists/老师收集中文原版`
+  },
+  // 默认图片 - 用于缺失的图片URL
+  default: `${CDN_BASE}/default.png`
+};
+const getCurrentUserInfo = () => {
+  try {
+    const userInfo = taro.Taro.getStorageSync("userInfo");
+    return userInfo || null;
+  } catch (error) {
+    console.error("获取用户信息失败:", error);
+    return null;
+  }
+};
+const getCurrentUserId = () => {
+  const userInfo = getCurrentUserInfo();
+  return (userInfo == null ? void 0 : userInfo.id) || 1;
+};
+const getCurrentUserPhone = () => {
+  const userInfo = getCurrentUserInfo();
+  return (userInfo == null ? void 0 : userInfo.phone) || "13800138000";
+};
+const setUserInfo = (userInfo) => {
+  try {
+    taro.Taro.setStorageSync("userInfo", userInfo);
+  } catch (error) {
+    console.error("设置用户信息失败:", error);
+  }
+};
+const maskPhone = (phone) => {
+  if (!phone)
+    return "未设置";
+  return phone.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2");
+};
+const wechatLogin = () => __async(exports, null, function* () {
+  try {
+    const {
+      code
+    } = yield taro.Taro.login();
+    const response = yield post("/users/wechat-login", {
+      code
+    });
+    if (response.data) {
+      if (response.data.userInfo && !response.data.needBindPhone) {
+        setUserInfo(response.data.userInfo);
+      }
+      return response.data;
+    }
+    throw new Error("微信登录失败：返回数据异常");
+  } catch (error) {
+    console.error("微信登录失败:", error);
+    throw error;
+  }
+});
+const fetchUserInfo = (phone) => __async(exports, null, function* () {
+  try {
+    if (!phone) {
+      const localUserInfo = getCurrentUserInfo();
+      phone = localUserInfo == null ? void 0 : localUserInfo.phone;
+    }
+    if (!phone) {
+      console.warn("无法获取用户信息：缺少手机号");
+      return null;
+    }
+    const response = yield get(`/users/info?phone=${phone}`);
+    if (response.data) {
+      const userInfo = {
+        id: response.data.id,
+        phone: response.data.phone,
+        username: response.data.username,
+        nickname: response.data.nickname,
+        avatar: response.data.avatar,
+        openid: response.data.openid,
+        membershipNumber: response.data.membershipNumber,
+        memberLevel: response.data.memberLevel,
+        balance: response.data.balance,
+        totalSpent: response.data.totalSpent,
+        totalVisits: response.data.totalVisits,
+        discountRate: response.data.discount_rate || response.data.discountRate
+      };
+      setUserInfo(userInfo);
+      return userInfo;
+    }
+    return null;
+  } catch (error) {
+    console.error("获取用户信息失败:", error);
+    return null;
+  }
+});
+const checkAndAutoLogin = () => __async(exports, null, function* () {
+  try {
+    const localUserInfo = getCurrentUserInfo();
+    if (localUserInfo && localUserInfo.phone) {
+      const freshUserInfo = yield fetchUserInfo(localUserInfo.phone);
+      return freshUserInfo || localUserInfo;
+    }
+    const loginResult = yield wechatLogin();
+    if (!loginResult.needBindPhone && loginResult.userInfo) {
+      return loginResult.userInfo;
+    }
+    return null;
+  } catch (error) {
+    console.error("自动登录失败:", error);
+    return null;
+  }
+});
+const GIFT_CARDS = [{
+  id: "member-card",
+  type: "member",
+  name: "会员礼卡",
+  image: ASSETS_CONFIG.giftCard.member,
+  description: "尊享会员专属优惠",
+  features: ["全门店通用", "长期有效", "可累计积分", "享受会员价"],
+  terms: "本卡为不记名卡片，请妥善保管"
+}, {
+  id: "electronic-card",
+  type: "electronic",
+  name: "电子礼卡",
+  image: ASSETS_CONFIG.giftCard.electronic,
+  description: "便捷的电子礼品卡",
+  features: ["即买即用", "可转赠好友", "线上购买", "扫码使用"],
+  terms: "电子卡有效期为购买之日起一年内"
+}];
+const NUANTIE_PRODUCTS = [{
+  id: "nuantie-waist",
+  name: "蕲艾腰腹暖贴",
+  image: "https://mingyitang1024.com/static/gift/product/nuantie/yaofu.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "贴",
+  description: "自发热艾草暖护腰贴",
+  features: ["自发热艾草", "暖护腰贴", "道地蕲艾"],
+  specifications: {}
+}, {
+  id: "nuantie-knee",
+  name: "蕲艾护膝暖贴",
+  image: "https://mingyitang1024.com/static/gift/product/nuantie/huxi.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "贴",
+  description: "自发热艾草护膝 驱寒保暖",
+  features: ["自发热艾草", "护膝", "驱寒保暖"],
+  specifications: {}
+}, {
+  id: "nuantie-moxa",
+  name: "蕲艾灸贴",
+  image: "https://mingyitang1024.com/static/gift/product/nuantie/xinai.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "贴",
+  description: "自发热艾草精油穴位灸贴",
+  features: ["自发热艾草", "精油穴位灸贴", "道地蕲艾"],
+  specifications: {}
+}];
+const AIJIU_PRODUCTS = [{
+  id: "aijiu-stick",
+  name: "蕲艾条",
+  image: "https://mingyitang1024.com/static/gift/product/aijiu/xinaitiao.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "条",
+  description: "艾灸艾条 3年陈艾",
+  features: ["3年陈艾", "艾灸艾条", "道地蕲艾"],
+  specifications: {}
+}, {
+  id: "aijiu-moxa-ball",
+  name: "蕲艾饼",
+  image: "https://mingyitang1024.com/static/gift/product/aijiu/xinaibing.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "饼",
+  description: "道地蕲艾泡脚泡澡艾草饼",
+  features: ["泡脚泡澡", "艾草饼", "道地蕲艾"],
+  specifications: {}
+}, {
+  id: "aijiu-column",
+  name: "新艾柱",
+  image: "https://mingyitang1024.com/static/gift/product/aijiu/xinaizhu.jpg",
+  price: 9900,
+  // ¥99
+  originalPrice: 9900,
+  unit: "柱",
+  description: "李时珍故里特产新艾柱",
+  features: ["新艾柱", "李时珍故里特产", "艾灸"],
+  specifications: {}
+}];
+const PRODUCTS = [...NUANTIE_PRODUCTS, ...AIJIU_PRODUCTS];
+class GiftService {
+  /**
+   * 获取所有礼卡
+   */
+  static getAllGiftCards() {
+    return GIFT_CARDS;
+  }
+  /**
+   * 根据ID获取礼卡详情
+   */
+  static getGiftCardById(id) {
+    return GIFT_CARDS.find((card) => card.id === id);
+  }
+  /**
+   * 获取所有商品
+   */
+  static getAllProducts() {
+    return PRODUCTS;
+  }
+  /**
+   * 根据ID获取商品详情
+   */
+  static getProductById(id) {
+    return PRODUCTS.find((product) => product.id === id);
+  }
+  /**
+   * 获取暖贴产品列表
+   */
+  static getNuantieProducts() {
+    return NUANTIE_PRODUCTS;
+  }
+  /**
+   * 获取艾条产品列表
+   */
+  static getAijiuProducts() {
+    return AIJIU_PRODUCTS;
+  }
+  /**
+   * 创建礼卡购买订单
+   * @param params.cardId 礼卡ID
+   * @param params.amount 礼卡面值（分为单位）
+   */
+  static createGiftCardOrder(params) {
+    return __async(this, null, function* () {
+      try {
+        const userId = getCurrentUserId();
+        const orderData = {
+          orderType: "product",
+          userId,
+          title: `电子礼卡 ¥${(params.amount / 100).toFixed(2)}`,
+          amount: params.amount * params.quantity,
+          // ✅ 直接相乘，结果是分
+          paymentMethod: params.paymentMethod,
+          extraData: {
+            productType: "gift_card",
+            productId: params.cardId,
+            // ✅ 按API文档使用 productId
+            productName: "电子礼卡",
+            // ✅ 新增：商品名称（API文档必需）
+            quantity: params.quantity,
+            cardType: "electronic",
+            faceValue: params.amount,
+            // ✅ 保持分为单位
+            customMessage: params.customMessage || "世界上最好的爸爸"
+          }
+        };
+        console.log("🎁 创建礼卡订单");
+        console.log("👤 当前用户ID:", userId);
+        console.log("📦 订单数据:", {
+          orderType: orderData.orderType,
+          userId: orderData.userId,
+          title: orderData.title,
+          amount: `${orderData.amount}分 (¥${(orderData.amount / 100).toFixed(2)})`,
+          paymentMethod: orderData.paymentMethod,
+          extraData: orderData.extraData
+        });
+        const response = yield post("/orders/create", orderData, {
+          showLoading: true,
+          loadingTitle: "创建订单中..."
+        });
+        console.log("✅ 礼卡订单创建成功");
+        console.log("📋 订单响应:", {
+          orderNo: response.data.orderNo,
+          amount: `${response.data.amount}分 (¥${(response.data.amount / 100).toFixed(2)})`,
+          paymentStatus: response.data.paymentStatus,
+          hasWxPayParams: !!response.data.wxPayParams
+        });
+        return response.data;
+      } catch (error) {
+        console.error("❌ 创建礼卡订单失败:", error);
+        throw new Error(error.message || "创建礼卡订单失败");
+      }
+    });
+  }
+  /**
+   * 创建商品购买订单
+   */
+  static createProductOrder(params) {
+    return __async(this, null, function* () {
+      try {
+        const product = this.getProductById(params.productId);
+        if (!product) {
+          throw new Error("商品不存在");
+        }
+        const orderData = {
+          orderType: "product",
+          userId: getCurrentUserId(),
+          title: product.name,
+          amount: product.price * params.quantity,
+          // ✅ 直接相乘，结果是分（product.price已是分为单位）
+          paymentMethod: params.paymentMethod,
+          extraData: {
+            productType: "merchandise",
+            productId: params.productId,
+            quantity: params.quantity,
+            specifications: product.specifications
+          }
+        };
+        const response = yield post("/orders/create", orderData, {
+          showLoading: true,
+          loadingTitle: "创建订单中..."
+        });
+        return response.data;
+      } catch (error) {
+        console.error("创建商品订单失败:", error);
+        throw new Error(error.message || "创建商品订单失败");
+      }
+    });
+  }
+}
+const normalizeImageUrl = (url) => {
+  if (!url) {
+    return void 0;
+  }
+  if (url.startsWith("https://")) {
+    return url;
+  }
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  if (url.startsWith("/")) {
+    return `https://mingyitang1024.com${url}`;
+  }
+  return `https://mingyitang1024.com/static${url.startsWith("/") ? url : "/" + url}`;
+};
+class StoreService {
+  // 获取附近门店
+  getNearbyStores(latitude, longitude, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request("/stores/nearby", {
+          data: {
+            latitude,
+            longitude,
+            page,
+            pageSize
+          }
+        });
+        console.log("✅ 门店列表API调用成功:", data);
+        if (data && data.data && data.data.list) {
+          const normalizedStores = data.data.list.map((store) => {
+            var _a;
+            return __spreadProps(__spreadValues({}, store), {
+              image: normalizeImageUrl(store.image),
+              images: (_a = store.images) == null ? void 0 : _a.map((img) => normalizeImageUrl(img))
+            });
+          });
+          return __spreadProps(__spreadValues({}, data.data), {
+            list: normalizedStores
+          });
+        } else {
+          console.log("⚠️ API不存在，使用mock数据");
+          return {
+            list: [],
+            total: 0,
+            page: 1,
+            pageSize: 10,
+            hasMore: false
+          };
+        }
+      } catch (error) {
+        console.log("⚠️ 门店API调用失败，使用mock数据:", error);
+        return {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      }
+    });
+  }
+  // 获取门店详情
+  getStoreDetail(storeId) {
+    return __async(this, null, function* () {
+      var _a;
+      try {
+        const data = yield request(`/stores/${storeId}`);
+        console.log("✅ 门店详情API调用成功:", data);
+        if (data == null ? void 0 : data.data) {
+          return __spreadProps(__spreadValues({}, data), {
+            data: __spreadProps(__spreadValues({}, data.data), {
+              image: normalizeImageUrl(data.data.image),
+              images: (_a = data.data.images) == null ? void 0 : _a.map((img) => normalizeImageUrl(img))
+            })
+          });
+        }
+        return data;
+      } catch (error) {
+        console.log("⚠️ 门店详情API调用失败:", error);
+        return null;
+      }
+    });
+  }
+  // 搜索门店
+  searchStores(keyword, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request("/stores/search", {
+          data: {
+            keyword,
+            page,
+            pageSize
+          }
+        });
+        console.log("✅ 门店搜索API调用成功:", data);
+        return data.data || {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      } catch (error) {
+        console.log("⚠️ 门店搜索API调用失败:", error);
+        return {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      }
+    });
+  }
+  // 根据状态筛选门店
+  getStoresByStatus(status, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request("/stores/filter", {
+          data: {
+            status,
+            page,
+            pageSize
+          }
+        });
+        console.log("✅ 门店筛选API调用成功:", data);
+        return data.data || {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      } catch (error) {
+        console.log("⚠️ 门店筛选API调用失败:", error);
+        return {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      }
+    });
+  }
+}
+const storeService = new StoreService();
+class LocationService {
+  // 获取用户当前位置
+  getCurrentLocation() {
+    return __async(this, null, function* () {
+      try {
+        const settingRes = yield taro.Taro.getSetting();
+        const authSetting = (settingRes == null ? void 0 : settingRes.authSetting) || {};
+        if (!authSetting["scope.userLocation"]) {
+          yield taro.Taro.authorize({
+            scope: "scope.userLocation"
+          });
+        }
+        let res;
+        try {
+          res = yield taro.Taro.getLocation({
+            type: "gcj02",
+            // 国内火星坐标系
+            isHighAccuracy: true
+          });
+        } catch (gcj02Error) {
+          console.warn("gcj02坐标系不支持，尝试wgs84:", gcj02Error);
+          res = yield taro.Taro.getLocation({
+            type: "wgs84"
+            // GPS原始坐标系
+          });
+        }
+        return {
+          latitude: res.latitude,
+          longitude: res.longitude
+        };
+      } catch (error) {
+        console.error("获取位置失败:", error);
+        const errorMsg = (error == null ? void 0 : error.errMsg) || "";
+        if (errorMsg.includes("auth deny") || errorMsg.includes("authorize:fail")) {
+          taro.Taro.showModal({
+            title: "提示",
+            content: "需要获取您的位置信息来推荐附近门店",
+            confirmText: "去设置",
+            success: (res) => {
+              if (res.confirm) {
+                taro.Taro.openSetting();
+              }
+            }
+          });
+        }
+        console.log("使用默认位置：上海市中心");
+        return {
+          latitude: 31.2304,
+          longitude: 121.4737
+        };
+      }
+    });
+  }
+  // 计算两点之间的距离（单位：公里）
+  calculateDistance(lat1, lng1, lat2, lng2) {
+    const rad = Math.PI / 180;
+    const R = 6371;
+    const dLat = (lat2 - lat1) * rad;
+    const dLng = (lng2 - lng1) * rad;
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Number((R * c).toFixed(1));
+  }
+  // 格式化距离显示
+  formatDistance(distance) {
+    if (distance < 1) {
+      return `${Math.round(distance * 1e3)}m`;
+    }
+    return `${distance}km`;
+  }
+}
+const getLocationService = new LocationService();
+const index$1 = "";
+const ShoppingCart = ({
+  items,
+  therapist,
+  onCheckout,
+  onMaskClick,
+  onRemoveItem
+}) => {
+  const [isExpanded, setIsExpanded] = taro.useState(false);
+  const [countdown, setCountdown] = taro.useState(180);
+  const timerRef = taro.useRef(null);
+  const totalOriginalPrice = items.reduce((sum, item) => sum + item.price, 0);
+  const totalDiscountPrice = items.reduce((sum, item) => sum + (item.discountPrice || item.price), 0);
+  const totalSavings = totalOriginalPrice - totalDiscountPrice;
+  const hasItems = items.length > 0;
+  taro.useEffect(() => {
+    if (hasItems && isExpanded) {
+      timerRef.current = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerRef.current);
+            taro.Taro.showToast({
+              title: "支付超时了呦，快快重新下单吧~",
+              icon: "none"
+            });
+            setIsExpanded(false);
+            return 180;
+          }
+          return prev - 1;
+        });
+      }, 1e3);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [hasItems, isExpanded]);
+  const formatCountdown = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    const today = /* @__PURE__ */ new Date();
+    const isToday = date.toDateString() === today.toDateString();
+    if (isToday) {
+      return "今天";
+    }
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return `${month}月${day}日`;
+  };
+  const handleCheckoutClick = () => {
+    if (!hasItems) {
+      taro.Taro.showToast({
+        title: "请先选择服务",
+        icon: "none"
+      });
+      return;
+    }
+    setIsExpanded(true);
+  };
+  const handleMaskClick = () => {
+    if (onMaskClick) {
+      onMaskClick();
+    }
+    setIsExpanded(false);
+  };
+  const handleConfirmCheckout = () => {
+    onCheckout();
+  };
+  return /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+    isExpanded && /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-mask", onClick: handleMaskClick }),
+    /* @__PURE__ */ taro.jsx(taro.View, { className: "shopping-cart", children: /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-bar", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "cart-info", children: hasItems ? /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥",
+          totalDiscountPrice
+        ] }),
+        totalSavings > 0 && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "savings", children: [
+          "已优惠¥",
+          totalSavings
+        ] })
+      ] }) : /* @__PURE__ */ taro.jsx(taro.Text, { className: "empty-text", children: "请选择服务项目" }) }),
+      /* @__PURE__ */ taro.jsx(
+        taro.View,
+        {
+          className: `checkout-btn ${!hasItems ? "disabled" : ""}`,
+          onClick: handleCheckoutClick,
+          children: "去结算"
+        }
+      )
+    ] }) }),
+    isExpanded && /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-expanded", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "expanded-header", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "title", children: "预约详情" }) }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "service-list", children: items.map(
+        (item, index2) => /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-item", children: [
+          /* @__PURE__ */ taro.jsx(
+            taro.Image,
+            {
+              className: "therapist-avatar",
+              src: item.therapistAvatar || (therapist == null ? void 0 : therapist.avatar) || ""
+            }
+          ),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "service-info", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-header", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: item.therapistName }),
+              /* @__PURE__ */ taro.jsxs(taro.Text, { className: "duration", children: [
+                item.duration,
+                "分钟"
+              ] })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-detail", children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: item.serviceName }) }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "info-time", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "time-text", children: [
+              formatDate(item.date),
+              " ",
+              item.time,
+              " 至 ",
+              // 计算结束时间
+              (() => {
+                const [hour, minute] = item.time.split(":").map(Number);
+                const endMinute = minute + item.duration;
+                const endHour = hour + Math.floor(endMinute / 60);
+                const finalMinute = endMinute % 60;
+                return `${endHour}:${finalMinute.toString().padStart(2, "0")}`;
+              })()
+            ] }) })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "item-actions", children: [
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "price-info", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+              "¥",
+              item.discountPrice || item.price
+            ] }) }),
+            onRemoveItem && /* @__PURE__ */ taro.jsx(
+              taro.View,
+              {
+                className: "remove-btn",
+                onClick: () => onRemoveItem(index2),
+                children: "✕"
+              }
+            )
+          ] })
+        ] }, index2)
+      ) }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-section", children: [
+        /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "可选增值项目" }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-list", children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-item", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-name", children: "刮痧20分钟" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-price", children: "¥ 99" })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "addon-action", children: "+" })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-item", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "addon-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-name", children: "加钟20分钟" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "addon-price", children: "¥ 99" })
+            ] }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "addon-action", children: "+" })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "checkout-section", children: [
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-summary", children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "cart-icon", children: [
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: "icon", children: "🛒" }),
+            /* @__PURE__ */ taro.jsx(taro.View, { className: "badge", children: "1" })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-detail", children: [
+            /* @__PURE__ */ taro.jsxs(taro.Text, { className: "final-price", children: [
+              "¥ ",
+              totalDiscountPrice
+            ] }),
+            totalOriginalPrice > totalDiscountPrice && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "original-price", children: [
+              "¥ ",
+              totalOriginalPrice
+            ] })
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.Text, { className: "discount-tip", children: "已享受最大优惠减20元" })
+        ] }),
+        /* @__PURE__ */ taro.jsxs(taro.View, { className: "checkout-footer", children: [
+          /* @__PURE__ */ taro.jsxs(taro.Text, { className: "countdown", children: [
+            "支付倒计时: ",
+            formatCountdown(countdown)
+          ] }),
+          /* @__PURE__ */ taro.jsx(taro.View, { className: "confirm-btn", onClick: handleConfirmCheckout, children: "去结算" })
+        ] })
+      ] })
+    ] })
+  ] });
+};
+const symptomCategories = [{
+  id: "1",
+  name: "颈肩腰腿痛调理",
+  order: 1
+}, {
+  id: "2",
+  name: "肝胆脾胃调理",
+  order: 2
+}, {
+  id: "3",
+  name: "失眠调理",
+  order: 3
+}, {
+  id: "4",
+  name: "宫寒痛经调理",
+  order: 4
+}, {
+  id: "5",
+  name: "腙筋根骶",
+  order: 5
+}, {
+  id: "6",
+  name: "运动拉伸",
+  order: 6
+}, {
+  id: "7",
+  name: "体态调理",
+  order: 7
+}];
+const symptomServices = [
+  // 颈肩腰腿痛调理
+  {
+    id: "s1",
+    categoryId: "1",
+    name: "【不满意退】颈肩腰腿痛特色调理60分钟",
+    description: "专业手法调理各类痛症",
+    duration: 60,
+    price: 298,
+    discountPrice: 258,
+    availability: "available",
+    tag: "不满意退"
+  },
+  {
+    id: "s2",
+    categoryId: "1",
+    name: "【冬季养生】肩颈腰背推拿+热疗60分钟",
+    description: "温经通络，驱寒养生",
+    duration: 60,
+    price: 268,
+    discountPrice: 238,
+    availability: "available",
+    tag: "冬季养生"
+  },
+  {
+    id: "s3",
+    categoryId: "1",
+    name: "【初次专享】肩颈疏通+肌肉放松",
+    description: "新客特惠，深度放松",
+    duration: 60,
+    price: 198,
+    discountPrice: 98,
+    availability: "available",
+    tag: "初次专享"
+  },
+  // 肝胆脾胃调理
+  {
+    id: "s4",
+    categoryId: "2",
+    name: "【舒肝润肺】推拿+艾灸｜养身伴侣90分钟",
+    description: "疏肝理气，润肺养阴",
+    duration: 90,
+    price: 398,
+    discountPrice: 358,
+    availability: "available",
+    tag: "热销"
+  },
+  {
+    id: "s5",
+    categoryId: "2",
+    name: "【专项调理】纤养瘦身·脾胃脏腑调理60分钟",
+    description: "调理脾胃，健康瘦身",
+    duration: 60,
+    price: 318,
+    discountPrice: 288,
+    availability: "available",
+    tag: "专项调理"
+  },
+  // 失眠调理
+  {
+    id: "s6",
+    categoryId: "3",
+    name: "【深度放松】全身推拿20年经典60分钟",
+    description: "经典手法，深度助眠",
+    duration: 60,
+    price: 268,
+    discountPrice: 238,
+    availability: "available",
+    tag: "经典"
+  },
+  // 宫寒痛经调理
+  {
+    id: "s7",
+    categoryId: "4",
+    name: "【特色养生】关元灸手工悬灸60分钟",
+    description: "温补肾阳，调理宫寒",
+    duration: 60,
+    price: 288,
+    discountPrice: 258,
+    availability: "available",
+    tag: "特色"
+  },
+  {
+    id: "s8",
+    categoryId: "4",
+    name: "【本店热销】特色铺姜关元灸60分钟",
+    description: "铺姜温灸，暖宫调经",
+    duration: 60,
+    price: 298,
+    discountPrice: 268,
+    availability: "busy",
+    tag: "热销"
+  },
+  // 腙筋根骶
+  {
+    id: "s9",
+    categoryId: "5",
+    name: "【体态调整】大师手法中式整脊60分钟",
+    description: "正骨整脊，调整体态",
+    duration: 60,
+    price: 398,
+    discountPrice: 368,
+    availability: "available",
+    tag: "大师手法"
+  },
+  // 运动拉伸
+  {
+    id: "s10",
+    categoryId: "6",
+    name: "运动恢复拉伸",
+    description: "专业运动后恢复",
+    duration: 45,
+    price: 198,
+    discountPrice: 168,
+    availability: "available"
+  },
+  // 体态调理
+  {
+    id: "s11",
+    categoryId: "7",
+    name: "【净排寒气】拔罐/刮痧二选一",
+    description: "祛湿排寒，疏通经络",
+    duration: 30,
+    price: 128,
+    discountPrice: 98,
+    availability: "available",
+    tag: "二选一"
+  },
+  {
+    id: "s12",
+    categoryId: "7",
+    name: "【芳香滋养】沉浸式精油SPA",
+    description: "精油护理，身心放松",
+    duration: 90,
+    price: 428,
+    discountPrice: 398,
+    availability: "available",
+    tag: "精油SPA"
+  }
+];
+class TherapistService {
+  // 获取推荐推拿师
+  getRecommendedTherapists(page = 1, pageSize = 10, userLocation) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request("/therapists/recommended", {
+          data: {
+            page,
+            pageSize,
+            latitude: userLocation == null ? void 0 : userLocation.latitude,
+            longitude: userLocation == null ? void 0 : userLocation.longitude
+          }
+        });
+        console.log("✅ 推荐推拿师API调用成功:", data);
+        return data.data || {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      } catch (error) {
+        console.log("⚠️ 推荐推拿师API调用失败，使用mock数据:", error);
+        return {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      }
+    });
+  }
+  // 获取推荐推拿师并计算距离
+  getRecommendedTherapistsWithDistance(page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      var _a, _b, _c, _d, _e;
+      try {
+        const userLocation = yield getLocationService.getCurrentLocation();
+        const data = yield request("/therapists/recommended", {
+          data: {
+            page,
+            pageSize,
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude
+          }
+        });
+        console.log("✅ 推荐推拿师API调用成功:", data);
+        const therapists = ((_a = data.data) == null ? void 0 : _a.list) || [];
+        const normalizedTherapists = therapists.map((therapist) => __spreadProps(__spreadValues({}, therapist), {
+          avatar: normalizeImageUrl(therapist.avatar)
+        }));
+        const therapistsWithDistance = yield Promise.all(normalizedTherapists.map((therapist) => __async(this, null, function* () {
+          try {
+            const storeData = yield storeService.getStoreDetail(therapist.storeId);
+            const store = (storeData == null ? void 0 : storeData.data) || storeData;
+            let distance = null;
+            if ((store == null ? void 0 : store.latitude) && (store == null ? void 0 : store.longitude)) {
+              distance = getLocationService.calculateDistance(userLocation.latitude, userLocation.longitude, store.latitude, store.longitude);
+            }
+            return __spreadProps(__spreadValues({}, therapist), {
+              distance
+            });
+          } catch (error) {
+            console.warn(`获取技师 ${therapist.id} 门店信息失败:`, error);
+            return __spreadProps(__spreadValues({}, therapist), {
+              distance: null
+            });
+          }
+        })));
+        therapistsWithDistance.sort((a, b) => {
+          if (a.distance === null && b.distance === null)
+            return 0;
+          if (a.distance === null)
+            return 1;
+          if (b.distance === null)
+            return -1;
+          return a.distance - b.distance;
+        });
+        return {
+          list: therapistsWithDistance,
+          total: ((_b = data.data) == null ? void 0 : _b.total) || therapistsWithDistance.length,
+          page: ((_c = data.data) == null ? void 0 : _c.page) || page,
+          pageSize: ((_d = data.data) == null ? void 0 : _d.pageSize) || pageSize,
+          hasMore: ((_e = data.data) == null ? void 0 : _e.hasMore) || false
+        };
+      } catch (error) {
+        console.log("⚠️ 推荐推拿师距离计算API调用失败:", error);
+        return {
+          list: [],
+          total: 0,
+          page: 1,
+          pageSize: 10,
+          hasMore: false
+        };
+      }
+    });
+  }
+  // 根据门店获取推拿师
+  getTherapistsByStore(storeId, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      const data = yield request(`/stores/${storeId}/therapists`, {
+        data: {
+          page,
+          pageSize
+        }
+      });
+      console.log("✅ 门店推拿师API调用成功:", data);
+      const therapistArray = Array.isArray(data.data) ? data.data : [];
+      return {
+        list: therapistArray,
+        total: therapistArray.length,
+        page: 1,
+        pageSize: therapistArray.length,
+        hasMore: false
+      };
+    });
+  }
+  // 获取推拿师详情
+  getTherapistDetail(therapistId) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request(`/therapists/${therapistId}`);
+        console.log("✅ 推拿师详情API调用成功:", data);
+        return data;
+      } catch (error) {
+        console.log("⚠️ 推拿师详情API调用失败:", error);
+        throw error;
+      }
+    });
+  }
+  // 按擅长项目筛选推拿师
+  getTherapistsByExpertise(expertise, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      const data = yield request("/therapists/search", {
+        data: {
+          expertise,
+          page,
+          pageSize
+        }
+      });
+      console.log("✅ 专长筛选推拿师API调用成功:", data);
+      return data.data;
+    });
+  }
+  // 搜索推拿师
+  searchTherapists(keyword, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      const data = yield request("/therapists/search", {
+        data: {
+          keyword,
+          page,
+          pageSize
+        }
+      });
+      console.log("✅ 搜索推拿师API调用成功:", data);
+      return data.data;
+    });
+  }
+  // 获取技师可预约时段
+  getAvailableSlots(therapistId, date, duration = 60) {
+    return __async(this, null, function* () {
+      try {
+        const data = yield request("/appointments/available-slots", {
+          data: {
+            therapistId,
+            date,
+            duration
+          }
+        });
+        console.log("✅ 获取可预约时段API调用成功:", data);
+        return data.data;
+      } catch (error) {
+        console.log("⚠️ 获取可预约时段API调用失败，返回默认全部可用:", error);
+        const slots = [];
+        for (let hour = 9; hour <= 21; hour++) {
+          for (let minute = 0; minute < 60; minute += 10) {
+            const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+            slots.push({
+              time,
+              available: true,
+              status: "available"
+            });
+          }
+        }
+        return {
+          date,
+          slots,
+          workTime: {
+            start: "09:00",
+            end: "21:00"
+          }
+        };
+      }
+    });
+  }
+}
+const therapistService = new TherapistService();
+class OrderService {
+  /**
+   * 获取当前用户信息
+   */
+  getUserInfo() {
+    return {
+      userId: getCurrentUserId(),
+      userPhone: getCurrentUserPhone()
+    };
+  }
+  /**
+   * 获取综合显示状态
+   * 结合支付状态和预约状态，返回最终的显示状态
+   */
+  getDisplayStatus(order) {
+    if (order.paymentStatus === "pending") {
+      return "pending";
+    }
+    if (order.paymentStatus === "cancelled" || order.paymentStatus === "refunded") {
+      return order.paymentStatus;
+    }
+    if (order.paymentStatus === "paid" && order.orderType === "service") {
+      if (order.appointmentStatus) {
+        switch (order.appointmentStatus) {
+          case "completed":
+            return "completed";
+          case "serving":
+            return "serving";
+          case "cancelled":
+            return "cancelled";
+          case "pending":
+          case "confirmed":
+          default:
+            return "paid";
+        }
+      }
+      if (order.appointmentDate && order.startTime) {
+        const appointmentDateTime = /* @__PURE__ */ new Date(`${order.appointmentDate} ${order.startTime}`);
+        const endDateTime = new Date(appointmentDateTime.getTime() + (order.duration || 60) * 6e4);
+        const now = /* @__PURE__ */ new Date();
+        if (endDateTime < now) {
+          return "paid";
+        }
+      }
+    }
+    return order.paymentStatus;
+  }
+  /**
+   * 补全订单的门店和技师信息
+   * @param order 订单对象
+   * @private
+   */
+  enrichOrderWithStoreAndTherapistInfo(order) {
+    return __async(this, null, function* () {
+      try {
+        const promises = [];
+        if (order.storeId && !order.storeName) {
+          promises.push(get(`/stores/${order.storeId}`).then((storeResponse) => {
+            const store = storeResponse.data;
+            order.storeName = store.name;
+            order.storeAddress = store.address;
+          }).catch((error) => __async(this, null, function* () {
+            console.error(`获取门店信息失败 (storeId: ${order.storeId}):`, error);
+            const defaultStore = yield this.getDefaultStoreInfo();
+            if (defaultStore) {
+              order.storeName = `${defaultStore.name}（替代显示）`;
+              order.storeAddress = defaultStore.address;
+            } else {
+              order.storeName = "门店信息暂时无法获取";
+              order.storeAddress = "请联系客服获取详情";
+            }
+          })));
+        }
+        if (order.therapistId && !order.therapistAvatar) {
+          promises.push(get(`/therapists/${order.therapistId}`).then((therapistResponse) => {
+            const therapist = therapistResponse.data;
+            order.therapistAvatar = therapist.avatar;
+            if (!order.therapistName) {
+              order.therapistName = therapist.name;
+            }
+          }).catch((error) => {
+            console.error(`获取技师信息失败 (therapistId: ${order.therapistId}):`, error);
+            if (!order.therapistAvatar) {
+              order.therapistAvatar = "https://img.yzcdn.cn/vant/cat.jpeg";
+            }
+          }));
+        }
+        if (promises.length > 0) {
+          yield Promise.allSettled(promises);
+        }
+      } catch (error) {
+        console.error("补全订单信息失败:", error);
+      }
+    });
+  }
+  /**
+   * 获取默认门店信息（当原门店不存在时使用）
+   * @private
+   */
+  getDefaultStoreInfo() {
+    return __async(this, null, function* () {
+      var _a, _b;
+      try {
+        const response = yield get("/stores/nearby", {
+          page: 1,
+          pageSize: 1
+        });
+        if ((_b = (_a = response.data) == null ? void 0 : _a.list) == null ? void 0 : _b[0]) {
+          const store = response.data.list[0];
+          return {
+            name: store.name,
+            address: store.address
+          };
+        }
+      } catch (error) {
+        console.error("获取默认门店信息失败:", error);
+      }
+      return null;
+    });
+  }
+  /**
+   * 批量补全订单列表的门店和技师信息，过滤无效订单
+   * @param orders 订单列表
+   * @returns 过滤后的有效订单列表
+   * @private
+   */
+  enrichOrderListWithStoreAndTherapistInfo(orders) {
+    return __async(this, null, function* () {
+      try {
+        const storeIds = /* @__PURE__ */ new Set();
+        const therapistIds = /* @__PURE__ */ new Set();
+        orders.forEach((order) => {
+          if (order.storeId && !order.storeName) {
+            storeIds.add(order.storeId.toString());
+          }
+          if (order.therapistId && !order.therapistAvatar) {
+            therapistIds.add(order.therapistId.toString());
+          }
+        });
+        const promises = [];
+        const storeMap = /* @__PURE__ */ new Map();
+        const therapistMap = /* @__PURE__ */ new Map();
+        const invalidStoreIds = /* @__PURE__ */ new Set();
+        Array.from(storeIds).forEach((storeId) => {
+          promises.push(get(`/stores/${storeId}`).then((response) => {
+            storeMap.set(storeId, response.data);
+          }).catch((error) => {
+            console.warn(`门店不存在，将过滤相关订单 (storeId: ${storeId}):`, error.message);
+            invalidStoreIds.add(storeId);
+          }));
+        });
+        Array.from(therapistIds).forEach((therapistId) => {
+          promises.push(get(`/therapists/${therapistId}`).then((response) => {
+            therapistMap.set(therapistId, response.data);
+          }).catch((error) => {
+            console.error(`批量获取技师信息失败 (therapistId: ${therapistId}):`, error);
+          }));
+        });
+        if (promises.length > 0) {
+          yield Promise.allSettled(promises);
+        }
+        const validOrders = orders.filter((order) => {
+          if (order.storeId && invalidStoreIds.has(order.storeId.toString())) {
+            console.warn(`过滤无效订单: ${order.orderNo}（门店 ${order.storeId} 不存在）`);
+            return false;
+          }
+          return true;
+        });
+        validOrders.forEach((order) => {
+          if (order.storeId && !order.storeName) {
+            const store = storeMap.get(order.storeId.toString());
+            if (store) {
+              order.storeName = store.name;
+              order.storeAddress = store.address;
+            }
+          }
+          if (order.therapistId && !order.therapistAvatar) {
+            const therapist = therapistMap.get(order.therapistId.toString());
+            if (therapist) {
+              order.therapistAvatar = therapist.avatar;
+              if (!order.therapistName) {
+                order.therapistName = therapist.name;
+              }
+            } else {
+              order.therapistAvatar = "https://img.yzcdn.cn/vant/cat.jpeg";
+            }
+          }
+        });
+        return validOrders;
+      } catch (error) {
+        console.error("批量补全订单列表信息失败:", error);
+        return orders;
+      }
+    });
+  }
+  /**
+   * 创建预约订单（通过预约接口）
+   * @param params 创建订单参数
+   * @returns 订单和预约信息
+   */
+  createAppointmentOrder(params) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          userId,
+          userPhone
+        } = this.getUserInfo();
+        console.log("📝 创建订单原始参数:", params);
+        console.log("📝 therapistId类型:", typeof params.therapistId, "值:", params.therapistId);
+        const requestData = {
+          therapistId: Number(params.therapistId),
+          storeId: Number(params.storeId),
+          userId,
+          userPhone,
+          appointmentDate: params.appointmentDate,
+          startTime: params.appointmentTime,
+          duration: params.duration || 60,
+          serviceId: params.serviceId,
+          serviceName: params.serviceName,
+          price: params.discountPrice || params.price
+        };
+        console.log("📤 实际发送的请求数据:", requestData);
+        console.log("📤 转换后的therapistId:", requestData.therapistId, "是否为NaN:", isNaN(requestData.therapistId));
+        const response = yield post("/appointments/create-with-order", requestData, {
+          showLoading: true,
+          loadingTitle: "创建订单中..."
+        });
+        const orderData = __spreadProps(__spreadValues({}, response.data.order), {
+          therapistName: params.therapistName,
+          therapistAvatar: params.therapistAvatar,
+          serviceName: params.serviceName,
+          duration: params.duration,
+          appointmentDate: params.appointmentDate,
+          startTime: params.appointmentTime
+          // ✅ 映射到 startTime
+          // ✅ amount 已经从API返回，单位为分
+        });
+        return {
+          order: orderData,
+          appointment: response.data.appointment
+        };
+      } catch (error) {
+        console.error("创建订单失败:", error);
+        throw new Error(error.message || "创建订单失败");
+      }
+    });
+  }
+  /**
+   * 获取支付参数
+   * @param orderNo 订单号
+   * @returns 支付参数
+   */
+  getPaymentParams(orderNo) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield post("/orders/pay", {
+          orderNo,
+          paymentMethod: "wechat"
+        });
+        if (response.data.wxPayParams) {
+          return response.data.wxPayParams;
+        }
+        return {
+          timeStamp: String(Math.floor(Date.now() / 1e3)),
+          nonceStr: Math.random().toString(36).substr(2, 15),
+          package: `prepay_id=${Math.random().toString(36).substr(2, 15)}`,
+          signType: "MD5",
+          paySign: Math.random().toString(36).substr(2, 32)
+        };
+      } catch (error) {
+        console.error("获取支付参数失败:", error);
+        throw new Error("获取支付参数失败");
+      }
+    });
+  }
+  /**
+   * 更新订单状态（余额支付）
+   * @param orderNo 订单号
+   * @param status 订单状态
+   * @returns 更新后的订单
+   */
+  updateOrderStatus(orderNo, status) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield post("/orders/pay", {
+          orderNo,
+          paymentMethod: "balance"
+        });
+        return {
+          orderNo,
+          paymentStatus: "paid",
+          paidAt: response.data.paidAt || (/* @__PURE__ */ new Date()).toISOString()
+        };
+      } catch (error) {
+        console.error("更新订单状态失败:", error);
+        throw new Error(error.message || "支付失败");
+      }
+    });
+  }
+  /**
+   * 获取订单详情
+   * @param orderNo 订单号
+   * @returns 订单详情
+   */
+  getOrderDetail(orderNo) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get(`/orders/${orderNo}`);
+        const order = response.data;
+        if (order.extraData) {
+          order.appointmentId = order.extraData.appointmentId;
+          order.therapistId = order.extraData.therapistId;
+          order.therapistName = order.extraData.therapistName;
+          order.therapistAvatar = normalizeImageUrl(order.extraData.therapistAvatar);
+          order.storeId = order.extraData.storeId;
+          order.appointmentDate = order.extraData.appointmentDate;
+          order.startTime = order.extraData.startTime;
+          order.duration = order.extraData.duration;
+          order.serviceName = order.extraData.serviceName || order.title;
+          order.appointmentStatus = order.extraData.appointmentStatus;
+          yield this.enrichOrderWithStoreAndTherapistInfo(order);
+        }
+        order.displayStatus = this.getDisplayStatus(order);
+        return order;
+      } catch (error) {
+        console.error("获取订单详情失败:", error);
+        throw new Error("订单不存在或已删除");
+      }
+    });
+  }
+  /**
+   * 获取订单列表
+   * @param status 订单状态（可选）
+   * @param orderType 订单类型（可选）
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @returns 订单列表
+   */
+  getOrderList(status, orderType, page = 1, pageSize = 20) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          userId
+        } = this.getUserInfo();
+        const params = {
+          userId,
+          page,
+          pageSize
+        };
+        if (status)
+          params.status = status;
+        if (orderType)
+          params.orderType = orderType;
+        const response = yield get("/orders", params);
+        const orders = response.data.list.map((order) => {
+          if (order.extraData) {
+            order.appointmentId = order.extraData.appointmentId;
+            order.therapistId = order.extraData.therapistId;
+            order.therapistName = order.extraData.therapistName;
+            order.therapistAvatar = normalizeImageUrl(order.extraData.therapistAvatar);
+            order.storeId = order.extraData.storeId;
+            order.storeName = order.extraData.storeName;
+            order.storeAddress = order.extraData.storeAddress;
+            order.appointmentDate = order.extraData.appointmentDate;
+            order.startTime = order.extraData.startTime;
+            order.duration = order.extraData.duration;
+            order.serviceName = order.extraData.serviceName || order.title;
+            order.appointmentStatus = order.extraData.appointmentStatus;
+          }
+          order.displayStatus = this.getDisplayStatus(order);
+          return order;
+        });
+        const validOrders = yield this.enrichOrderListWithStoreAndTherapistInfo(orders);
+        return validOrders;
+      } catch (error) {
+        console.error("获取订单列表失败:", error);
+        return [];
+      }
+    });
+  }
+  /**
+   * 取消订单
+   * @param orderNo 订单号
+   * @param reason 取消原因
+   * @returns 取消结果
+   */
+  cancelOrder(orderNo, reason = "用户取消") {
+    return __async(this, null, function* () {
+      try {
+        const {
+          userId
+        } = this.getUserInfo();
+        const response = yield post("/orders/cancel", {
+          orderNo,
+          userId,
+          reason
+        }, {
+          showLoading: true,
+          loadingTitle: "取消中..."
+        });
+        return response.data;
+      } catch (error) {
+        console.error("取消订单失败:", error);
+        throw new Error(error.message || "取消订单失败");
+      }
+    });
+  }
+  /**
+   * 申请退款（通过订单API）
+   * @param orderNo 订单号
+   * @param reason 退款原因（可选）
+   * @returns 退款单信息
+   */
+  requestRefund(orderNo, reason) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          userId
+        } = this.getUserInfo();
+        const response = yield post(`/orders/${orderNo}/refund`, {
+          userId,
+          reason: reason || "用户申请退款"
+        }, {
+          showLoading: true,
+          loadingTitle: "申请退款中..."
+        });
+        return response.data;
+      } catch (error) {
+        console.error("申请退款失败:", error);
+        throw new Error(error.message || "申请退款失败");
+      }
+    });
+  }
+  /**
+   * 查询退款详情
+   * @param refundId 退款单号
+   * @returns 退款详情
+   */
+  getRefundDetail(refundId) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get(`/refunds/${refundId}`);
+        return response.data;
+      } catch (error) {
+        console.error("获取退款详情失败:", error);
+        throw new Error("退款单不存在或已删除");
+      }
+    });
+  }
+  /**
+   * 重新预约（基于已有订单）
+   * @param orderNo 原订单号
+   * @returns 是否成功
+   */
+  rebookOrder(orderNo) {
+    return __async(this, null, function* () {
+      try {
+        const originalOrder = yield this.getOrderDetail(orderNo);
+        taro.Taro.setStorageSync("rebookOrderInfo", {
+          therapistId: originalOrder.therapistId,
+          therapistName: originalOrder.therapistName,
+          storeId: originalOrder.storeId,
+          storeName: originalOrder.storeName,
+          serviceId: originalOrder.serviceId,
+          serviceName: originalOrder.serviceName,
+          duration: originalOrder.duration
+        });
+        return true;
+      } catch (error) {
+        console.error("重新预约失败:", error);
+        return false;
+      }
+    });
+  }
+  /**
+   * 获取订单统计
+   * @returns 订单统计信息
+   */
+  getOrderStatistics() {
+    return __async(this, null, function* () {
+      try {
+        const {
+          userId
+        } = this.getUserInfo();
+        const response = yield get("/orders", {
+          userId,
+          page: 1,
+          pageSize: 100
+        });
+        const orders = response.data.list;
+        return {
+          total: orders.length,
+          pendingPayment: orders.filter((o) => o.paymentStatus === "pending").length,
+          paid: orders.filter((o) => o.paymentStatus === "paid").length,
+          completed: orders.filter((o) => o.paymentStatus === "paid" && /* @__PURE__ */ new Date(o.appointmentDate + " " + o.startTime) < /* @__PURE__ */ new Date()).length,
+          // ✅ 改为 startTime
+          cancelled: orders.filter((o) => o.paymentStatus === "cancelled").length
+        };
+      } catch (error) {
+        console.error("获取订单统计失败:", error);
+        return {
+          total: 0,
+          pendingPayment: 0,
+          paid: 0,
+          completed: 0,
+          cancelled: 0
+        };
+      }
+    });
+  }
+}
+const orderService = new OrderService();
+function centsToYuan(amountInCents) {
+  if (!amountInCents && amountInCents !== 0)
+    return 0;
+  return Math.round(amountInCents) / 100;
+}
+function formatAmount(amountInCents, options) {
+  const {
+    symbol = "￥",
+    suffix = "元",
+    precision = 2
+  } = options || {};
+  if (amountInCents === void 0 || amountInCents === null) {
+    return `${symbol}0.00${suffix}`;
+  }
+  if (typeof amountInCents !== "number" || isNaN(amountInCents)) {
+    console.warn("⚠️ formatAmount: 无效的金额输入", {
+      amountInCents,
+      type: typeof amountInCents
+    });
+    return `${symbol}0.00${suffix}`;
+  }
+  const yuan = centsToYuan(amountInCents);
+  if (isNaN(yuan)) {
+    console.error("❌ formatAmount: 金额转换结果为NaN", {
+      amountInCents,
+      yuan
+    });
+    return `${symbol}0.00${suffix}`;
+  }
+  return `${symbol}${yuan.toFixed(precision)}${suffix}`;
+}
+class PaymentService {
+  constructor() {
+    this.config = {
+      // 企业小程序真实支付配置
+      useMockPayment: false,
+      // 关闭模拟支付
+      enableBalancePayment: true,
+      enableWechatPayment: true
+      // 启用真实微信支付
+    };
+  }
+  /**
+   * 统一支付入口
+   */
+  pay(options) {
+    return __async(this, null, function* () {
+      const {
+        paymentMethod
+      } = options;
+      if (this.config.useMockPayment && paymentMethod === "wechat") {
+        return this.mockWechatPayment(options);
+      }
+      if (paymentMethod === "balance") {
+        return this.payWithBalance(options);
+      }
+      if (paymentMethod === "wechat" && this.config.enableWechatPayment) {
+        return this.payWithWechat(options);
+      }
+      throw new Error("不支持的支付方式");
+    });
+  }
+  /**
+   * 模拟微信支付（个人小程序测试用）
+   * 使用真实的支付接口 /api/v2/orders/pay
+   */
+  mockWechatPayment(options) {
+    return __async(this, null, function* () {
+      try {
+        const {
+          confirm
+        } = yield taro.Taro.showModal({
+          title: "模拟支付",
+          content: `订单金额：¥${(options.amount / 100).toFixed(2)}
+${options.title || ""}`,
+          confirmText: "确认支付",
+          cancelText: "取消支付",
+          confirmColor: "#07c160"
+        });
+        if (confirm) {
+          taro.Taro.showLoading({
+            title: "支付中..."
+          });
+          yield this.delay(1500);
+          console.log("💳 模拟微信支付请求参数:", {
+            orderNo: options.orderNo,
+            paymentMethod: "wechat"
+          });
+          const response = yield post("/orders/pay", {
+            orderNo: options.orderNo,
+            paymentMethod: "wechat"
+          });
+          console.log("💳 模拟微信支付响应:", response);
+          taro.Taro.hideLoading();
+          if (response.code === 0) {
+            taro.Taro.showToast({
+              title: "支付成功",
+              icon: "success"
+            });
+            return true;
+          } else {
+            throw new Error(response.message || "支付失败");
+          }
+        } else {
+          console.log("用户取消模拟支付");
+          return false;
+        }
+      } catch (error) {
+        console.error("💳 模拟微信支付失败:", error);
+        taro.Taro.hideLoading();
+        taro.Taro.showToast({
+          title: error.message || "支付失败",
+          icon: "none"
+        });
+        throw error;
+      }
+    });
+  }
+  /**
+   * 余额支付
+   */
+  payWithBalance(options) {
+    return __async(this, null, function* () {
+      try {
+        taro.Taro.showLoading({
+          title: "支付中..."
+        });
+        console.log("💰 余额支付请求参数:", {
+          orderNo: options.orderNo,
+          paymentMethod: "balance"
+        });
+        const response = yield post("/orders/pay", {
+          orderNo: options.orderNo,
+          paymentMethod: "balance"
+        });
+        console.log("💰 余额支付响应:", response);
+        taro.Taro.hideLoading();
+        if (response.code === 0) {
+          const balanceInYuan = (response.data.balance || 0) / 100;
+          taro.Taro.showToast({
+            title: `支付成功
+余额：¥${balanceInYuan.toFixed(2)}`,
+            icon: "success",
+            duration: 2e3
+          });
+          return true;
+        } else {
+          throw new Error(response.message || "余额不足");
+        }
+      } catch (error) {
+        console.error("💰 余额支付失败:", error);
+        console.error("💰 错误详情:", error.response || error.message);
+        taro.Taro.hideLoading();
+        taro.Taro.showToast({
+          title: error.message || "支付失败",
+          icon: "none"
+        });
+        return false;
+      }
+    });
+  }
+  /**
+   * 真实微信支付（需要企业认证）
+   * 注意：wxPayParams 已经在创建订单时由后端返回
+   */
+  payWithWechat(options) {
+    return __async(this, null, function* () {
+      var _a, _b;
+      try {
+        console.log("💳 开始真实微信支付，订单号:", options.orderNo);
+        const wxPayParams = options.wxPayParams;
+        if (!wxPayParams) {
+          throw new Error("缺少微信支付参数，请先创建订单");
+        }
+        const requiredFields = ["timeStamp", "nonceStr", "package", "signType", "paySign"];
+        const missingFields = requiredFields.filter((field) => !wxPayParams[field]);
+        if (missingFields.length > 0) {
+          console.error("❌ 微信支付参数不完整，缺少字段:", missingFields);
+          throw new Error(`微信支付参数缺失: ${missingFields.join(", ")}`);
+        }
+        console.log("💳 微信支付参数:", {
+          timeStamp: wxPayParams.timeStamp,
+          nonceStr: ((_a = wxPayParams.nonceStr) == null ? void 0 : _a.substring(0, 8)) + "...",
+          package: wxPayParams.package,
+          signType: wxPayParams.signType,
+          paySign: ((_b = wxPayParams.paySign) == null ? void 0 : _b.substring(0, 16)) + "..."
+        });
+        yield taro.Taro.requestPayment({
+          timeStamp: wxPayParams.timeStamp,
+          nonceStr: wxPayParams.nonceStr,
+          package: wxPayParams.package,
+          signType: wxPayParams.signType,
+          paySign: wxPayParams.paySign
+        });
+        console.log("💳 用户完成支付，等待微信回调后端更新订单状态");
+        taro.Taro.showToast({
+          title: "支付成功",
+          icon: "success"
+        });
+        return true;
+      } catch (error) {
+        if (error.errMsg === "requestPayment:fail cancel") {
+          console.log("💳 用户取消支付");
+          return false;
+        }
+        console.error("💳 微信支付失败:", error);
+        console.error("💳 错误详情:", {
+          errMsg: error.errMsg,
+          errCode: error.errCode,
+          message: error.message
+        });
+        taro.Taro.showToast({
+          title: error.errMsg || error.message || "支付失败",
+          icon: "none",
+          duration: 3e3
+        });
+        throw error;
+      }
+    });
+  }
+  /**
+   * 检查支付环境
+   */
+  checkPaymentEnvironment() {
+    return __async(this, null, function* () {
+      taro.Taro.getAccountInfoSync();
+      const isPersonalApp = !this.config.enableWechatPayment;
+      return {
+        canUseWechatPay: !isPersonalApp && this.config.enableWechatPayment,
+        canUseBalance: this.config.enableBalancePayment,
+        canUseMockPay: this.config.useMockPayment,
+        message: isPersonalApp ? "当前为个人小程序，使用模拟支付和余额支付" : "企业小程序，支持完整支付功能"
+      };
+    });
+  }
+  /**
+   * 生成充值码（线下充值）
+   */
+  generateRechargeCode(amount) {
+    return __async(this, null, function* () {
+      const response = yield post("/recharge/generate-code", {
+        amount
+      });
+      return response.data;
+    });
+  }
+  /**
+   * 辅助方法：延迟
+   */
+  delay(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+}
+const paymentService = new PaymentService();
+class WalletService {
+  /**
+   * 获取当前用户ID
+   * @returns 用户ID
+   */
+  getCurrentUserId() {
+    return getCurrentUserId();
+  }
+  /**
+   * 获取钱包余额
+   * ✅ 返回分为单位，由页面层使用 formatAmount() 转换为元显示
+   * @returns 余额信息（分为单位）
+   */
+  getBalance() {
+    return __async(this, null, function* () {
+      try {
+        const userId = this.getCurrentUserId();
+        const response = yield get("/users/wallet/balance", {
+          userId
+        });
+        const balanceInCents = response.data.balance || 0;
+        console.log("💰 余额查询:", {
+          分: balanceInCents,
+          元: (balanceInCents / 100).toFixed(2)
+        });
+        return balanceInCents;
+      } catch (error) {
+        console.error("获取余额失败:", error);
+        throw new Error("获取余额失败，请重试");
+      }
+    });
+  }
+  /**
+   * 获取余额详情（包含统计信息）
+   * ✅ 返回分为单位，由页面层负责转换为元显示
+   * @returns 余额详情（分为单位）
+   */
+  getBalanceDetails() {
+    return __async(this, null, function* () {
+      try {
+        const userId = this.getCurrentUserId();
+        const response = yield get("/users/wallet/balance", {
+          userId
+        });
+        return response.data;
+      } catch (error) {
+        console.error("获取余额详情失败:", error);
+        throw new Error("获取余额详情失败，请重试");
+      }
+    });
+  }
+  /**
+   * 获取充值配置选项
+   * ✅ 返回分为单位，页面层用 formatAmount() 转换为元显示
+   * @returns 充值配置列表（分为单位）
+   */
+  getRechargeOptions() {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get("/recharge/configs");
+        return response.data;
+      } catch (error) {
+        console.error("获取充值配置失败:", error);
+        return this.getDefaultRechargeOptions();
+      }
+    });
+  }
+  /**
+   * 获取默认充值配置（降级方案）
+   * ✅ 返回分为单位
+   * @private
+   */
+  getDefaultRechargeOptions() {
+    return [
+      {
+        id: 1,
+        amount: 1e4,
+        bonus: 0,
+        label: "100元",
+        sortOrder: 1
+      },
+      // 100元 = 10000分
+      {
+        id: 2,
+        amount: 2e4,
+        bonus: 0,
+        label: "200元",
+        sortOrder: 2
+      },
+      // 200元 = 20000分
+      {
+        id: 3,
+        amount: 5e4,
+        bonus: 5e3,
+        label: "500元",
+        sortOrder: 3,
+        promotionTag: "赠50元"
+      },
+      // 500元 = 50000分
+      {
+        id: 4,
+        amount: 1e5,
+        bonus: 1e4,
+        label: "1000元",
+        sortOrder: 4,
+        promotionTag: "赠100元"
+      },
+      // 1000元 = 100000分
+      {
+        id: 5,
+        amount: 2e5,
+        bonus: 3e4,
+        label: "2000元",
+        sortOrder: 5,
+        promotionTag: "赠300元"
+      },
+      // 2000元 = 200000分
+      {
+        id: 6,
+        amount: 5e5,
+        bonus: 1e5,
+        label: "5000元",
+        sortOrder: 6,
+        promotionTag: "赠1000元",
+        isRecommended: true
+      }
+      // 5000元 = 500000分
+    ];
+  }
+  /**
+   * 创建充值订单
+   * @param amount 充值金额（元）
+   * @param bonus 赠送金额（元）
+   * @returns 订单信息
+   */
+  createRechargeOrder(amount, bonus = 0) {
+    return __async(this, null, function* () {
+      try {
+        const userId = this.getCurrentUserId();
+        const userPhone = getCurrentUserPhone();
+        const orderData = {
+          orderType: "recharge",
+          userId,
+          userPhone,
+          title: bonus > 0 ? `充值${amount}元，赠送${bonus}元` : `充值${amount}元`,
+          amount: amount * 100,
+          // 转换为分
+          paymentMethod: "wechat",
+          extraData: {
+            rechargeAmount: amount * 100,
+            // ✅ 按API文档使用 rechargeAmount
+            bonus: bonus * 100,
+            // 转换为分
+            actualAmount: (amount + bonus) * 100
+            // ✅ 按API文档使用 actualAmount
+          }
+        };
+        console.log("💰 创建充值订单");
+        console.log("👤 当前用户ID:", userId);
+        console.log("📞 用户手机号:", userPhone);
+        console.log("📦 订单数据:", {
+          orderType: orderData.orderType,
+          userId: orderData.userId,
+          title: orderData.title,
+          amount: `${orderData.amount}分 (¥${(orderData.amount / 100).toFixed(2)})`,
+          paymentMethod: orderData.paymentMethod,
+          extraData: orderData.extraData
+        });
+        const response = yield post("/orders/create", orderData, {
+          showLoading: true,
+          loadingTitle: "创建订单中..."
+        });
+        console.log("✅ 充值订单创建成功");
+        console.log("📋 订单响应:", {
+          orderNo: response.data.orderNo,
+          amount: `${response.data.amount}分 (¥${(response.data.amount / 100).toFixed(2)})`,
+          paymentStatus: response.data.paymentStatus,
+          hasWxPayParams: !!response.data.wxPayParams
+        });
+        return response.data;
+      } catch (error) {
+        console.error("❌ 创建充值订单失败:", error);
+        throw new Error(error.message || "创建充值订单失败");
+      }
+    });
+  }
+  /**
+   * 获取交易记录
+   * ✅ 返回分为单位
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @param type 交易类型（可选）
+   * @returns 交易记录列表（金额为分为单位）
+   */
+  getTransactions(page = 1, pageSize = 20, type) {
+    return __async(this, null, function* () {
+      try {
+        const userId = this.getCurrentUserId();
+        const params = {
+          userId,
+          page,
+          pageSize
+        };
+        if (type)
+          params.type = type;
+        const response = yield get("/users/wallet/transactions", params);
+        return response.data.list;
+      } catch (error) {
+        console.error("获取交易记录失败:", error);
+        return [];
+      }
+    });
+  }
+  /**
+   * 使用余额支付
+   * @param orderNo 订单号
+   * @param amount 支付金额（分）
+   * @returns 支付结果（balance为分为单位）
+   */
+  payWithBalance(orderNo, amount) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield post("/orders/pay", {
+          orderNo,
+          paymentMethod: "balance"
+        }, {
+          showLoading: true,
+          loadingTitle: "支付中..."
+        });
+        return {
+          success: true,
+          balance: response.data.balance,
+          // ✅ 返回分为单位
+          message: "支付成功"
+        };
+      } catch (error) {
+        console.error("余额支付失败:", error);
+        throw new Error(error.message || "余额不足或支付失败");
+      }
+    });
+  }
+  /**
+   * 退款到余额
+   * @param orderNo 订单号
+   * @param amount 退款金额（分）
+   * @param reason 退款原因
+   * @returns 退款结果（balance为分为单位）
+   */
+  refundToBalance(orderNo, amount, reason = "订单退款") {
+    return __async(this, null, function* () {
+      try {
+        const response = yield post("/users/wallet/refund", {
+          phone: getCurrentUserPhone(),
+          amount,
+          // ✅ 已经是分为单位，直接发送
+          orderNo,
+          description: reason
+        }, {
+          showLoading: true,
+          loadingTitle: "退款中..."
+        });
+        return {
+          success: true,
+          balance: response.data.balance,
+          // ✅ 返回分为单位
+          transactionId: response.data.transactionId,
+          message: "退款成功"
+        };
+      } catch (error) {
+        console.error("退款失败:", error);
+        throw new Error(error.message || "退款失败");
+      }
+    });
+  }
+  /**
+   * 清空本地缓存
+   */
+  clearCache() {
+    try {
+      taro.Taro.removeStorageSync("userInfo");
+      taro.Taro.removeStorageSync("walletCache");
+      console.log("钱包缓存已清空");
+    } catch (error) {
+      console.error("清空缓存失败:", error);
+    }
+  }
+}
+const walletService = new WalletService();
+function generateVoucherFromDiscountRate(discountRate, userId) {
+  if (!discountRate || discountRate >= 1) {
+    return null;
+  }
+  const discountPercentage = Math.round((1 - discountRate) * 100);
+  const now = /* @__PURE__ */ new Date();
+  const oneYearLater = new Date(now.getTime() + 365 * 24 * 60 * 60 * 1e3);
+  return {
+    id: `virtual_${userId}_discount`,
+    userId: userId.toString(),
+    type: "discount",
+    name: discountPercentage >= 30 ? "新人专享券" : "会员折扣券",
+    description: `全场服务${Math.round(discountRate * 100)}折`,
+    discountRate,
+    discountPercentage,
+    validFrom: now.toISOString(),
+    validTo: oneYearLater.toISOString(),
+    status: "unused",
+    isAutoApply: true
+  };
+}
+function calculateDiscountPrice(originalPrice, discountRate) {
+  const finalPrice = Math.round(originalPrice * discountRate);
+  const savedAmount = originalPrice - finalPrice;
+  const discountPercentage = Math.round(discountRate * 100);
+  return {
+    originalPrice,
+    finalPrice,
+    savedAmount,
+    discountDisplay: `${discountPercentage}折`
+  };
+}
+class VoucherService {
+  constructor() {
+    this.vouchers = [];
+    this.currentVoucher = null;
+  }
+  /**
+   * 获取当前用户的礼券列表
+   */
+  getMyVouchers() {
+    return __async(this, null, function* () {
+      const userInfo = getCurrentUserInfo();
+      if (!userInfo) {
+        return [];
+      }
+      if (userInfo.discountRate && userInfo.discountRate < 1) {
+        const voucher = generateVoucherFromDiscountRate(userInfo.discountRate, userInfo.id.toString());
+        if (voucher) {
+          this.vouchers = [voucher];
+          return [voucher];
+        }
+      }
+      return [];
+    });
+  }
+  /**
+   * 获取可用礼券列表
+   */
+  getAvailableVouchers(orderAmount) {
+    return __async(this, null, function* () {
+      const allVouchers = yield this.getMyVouchers();
+      const now = /* @__PURE__ */ new Date();
+      return allVouchers.filter((voucher) => {
+        if (voucher.status !== "unused")
+          return false;
+        const validFrom = new Date(voucher.validFrom);
+        const validTo = new Date(voucher.validTo);
+        if (now < validFrom || now > validTo)
+          return false;
+        if (voucher.minAmount && orderAmount < voucher.minAmount)
+          return false;
+        return true;
+      });
+    });
+  }
+  /**
+   * 设置当前选中的礼券
+   */
+  setCurrentVoucher(voucher) {
+    this.currentVoucher = voucher;
+    if (voucher) {
+      taro.Taro.setStorageSync("selectedVoucher", voucher);
+    } else {
+      taro.Taro.removeStorageSync("selectedVoucher");
+    }
+  }
+  /**
+   * 获取当前选中的礼券
+   */
+  getCurrentVoucher() {
+    if (!this.currentVoucher) {
+      try {
+        this.currentVoucher = taro.Taro.getStorageSync("selectedVoucher");
+      } catch (e) {
+        console.error("获取选中礼券失败:", e);
+      }
+    }
+    return this.currentVoucher;
+  }
+  /**
+   * 标记礼券为已使用
+   */
+  markVoucherAsUsed(voucherId, orderNo) {
+    const voucher = this.vouchers.find((v) => v.id === voucherId);
+    if (voucher) {
+      voucher.status = "used";
+      voucher.usedAt = (/* @__PURE__ */ new Date()).toISOString();
+      voucher.orderNo = orderNo;
+    }
+    this.setCurrentVoucher(null);
+  }
+  /**
+   * 检查是否为新用户（有新人券）
+   */
+  isNewUser() {
+    const userInfo = getCurrentUserInfo();
+    if (!userInfo || !userInfo.discountRate)
+      return false;
+    const discountPercentage = Math.round((1 - userInfo.discountRate) * 100);
+    return discountPercentage >= 30;
+  }
+  /**
+   * 获取新人礼券信息（用于弹窗展示）
+   */
+  getNewUserVoucherInfo() {
+    const userInfo = getCurrentUserInfo();
+    if (!userInfo || !userInfo.discountRate || userInfo.discountRate >= 1) {
+      return {
+        hasVoucher: false
+      };
+    }
+    const discountPercentage = Math.round((1 - userInfo.discountRate) * 100);
+    return {
+      hasVoucher: true,
+      discountPercentage,
+      description: `恭喜获得新人专享${discountPercentage}%优惠券！`
+    };
+  }
+}
+const voucherService = new VoucherService();
+class ReviewService {
+  /**
+   * 创建评价
+   * @param params 评价参数
+   * @returns 评价结果
+   */
+  createReview(params) {
+    return __async(this, null, function* () {
+      if (params.content.length < 1) {
+        throw new Error("评价内容不能为空");
+      }
+      if (params.content.length > 500) {
+        throw new Error("评价内容不能超过500字");
+      }
+      if (params.rating < 1 || params.rating > 5) {
+        throw new Error("评分必须在1-5之间");
+      }
+      try {
+        const response = yield post("/reviews", params, {
+          showLoading: true,
+          loadingTitle: "提交评价中..."
+        });
+        taro.Taro.eventCenter.trigger("review:created", response.data);
+        return response.data;
+      } catch (error) {
+        console.error("创建评价失败:", error);
+        throw new Error(error.message || "创建评价失败");
+      }
+    });
+  }
+  /**
+   * 获取推拿师评价列表
+   * @param therapistId 推拿师ID
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @param rating 评分筛选
+   * @returns 评价列表
+   */
+  getTherapistReviews(therapistId, page = 1, pageSize = 10, rating) {
+    return __async(this, null, function* () {
+      try {
+        const params = {
+          page,
+          pageSize
+        };
+        if (rating) {
+          params.rating = rating;
+        }
+        const response = yield get(`/therapists/${therapistId}/reviews`, params);
+        return response.data;
+      } catch (error) {
+        console.error("获取推拿师评价失败:", error);
+        return {
+          list: [],
+          total: 0,
+          page,
+          pageSize,
+          hasMore: false
+        };
+      }
+    });
+  }
+  /**
+   * 获取用户评价历史
+   * @param userId 用户ID
+   * @param page 页码
+   * @param pageSize 每页数量
+   * @returns 评价列表
+   */
+  getUserReviews(userId, page = 1, pageSize = 10) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get(`/users/${userId}/reviews`, {
+          page,
+          pageSize
+        });
+        return response.data;
+      } catch (error) {
+        console.error("获取用户评价失败:", error);
+        return {
+          list: [],
+          total: 0,
+          page,
+          pageSize,
+          hasMore: false
+        };
+      }
+    });
+  }
+  /**
+   * 获取评价详情
+   * @param reviewId 评价ID
+   * @returns 评价详情
+   */
+  getReviewDetail(reviewId) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get(`/reviews/${reviewId}`);
+        return response.data;
+      } catch (error) {
+        console.error("获取评价详情失败:", error);
+        throw new Error(error.message || "评价不存在");
+      }
+    });
+  }
+  /**
+   * 获取推拿师评价统计
+   * @param therapistId 推拿师ID
+   * @returns 评价统计
+   */
+  getReviewStats(therapistId) {
+    return __async(this, null, function* () {
+      try {
+        const response = yield get(`/therapists/${therapistId}/review-stats`);
+        return response.data;
+      } catch (error) {
+        console.error("获取评价统计失败:", error);
+        return {
+          totalCount: 0,
+          averageRating: 0,
+          ratingBreakdown: {
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0
+          }
+        };
+      }
+    });
+  }
+  /**
+   * 检查是否可以评价
+   * @param appointmentId 预约ID
+   * @returns 是否可以评价
+   */
+  checkCanReview(appointmentId) {
+    return __async(this, null, function* () {
+      var _a;
+      try {
+        const response = yield taro.Taro.request({
+          url: `${API_CONFIG.baseURL}/reviews/${appointmentId}`,
+          method: "GET",
+          header: {
+            "Content-Type": "application/json"
+          },
+          timeout: API_CONFIG.timeout
+        });
+        const result = response.data;
+        if (result.code === 1002) {
+          console.log("评价不存在，可以创建评价");
+          return true;
+        }
+        if (result.code === 0 && ((_a = result.data) == null ? void 0 : _a.reviewId)) {
+          console.log("评价已存在，不能再评价");
+          return false;
+        }
+        return true;
+      } catch (error) {
+        console.warn("检查评价状态时发生错误，默认允许评价");
+        return true;
+      }
+    });
+  }
+  /**
+   * 批量获取评价状态
+   * @param appointmentIds 预约ID列表
+   * @returns 评价状态映射
+   */
+  batchCheckReviewStatus(appointmentIds) {
+    return __async(this, null, function* () {
+      const result = {};
+      const promises = appointmentIds.map((id) => __async(this, null, function* () {
+        const canReview = yield this.checkCanReview(id);
+        result[id] = canReview;
+      }));
+      yield Promise.allSettled(promises);
+      return result;
+    });
+  }
+  /**
+   * 清除缓存
+   */
+  clearCache() {
+    try {
+      const keys = taro.Taro.getStorageInfoSync().keys;
+      keys.forEach((key) => {
+        if (key.startsWith("review_cache_")) {
+          taro.Taro.removeStorageSync(key);
+        }
+      });
+    } catch (error) {
+      console.error("清除评价缓存失败:", error);
+    }
+  }
+}
+const reviewService = new ReviewService();
+const index = "";
+const BookingButton = ({
+  size = "medium",
+  text = "预约"
+}) => {
+  return /* @__PURE__ */ taro.jsx(
+    taro.View,
+    {
+      className: `booking-button booking-button-${size}`,
+      children: /* @__PURE__ */ taro.jsx(taro.Text, { className: "button-text", children: text })
+    }
+  );
+};
+exports.BookingButton = BookingButton;
+exports.GiftService = GiftService;
+exports.ShoppingCart = ShoppingCart;
+exports.calculateDiscountPrice = calculateDiscountPrice;
+exports.checkAndAutoLogin = checkAndAutoLogin;
+exports.fetchUserInfo = fetchUserInfo;
+exports.formatAmount = formatAmount;
+exports.getCurrentUserInfo = getCurrentUserInfo;
+exports.getLocationService = getLocationService;
+exports.maskPhone = maskPhone;
+exports.normalizeImageUrl = normalizeImageUrl;
+exports.orderService = orderService;
+exports.paymentService = paymentService;
+exports.post = post;
+exports.request = request;
+exports.reviewService = reviewService;
+exports.setUserInfo = setUserInfo;
+exports.storeService = storeService;
+exports.symptomCategories = symptomCategories;
+exports.symptomServices = symptomServices;
+exports.therapistService = therapistService;
+exports.voucherService = voucherService;
+exports.walletService = walletService;
+exports.wechatLogin = wechatLogin;
+//# sourceMappingURL=common.js.map
