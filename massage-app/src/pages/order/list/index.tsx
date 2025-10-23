@@ -112,7 +112,7 @@ const OrderListPage: React.FC = () => {
   const handlePayOrder = async (e: any, order: OrderData) => {
     e.stopPropagation()
 
-    // 🚀 改进：数据验证
+    // 🚀 数据验证
     console.log('💳 准备支付订单:', {
       orderNo: order.orderNo,
       amount: order.amount,
@@ -130,71 +130,22 @@ const OrderListPage: React.FC = () => {
     }
 
     try {
-      // 获取支付参数
-      const paymentParams = await orderService.getPaymentParams(order.orderNo)
+      // ✅ 使用统一的支付服务
+      const paymentSuccess = await paymentService.pay({
+        orderNo: order.orderNo,
+        amount: order.amount,
+        paymentMethod: 'wechat',
+        title: order.title
+      })
 
-      // ✅ 验证支付参数完整性
-      const requiredFields = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign']
-      const missingFields = requiredFields.filter(field => !paymentParams[field])
-
-      if (missingFields.length > 0) {
-        console.error('❌ 微信支付参数不完整，缺少字段:', missingFields, '完整参数:', paymentParams)
-        Taro.showToast({
-          title: `支付参数缺失: ${missingFields.join(', ')}`,
-          icon: 'none'
-        })
-        return
+      if (paymentSuccess) {
+        // 支付成功，刷新订单列表
+        fetchOrders()
       }
-
-      console.log('💳 微信支付参数验证通过:', {
-        timeStamp: paymentParams.timeStamp,
-        nonceStr: paymentParams.nonceStr?.substring(0, 8) + '...',
-        package: paymentParams.package,
-        signType: paymentParams.signType,
-        paySign: paymentParams.paySign?.substring(0, 16) + '...'
-      })
-
-      // ✅ 调用微信支付 - 确保传递所有必需参数
-      Taro.requestPayment({
-        timeStamp: paymentParams.timeStamp,
-        nonceStr: paymentParams.nonceStr,
-        package: paymentParams.package,
-        signType: paymentParams.signType as any,
-        paySign: paymentParams.paySign,
-        // ⚠️ 注意：total_fee 可能在后端的 package 字段中或需要从 order.amount 传入
-        ...(paymentParams.total_fee && { total_fee: paymentParams.total_fee }),
-        success: async () => {
-          // 更新订单状态
-          await orderService.updateOrderStatus(order.orderNo, 'paid')
-          Taro.showToast({
-            title: '支付成功',
-            icon: 'success'
-          })
-          // 刷新订单列表
-          fetchOrders()
-        },
-        fail: (err: any) => {
-          if (err.errMsg === 'requestPayment:fail cancel') {
-            console.log('💳 用户取消支付')
-            return
-          }
-
-          console.error('💳 微信支付失败:', {
-            errMsg: err.errMsg,
-            errCode: err.errCode,
-            message: err.message
-          })
-          Taro.showToast({
-            title: err.errMsg || '支付失败',
-            icon: 'none',
-            duration: 3000
-          })
-        }
-      })
     } catch (error) {
-      console.error('❌ 获取支付参数失败:', error)
+      console.error('❌ 支付失败:', error)
       Taro.showToast({
-        title: '获取支付参数失败',
+        title: error.message || '支付失败',
         icon: 'none'
       })
     }

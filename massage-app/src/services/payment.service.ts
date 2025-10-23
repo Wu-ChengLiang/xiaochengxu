@@ -32,86 +32,20 @@ class PaymentService {
   async pay(options: PaymentOptions): Promise<boolean> {
     const { paymentMethod } = options
 
-    // 开发环境或个人小程序使用模拟支付
-    if (this.config.useMockPayment && paymentMethod === 'wechat') {
-      return this.mockWechatPayment(options)
-    }
-
     // 余额支付
     if (paymentMethod === 'balance') {
       return this.payWithBalance(options)
     }
 
-    // 真实微信支付（需要企业认证）
-    if (paymentMethod === 'wechat' && this.config.enableWechatPayment) {
+    // 真实微信支付
+    if (paymentMethod === 'wechat') {
       return this.payWithWechat(options)
     }
 
     throw new Error('不支持的支付方式')
   }
 
-  /**
-   * 模拟微信支付（个人小程序测试用）
-   * 使用真实的支付接口 /api/v2/orders/pay
-   */
-  private async mockWechatPayment(options: PaymentOptions): Promise<boolean> {
-    try {
-      // 显示模拟支付界面
-      const { confirm } = await Taro.showModal({
-        title: '模拟支付',
-        content: `订单金额：¥${(options.amount / 100).toFixed(2)}\n${options.title || ''}`,
-        confirmText: '确认支付',
-        cancelText: '取消支付',
-        confirmColor: '#07c160'
-      })
-
-      if (confirm) {
-        // 显示加载动画
-        Taro.showLoading({ title: '支付中...' })
-
-        // 模拟网络延迟
-        await this.delay(1500)
-
-        console.log('💳 模拟微信支付请求参数:', {
-          orderNo: options.orderNo,
-          paymentMethod: 'wechat'
-        })
-
-        // 调用真实的支付接口
-        const response = await post('/orders/pay', {
-          orderNo: options.orderNo,
-          paymentMethod: 'wechat'
-        })
-
-        console.log('💳 模拟微信支付响应:', response)
-
-        Taro.hideLoading()
-
-        if (response.code === 0) {
-          Taro.showToast({
-            title: '支付成功',
-            icon: 'success'
-          })
-          return true
-        } else {
-          throw new Error(response.message || '支付失败')
-        }
-      } else {
-        console.log('用户取消模拟支付')
-        return false
-      }
-    } catch (error: any) {
-      console.error('💳 模拟微信支付失败:', error)
-      Taro.hideLoading()
-      Taro.showToast({
-        title: error.message || '支付失败',
-        icon: 'none'
-      })
-      throw error
-    }
-  }
-
-  /**
+/**
    * 余额支付
    */
   private async payWithBalance(options: PaymentOptions): Promise<boolean> {
@@ -237,23 +171,12 @@ class PaymentService {
   async checkPaymentEnvironment(): Promise<{
     canUseWechatPay: boolean
     canUseBalance: boolean
-    canUseMockPay: boolean
     message: string
   }> {
-    // 获取小程序账号信息
-    const accountInfo = Taro.getAccountInfoSync()
-    const { miniProgram } = accountInfo
-
-    // 个人小程序的AppID通常以wx开头的个人类型
-    const isPersonalApp = !this.config.enableWechatPayment
-
     return {
-      canUseWechatPay: !isPersonalApp && this.config.enableWechatPayment,
+      canUseWechatPay: this.config.enableWechatPayment,
       canUseBalance: this.config.enableBalancePayment,
-      canUseMockPay: this.config.useMockPayment,
-      message: isPersonalApp
-        ? '当前为个人小程序，使用模拟支付和余额支付'
-        : '企业小程序，支持完整支付功能'
+      message: '支持微信支付和余额支付'
     }
   }
 

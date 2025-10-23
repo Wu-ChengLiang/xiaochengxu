@@ -446,16 +446,7 @@ class OrderService {
         return paymentParams
       }
 
-      // 模拟支付参数（开发环境）
-      console.warn('⚠️ 后端未返回wxPayParams，使用模拟支付参数')
-      return {
-        timeStamp: String(Math.floor(Date.now() / 1000)),
-        nonceStr: Math.random().toString(36).substr(2, 15),
-        package: `prepay_id=${Math.random().toString(36).substr(2, 15)}`,
-        signType: 'MD5',
-        paySign: Math.random().toString(36).substr(2, 32)
-        // ⚠️ 注意：模拟参数中没有 total_fee，实际支付时后端必须返回真实参数
-      }
+      throw new Error('后端未返回微信支付参数')
     } catch (error: any) {
       console.error('💳 获取支付参数失败:', error)
       console.error('💳 错误详情:', {
