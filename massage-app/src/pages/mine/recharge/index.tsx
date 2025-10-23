@@ -1,59 +1,39 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { View, Text, Button } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { AtIcon } from 'taro-ui'
-import { walletService, RechargeOption } from '@/services/wallet.service'
-import { paymentService } from '@/services/payment.service'  // ✅ 添加缺失的导入
+import { walletService } from '@/services/wallet.service'
+import { paymentService } from '@/services/payment.service'
 import './index.scss'
 
 const Recharge: React.FC = () => {
-  const [selectedAmount, setSelectedAmount] = useState(0)
-  const [selectedBonus, setSelectedBonus] = useState(0)
   const [customAmount, setCustomAmount] = useState('')
   const [loading, setLoading] = useState(false)
-  const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
 
-  // 从API获取充值配置
-  useEffect(() => {
-    loadRechargeOptions()
-  }, [])
-
-  const loadRechargeOptions = async () => {
-    try {
-      const options = await walletService.getRechargeOptions()
-      setRechargeOptions(options)
-    } catch (error) {
-      console.error('获取充值配置失败:', error)
-      // 使用默认配置（与礼卡页面保持一致）
-      setRechargeOptions([
-        { id: 1, amount: 1000, bonus: 100, label: '¥1000', sortOrder: 1 },
-        { id: 2, amount: 3000, bonus: 500, label: '¥3000', sortOrder: 2 }
-      ])
-    }
-  }
-
-  const handleAmountSelect = (amount: number, bonus: number = 0) => {
-    setSelectedAmount(amount)
-    setSelectedBonus(bonus)
-    setCustomAmount('')
-  }
+  // ❌ 已注释掉 - 预设充值选项由于后端数据重复问题而移除
+  // const [selectedAmount, setSelectedAmount] = useState(0)
+  // const [selectedBonus, setSelectedBonus] = useState(0)
+  // const [rechargeOptions, setRechargeOptions] = useState<RechargeOption[]>([])
+  // useEffect(() => { loadRechargeOptions() }, [])
+  // const loadRechargeOptions = async () => { ... }
+  // const handleAmountSelect = (amount: number, bonus: number = 0) => { ... }
 
   const handleCustomAmountChange = (e: any) => {
     const value = e.detail?.value || e.target?.value || ''
+    // ✅ 只允许输入数字
     if (/^\d*$/.test(value)) {
       setCustomAmount(value)
-      setSelectedAmount(0)
-      setSelectedBonus(0)
     }
   }
 
   const handleRecharge = async () => {
-    const amount = selectedAmount || Number(customAmount)
-    const bonus = selectedBonus || 0
+    // ✅ 现在只使用自定义输入的金额，没有赠送金额
+    const amount = Number(customAmount)
+    const bonus = 0
 
     if (!amount || amount <= 0) {
       Taro.showToast({
-        title: '请选择或输入充值金额',
+        title: '请输入有效的充值金额',
         icon: 'none'
       })
       return
@@ -124,7 +104,8 @@ const Recharge: React.FC = () => {
     <View className="recharge-page">
       {/* 充值金额选择 */}
       <View className="amount-section">
-        <Text className="section-title">选择充值金额</Text>
+        {/* ❌ 注释掉预设充值选项 - 因为后端数据库中有重复数据（48条重复的选项）*/}
+        {/* <Text className="section-title">选择充值金额</Text>
         <View className="amount-grid">
           {rechargeOptions.map((option) => (
             <View
@@ -138,17 +119,17 @@ const Recharge: React.FC = () => {
               )}
             </View>
           ))}
-        </View>
+        </View> */}
 
-        {/* 自定义金额 */}
+        {/* ✅ 只保留自定义金额输入 */}
         <View className="custom-amount">
-          <Text className="label">其他金额</Text>
+          <Text className="label">请输入充值金额</Text>
           <View className="input-wrapper">
             <Text className="prefix">¥</Text>
             <input
               className="input"
               type="number"
-              placeholder="请输入充值金额"
+              placeholder="请输入充值金额（单位：元）"
               value={customAmount}
               onInput={handleCustomAmountChange}
             />
