@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import { AtTabs, AtTabsPane, AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
+import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import './index.scss'
 
 const OrderListPage: React.FC = () => {
@@ -325,7 +326,7 @@ const OrderListPage: React.FC = () => {
       <View className="order-footer">
         <View className="price-info">
           <Text className="label">实付：</Text>
-          <Text className="price">¥{(order.totalAmount / 100).toFixed(2)}</Text>
+          <Text className="price">{formatAmount(order.amount)}</Text>  {/* ✅ 改为使用 formatAmount() 和 amount 字段 */}
         </View>
         <View className="action-buttons">
           {/* 待支付订单：显示支付和取消 */}

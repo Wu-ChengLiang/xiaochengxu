@@ -132,9 +132,9 @@ const Recharge: React.FC = () => {
               className={`amount-card ${selectedAmount === option.amount ? 'active' : ''}`}
               onClick={() => handleAmountSelect(option.amount, option.bonus)}
             >
-              <Text className="amount">¥{option.amount}</Text>
+              <Text className="amount">¥{(option.amount / 100).toFixed(0)}</Text>
               {option.bonus > 0 && (
-                <Text className="bonus">赠送{option.bonus}元</Text>
+                <Text className="bonus">赠送{(option.bonus / 100).toFixed(0)}元</Text>
               )}
             </View>
           ))}
