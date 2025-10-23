@@ -186,7 +186,7 @@
     box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     .price-info {
       display: flex;
@@ -226,6 +226,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-left: auto;
 
       &::after {
         border: none;
