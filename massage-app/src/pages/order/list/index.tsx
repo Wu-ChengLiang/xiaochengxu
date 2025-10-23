@@ -4,6 +4,7 @@ import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import { AtTabs, AtTabsPane, AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
+import { parseDate, formatDate: formatDateUtil } from '@/utils/date'  // ✅ iOS 兼容日期处理
 import './index.scss'
 
 const OrderListPage: React.FC = () => {
@@ -239,7 +240,12 @@ const OrderListPage: React.FC = () => {
   }
 
   const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
+    // ✅ 改进：使用 iOS 兼容的日期处理函数
+    // 将 "2025-10-22 11:35:45" 转换为 "2025-10-22T11:35:45"（iOS 兼容格式）
+    const date = parseDate(dateStr)
+    if (!date) {
+      return ''
+    }
     const month = date.getMonth() + 1
     const day = date.getDate()
     const hour = date.getHours()
@@ -275,13 +281,8 @@ const OrderListPage: React.FC = () => {
             src={order.therapistAvatar}
           />
         )}
-        {/* 产品订单显示默认产品图片 */}
-        {order.orderType === 'product' && (
-          <Image
-            className="product-image"
-            src="https://mingyitang1024.com/static/default.png"
-          />
-        )}
+        {/* 产品订单：不显示默认图片（避免 404 错误） */}
+        {/* order.orderType === 'product' 时不显示任何图片 */}
 
         <View className={`order-info ${!order.therapistAvatar && order.orderType === 'service' ? 'no-image' : ''}`}>
           {/* 🚀 服务订单没有头像时显示占位符 */}
