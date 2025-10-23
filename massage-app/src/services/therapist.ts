@@ -197,29 +197,10 @@ class TherapistService {
       console.log('✅ 获取可预约时段API调用成功:', data)
       return data.data
     } catch (error) {
-      console.log('⚠️ 获取可预约时段API调用失败，返回默认全部可用:', error)
-
-      // 返回默认的可用时段（9:00-21:00，每10分钟一个时段）
-      const slots = []
-      for (let hour = 9; hour <= 21; hour++) {
-        for (let minute = 0; minute < 60; minute += 10) {
-          const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-          slots.push({
-            time,
-            available: true,
-            status: 'available' as const
-          })
-        }
-      }
-
-      return {
-        date,
-        slots,
-        workTime: {
-          start: '09:00',
-          end: '21:00'
-        }
-      }
+      // ⚠️ 错误直接抛出，让调用方处理
+      // 这样可以区分不同的错误场景（推拿师不存在、网络错误等）
+      console.error('❌ 获取可预约时段API调用失败:', error)
+      throw error
     }
   }
 }

@@ -40,6 +40,7 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [timeSlots, setTimeSlots] = useState<TimeSlot[][]>([])  // 存储从API获取的时间段
   const [loadingSlots, setLoadingSlots] = useState(false)
+  const [slotsError, setSlotsError] = useState<string>('')  // 时段加载错误提示
 
   // 暴露方法给父组件
   useImperativeHandle(ref, () => ({
@@ -72,6 +73,7 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
     if (!therapistId || !selectedDate || !selectedService) return
 
     setLoadingSlots(true)
+    setSlotsError('')  // 清除之前的错误
     try {
       const result = await therapistService.getAvailableSlots(
         therapistId,
@@ -127,40 +129,26 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
         }
         setTimeSlots(grid)
       } else {
-        // 如果API没有返回有效数据，默认全部可用
-        console.log('API未返回有效时段数据，使用默认全部可用')
-        const grid = []
-        for (let hour = 9; hour <= 21; hour++) {
-          const hourSlots = []
-          for (let minute = 0; minute < 60; minute += 10) {
-            const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-            hourSlots.push({
-              time,
-              available: true,
-              status: 'available' as const
-            })
-          }
-          grid.push(hourSlots)
-        }
-        setTimeSlots(grid)
+        // 如果API返回了有效响应但没有时段数据，说明该时段已满
+        console.log('该推拿师在选定时间无可用时段')
+        setSlotsError('该推拿师在此时间段已满，请选择其他时间或推拿师')
+        setTimeSlots([])
       }
-    } catch (error) {
-      console.error('Failed to fetch available slots:', error)
-      // 如果获取失败，使用默认全部可用
-      const grid = []
-      for (let hour = 9; hour <= 21; hour++) {
-        const hourSlots = []
-        for (let minute = 0; minute < 60; minute += 10) {
-          const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-          hourSlots.push({
-            time,
-            available: true,
-            status: 'available' as const
-          })
-        }
-        grid.push(hourSlots)
+    } catch (error: any) {
+      console.error('❌ 获取可用时段失败:', error)
+
+      // 处理不同的错误场景
+      if (error.code === 1003) {  // NOT_FOUND
+        setSlotsError('该推拿师不存在或不可用，请返回重新选择')
+      } else if (error.code === 1010) {  // USER_NOT_FOUND
+        setSlotsError('用户信息异常，请重新进入')
+      } else if (error.response?.status >= 500) {  // 服务器错误
+        setSlotsError('服务器异常，请稍后重试')
+      } else {
+        setSlotsError('加载可用时段失败，请检查网络后重试')
       }
-      setTimeSlots(grid)
+
+      setTimeSlots([])
     } finally {
       setLoadingSlots(false)
     }
@@ -331,38 +319,52 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
 
           {/* 时间段选择 */}
           {selectedDate && (
-            <ScrollView className="time-grid-container" scrollY>
-              <View className="time-grid-wrapper">
-                {loadingSlots ? (
-                  <View className="loading-slots">
-                    <Text>加载可用时段...</Text>
-                  </View>
-                ) : (
-                  timeGrid.map((row, rowIndex) => (
-                  <View key={rowIndex} className="time-row">
-                    <Text className="hour-label">{row.hour}</Text>
-                    <View className="time-slots">
-                      {row.slots.map((slot, slotIndex) => (
-                        <View
-                          key={slotIndex}
-                          className={`time-slot ${
-                            slot.available 
-                              ? isTimeSlotSelected(slot.time)
-                                ? 'selected' 
-                                : 'available'
-                              : 'disabled'
-                          }`}
-                          onClick={() => handleTimeSelect(slot.time, slot.available)}
-                        >
-                          <Text className="time-text">:{slot.time.split(':')[1]}</Text>
-                        </View>
-                      ))}
+            <>
+              {/* 错误提示 */}
+              {slotsError && (
+                <View className="error-message">
+                  <Text>{slotsError}</Text>
+                </View>
+              )}
+
+              <ScrollView className="time-grid-container" scrollY>
+                <View className="time-grid-wrapper">
+                  {loadingSlots ? (
+                    <View className="loading-slots">
+                      <Text>加载可用时段...</Text>
                     </View>
-                  </View>
-                ))
-                )}
-              </View>
-            </ScrollView>
+                  ) : slotsError ? (
+                    <View className="error-state">
+                      <Text>暂无可用时段</Text>
+                      <Text className="error-hint">请选择其他日期或推拿师</Text>
+                    </View>
+                  ) : (
+                    timeGrid.map((row, rowIndex) => (
+                    <View key={rowIndex} className="time-row">
+                      <Text className="hour-label">{row.hour}</Text>
+                      <View className="time-slots">
+                        {row.slots.map((slot, slotIndex) => (
+                          <View
+                            key={slotIndex}
+                            className={`time-slot ${
+                              slot.available
+                                ? isTimeSlotSelected(slot.time)
+                                  ? 'selected'
+                                  : 'available'
+                                : 'disabled'
+                            }`}
+                            onClick={() => handleTimeSelect(slot.time, slot.available)}
+                          >
+                            <Text className="time-text">:{slot.time.split(':')[1]}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  ))
+                  )}
+                </View>
+              </ScrollView>
+            </>
           )}
         </View>
       )}

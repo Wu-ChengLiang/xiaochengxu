@@ -33,35 +33,58 @@ const Appointment: React.FC = () => {
       const location = await getLocationService.getCurrentLocation()
 
       // 获取附近门店（只显示最近的2家）
-      const nearbyStores = await storeService.getNearbyStores(
-        location.latitude,
-        location.longitude,
-        1,
-        2
-      )
-      setStores(nearbyStores.list)
+      try {
+        const nearbyStores = await storeService.getNearbyStores(
+          location.latitude,
+          location.longitude,
+          1,
+          2
+        )
+        setStores(nearbyStores.list)
+      } catch (error) {
+        console.error('❌ 获取附近门店失败:', error)
+        Taro.showToast({
+          title: '获取附近门店失败，请检查网络',
+          icon: 'none'
+        })
+        setStores([])
+      }
 
       // 获取所有门店数据（用于更多门店）
-      const allStoresData = await storeService.getNearbyStores(
-        location.latitude,
-        location.longitude,
-        1,
-        20  // 获取更多数据
-      )
-      setAllStores(allStoresData.list)
+      try {
+        const allStoresData = await storeService.getNearbyStores(
+          location.latitude,
+          location.longitude,
+          1,
+          20  // 获取更多数据
+        )
+        setAllStores(allStoresData.list)
+      } catch (error) {
+        console.error('❌ 获取所有门店失败:', error)
+        setAllStores([])
+      }
 
       // 获取推荐推拿师（使用新的带距离计算的方法）
-      const recommendedTherapists = await therapistService.getRecommendedTherapistsWithDistance(
-        1,
-        10
-      )
-      setTherapists(recommendedTherapists.list)
+      try {
+        const recommendedTherapists = await therapistService.getRecommendedTherapistsWithDistance(
+          1,
+          10
+        )
+        setTherapists(recommendedTherapists.list)
+      } catch (error) {
+        console.error('❌ 获取推荐推拿师失败:', error)
+        Taro.showToast({
+          title: '获取推拿师列表失败，请检查网络',
+          icon: 'none'
+        })
+        setTherapists([])
+      }
 
     } catch (error) {
-      console.error('加载数据失败:', error)
+      console.error('❌ 加载页面数据失败:', error)
 
       Taro.showToast({
-        title: '加载失败，请重试',
+        title: '页面加载失败，请刷新重试',
         icon: 'none'
       })
     } finally {

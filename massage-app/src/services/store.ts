@@ -17,39 +17,21 @@ class StoreService {
 
       console.log('✅ 门店列表API调用成功:', data)
 
-      // 检查响应结构
-      if (data && data.data && data.data.list) {
-        // 规范化图片URL（HTTP→HTTPS）
-        const normalizedStores = data.data.list.map((store: Store) => ({
-          ...store,
-          image: normalizeImageUrl(store.image),
-          images: store.images?.map(img => normalizeImageUrl(img))
-        }))
-        return {
-          ...data.data,
-          list: normalizedStores
-        }
-      } else {
-        // 如果API不存在，返回mock数据
-        console.log('⚠️ API不存在，使用mock数据')
-        return {
-          list: [],
-          total: 0,
-          page: 1,
-          pageSize: 10,
-          hasMore: false
-        }
+      // 规范化图片URL（HTTP→HTTPS）
+      const normalizedStores = data.data.list.map((store: Store) => ({
+        ...store,
+        image: normalizeImageUrl(store.image),
+        images: store.images?.map(img => normalizeImageUrl(img))
+      }))
+
+      return {
+        ...data.data,
+        list: normalizedStores
       }
     } catch (error) {
-      console.log('⚠️ 门店API调用失败，使用mock数据:', error)
-      // 返回空的mock数据结构
-      return {
-        list: [],
-        total: 0,
-        page: 1,
-        pageSize: 10,
-        hasMore: false
-      }
+      // ⚠️ 错误直接抛出，让调用方处理
+      console.error('❌ 门店列表API调用失败:', error)
+      throw error
     }
   }
   

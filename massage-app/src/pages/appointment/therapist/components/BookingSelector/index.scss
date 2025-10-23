@@ -129,6 +129,20 @@
       }
     }
 
+    // 错误提示
+    .error-message {
+      padding: 16rpx 32rpx;
+      background: #fff3cd;
+      border-left: 4rpx solid #ffc107;
+      margin-bottom: 16rpx;
+
+      & > text {
+        font-size: 26rpx;
+        color: #856404;
+        display: block;
+      }
+    }
+
     .time-grid-container {
       height: 400rpx;
       padding: 0 32rpx;
@@ -136,6 +150,43 @@
 
     .time-grid-wrapper {
       padding-bottom: 32rpx;
+    }
+
+    // 加载状态
+    .loading-slots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 300rpx;
+
+      & > text {
+        font-size: 28rpx;
+        color: #999;
+      }
+    }
+
+    // 错误状态
+    .error-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 300rpx;
+      background: #f9f9f9;
+      border-radius: 12rpx;
+
+      & > text {
+        font-size: 28rpx;
+        color: #e74c3c;
+        text-align: center;
+        margin-bottom: 12rpx;
+
+        &.error-hint {
+          font-size: 24rpx;
+          color: #999;
+          margin-bottom: 0;
+        }
+      }
     }
 
     .time-row {
