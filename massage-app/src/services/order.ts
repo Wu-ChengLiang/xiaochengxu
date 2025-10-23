@@ -83,6 +83,7 @@ export interface PaymentParams {
   package: string
   signType: string
   paySign: string
+  total_fee?: string | number  // ✅ 新增：微信支付所需的总金额（分为单位）
 }
 
 /**
@@ -421,21 +422,46 @@ class OrderService {
         paymentMethod: 'wechat'
       })
 
+      console.log('💳 后端支付参数响应:', response.data)
+
       // 返回微信支付参数
       if (response.data.wxPayParams) {
-        return response.data.wxPayParams
+        // ✅ 确保 total_fee 包含在响应中
+        const paymentParams = response.data.wxPayParams
+
+        // ⚠️ 如果后端没有返回 total_fee，尝试从 response.data 中获取
+        if (!paymentParams.total_fee && response.data.amount) {
+          paymentParams.total_fee = response.data.amount
+        }
+
+        console.log('💳 微信支付参数已提取:', {
+          timeStamp: paymentParams.timeStamp,
+          nonceStr: paymentParams.nonceStr?.substring(0, 8) + '...',
+          package: paymentParams.package,
+          signType: paymentParams.signType,
+          paySign: paymentParams.paySign?.substring(0, 16) + '...',
+          total_fee: paymentParams.total_fee
+        })
+
+        return paymentParams
       }
 
       // 模拟支付参数（开发环境）
+      console.warn('⚠️ 后端未返回wxPayParams，使用模拟支付参数')
       return {
         timeStamp: String(Math.floor(Date.now() / 1000)),
         nonceStr: Math.random().toString(36).substr(2, 15),
         package: `prepay_id=${Math.random().toString(36).substr(2, 15)}`,
         signType: 'MD5',
         paySign: Math.random().toString(36).substr(2, 32)
+        // ⚠️ 注意：模拟参数中没有 total_fee，实际支付时后端必须返回真实参数
       }
     } catch (error: any) {
-      console.error('获取支付参数失败:', error)
+      console.error('💳 获取支付参数失败:', error)
+      console.error('💳 错误详情:', {
+        message: error.message,
+        response: error.response?.data
+      })
       throw new Error('获取支付参数失败')
     }
   }
