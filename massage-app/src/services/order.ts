@@ -411,25 +411,22 @@ class OrderService {
   }
 
   /**
-   * 获取支付参数
+   * 获取支付参数（仅获取，不改变订单状态）
    * @param orderNo 订单号
-   * @returns 支付参数
+   * @returns 微信支付参数或空对象
    */
-  async getPaymentParams(orderNo: string): Promise<PaymentParams> {
+  async getPaymentParams(orderNo: string): Promise<PaymentParams | any> {
     try {
-      const response = await post('/orders/pay', {
-        orderNo,
-        paymentMethod: 'wechat'
-      })
+      // ✅ 调用新接口：获取支付参数（不改变订单状态）
+      const response = await get(`/orders/${orderNo}/payment-params`)
 
       console.log('💳 后端支付参数响应:', response.data)
 
       // 返回微信支付参数
       if (response.data.wxPayParams) {
-        // ✅ 确保 total_fee 包含在响应中
         const paymentParams = response.data.wxPayParams
 
-        // ⚠️ 如果后端没有返回 total_fee，尝试从 response.data 中获取
+        // ✅ 确保 total_fee 包含在响应中
         if (!paymentParams.total_fee && response.data.amount) {
           paymentParams.total_fee = response.data.amount
         }
@@ -446,7 +443,9 @@ class OrderService {
         return paymentParams
       }
 
-      throw new Error('后端未返回微信支付参数')
+      // ✅ 如果是余额支付，返回 null 或空对象（前端会使用 /orders/pay 进行实际支付）
+      console.log('💰 余额支付订单，无需微信支付参数')
+      return null
     } catch (error: any) {
       console.error('💳 获取支付参数失败:', error)
       console.error('💳 错误详情:', {
