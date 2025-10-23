@@ -255,19 +255,40 @@ export class GiftService {
         extraData: {
           productType: 'merchandise',
           productId: params.productId,
+          productName: product.name,              // ✅ 新增：商品名称（API文档必需）
           quantity: params.quantity,
           specifications: product.specifications
         }
       }
+
+      // 🎁 调试日志
+      console.log('📦 创建商品订单')
+      console.log('👤 当前用户ID:', getCurrentUserId())
+      console.log('📋 订单数据:', {
+        orderType: orderData.orderType,
+        userId: orderData.userId,
+        title: orderData.title,
+        amount: `${orderData.amount}分 (¥${(orderData.amount / 100).toFixed(2)})`,
+        paymentMethod: orderData.paymentMethod,
+        extraData: orderData.extraData
+      })
 
       const response = await post('/orders/create', orderData, {
         showLoading: true,
         loadingTitle: '创建订单中...'
       })
 
+      console.log('✅ 商品订单创建成功')
+      console.log('📋 订单响应:', {
+        orderNo: response.data.orderNo,
+        amount: `${response.data.amount}分 (¥${(response.data.amount / 100).toFixed(2)})`,
+        paymentStatus: response.data.paymentStatus,
+        hasWxPayParams: !!response.data.wxPayParams
+      })
+
       return response.data
     } catch (error: any) {
-      console.error('创建商品订单失败:', error)
+      console.error('❌ 创建商品订单失败:', error)
       throw new Error(error.message || '创建商品订单失败')
     }
   }
