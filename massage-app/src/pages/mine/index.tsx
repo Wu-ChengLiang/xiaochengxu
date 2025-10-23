@@ -37,14 +37,21 @@ const Mine: React.FC = () => {
   const [bindingPhone, setBingingPhone] = useState(false)
   const [currentOpenid, setCurrentOpenid] = useState('')
 
+  // 用于标记是否需要刷新余额（避免多重渲染）
+  const isInitialLoad = React.useRef(true)
+
   useEffect(() => {
     initUser()
     checkLocation()
   }, [])
 
-  // 页面显示时刷新数据
+  // 页面显示时刷新数据 - 只在非初始加载时刷新
   useDidShow(() => {
-    refreshUserData()
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false
+      return
+    }
+    // 只刷新定位，不再重复刷新余额（已在initUser中获取）
     checkLocation()
   })
 
@@ -92,13 +99,6 @@ const Mine: React.FC = () => {
       setUserInfo(null)
     } finally {
       setLoading(false)
-    }
-  }
-
-  // 刷新用户数据
-  const refreshUserData = async () => {
-    if (userInfo?.phone) {
-      fetchBalance()
     }
   }
 

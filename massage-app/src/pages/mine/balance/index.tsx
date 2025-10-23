@@ -12,9 +12,15 @@ const Balance: React.FC = () => {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
 
+  // 避免重复初始化
+  const isInitialized = React.useRef(false)
+
   useEffect(() => {
-    fetchBalance()
-    fetchTransactions()
+    if (!isInitialized.current) {
+      isInitialized.current = true
+      fetchBalance()
+      fetchTransactions()
+    }
   }, [])
 
   // 触底加载更多
