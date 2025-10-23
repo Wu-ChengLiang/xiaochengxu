@@ -131,20 +131,53 @@ const OrderListPage: React.FC = () => {
     }
 
     try {
-      // ✅ 使用统一的支付服务
-      const paymentSuccess = await paymentService.pay({
-        orderNo: order.orderNo,
-        amount: order.amount,
-        paymentMethod: 'wechat',
-        title: order.title
+      Taro.showLoading({ title: '获取支付方式...' })
+
+      // ✅ 先获取支付参数（包含微信支付参数）
+      const paymentParams = await orderService.getPaymentParams(order.orderNo)
+
+      Taro.hideLoading()
+
+      // ✅ 弹出支付方式选择
+      const { tapIndex } = await Taro.showActionSheet({
+        itemList: ['微信支付', '余额支付'],
+        alertText: `订单金额：¥${(order.amount / 100).toFixed(2)}`
       })
 
-      if (paymentSuccess) {
-        // 支付成功，刷新订单列表
-        fetchOrders()
+      if (tapIndex === 0) {
+        // 微信支付
+        const paymentSuccess = await paymentService.pay({
+          orderNo: order.orderNo,
+          amount: order.amount,
+          paymentMethod: 'wechat',
+          title: order.title,
+          wxPayParams: paymentParams  // ✅ 传递支付参数
+        })
+
+        if (paymentSuccess) {
+          fetchOrders()
+        }
+      } else if (tapIndex === 1) {
+        // 余额支付
+        const paymentSuccess = await paymentService.pay({
+          orderNo: order.orderNo,
+          amount: order.amount,
+          paymentMethod: 'balance',
+          title: order.title
+        })
+
+        if (paymentSuccess) {
+          fetchOrders()
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
+      // 用户取消操作不显示错误
+      if (error.errMsg === 'showActionSheet:fail cancel') {
+        return
+      }
+
       console.error('❌ 支付失败:', error)
+      Taro.hideLoading()
       Taro.showToast({
         title: error.message || '支付失败',
         icon: 'none'

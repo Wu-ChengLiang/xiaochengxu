@@ -29,22 +29,84 @@
           cursor: pointer;
           transition: all 0.2s;
 
-          &:hover {
-            border-color: #ff6b6b;
-            background: #fff5f5;
+          // ✅ 可用状态 - 亮色可点击
+          &.available {
+            &:hover {
+              border-color: #ff6b6b;
+              background: #fff5f5;
+            }
+
+            .therapist-mini-avatar {
+              opacity: 1;
+            }
+
+            .therapist-name {
+              color: #333;
+            }
           }
 
-          .therapist-mini-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+          // ❌ 已预约状态 - 灰色不可点击
+          &.booked {
+            cursor: not-allowed;
+            opacity: 0.5;
+
+            .therapist-mini-avatar {
+              opacity: 0.6;
+              filter: grayscale(100%);
+            }
+
+            .therapist-name {
+              color: #999;
+            }
+
+            &:hover {
+              border-color: #e0e0e0;
+              background: white;
+            }
+          }
+
+          // 头像容器（相对定位用于放置标签）
+          .therapist-avatar-wrapper {
+            position: relative;
+            width: 48px;
+            height: 48px;
             margin-bottom: 8px;
+
+            .therapist-mini-avatar {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              display: block;
+            }
+
+            // 已预约标签
+            .booked-badge {
+              position: absolute;
+              top: -4px;
+              left: -4px;
+              background: rgba(0, 0, 0, 0.7);
+              border-radius: 50%;
+              width: 28px;
+              height: 28px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 2px;
+
+              .badge-text {
+                font-size: 10px;
+                color: white;
+                font-weight: bold;
+                text-align: center;
+                line-height: 1.2;
+              }
+            }
           }
 
           .therapist-name {
             font-size: 12px;
-            color: #333;
             text-align: center;
+            transition: color 0.2s;
           }
         }
       }

@@ -194,3 +194,23 @@ export interface PageData<T> {
   pageSize: number
   hasMore: boolean
 }
+
+// 推拿师排班相关类型
+// 推拿师某个时段的可用性
+export interface TherapistTimeSlot {
+  time: string              // "09:00"
+  available: boolean        // true | false（true表示可预约，false表示已预约）
+}
+
+// 推拿师某天的排班
+export interface TherapistDayAvailability {
+  date: string              // "2025-10-25"
+  dayOfWeek: string         // "周六"
+  workTime: string          // "9:00-21:00"
+  slots: TherapistTimeSlot[]
+}
+
+// 推拿师 + 排班信息
+export interface TherapistWithAvailability extends Therapist {
+  availability: TherapistDayAvailability[]
+}

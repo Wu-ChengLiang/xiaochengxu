@@ -37,14 +37,43 @@ const SymptomPage = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [loading, setLoading] = useState(true)
 
-  // 获取该门店的所有推拿师
+  // 获取该门店的所有推拿师 + 排班信息
   useEffect(() => {
-    if (storeId) {
-      therapistService.getTherapistsByStore(storeId as string).then(res => {
-        setTherapists(res.list)
-      })
+    if (storeId && selectedDate) {
+      const fetchTherapists = async () => {
+        try {
+          // 并行获取两个数据源
+          const [basicInfo, availabilityData] = await Promise.all([
+            therapistService.getTherapistsByStore(storeId as string),
+            therapistService.getTherapistsAvailability(
+              storeId as string,
+              selectedDate as string
+            )
+          ])
+
+          // 合并基本信息和排班数据
+          const merged = basicInfo.list.map(therapist => {
+            const availability = availabilityData.find((a: any) => a.id === therapist.id)
+            return {
+              ...therapist,
+              availability: availability?.availability || []
+            }
+          })
+
+          console.log('✅ 技师数据合并成功:', merged)
+          setTherapists(merged)
+        } catch (error) {
+          console.error('❌ 获取技师信息失败:', error)
+          // Fallback: 只使用基本信息
+          therapistService.getTherapistsByStore(storeId as string).then(res => {
+            setTherapists(res.list)
+          })
+        }
+      }
+
+      fetchTherapists()
     }
-  }, [storeId])
+  }, [storeId, selectedDate])
 
   // 获取症状分类
   useEffect(() => {
@@ -182,6 +211,8 @@ const SymptomPage = () => {
         <SymptomServiceList
           services={filteredServices}
           therapists={therapists}
+          selectedDate={selectedDate as string}
+          selectedTime={decodedTime}
           onAddToCart={handleAddToCart}
           cartServiceIds={cartServiceIds}
         />

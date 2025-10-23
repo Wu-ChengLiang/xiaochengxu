@@ -203,6 +203,29 @@ class TherapistService {
       throw error
     }
   }
+
+  // 获取门店所有推拿师的排班信息
+  // 用于症状页面显示技师可用性
+  async getTherapistsAvailability(
+    storeId: string,
+    date: string,
+    days: number = 3
+  ): Promise<any[]> {
+    try {
+      const data = await request(`/stores/${storeId}/therapists/availability`, {
+        data: { date, days }
+      })
+
+      console.log('✅ 门店推拿师排班API调用成功:', data)
+
+      // API返回的data是数组，直接返回
+      return Array.isArray(data.data) ? data.data : []
+    } catch (error) {
+      console.error('❌ 门店推拿师排班API调用失败:', error)
+      // 返回空数组，保证兼容性
+      return []
+    }
+  }
 }
 
 export const therapistService = new TherapistService()
