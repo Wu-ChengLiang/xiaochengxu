@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import { AtTabs, AtTabsPane, AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
+import { paymentService } from '@/services/payment.service'  // ✅ 新增导入
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import { parseDate } from '@/utils/date'  // ✅ iOS 兼容日期处理
 import './index.scss'
