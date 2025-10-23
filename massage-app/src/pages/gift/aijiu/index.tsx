@@ -119,35 +119,34 @@ const AijiuDetail: React.FC = () => {
               onClick={() => handleProductSelect(item)}
             >
               <View className="product-header">
-                <Text className="name">{item.name}</Text>
-                <Text className="price">¥{(item.price / 100).toFixed(0)}</Text>
+                <View className="header-left">
+                  <Text className="name">{item.name}</Text>
+                  <Text className="price">¥{(item.price / 100).toFixed(0)}</Text>
+                </View>
+                {selectedProduct.id === item.id && (
+                  <View className="header-right" onClick={(e) => e.stopPropagation()}>
+                    <View
+                      className="quantity-btn"
+                      onClick={() => handleQuantityChange('decrease')}
+                    >
+                      <AtIcon value="subtract-circle" size="18" color={quantity === 1 ? '#ccc' : '#a40035'} />
+                    </View>
+                    <Text className="quantity-value">{quantity}</Text>
+                    <View
+                      className="quantity-btn"
+                      onClick={() => handleQuantityChange('increase')}
+                    >
+                      <AtIcon value="add-circle" size="18" color="#a40035" />
+                    </View>
+                  </View>
+                )}
               </View>
               <Text className="desc">{item.description}</Text>
               {selectedProduct.id === item.id && (
-                <AtIcon value="check-circle" size="24" color="#a40035" />
+                <AtIcon value="check-circle" size="24" color="#a40035" className="check-icon" />
               )}
             </View>
           ))}
-        </View>
-      </View>
-
-      {/* 数量选择 */}
-      <View className="quantity-section">
-        <Text className="section-title">购买数量</Text>
-        <View className="quantity-selector">
-          <View
-            className="quantity-btn"
-            onClick={() => handleQuantityChange('decrease')}
-          >
-            <AtIcon value="subtract-circle" size="20" color={quantity === 1 ? '#ccc' : '#a40035'} />
-          </View>
-          <Text className="quantity-value">{quantity}</Text>
-          <View
-            className="quantity-btn"
-            onClick={() => handleQuantityChange('increase')}
-          >
-            <AtIcon value="add-circle" size="20" color="#a40035" />
-          </View>
         </View>
       </View>
 

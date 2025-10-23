@@ -21,7 +21,7 @@
 
     .product-image {
       width: 100%;
-      height: 300px;
+      height: 450px;
       border-radius: 12px;
       margin-bottom: 16px;
       overflow: hidden;
@@ -88,22 +88,61 @@
           width: 100%;
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           margin-bottom: 12px;
 
-          .name {
-            font-size: 30px;
-            font-weight: bold;
-            color: #333;
+          .header-left {
+            display: flex;
+            flex-direction: column;
             flex: 1;
+
+            .name {
+              font-size: 30px;
+              font-weight: bold;
+              color: #333;
+              margin-bottom: 8px;
+            }
+
+            .price {
+              font-size: 32px;
+              font-weight: bold;
+              color: #a40035;
+            }
           }
 
-          .price {
-            font-size: 32px;
-            font-weight: bold;
-            color: #a40035;
-            white-space: nowrap;
+          .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
             margin-left: 16px;
+
+            .quantity-btn {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              background: #fff;
+              transition: all 0.2s;
+              border: 1px solid #e0e0e0;
+
+              &:active {
+                transform: scale(0.95);
+              }
+
+              .at-icon {
+                font-size: 18px;
+              }
+            }
+
+            .quantity-value {
+              font-size: 24px;
+              font-weight: bold;
+              color: #333;
+              min-width: 40px;
+              text-align: center;
+            }
           }
         }
 
@@ -115,60 +154,11 @@
           flex: 1;
         }
 
-        .at-icon {
+        .check-icon {
           position: absolute;
-          top: 24px;
+          bottom: 24px;
           right: 24px;
         }
-      }
-    }
-  }
-
-  // 数量选择区域
-  .quantity-section {
-    background: #fff;
-    padding: 32px;
-    margin-bottom: 16px;
-
-    .section-title {
-      font-size: 32px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 24px;
-      display: block;
-    }
-
-    .quantity-selector {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-
-      .quantity-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: #f0f0f0;
-        transition: all 0.2s;
-
-        &:active {
-          transform: scale(0.95);
-        }
-
-        .at-icon {
-          font-size: 24px;
-        }
-      }
-
-      .quantity-value {
-        font-size: 32px;
-        font-weight: bold;
-        color: #333;
-        min-width: 60px;
-        text-align: center;
       }
     }
   }
