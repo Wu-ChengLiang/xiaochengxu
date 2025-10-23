@@ -1,6 +1,7 @@
 # 推拿师排班查询API
 
 > **文档更新时间**: 2025-10-23
+> **实现状态**: ✅ 已实现
 > **用途**: 支持门店按预约流程中，症状选择页面的技师可用性判断
 > **设计原则**: 单次API调用返回门店所有技师的多日排班数据
 
@@ -158,24 +159,36 @@ curl "https://mingyitang1024.com/api/v2/stores/27/therapists/availability?date=2
 
 ## 实现细节
 
+### 后端实现位置
+
+- **路由处理**: `src/routes/v2/client.js:53-102` - API路由定义和请求验证
+- **核心逻辑**: `src/services/v2/therapistService.js:287-404` - 排班查询和数据转换
+  - `getTherapistAvailability()` - 主方法
+  - `getTherapistsAppointmentsInDateRange()` - 批量查询优化（避免N+1）
+  - `generateTimeSlots()` - 时段生成
+  - `getDayOfWeek()` - 星期转换
+
+### 数据库优化
+
+- **索引**: `migrations/add_appointment_indexes.sql`
+  ```sql
+  CREATE INDEX idx_appointments_therapist_date_status
+  ON appointments(therapist_id, appointment_date, status);
+  ```
+  - 已在数据库中创建
+  - 优化日期范围查询性能
+
 ### 排班生成逻辑
 
-```sql
--- 查询特定日期技师的可用时段
--- available = true 当且仅当 该时段没有已确认的预约
-
-SELECT
-  time_slot,
-  NOT EXISTS (
-    SELECT 1 FROM appointments a
-    WHERE a.therapist_id = :therapistId
-    AND a.appointment_date = :date
-    AND a.start_time = time_slot
-    AND a.status IN ('pending', 'confirmed')
-  ) as available
-FROM time_slots
-WHERE therapist.work_time_start <= time_slot <= therapist.work_time_end
-ORDER BY time_slot;
+```javascript
+// 实现原理
+1. 检查门店是否存在 → getStoreDetail(storeId)
+2. 获取门店所有活跃技师 → therapistService.searchTherapists(storeId)
+3. 一次性查询所有技师在日期范围内的预约
+   - SQL: WHERE therapist_id IN (...) AND appointment_date IN (...)
+   - 仅查询 pending/confirmed 状态的预约
+4. 为每个技师生成时段列表 9:00-21:00，每小时一个
+5. 标记已预约时段 available=false，其余为 true
 ```
 
 ### 性能优化建议
