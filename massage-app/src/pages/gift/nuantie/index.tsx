@@ -25,9 +25,15 @@ const NuantieDetail: React.FC = () => {
   }, [])
 
   const handleProductSelect = (index: number) => {
+    const product = products[index]
     setCurrentIndex(index)
-    setSelectedProduct(products[index])
+    setSelectedProduct(product)
     setQuantity(1)
+
+    // 跳转到商品详情页
+    Taro.navigateTo({
+      url: `/pages/gift/product-detail/index?id=${product.id}`
+    })
   }
 
   const handleSwiperChange = (e: any) => {

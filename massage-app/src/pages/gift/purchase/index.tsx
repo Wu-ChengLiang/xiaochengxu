@@ -15,11 +15,31 @@ const GiftCardPurchase: React.FC = () => {
   const [quantity, setQuantity] = useState(1)  // 数量选择
 
   useEffect(() => {
+    // 🎁 调试日志：检查礼卡加载
+    console.log('🎁 电子礼卡页面加载')
+    console.log('📍 router.params:', { cardId })
+
     if (cardId) {
       const card = GiftService.getGiftCardById(cardId as string)
+      console.log('🔍 查询礼卡结果:', {
+        cardId,
+        found: !!card,
+        card: card ? {
+          id: card.id,
+          name: card.name,
+          image: card.image,
+          type: card.type
+        } : null
+      })
+
       if (card) {
         setCardInfo(card)
+        console.log('✅ 礼卡信息已设置')
+      } else {
+        console.warn('⚠️ 礼卡未找到:', cardId)
       }
+    } else {
+      console.warn('⚠️ cardId 未获取到:', cardId)
     }
   }, [cardId])
 
