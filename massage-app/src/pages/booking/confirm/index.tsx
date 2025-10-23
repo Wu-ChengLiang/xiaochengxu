@@ -26,19 +26,47 @@ interface CartItem {
 }
 
 interface OrderConfirmPageParams {
+  // 模式1：新预约
   therapistId?: string
-  storeId: string
-  items: string // JSON string of CartItem[]
+  storeId?: string
+  items?: string // JSON string of CartItem[]
   from?: string  // 来源标识，如 'symptom'
+
+  // 模式2：已有订单
+  orderNo?: string  // 订单号
+}
+
+interface ExistingOrder {
+  orderNo: string
+  amount: number  // 分为单位
+  title: string
+  paymentMethod: 'wechat' | 'balance'
+  paymentStatus: string
+  extraData?: {
+    therapistName?: string
+    therapistAvatar?: string
+    serviceName?: string
+    appointmentDate?: string
+    startTime?: string
+    duration?: number
+    storeId?: string
+    storeName?: string
+    storeAddress?: string
+  }
 }
 
 const OrderConfirmPage: React.FC = () => {
   const router = useRouter()
   const params = router.params as unknown as OrderConfirmPageParams
-  
+
+  // ✅ 判断模式：新预约 vs 已有订单
+  const isExistingOrderMode = !!params.orderNo
+  const isNewAppointmentMode = !isExistingOrderMode
+
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [therapistInfo, setTherapistInfo] = useState<any>(null)
   const [storeInfo, setStoreInfo] = useState<any>(null)
+  const [existingOrder, setExistingOrder] = useState<ExistingOrder | null>(null)  // ✅ 新增：已有订单
   const [loading, setLoading] = useState(true)
   const [countdown, setCountdown] = useState(180) // 3分钟倒计时
   const [paymentMethod, setPaymentMethod] = useState<'wechat' | 'balance'>('wechat')
@@ -49,29 +77,34 @@ const OrderConfirmPage: React.FC = () => {
   const timerRef = useRef<any>(null)
 
   useEffect(() => {
-    // 解析传递的数据
+    // ✅ 区分模式初始化
     try {
-      const items = JSON.parse(decodeURIComponent(params.items || '[]'))
-      setCartItems(items)
+      if (isExistingOrderMode) {
+        // 模式2：已有订单 - 加载订单详情
+        fetchExistingOrder()
+      } else {
+        // 模式1：新预约 - 解析购物车数据
+        const items = JSON.parse(decodeURIComponent(params.items || '[]'))
+        setCartItems(items)
+        fetchTherapistAndStoreInfo()
+      }
 
-      // 获取推拿师和门店信息
-      fetchTherapistAndStoreInfo()
-      // 获取用户余额
+      // 两个模式都需要获取用户余额和折扣
       fetchUserBalance()
-      // 获取用户折扣信息
       fetchUserDiscount()
     } catch (error) {
       Taro.showToast({
-        title: '数据解析失败',
+        title: '数据加载失败',
         icon: 'none'
       })
       setTimeout(() => Taro.navigateBack(), 1500)
     }
   }, [params])
 
-  // 倒计时逻辑
+  // 倒计时逻辑（仅新预约模式需要）
   useEffect(() => {
-    if (!loading && cartItems.length > 0) {
+    // ✅ 已有订单模式不需要倒计时
+    if (!loading && isNewAppointmentMode && cartItems.length > 0) {
       timerRef.current = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -96,7 +129,7 @@ const OrderConfirmPage: React.FC = () => {
         clearInterval(timerRef.current)
       }
     }
-  }, [loading, cartItems])
+  }, [loading, cartItems, isNewAppointmentMode])
 
   // 获取用户折扣信息
   const fetchUserDiscount = async () => {
@@ -134,6 +167,34 @@ const OrderConfirmPage: React.FC = () => {
     }
   }
 
+  // ✅ 新增：获取已有订单详情
+  const fetchExistingOrder = async () => {
+    try {
+      setLoading(true)
+      const order = await orderService.getOrderDetail(params.orderNo!)
+      setExistingOrder(order)
+
+      // 获取门店信息（如果订单中有storeId）
+      if (order.extraData?.storeId) {
+        try {
+          const storeRes = await storeService.getStoreDetail(order.extraData.storeId)
+          setStoreInfo(storeRes.data)
+        } catch (error) {
+          console.error('获取门店信息失败:', error)
+        }
+      }
+
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      Taro.showToast({
+        title: '获取订单信息失败',
+        icon: 'none'
+      })
+      setTimeout(() => Taro.navigateBack(), 1500)
+    }
+  }
+
   const fetchTherapistAndStoreInfo = async () => {
     try {
       setLoading(true)
@@ -145,7 +206,7 @@ const OrderConfirmPage: React.FC = () => {
       }
 
       // 获取门店信息
-      const storeRes = await storeService.getStoreDetail(params.storeId)
+      const storeRes = await storeService.getStoreDetail(params.storeId!)
       const storeData = storeRes.data
 
       setStoreInfo(storeData)
@@ -181,6 +242,12 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const getTotalPrice = () => {
+    // ✅ 已有订单模式：直接使用订单金额（转为元）
+    if (isExistingOrderMode && existingOrder) {
+      return existingOrder.amount / 100  // 订单金额是分，转为元
+    }
+
+    // 新预约模式：计算购物车总价
     const originalTotal = cartItems.reduce((sum, item) => sum + item.price, 0)
     // 如果有折扣率，计算折后价
     if (userDiscountRate && userDiscountRate < 1) {
@@ -193,6 +260,12 @@ const OrderConfirmPage: React.FC = () => {
 
   // 获取原价（用于展示划线价）
   const getOriginalPrice = () => {
+    // ✅ 已有订单模式：与总价相同（不显示划线价）
+    if (isExistingOrderMode && existingOrder) {
+      return existingOrder.amount / 100
+    }
+
+    // 新预约模式：计算原价
     return cartItems.reduce((sum, item) => sum + item.price, 0)
   }
 
@@ -232,18 +305,6 @@ const OrderConfirmPage: React.FC = () => {
   }
 
   const handlePayment = async () => {
-    // 症状调理模式下推拿师信息在cartItems中，不需要therapistInfo
-    const isSymptomMode = params.from === 'symptom'
-    const needTherapistInfo = !isSymptomMode && !therapistInfo
-
-    if (cartItems.length === 0 || needTherapistInfo || !storeInfo) {
-      Taro.showToast({
-        title: '订单信息不完整',
-        icon: 'none'
-      })
-      return
-    }
-
     // 余额支付前再次检查余额
     if (paymentMethod === 'balance' && !isBalanceSufficient()) {
       Taro.showToast({
@@ -255,101 +316,171 @@ const OrderConfirmPage: React.FC = () => {
     }
 
     try {
-      Taro.showLoading({
-        title: '创建订单...'
-      })
-
-      // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
-      const firstItem = cartItems[0]
-
-      // 调试日志 - 查看购物车项目数据
-      console.log('🛒 购物车第一个项目:', firstItem)
-      console.log('🛒 firstItem.therapistId:', firstItem.therapistId)
-      console.log('🛒 params.therapistId:', params.therapistId)
-      console.log('🛒 params.from:', params.from)
-
-      const orderParams: CreateOrderParams = {
-        therapistId: firstItem.therapistId || params.therapistId || 'symptom-mode', // 优先使用购物车中的技师ID
-        storeId: params.storeId,
-        serviceId: firstItem.serviceId,
-        serviceName: firstItem.serviceName,
-        duration: firstItem.duration,
-        price: firstItem.price,
-        discountPrice: firstItem.discountPrice,
-        appointmentDate: firstItem.date,
-        appointmentTime: firstItem.time,
-        therapistName: firstItem.therapistName,
-        therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar)
+      // ✅ 区分两个模式
+      if (isExistingOrderMode) {
+        // 模式2：已有订单 - 直接支付
+        await handleExistingOrderPayment()
+      } else {
+        // 模式1：新预约 - 创建订单后支付
+        await handleNewAppointmentPayment()
       }
-
-      // 调试日志 - 查看最终的订单参数
-      console.log('📦 最终的订单参数:', orderParams)
-      console.log('📦 therapistId将要传递的值:', orderParams.therapistId)
-
-      // 创建订单
-      const result = await orderService.createAppointmentOrder(orderParams)
-      const order = result.order
-
-      console.log('✅ 订单创建成功:', result)
-      console.log('✅ 订单号:', order.orderNo)
-      console.log('✅ 支付参数:', order.wxPayParams)
-
-      Taro.hideLoading()
-
-      // ✅ 检查订单创建结果
-      if (!order || !order.orderNo) {
-        throw new Error('订单创建失败，未返回订单号')
-      }
-
-      // ✅ 微信支付需要检查wxPayParams
-      if (paymentMethod === 'wechat') {
-        if (!order.wxPayParams) {
-          throw new Error('微信支付参数缺失，请检查用户登录状态或尝试余额支付')
-        }
-        console.log('✅ 微信支付参数完整性检查:', {
-          timeStamp: !!order.wxPayParams.timeStamp,
-          nonceStr: !!order.wxPayParams.nonceStr,
-          package: !!order.wxPayParams.package,
-          signType: !!order.wxPayParams.signType,
-          paySign: !!order.wxPayParams.paySign
-        })
-      }
-
-      // 调用统一支付接口
-      const paymentSuccess = await paymentService.pay({
-        orderNo: order.orderNo,
-        amount: (order.totalAmount || getTotalPrice()) * 100, // ✅ getTotalPrice()返回元，需要乘以100转为分
-        paymentMethod: paymentMethod,
-        title: `${firstItem.serviceName} - ${firstItem.therapistName}`,
-        wxPayParams: order.wxPayParams  // 传递后端返回的微信支付参数
-      } as any)
-
-      if (paymentSuccess) {
-        // 支付成功后更新余额显示
-        if (paymentMethod === 'balance') {
-          await fetchUserBalance()
-        }
-
-        setTimeout(() => {
-          Taro.redirectTo({
-            url: `/pages/booking/success/index?orderNo=${order.orderNo}`
-          })
-        }, 1500)
-      }
-      // 注意: 如果支付失败或用户取消, paymentService.pay() 内部已经显示错误提示
-      // 不需要额外处理
     } catch (error) {
       console.error('❌ 支付流程错误:', error)
       Taro.hideLoading()
 
-      // ✅ 显示更详细的错误信息
-      const errorMessage = error.message || error.errMsg || '订单创建失败'
+      const errorMessage = error.message || error.errMsg || '支付失败'
       Taro.showModal({
         title: '支付失败',
         content: errorMessage,
         showCancel: false,
         confirmText: '知道了'
       })
+    }
+  }
+
+  // ✅ 新增：处理已有订单的支付
+  const handleExistingOrderPayment = async () => {
+    if (!existingOrder) {
+      throw new Error('订单信息丢失')
+    }
+
+    Taro.showLoading({
+      title: '准备支付...'
+    })
+
+    try {
+      const orderNo = existingOrder.orderNo
+      const amount = existingOrder.amount  // 分为单位
+
+      // 根据支付方式处理
+      if (paymentMethod === 'wechat') {
+        // 获取微信支付参数
+        console.log('💳 获取微信支付参数，订单号:', orderNo)
+        const paymentParams = await orderService.getPaymentParams(orderNo)
+
+        console.log('💳 支付参数获取成功:', paymentParams)
+
+        if (!paymentParams) {
+          throw new Error('获取支付参数失败')
+        }
+
+        Taro.hideLoading()
+
+        // 调用统一支付接口
+        const paymentSuccess = await paymentService.pay({
+          orderNo: orderNo,
+          amount: amount,
+          paymentMethod: 'wechat',
+          title: existingOrder.title,
+          wxPayParams: paymentParams
+        } as any)
+
+        if (paymentSuccess) {
+          // 支付成功，跳转确认页
+          setTimeout(() => {
+            Taro.redirectTo({
+              url: `/pages/booking/success/index?orderNo=${orderNo}`
+            })
+          }, 1500)
+        }
+      } else {
+        // 余额支付 - 直接调用支付接口
+        console.log('💰 余额支付，订单号:', orderNo)
+
+        const paymentSuccess = await paymentService.pay({
+          orderNo: orderNo,
+          amount: amount,
+          paymentMethod: 'balance',
+          title: existingOrder.title
+        } as any)
+
+        Taro.hideLoading()
+
+        if (paymentSuccess) {
+          // 支付成功，更新余额并跳转确认页
+          await fetchUserBalance()
+
+          setTimeout(() => {
+            Taro.redirectTo({
+              url: `/pages/booking/success/index?orderNo=${orderNo}`
+            })
+          }, 1500)
+        }
+      }
+    } catch (error) {
+      Taro.hideLoading()
+      throw error
+    }
+  }
+
+  // ✅ 改造：处理新预约的支付（现有逻辑）
+  const handleNewAppointmentPayment = async () => {
+    // 症状调理模式下推拿师信息在cartItems中，不需要therapistInfo
+    const isSymptomMode = params.from === 'symptom'
+    const needTherapistInfo = !isSymptomMode && !therapistInfo
+
+    if (cartItems.length === 0 || needTherapistInfo || !storeInfo) {
+      throw new Error('订单信息不完整')
+    }
+
+    Taro.showLoading({
+      title: '创建订单...'
+    })
+
+    // 使用第一个购物项的信息（如果有多个服务，可以后续优化）
+    const firstItem = cartItems[0]
+
+    const orderParams: CreateOrderParams = {
+      therapistId: firstItem.therapistId || params.therapistId || 'symptom-mode',
+      storeId: params.storeId!,
+      serviceId: firstItem.serviceId,
+      serviceName: firstItem.serviceName,
+      duration: firstItem.duration,
+      price: firstItem.price,
+      discountPrice: firstItem.discountPrice,
+      appointmentDate: firstItem.date,
+      appointmentTime: firstItem.time,
+      therapistName: firstItem.therapistName,
+      therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar)
+    }
+
+    // 创建订单
+    const result = await orderService.createAppointmentOrder(orderParams)
+    const order = result.order
+
+    Taro.hideLoading()
+
+    if (!order || !order.orderNo) {
+      throw new Error('订单创建失败，未返回订单号')
+    }
+
+    // 微信支付需要检查wxPayParams
+    if (paymentMethod === 'wechat') {
+      if (!order.wxPayParams) {
+        throw new Error('微信支付参数缺失，请检查用户登录状态或尝试余额支付')
+      }
+    }
+
+    // 调用统一支付接口
+    const paymentSuccess = await paymentService.pay({
+      orderNo: order.orderNo,
+      amount: (order.totalAmount || getTotalPrice()) * 100,
+      paymentMethod: paymentMethod,
+      title: `${firstItem.serviceName} - ${firstItem.therapistName}`,
+      wxPayParams: order.wxPayParams
+    } as any)
+
+    if (paymentSuccess) {
+      // 支付成功后更新余额显示
+      if (paymentMethod === 'balance') {
+        await fetchUserBalance()
+      }
+
+      setTimeout(() => {
+        Taro.redirectTo({
+          url: `/pages/booking/success/index?orderNo=${order.orderNo}`
+        })
+      }, 1500)
     }
   }
 
@@ -371,22 +502,50 @@ const OrderConfirmPage: React.FC = () => {
 
       {/* 预约信息 */}
       <View className="booking-info">
-        {cartItems.map((item, index) => (
-          <View key={index} className="booking-item">
-            <Image 
-              className="therapist-avatar" 
-              src={item.therapistAvatar || therapistInfo?.avatar} 
-            />
+        {isExistingOrderMode && existingOrder ? (
+          // ✅ 已有订单显示方式
+          <View className="booking-item">
+            {existingOrder.extraData?.therapistAvatar && (
+              <Image
+                className="therapist-avatar"
+                src={existingOrder.extraData.therapistAvatar}
+              />
+            )}
             <View className="booking-details">
-              <View className="therapist-name">{item.therapistName}</View>
+              <View className="therapist-name">{existingOrder.extraData?.therapistName || '推拿师'}</View>
               <View className="service-time">
-                {formatDate(item.date)} {item.time} 至 {calculateEndTime(item.time, item.duration)}
+                {existingOrder.extraData?.appointmentDate && existingOrder.extraData?.startTime && (
+                  <>
+                    {formatDate(existingOrder.extraData.appointmentDate)} {existingOrder.extraData.startTime}
+                    {existingOrder.extraData.duration && (
+                      <> 至 {calculateEndTime(existingOrder.extraData.startTime, existingOrder.extraData.duration)}</>
+                    )}
+                  </>
+                )}
               </View>
-              <View className="service-name">{item.serviceName}</View>
+              <View className="service-name">{existingOrder.extraData?.serviceName || existingOrder.title}</View>
             </View>
-            <View className="service-price">¥{item.discountPrice || item.price}</View>
+            <View className="service-price">¥{(existingOrder.amount / 100).toFixed(2)}</View>
           </View>
-        ))}
+        ) : (
+          // 新预约显示方式
+          cartItems.map((item, index) => (
+            <View key={index} className="booking-item">
+              <Image
+                className="therapist-avatar"
+                src={item.therapistAvatar || therapistInfo?.avatar}
+              />
+              <View className="booking-details">
+                <View className="therapist-name">{item.therapistName}</View>
+                <View className="service-time">
+                  {formatDate(item.date)} {item.time} 至 {calculateEndTime(item.time, item.duration)}
+                </View>
+                <View className="service-name">{item.serviceName}</View>
+              </View>
+              <View className="service-price">¥{item.discountPrice || item.price}</View>
+            </View>
+          ))
+        )}
       </View>
 
       {/* 退单说明 */}
@@ -464,7 +623,10 @@ const OrderConfirmPage: React.FC = () => {
           ) : (
             <Text className="total-price">¥{getTotalPrice()}</Text>
           )}
-          <Text className="countdown">支付倒计时: {formatCountdown(countdown)}</Text>
+          {/* ✅ 仅新预约模式显示倒计时 */}
+          {isNewAppointmentMode && (
+            <Text className="countdown">支付倒计时: {formatCountdown(countdown)}</Text>
+          )}
         </View>
         <View className="pay-button" onClick={handlePayment}>
           去支付

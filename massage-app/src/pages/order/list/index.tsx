@@ -3,7 +3,6 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import { AtTabs, AtTabsPane, AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
-import { paymentService } from '@/services/payment.service'  // ✅ 新增导入
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import { parseDate } from '@/utils/date'  // ✅ iOS 兼容日期处理
 import './index.scss'
@@ -110,79 +109,13 @@ const OrderListPage: React.FC = () => {
     })
   }
 
-  const handlePayOrder = async (e: any, order: OrderData) => {
+  const handlePayOrder = (e: any, order: OrderData) => {
     e.stopPropagation()
 
-    // 🚀 数据验证
-    console.log('💳 准备支付订单:', {
-      orderNo: order.orderNo,
-      amount: order.amount,
-      amountType: typeof order.amount
+    // ✅ 改为跳转到确认页（已有订单模式）
+    Taro.navigateTo({
+      url: `/pages/booking/confirm/index?orderNo=${order.orderNo}`
     })
-
-    // 验证金额有效性
-    if (!order.amount || typeof order.amount !== 'number' || isNaN(order.amount)) {
-      Taro.showToast({
-        title: '订单金额无效，无法支付',
-        icon: 'none'
-      })
-      console.error('❌ 支付验证失败：无效的订单金额', { orderNo: order.orderNo, amount: order.amount })
-      return
-    }
-
-    try {
-      Taro.showLoading({ title: '获取支付方式...' })
-
-      // ✅ 先获取支付参数（包含微信支付参数）
-      const paymentParams = await orderService.getPaymentParams(order.orderNo)
-
-      Taro.hideLoading()
-
-      // ✅ 弹出支付方式选择
-      const { tapIndex } = await Taro.showActionSheet({
-        itemList: ['微信支付', '余额支付'],
-        alertText: `订单金额：¥${(order.amount / 100).toFixed(2)}`
-      })
-
-      if (tapIndex === 0) {
-        // 微信支付
-        const paymentSuccess = await paymentService.pay({
-          orderNo: order.orderNo,
-          amount: order.amount,
-          paymentMethod: 'wechat',
-          title: order.title,
-          wxPayParams: paymentParams  // ✅ 传递支付参数
-        })
-
-        if (paymentSuccess) {
-          fetchOrders()
-        }
-      } else if (tapIndex === 1) {
-        // 余额支付
-        const paymentSuccess = await paymentService.pay({
-          orderNo: order.orderNo,
-          amount: order.amount,
-          paymentMethod: 'balance',
-          title: order.title
-        })
-
-        if (paymentSuccess) {
-          fetchOrders()
-        }
-      }
-    } catch (error: any) {
-      // 用户取消操作不显示错误
-      if (error.errMsg === 'showActionSheet:fail cancel') {
-        return
-      }
-
-      console.error('❌ 支付失败:', error)
-      Taro.hideLoading()
-      Taro.showToast({
-        title: error.message || '支付失败',
-        icon: 'none'
-      })
-    }
   }
 
   const handleCancelOrder = async (e: any, order: OrderData) => {
