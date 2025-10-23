@@ -8,43 +8,21 @@ import './index.scss'
 
 const ProductDetail: React.FC = () => {
   const router = useRouter()
+  const { id } = router.params
   const [productInfo, setProductInfo] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [scrollTop, setScrollTop] = useState(0)
 
   useEffect(() => {
-    // 使用 Taro.getCurrentInstance 获取更可靠的路由参数
-    const pages = Taro.getCurrentPages()
-    const currentPage = pages[pages.length - 1]
-    const { id } = currentPage.options as any
-
-    console.log('📱 Product Detail Page Load', {
-      id,
-      pagesLength: pages.length,
-      routerParams: router.params
-    })
-
     if (id) {
-      const product = GiftService.getProductById(id)
-      console.log('🔍 Product Query Result', {
-        id,
-        found: !!product,
-        productName: product?.name
-      })
-
+      const product = GiftService.getProductById(id as string)
       if (product) {
         setProductInfo(product)
-        console.log('✅ Product Loaded Successfully', product.name)
-      } else {
-        console.warn('⚠️ Product Not Found:', id)
       }
       setLoading(false)
-    } else {
-      console.warn('⚠️ No Product ID Provided')
-      setLoading(false)
     }
-  }, [router])
+  }, [id])
 
   const handleQuantityChange = (type: 'increase' | 'decrease') => {
     if (type === 'increase') {
