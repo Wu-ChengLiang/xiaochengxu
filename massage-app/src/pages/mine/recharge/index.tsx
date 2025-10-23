@@ -55,31 +55,15 @@ const Recharge: React.FC = () => {
 
       console.log('💰 充值订单创建成功:', order)
       console.log('💰 订单号:', order.orderNo)
-      console.log('💰 订单金额:', {
-        分: order.amount,
-        元: (order.amount / 100).toFixed(2)
-      })
       console.log('💰 支付参数:', order.wxPayParams)
-      // ⚠️ 诊断：检查 wxPayParams 中的金额信息
-      if (order.wxPayParams?.package) {
-        console.log('💰 微信支付 package 参数:', order.wxPayParams.package)
-      }
 
       // 调起微信支付
       if (order.wxPayParams) {
         // 使用统一支付服务
-        // ✅ order.amount 应该是分为单位
-        const finalAmount = order.amount || (amount * 100)
-
-        console.log('💰 最终支付金额:', {
-          分: finalAmount,
-          元: (finalAmount / 100).toFixed(2),
-          源: order.amount ? '来自订单' : '来自前端转换'
-        })
-
+        // ✅ order.amount 已经是分（wallet.service.ts 中已转换）
         const paymentSuccess = await paymentService.pay({
           orderNo: order.orderNo,
-          amount: finalAmount, // 使用订单中的金额（应该已是分）
+          amount: order.amount || (amount * 100), // 使用订单中的金额（已是分）
           paymentMethod: 'wechat',
           title: `充值${amount}元${bonus > 0 ? `(赠${bonus}元)` : ''}`,
           wxPayParams: order.wxPayParams
