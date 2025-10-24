@@ -4,6 +4,7 @@
  */
 import Taro from '@tarojs/taro'
 import { post } from '@/utils/request'
+import { getCurrentUserIdStrict } from '@/utils/user'
 
 interface PaymentConfig {
   useMockPayment: boolean
@@ -50,6 +51,13 @@ class PaymentService {
    */
   private async payWithBalance(options: PaymentOptions): Promise<boolean> {
     try {
+      // ✅ 严格检查用户是否已登录
+      const userId = getCurrentUserIdStrict()
+      if (!userId) {
+        Taro.showToast({ title: '请先登录', icon: 'none' })
+        return false
+      }
+
       Taro.showLoading({ title: '支付中...' })
 
       console.log('💰 余额支付请求参数:', {

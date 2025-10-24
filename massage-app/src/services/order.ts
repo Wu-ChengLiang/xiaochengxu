@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import { get, post } from '@/utils/request'
-import { getCurrentUserId, getCurrentUserPhone } from '@/utils/user'
+import { getCurrentUserId, getCurrentUserPhone, getCurrentUserIdStrict } from '@/utils/user'
 import { normalizeImageUrl } from '@/utils/image'  // 🚀 新增：图片URL规范化工具
 
 /**
@@ -360,6 +360,12 @@ class OrderService {
    */
   async createAppointmentOrder(params: CreateOrderParams) {
     try {
+      // ✅ 严格检查用户是否已登录
+      const strictUserId = getCurrentUserIdStrict()
+      if (!strictUserId) {
+        throw new Error('请先登录')
+      }
+
       const { userId, userPhone } = this.getUserInfo()
 
       // 调试日志 - 查看原始参数

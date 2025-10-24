@@ -276,6 +276,45 @@ export const fetchUserInfo = async (phone?: string): Promise<UserInfo | null> =>
 }
 
 /**
+ * 获取用户ID（严格模式 - 用于支付、下单等关键操作）
+ * 如果用户未登录，返回 null，调用方需要处理登录跳转
+ */
+export const getCurrentUserIdStrict = (): number | null => {
+  const userInfo = getCurrentUserInfo()
+  if (!userInfo || !userInfo.id) {
+    return null
+  }
+  return userInfo.id
+}
+
+/**
+ * 检查用户是否已登录，如未登录则跳转登录页
+ */
+export const requireLogin = async (): Promise<boolean> => {
+  const userInfo = getCurrentUserInfo()
+
+  if (!userInfo || !userInfo.phone) {
+    console.warn('⚠️ 用户未登录，跳转到登录')
+    Taro.showToast({
+      title: '请先登录',
+      icon: 'none'
+    })
+
+    // 跳转到登录页（或小程序首屏）
+    // 根据你的架构调整这个URL
+    setTimeout(() => {
+      Taro.redirectTo({
+        url: '/pages/mine/index'  // 假设从"我的"页面可以登录
+      })
+    }, 1500)
+
+    return false
+  }
+
+  return true
+}
+
+/**
  * 检查登录状态并自动登录
  */
 export const checkAndAutoLogin = async (): Promise<UserInfo | null> => {

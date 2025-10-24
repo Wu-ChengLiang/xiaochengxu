@@ -8,7 +8,7 @@ import { walletService } from '@/services/wallet.service'
 import { paymentService } from '@/services/payment.service'
 import { voucherService } from '@/services/voucher.service'
 import { calculateDiscountPrice } from '@/types/voucher'
-import { getCurrentUserInfo } from '@/utils/user'
+import { getCurrentUserInfo, requireLogin } from '@/utils/user'
 import './index.scss'
 
 interface CartItem {
@@ -77,28 +77,39 @@ const OrderConfirmPage: React.FC = () => {
   const timerRef = useRef<any>(null)
 
   useEffect(() => {
-    // ✅ 区分模式初始化
-    try {
-      if (isExistingOrderMode) {
-        // 模式2：已有订单 - 加载订单详情
-        fetchExistingOrder()
-      } else {
-        // 模式1：新预约 - 解析购物车数据
-        const items = JSON.parse(decodeURIComponent(params.items || '[]'))
-        setCartItems(items)
-        fetchTherapistAndStoreInfo()
-      }
+    // ✅ 在支付前检查登录状态
+    const initializePage = async () => {
+      try {
+        // 先检查用户登录状态
+        const isLoggedIn = await requireLogin()
+        if (!isLoggedIn) {
+          return
+        }
 
-      // 两个模式都需要获取用户余额和折扣
-      fetchUserBalance()
-      fetchUserDiscount()
-    } catch (error) {
-      Taro.showToast({
-        title: '数据加载失败',
-        icon: 'none'
-      })
-      setTimeout(() => Taro.navigateBack(), 1500)
+        // ✅ 区分模式初始化
+        if (isExistingOrderMode) {
+          // 模式2：已有订单 - 加载订单详情
+          fetchExistingOrder()
+        } else {
+          // 模式1：新预约 - 解析购物车数据
+          const items = JSON.parse(decodeURIComponent(params.items || '[]'))
+          setCartItems(items)
+          fetchTherapistAndStoreInfo()
+        }
+
+        // 两个模式都需要获取用户余额和折扣
+        fetchUserBalance()
+        fetchUserDiscount()
+      } catch (error) {
+        Taro.showToast({
+          title: '数据加载失败',
+          icon: 'none'
+        })
+        setTimeout(() => Taro.navigateBack(), 1500)
+      }
     }
+
+    initializePage()
   }, [params])
 
   // 倒计时逻辑（仅新预约模式需要）
