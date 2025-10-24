@@ -5,7 +5,7 @@ import { therapistService } from '@/services/therapist'
 import { storeService } from '@/services/store'
 import { getLocationService } from '@/services/location'
 import { reviewService, ReviewData, ReviewStats } from '@/services/review'
-import { symptomServices } from '@/mock/data/symptoms'
+import { symptomService } from '@/services/symptom'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
@@ -48,16 +48,9 @@ const TherapistBookingPage: React.FC = () => {
   // BookingSelector 组件引用
   const bookingSelectorRef = useRef<BookingSelectorHandle>(null)
 
-  // 使用真实的症状服务数据
-  const mockServices = symptomServices.map(service => ({
-    id: service.id,
-    name: service.name,
-    duration: service.duration,
-    price: service.price,
-    discountPrice: service.discountPrice,
-    description: service.description,
-    tag: service.tag
-  }))
+  // ✅ 从 API 获取的服务数据
+  const [services, setServices] = useState<any[]>([])
+  const [servicesLoading, setServicesLoading] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -77,21 +70,24 @@ const TherapistBookingPage: React.FC = () => {
 
       // 添加调试日志
       console.log('TherapistBookingPage params:', { therapistId, storeId })
-      
+
       if (!therapistId || !storeId) {
         console.error('Missing required params:', { therapistId, storeId })
         setError('参数错误，请重新进入')
         return
       }
 
-      const [therapistRes, storeData, userLocation] = await Promise.all([
+      // ✅ 并行加载：推拿师、门店、位置和服务数据
+      const [therapistRes, storeData, userLocation, servicesResponse] = await Promise.all([
         therapistService.getTherapistDetail(therapistId),
         storeService.getStoreDetail(storeId),
-        getLocationService.getCurrentLocation()
+        getLocationService.getCurrentLocation(),
+        symptomService.getTherapistSymptomServices(therapistId) // ✅ 新增：从 API 获取服务
       ])
 
       console.log('Store data response:', storeData)
       console.log('Therapist data response:', therapistRes)
+      console.log('✅ Services data response:', servicesResponse) // ✅ 调试日志
 
       // 根据API返回的实际结构处理数据
       const therapistData = therapistRes.data || therapistRes
@@ -111,6 +107,11 @@ const TherapistBookingPage: React.FC = () => {
           distance
         }
       }
+
+      // ✅ 设置服务列表
+      const servicesList = servicesResponse.data || []
+      setServices(servicesList)
+      console.log(`✅ 加载了 ${servicesList.length} 个服务`)
 
       setTherapist(therapistData)
       setStore(storeDataFinal)
@@ -244,7 +245,7 @@ const TherapistBookingPage: React.FC = () => {
         {store && <StoreInfo store={store} />}
         <BookingSelector
           ref={bookingSelectorRef}
-          services={mockServices}
+          services={services}
           therapistId={therapistId}
           onServiceSelect={handleServiceSelect}
           onTimeSelect={handleTimeSelect}
