@@ -67,6 +67,7 @@ export interface CreateOrderParams {
   appointmentTime: string  // ✅ 保留这个字段名用于页面兼容性，service层会映射到 startTime
   therapistName: string
   therapistAvatar?: string
+  paymentMethod: 'wechat' | 'balance'  // ✅ 新增：支付方式（必填）
   addons?: Array<{
     id: string
     name: string
@@ -382,12 +383,14 @@ class OrderService {
         duration: params.duration || 60,
         serviceId: params.serviceId,
         serviceName: params.serviceName,
-        price: (params.discountPrice || params.price) * 100  // ✅ 转换为分（params中是元）
+        price: (params.discountPrice || params.price) * 100,  // ✅ 转换为分（params中是元）
+        paymentMethod: params.paymentMethod  // ✅ 新增：传递支付方式
       }
 
       // 调试日志 - 查看转换后的请求数据
       console.log('📤 实际发送的请求数据:', requestData)
       console.log('📤 转换后的therapistId:', requestData.therapistId, '是否为NaN:', isNaN(requestData.therapistId))
+      console.log('📤 支付方式:', requestData.paymentMethod)
 
       const response = await post('/appointments/create-with-order', requestData, {
         showLoading: true,

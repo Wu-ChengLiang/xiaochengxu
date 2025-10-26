@@ -452,10 +452,12 @@ const OrderConfirmPage: React.FC = () => {
       appointmentDate: firstItem.date,
       appointmentTime: firstItem.time,
       therapistName: firstItem.therapistName,
-      therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar)
+      therapistAvatar: firstItem.therapistAvatar || (therapistInfo?.avatar),
+      paymentMethod: paymentMethod  // ✅ 新增：传递用户选择的支付方式
     }
 
     // 创建订单
+    console.log('📝 创建订单，支付方式:', paymentMethod)
     const result = await orderService.createAppointmentOrder(orderParams)
     const order = result.order
 
