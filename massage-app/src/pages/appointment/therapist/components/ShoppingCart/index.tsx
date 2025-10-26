@@ -206,27 +206,6 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({
             ))}
           </View>
 
-          {/* 可选增值项目 */}
-          <View className="addon-section">
-            <Text className="section-title">可选增值项目</Text>
-            <View className="addon-list">
-              <View className="addon-item">
-                <View className="addon-info">
-                  <Text className="addon-name">刮痧20分钟</Text>
-                  <Text className="addon-price">¥ 99</Text>
-                </View>
-                <View className="addon-action">+</View>
-              </View>
-              <View className="addon-item">
-                <View className="addon-info">
-                  <Text className="addon-name">加钟20分钟</Text>
-                  <Text className="addon-price">¥ 99</Text>
-                </View>
-                <View className="addon-action">+</View>
-              </View>
-            </View>
-          </View>
-
           {/* 底部结算信息 */}
           <View className="checkout-section">
             <View className="price-summary">

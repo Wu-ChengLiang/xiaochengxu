@@ -111,12 +111,6 @@ const Appointment: React.FC = () => {
     setShowStoreSheet(true)
   }
 
-  const handleMoreSymptoms = () => {
-    Taro.showToast({
-      title: '功能开发中',
-      icon: 'none'
-    })
-  }
 
 
   return (
@@ -145,10 +139,6 @@ const Appointment: React.FC = () => {
       <View className="therapists-section">
         <View className="section-header">
           <Text className="section-title">推拿师预约</Text>
-          <Text className="more-link" onClick={handleMoreSymptoms}>
-            更多症状
-            <AtIcon value="chevron-right" size="14" color="#a40035" />
-          </Text>
         </View>
         <View className="therapist-list">
           {therapists.map((therapist) => (

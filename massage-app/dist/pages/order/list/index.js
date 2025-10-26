@@ -1,1 +1,330 @@
-"use strict";var e=(e,t,s)=>new Promise((r,n)=>{var a=e=>{try{o(s.next(e))}catch(t){n(t)}},i=e=>{try{o(s.throw(e))}catch(t){n(t)}},o=e=>e.done?r(e.value):Promise.resolve(e.value).then(a,i);o((s=s.apply(e,t)).next())});const t=require("../../../taro.js"),s=require("../../../vendors.js"),r=require("../../../common.js"),n=e=>e?e.includes("T")?e:e.replace(" ","T"):null,a=e=>{if(!e)return null;const t=n(e);if(!t)return null;const s=new Date(t);return isNaN(s.getTime())?(console.warn("\u26a0\ufe0f \u65e0\u6548\u7684\u65e5\u671f\u683c\u5f0f:",e),null):s},i="",o=()=>{const[n,i]=t.reactExports.useState(0),[o,c]=t.reactExports.useState([]),[l,x]=t.reactExports.useState(!0),[u,d]=t.reactExports.useState(!1),[p,m]=t.reactExports.useState(1),j=[{title:"\u5168\u90e8"},{title:"\u5f85\u652f\u4ed8"},{title:"\u5f85\u670d\u52a1"},{title:"\u5df2\u5b8c\u6210"}],h={0:void 0,1:"pending",2:"paid",3:"completed"};t.taroExports.useDidShow(()=>{m(1),E(1)}),t.reactExports.useEffect(()=>{m(1),E(1)},[n]),t.taroExports.usePullDownRefresh(()=>e(exports,null,function*(){yield E(1),t.Taro.stopPullDownRefresh()}));const E=(...t)=>e(exports,[...t],function*(e=p){try{x(!0);const t=h[n];let s=yield r.orderService.getOrderList(void 0,void 0,e,100);t&&(s=s.filter(e=>{const s=e.displayStatus||e.paymentStatus;return"completed"===t?"completed"===s:"paid"===t?"paid"===s:"pending"===t?"pending"===s:s===t}));const a=s.slice(0,20);c(1===e?a:e=>[...e,...a]),m(e),d(20===a.length)}catch(t){console.error("\u83b7\u53d6\u8ba2\u5355\u5931\u8d25:",t),1===e&&c([])}finally{x(!1)}}),T=e=>{i(e)},N=e=>{t.Taro.navigateTo({url:`/pages/order/detail/index?orderNo=${e}`})},R=(e,s)=>{e.stopPropagation(),t.Taro.navigateTo({url:`/pages/booking/confirm/index?orderNo=${s.orderNo}`})},g=(s,n)=>e(exports,null,function*(){s.stopPropagation(),t.Taro.showModal({title:"\u53d6\u6d88\u8ba2\u5355",content:"\u786e\u5b9a\u8981\u53d6\u6d88\u8be5\u8ba2\u5355\u5417\uff1f",success:s=>e(exports,null,function*(){if(s.confirm)try{const e=yield r.orderService.cancelOrder(n.orderNo);"pending"===n.paymentStatus?t.Taro.showToast({title:"\u53d6\u6d88\u8ba2\u5355",icon:"success"}):"paid"===n.paymentStatus&&e.refundAmount&&e.refundAmount>0?(t.Taro.showToast({title:"\u53d6\u6d88\u8ba2\u5355",icon:"success"}),setTimeout(()=>{t.Taro.showToast({title:`\u9000\u6b3e\uffe5${(e.refundAmount/100).toFixed(2)}`,icon:"success",duration:2500})},500)):t.Taro.showToast({title:"\u53d6\u6d88\u8ba2\u5355",icon:"success"}),E(1)}catch(e){t.Taro.showToast({title:e.message||"\u53d6\u6d88\u5931\u8d25",icon:"none"})}})})}),y=(e,s)=>{e.stopPropagation(),t.Taro.switchTab({url:"/pages/appointment/index"})},w=e=>{const t=e.displayStatus||e.paymentStatus,s={pending:"\u5f85\u652f\u4ed8",paid:"\u5f85\u670d\u52a1",serving:"\u670d\u52a1\u4e2d",completed:"\u5df2\u5b8c\u6210",cancelled:"\u5df2\u53d6\u6d88",refunded:"\u5df2\u9000\u6b3e"};return s[t]||t},v=e=>{const t=e.displayStatus||e.paymentStatus,s={pending:"status-pending",paid:"status-paid",serving:"status-serving",completed:"status-completed",cancelled:"status-cancelled",refunded:"status-refunded"};return s[t]||""},f=e=>{const t=a(e);if(!t)return"";const s=t.getMonth()+1,r=t.getDate(),n=t.getHours(),i=t.getMinutes();return`${s}\u6708${r}\u65e5 ${n.toString().padStart(2,"0")}:${i.toString().padStart(2,"0")}`},S=e=>{var s;return t.jsxRuntimeExports.jsxs(t.View,{className:"order-item",onClick:()=>N(e.orderNo),children:[t.jsxRuntimeExports.jsxs(t.View,{className:"order-header",children:["service"===e.orderType&&t.jsxRuntimeExports.jsx(t.Text,{className:"store-name",children:e.storeName}),"product"===e.orderType&&t.jsxRuntimeExports.jsx(t.Text,{className:"store-name",children:e.title}),t.jsxRuntimeExports.jsx(t.Text,{className:`order-status ${v(e)}`,children:w(e)})]}),t.jsxRuntimeExports.jsxs(t.View,{className:"order-content",children:["service"===e.orderType&&e.therapistAvatar&&t.jsxRuntimeExports.jsx(t.Image,{className:"therapist-avatar",src:e.therapistAvatar}),t.jsxRuntimeExports.jsxs(t.View,{className:"order-info "+(e.therapistAvatar||"service"!==e.orderType?"":"no-image"),children:["service"===e.orderType&&t.jsxRuntimeExports.jsxs(t.jsxRuntimeExports.Fragment,{children:[t.jsxRuntimeExports.jsxs(t.View,{className:"info-row",children:[t.jsxRuntimeExports.jsx(t.Text,{className:"therapist-name",children:e.therapistName}),t.jsxRuntimeExports.jsx(t.Text,{className:"service-name",children:e.serviceName})]}),t.jsxRuntimeExports.jsx(t.View,{className:"info-row",children:t.jsxRuntimeExports.jsxs(t.Text,{className:"appointment-time",children:["\u9884\u7ea6\u65f6\u95f4\uff1a",f(`${e.appointmentDate} ${e.startTime}`),"  "]})})]}),"product"===e.orderType&&t.jsxRuntimeExports.jsxs(t.jsxRuntimeExports.Fragment,{children:[t.jsxRuntimeExports.jsxs(t.View,{className:"info-row",children:[t.jsxRuntimeExports.jsx(t.Text,{className:"service-name",children:e.title}),(null==(s=e.extraData)?void 0:s.quantity)&&t.jsxRuntimeExports.jsxs(t.Text,{className:"quantity",children:["\xd7",e.extraData.quantity]})]}),t.jsxRuntimeExports.jsx(t.View,{className:"info-row",children:t.jsxRuntimeExports.jsxs(t.Text,{className:"appointment-time",children:["\u8d2d\u4e70\u65f6\u95f4\uff1a",f(e.createdAt)]})})]}),t.jsxRuntimeExports.jsx(t.View,{className:"info-row",children:t.jsxRuntimeExports.jsxs(t.Text,{className:"order-no",children:["\u8ba2\u5355\u53f7\uff1a",e.orderNo]})})]})]}),t.jsxRuntimeExports.jsxs(t.View,{className:"order-footer",children:[t.jsxRuntimeExports.jsxs(t.View,{className:"price-info",children:[t.jsxRuntimeExports.jsx(t.Text,{className:"label",children:"\u5b9e\u4ed8\uff1a"}),t.jsxRuntimeExports.jsx(t.Text,{className:"price",children:r.formatAmount(e.amount)}),"  "]}),t.jsxRuntimeExports.jsxs(t.View,{className:"action-buttons",children:["pending"===(e.displayStatus||e.paymentStatus)&&t.jsxRuntimeExports.jsxs(t.jsxRuntimeExports.Fragment,{children:[t.jsxRuntimeExports.jsx(t.View,{className:"button cancel",onClick:t=>g(t,e),children:"\u53d6\u6d88\u8ba2\u5355"}),t.jsxRuntimeExports.jsx(t.View,{className:"button pay",onClick:t=>R(t,e),children:"\u53bb\u652f\u4ed8"})]}),"paid"===(e.displayStatus||e.paymentStatus)&&"service"===e.orderType&&t.jsxRuntimeExports.jsx(t.View,{className:"button cancel",onClick:t=>g(t,e),children:"\u53d6\u6d88\u8ba2\u5355"}),"serving"===(e.displayStatus||e.paymentStatus)&&null,"completed"===e.displayStatus&&"service"===e.orderType&&t.jsxRuntimeExports.jsx(t.View,{className:"button rebook",onClick:e=>y(e),children:"\u518d\u6b21\u9884\u7ea6"}),["cancelled","refunded"].includes(e.displayStatus||e.paymentStatus)&&"service"===e.orderType&&t.jsxRuntimeExports.jsx(t.View,{className:"button rebook",onClick:e=>y(e),children:"\u518d\u6b21\u9884\u7ea6"})]})]})]},e.orderNo)},V=()=>t.jsxRuntimeExports.jsxs(t.View,{className:"empty-state",children:[t.jsxRuntimeExports.jsx(s.AtIcon,{value:"file-generic",size:"60",color:"#ccc"}),t.jsxRuntimeExports.jsx(t.Text,{className:"empty-text",children:"\u6682\u65e0\u8ba2\u5355"})]}),b=()=>t.jsxRuntimeExports.jsx(t.View,{className:"loading-state",children:t.jsxRuntimeExports.jsx(t.Text,{children:"\u52a0\u8f7d\u4e2d..."})});return t.jsxRuntimeExports.jsx(t.View,{className:"order-list-page",children:t.jsxRuntimeExports.jsx(s.AtTabs,{current:n,tabList:j,onClick:T,className:"order-tabs",children:j.map((e,r)=>t.jsxRuntimeExports.jsx(s.AtTabsPane,{current:n,index:r,children:t.jsxRuntimeExports.jsx(t.ScrollView,{scrollY:!0,className:"order-list",children:l?b():o.length>0?o.map(S):V()})},r))})})};var c={navigationBarTitleText:"\u6211\u7684\u8ba2\u5355",enablePullDownRefresh:!0,backgroundTextStyle:"dark"};Page(t.createPageConfig(o,"pages/order/list/index",{root:{cn:[]}},c||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const toIOSCompatibleDate = (dateStr) => {
+  if (!dateStr) {
+    return null;
+  }
+  if (dateStr.includes("T")) {
+    return dateStr;
+  }
+  return dateStr.replace(" ", "T");
+};
+const parseDate = (dateStr) => {
+  if (!dateStr) {
+    return null;
+  }
+  const isoDate = toIOSCompatibleDate(dateStr);
+  if (!isoDate) {
+    return null;
+  }
+  const date = new Date(isoDate);
+  if (isNaN(date.getTime())) {
+    console.warn("⚠️ 无效的日期格式:", dateStr);
+    return null;
+  }
+  return date;
+};
+const index = "";
+const OrderListPage = () => {
+  const [current, setCurrent] = taro.useState(0);
+  const [orders, setOrders] = taro.useState([]);
+  const [loading, setLoading] = taro.useState(true);
+  const [hasMore, setHasMore] = taro.useState(false);
+  const [page, setPage] = taro.useState(1);
+  const tabList = [
+    { title: "全部" },
+    { title: "待支付" },
+    { title: "待服务" },
+    { title: "已完成" }
+  ];
+  const statusMap = {
+    0: void 0,
+    // 全部
+    1: "pending",
+    // 待支付
+    2: "paid",
+    // 待服务
+    3: "completed"
+    // 已完成
+  };
+  taro.taroExports.useDidShow(() => {
+    setPage(1);
+    fetchOrders(1);
+  });
+  taro.useEffect(() => {
+    setPage(1);
+    fetchOrders(1);
+  }, [current]);
+  taro.taroExports.usePullDownRefresh(() => __async(exports, null, function* () {
+    yield fetchOrders(1);
+    taro.Taro.stopPullDownRefresh();
+  }));
+  const fetchOrders = (..._0) => __async(exports, [..._0], function* (pageNum = page) {
+    try {
+      setLoading(true);
+      const status = statusMap[current];
+      let orderList = yield common.orderService.getOrderList(
+        void 0,
+        // 先不按paymentStatus筛选
+        void 0,
+        // 不过滤订单类型，同时获取服务订单和产品订单
+        pageNum,
+        100
+        // 获取更多以便筛选
+      );
+      if (status) {
+        orderList = orderList.filter((order) => {
+          const displayStatus = order.displayStatus || order.paymentStatus;
+          if (status === "completed") {
+            return displayStatus === "completed";
+          }
+          if (status === "paid") {
+            return displayStatus === "paid";
+          }
+          if (status === "pending") {
+            return displayStatus === "pending";
+          }
+          return displayStatus === status;
+        });
+      }
+      const paginatedList = orderList.slice(0, 20);
+      if (pageNum === 1) {
+        setOrders(paginatedList);
+      } else {
+        setOrders((prev) => [...prev, ...paginatedList]);
+      }
+      setPage(pageNum);
+      setHasMore(paginatedList.length === 20);
+    } catch (error) {
+      console.error("获取订单失败:", error);
+      if (pageNum === 1) {
+        setOrders([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  });
+  const handleTabClick = (index2) => {
+    setCurrent(index2);
+  };
+  const handleOrderClick = (orderNo) => {
+    taro.Taro.navigateTo({
+      url: `/pages/order/detail/index?orderNo=${orderNo}`
+    });
+  };
+  const handlePayOrder = (e, order) => {
+    e.stopPropagation();
+    taro.Taro.navigateTo({
+      url: `/pages/booking/confirm/index?orderNo=${order.orderNo}`
+    });
+  };
+  const handleCancelOrder = (e, order) => __async(exports, null, function* () {
+    e.stopPropagation();
+    taro.Taro.showModal({
+      title: "取消订单",
+      content: "确定要取消该订单吗？",
+      success: (res) => __async(exports, null, function* () {
+        if (res.confirm) {
+          try {
+            const result = yield common.orderService.cancelOrder(order.orderNo);
+            if (order.paymentStatus === "pending") {
+              taro.Taro.showToast({
+                title: "取消订单",
+                icon: "success"
+              });
+            } else if (order.paymentStatus === "paid" && result.refundAmount && result.refundAmount > 0) {
+              taro.Taro.showToast({
+                title: `取消订单`,
+                icon: "success"
+              });
+              setTimeout(() => {
+                taro.Taro.showToast({
+                  title: `退款￥${(result.refundAmount / 100).toFixed(2)}`,
+                  icon: "success",
+                  duration: 2500
+                });
+              }, 500);
+            } else {
+              taro.Taro.showToast({
+                title: "取消订单",
+                icon: "success"
+              });
+            }
+            fetchOrders(1);
+          } catch (error) {
+            taro.Taro.showToast({
+              title: error.message || "取消失败",
+              icon: "none"
+            });
+          }
+        }
+      })
+    });
+  });
+  const handleRebookOrder = (e, order) => {
+    e.stopPropagation();
+    taro.Taro.switchTab({
+      url: "/pages/appointment/index"
+    });
+  };
+  const getStatusText = (order) => {
+    const status = order.displayStatus || order.paymentStatus;
+    const statusTextMap = {
+      "pending": "待支付",
+      "paid": "待服务",
+      "serving": "服务中",
+      "completed": "已完成",
+      // 🚀 管理员标记的完成状态
+      "cancelled": "已取消",
+      "refunded": "已退款"
+    };
+    return statusTextMap[status] || status;
+  };
+  const getStatusClass = (order) => {
+    const status = order.displayStatus || order.paymentStatus;
+    const statusClassMap = {
+      "pending": "status-pending",
+      "paid": "status-paid",
+      "serving": "status-serving",
+      "completed": "status-completed",
+      // 🚀 已完成样式
+      "cancelled": "status-cancelled",
+      "refunded": "status-refunded"
+    };
+    return statusClassMap[status] || "";
+  };
+  const formatDate = (dateStr) => {
+    const date = parseDate(dateStr);
+    if (!date) {
+      return "";
+    }
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    return `${month}月${day}日 ${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+  };
+  const renderOrderItem = (order) => {
+    var _a;
+    return /* @__PURE__ */ taro.jsxs(
+      taro.View,
+      {
+        className: "order-item",
+        onClick: () => handleOrderClick(order.orderNo),
+        children: [
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-header", children: [
+            order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: order.storeName }),
+            order.orderType === "product" && /* @__PURE__ */ taro.jsx(taro.Text, { className: "store-name", children: order.title }),
+            /* @__PURE__ */ taro.jsx(taro.Text, { className: `order-status ${getStatusClass(order)}`, children: getStatusText(order) })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-content", children: [
+            order.orderType === "service" && order.therapistAvatar && /* @__PURE__ */ taro.jsx(
+              taro.Image,
+              {
+                className: "therapist-avatar",
+                src: order.therapistAvatar
+              }
+            ),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: `order-info ${!order.therapistAvatar && order.orderType === "service" ? "no-image" : ""}`, children: [
+              order.orderType === "service" && /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+                /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-row", children: [
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "therapist-name", children: order.therapistName }),
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: order.serviceName })
+                ] }),
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "appointment-time", children: [
+                  "预约时间：",
+                  formatDate(`${order.appointmentDate} ${order.startTime}`),
+                  "  "
+                ] }) })
+              ] }),
+              order.orderType === "product" && /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+                /* @__PURE__ */ taro.jsxs(taro.View, { className: "info-row", children: [
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "service-name", children: order.title }),
+                  ((_a = order.extraData) == null ? void 0 : _a.quantity) && /* @__PURE__ */ taro.jsxs(taro.Text, { className: "quantity", children: [
+                    "×",
+                    order.extraData.quantity
+                  ] })
+                ] }),
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "appointment-time", children: [
+                  "购买时间：",
+                  formatDate(order.createdAt)
+                ] }) })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.View, { className: "info-row", children: /* @__PURE__ */ taro.jsxs(taro.Text, { className: "order-no", children: [
+                "订单号：",
+                order.orderNo
+              ] }) })
+            ] })
+          ] }),
+          /* @__PURE__ */ taro.jsxs(taro.View, { className: "order-footer", children: [
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "label", children: "实付：" }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "price", children: common.formatAmount(order.amount) }),
+              "  "
+            ] }),
+            /* @__PURE__ */ taro.jsxs(taro.View, { className: "action-buttons", children: [
+              (order.displayStatus || order.paymentStatus) === "pending" && /* @__PURE__ */ taro.jsxs(taro.Fragment, { children: [
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
+                /* @__PURE__ */ taro.jsx(taro.View, { className: "button pay", onClick: (e) => handlePayOrder(e, order), children: "去支付" })
+              ] }),
+              (order.displayStatus || order.paymentStatus) === "paid" && order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button cancel", onClick: (e) => handleCancelOrder(e, order), children: "取消订单" }),
+              (order.displayStatus || order.paymentStatus) === "serving" && null,
+              order.displayStatus === "completed" && order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e), children: "再次预约" }),
+              ["cancelled", "refunded"].includes(order.displayStatus || order.paymentStatus) && order.orderType === "service" && /* @__PURE__ */ taro.jsx(taro.View, { className: "button rebook", onClick: (e) => handleRebookOrder(e), children: "再次预约" })
+            ] })
+          ] })
+        ]
+      },
+      order.orderNo
+    );
+  };
+  const renderEmpty = () => /* @__PURE__ */ taro.jsxs(taro.View, { className: "empty-state", children: [
+    /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "file-generic", size: "60", color: "#ccc" }),
+    /* @__PURE__ */ taro.jsx(taro.Text, { className: "empty-text", children: "暂无订单" })
+  ] });
+  const renderLoading = () => /* @__PURE__ */ taro.jsx(taro.View, { className: "loading-state", children: /* @__PURE__ */ taro.jsx(taro.Text, { children: "加载中..." }) });
+  return /* @__PURE__ */ taro.jsx(taro.View, { className: "order-list-page", children: /* @__PURE__ */ taro.jsx(
+    vendors.AtTabs,
+    {
+      current,
+      tabList,
+      onClick: handleTabClick,
+      className: "order-tabs",
+      children: tabList.map(
+        (tab, index2) => /* @__PURE__ */ taro.jsx(vendors.AtTabsPane, { current, index: index2, children: /* @__PURE__ */ taro.jsx(taro.ScrollView, { scrollY: true, className: "order-list", children: loading ? renderLoading() : orders.length > 0 ? orders.map(renderOrderItem) : renderEmpty() }) }, index2)
+      )
+    }
+  ) });
+};
+var config = {
+  "navigationBarTitleText": "我的订单",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(OrderListPage, "pages/order/list/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map

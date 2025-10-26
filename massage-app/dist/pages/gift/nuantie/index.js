@@ -1,1 +1,171 @@
-"use strict";var e=(e,s,t)=>new Promise((i,a)=>{var r=e=>{try{n(t.next(e))}catch(s){a(s)}},c=e=>{try{n(t.throw(e))}catch(s){a(s)}},n=e=>e.done?i(e.value):Promise.resolve(e.value).then(r,c);n((t=t.apply(e,s)).next())});const s=require("../../../taro.js"),t=require("../../../vendors.js"),i=require("../../../common.js"),a="",r=()=>{const[a,r]=s.reactExports.useState([]),[c,n]=s.reactExports.useState(null),[o,x]=s.reactExports.useState(1);s.reactExports.useEffect(()=>{const e=i.GiftService.getNuantieProducts();r(e),e.length>0&&n(e[0])},[]);const l=e=>{n(e),x(1)},d=e=>{"increase"===e?x(o+1):"decrease"===e&&o>1&&x(o-1)},m=()=>e(exports,null,function*(){if(c)try{s.Taro.showLoading({title:"\u521b\u5efa\u8ba2\u5355..."});const e=yield i.GiftService.createProductOrder({productId:c.id,quantity:o,paymentMethod:"wechat"});s.Taro.hideLoading();const t=yield i.paymentService.pay({orderNo:e.orderNo,amount:c.price*o,paymentMethod:"wechat",title:c.name,wxPayParams:e.wxPayParams});t&&(s.Taro.showToast({title:"\u8d2d\u4e70\u6210\u529f",icon:"success",duration:1500}),setTimeout(()=>{s.Taro.navigateBack()},1500))}catch(e){s.Taro.hideLoading();const t=e.message||e.errMsg||"\u8d2d\u4e70\u5931\u8d25";s.Taro.showModal({title:"\u8d2d\u4e70\u5931\u8d25",content:t,showCancel:!1,confirmText:"\u77e5\u9053\u4e86"})}}),u=()=>c?(c.price/100*o).toFixed(0):"0";return c?s.jsxRuntimeExports.jsxs(s.View,{className:"nuantie-page",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"product-info-section",children:[s.jsxRuntimeExports.jsx(s.View,{className:"product-image",children:s.jsxRuntimeExports.jsx(s.Image,{className:"product-pic",src:c.image,mode:"aspectFill"})}),s.jsxRuntimeExports.jsx(s.Text,{className:"product-name",children:c.name}),s.jsxRuntimeExports.jsx(s.Text,{className:"product-desc",children:c.description})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"product-section",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"section-title",children:"\u9009\u62e9\u4ea7\u54c1"}),s.jsxRuntimeExports.jsx(s.View,{className:"product-grid",children:a.map(e=>s.jsxRuntimeExports.jsxs(s.View,{className:"product-card "+(c.id===e.id?"active":""),onClick:()=>l(e),children:[s.jsxRuntimeExports.jsxs(s.View,{className:"product-header",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"header-left",children:[s.jsxRuntimeExports.jsx(s.Text,{className:"name",children:e.name}),s.jsxRuntimeExports.jsxs(s.Text,{className:"price",children:["\xa5",(e.price/100).toFixed(0)]})]}),c.id===e.id&&s.jsxRuntimeExports.jsxs(s.View,{className:"header-right",onClick:e=>e.stopPropagation(),children:[s.jsxRuntimeExports.jsx(s.View,{className:"quantity-btn",onClick:()=>d("decrease"),children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"subtract-circle",size:"18",color:1===o?"#ccc":"#a40035"})}),s.jsxRuntimeExports.jsx(s.Text,{className:"quantity-value",children:o}),s.jsxRuntimeExports.jsx(s.View,{className:"quantity-btn",onClick:()=>d("increase"),children:s.jsxRuntimeExports.jsx(t.AtIcon,{value:"add-circle",size:"18",color:"#a40035"})})]})]}),s.jsxRuntimeExports.jsx(s.Text,{className:"desc",children:e.description}),c.id===e.id&&s.jsxRuntimeExports.jsx(t.AtIcon,{value:"check-circle",size:"24",color:"#a40035",className:"check-icon"})]},e.id))})]}),s.jsxRuntimeExports.jsxs(s.View,{className:"purchase-bar",children:[s.jsxRuntimeExports.jsxs(s.View,{className:"price-info",children:[s.jsxRuntimeExports.jsx(t.AtIcon,{value:"shopping-bag-2",size:"24",color:"#a40035"}),s.jsxRuntimeExports.jsxs(s.Text,{className:"total-price",children:["\xa5 ",u()]}),s.jsxRuntimeExports.jsx(s.View,{className:"quantity-badge",children:o})]}),s.jsxRuntimeExports.jsx(s.Button,{className:"purchase-btn",onClick:m,children:"\u53bb\u7ed3\u7b97"})]})]}):s.jsxRuntimeExports.jsx(s.View,{className:"nuantie-page",children:s.jsxRuntimeExports.jsx(s.View,{className:"loading",children:"\u52a0\u8f7d\u4e2d..."})})};var c={navigationBarTitleText:"\u6696\u8d34"};Page(s.createPageConfig(r,"pages/gift/nuantie/index",{root:{cn:[]}},c||{}));
+"use strict";
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+const taro = require("../../../taro.js");
+const vendors = require("../../../vendors.js");
+const common = require("../../../common.js");
+const index = "";
+const NuantieDetail = () => {
+  const [products, setProducts] = taro.useState([]);
+  const [selectedProduct, setSelectedProduct] = taro.useState(null);
+  const [quantity, setQuantity] = taro.useState(1);
+  taro.useEffect(() => {
+    const nuantieProducts = common.GiftService.getNuantieProducts();
+    setProducts(nuantieProducts);
+    if (nuantieProducts.length > 0) {
+      setSelectedProduct(nuantieProducts[0]);
+    }
+  }, []);
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setQuantity(1);
+  };
+  const handleQuantityChange = (type) => {
+    if (type === "increase") {
+      setQuantity(quantity + 1);
+    } else if (type === "decrease" && quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+  const handleBuyNow = () => __async(exports, null, function* () {
+    if (!selectedProduct)
+      return;
+    try {
+      taro.Taro.showLoading({ title: "创建订单..." });
+      const order = yield common.GiftService.createProductOrder({
+        productId: selectedProduct.id,
+        quantity,
+        paymentMethod: "wechat"
+      });
+      taro.Taro.hideLoading();
+      const paymentSuccess = yield common.paymentService.pay({
+        orderNo: order.orderNo,
+        amount: selectedProduct.price * quantity,
+        paymentMethod: "wechat",
+        title: selectedProduct.name,
+        wxPayParams: order.wxPayParams
+      });
+      if (paymentSuccess) {
+        taro.Taro.showToast({
+          title: "购买成功",
+          icon: "success",
+          duration: 1500
+        });
+        setTimeout(() => {
+          taro.Taro.navigateBack();
+        }, 1500);
+      }
+    } catch (error) {
+      taro.Taro.hideLoading();
+      const errorMessage = error.message || error.errMsg || "购买失败";
+      taro.Taro.showModal({
+        title: "购买失败",
+        content: errorMessage,
+        showCancel: false,
+        confirmText: "知道了"
+      });
+    }
+  });
+  const getTotalPrice = () => {
+    return selectedProduct ? (selectedProduct.price / 100 * quantity).toFixed(0) : "0";
+  };
+  if (!selectedProduct) {
+    return /* @__PURE__ */ taro.jsx(taro.View, { className: "nuantie-page", children: /* @__PURE__ */ taro.jsx(taro.View, { className: "loading", children: "加载中..." }) });
+  }
+  return /* @__PURE__ */ taro.jsxs(taro.View, { className: "nuantie-page", children: [
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "product-info-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "product-image", children: /* @__PURE__ */ taro.jsx(
+        taro.Image,
+        {
+          className: "product-pic",
+          src: selectedProduct.image,
+          mode: "aspectFill"
+        }
+      ) }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "product-name", children: selectedProduct.name }),
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "product-desc", children: selectedProduct.description })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "product-section", children: [
+      /* @__PURE__ */ taro.jsx(taro.Text, { className: "section-title", children: "选择产品" }),
+      /* @__PURE__ */ taro.jsx(taro.View, { className: "product-grid", children: products.map(
+        (item) => /* @__PURE__ */ taro.jsxs(
+          taro.View,
+          {
+            className: `product-card ${selectedProduct.id === item.id ? "active" : ""}`,
+            onClick: () => handleProductSelect(item),
+            children: [
+              /* @__PURE__ */ taro.jsxs(taro.View, { className: "product-header", children: [
+                /* @__PURE__ */ taro.jsxs(taro.View, { className: "header-left", children: [
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "name", children: item.name }),
+                  /* @__PURE__ */ taro.jsxs(taro.Text, { className: "price", children: [
+                    "¥",
+                    (item.price / 100).toFixed(0)
+                  ] })
+                ] }),
+                selectedProduct.id === item.id && /* @__PURE__ */ taro.jsxs(taro.View, { className: "header-right", onClick: (e) => e.stopPropagation(), children: [
+                  /* @__PURE__ */ taro.jsx(
+                    taro.View,
+                    {
+                      className: "quantity-btn",
+                      onClick: () => handleQuantityChange("decrease"),
+                      children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "subtract-circle", size: "18", color: quantity === 1 ? "#ccc" : "#a40035" })
+                    }
+                  ),
+                  /* @__PURE__ */ taro.jsx(taro.Text, { className: "quantity-value", children: quantity }),
+                  /* @__PURE__ */ taro.jsx(
+                    taro.View,
+                    {
+                      className: "quantity-btn",
+                      onClick: () => handleQuantityChange("increase"),
+                      children: /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "add-circle", size: "18", color: "#a40035" })
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ taro.jsx(taro.Text, { className: "desc", children: item.description }),
+              selectedProduct.id === item.id && /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "check-circle", size: "24", color: "#a40035", className: "check-icon" })
+            ]
+          },
+          item.id
+        )
+      ) })
+    ] }),
+    /* @__PURE__ */ taro.jsxs(taro.View, { className: "purchase-bar", children: [
+      /* @__PURE__ */ taro.jsxs(taro.View, { className: "price-info", children: [
+        /* @__PURE__ */ taro.jsx(vendors.AtIcon, { value: "shopping-bag-2", size: "24", color: "#a40035" }),
+        /* @__PURE__ */ taro.jsxs(taro.Text, { className: "total-price", children: [
+          "¥ ",
+          getTotalPrice()
+        ] }),
+        /* @__PURE__ */ taro.jsx(taro.View, { className: "quantity-badge", children: quantity })
+      ] }),
+      /* @__PURE__ */ taro.jsx(taro.Button, { className: "purchase-btn", onClick: handleBuyNow, children: "去结算" })
+    ] })
+  ] });
+};
+var config = {
+  "navigationBarTitleText": "暖贴",
+  "usingComponents": {
+    "comp": "../../../comp"
+  }
+};
+Page(taro.createPageConfig(NuantieDetail, "pages/gift/nuantie/index", { root: { cn: [] } }, config || {}));
+//# sourceMappingURL=index.js.map
