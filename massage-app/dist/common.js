@@ -484,7 +484,18 @@ class GiftService {
    */
   static createGiftCardOrder(params) {
     return __async(this, null, function* () {
+      var _a, _b, _c, _d, _e;
       try {
+        const strictUserId = getCurrentUserIdStrict();
+        if (!strictUserId) {
+          throw new Error("请先登录后再购买礼卡");
+        }
+        if (params.paymentMethod === "wechat") {
+          const userInfo = getCurrentUserInfo();
+          if (!(userInfo == null ? void 0 : userInfo.openid)) {
+            throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录');
+          }
+        }
         const userId = getCurrentUserId();
         const orderData = {
           orderType: "product",
@@ -530,7 +541,23 @@ class GiftService {
         return response.data;
       } catch (error) {
         console.error("❌ 创建礼卡订单失败:", error);
-        throw new Error(error.message || "创建礼卡订单失败");
+        const errorCode = (error == null ? void 0 : error.code) || ((_b = (_a = error == null ? void 0 : error.response) == null ? void 0 : _a.data) == null ? void 0 : _b.code);
+        const errorMessage = ((_d = (_c = error == null ? void 0 : error.response) == null ? void 0 : _c.data) == null ? void 0 : _d.message) || (error == null ? void 0 : error.message) || "创建礼卡订单失败";
+        console.error("📋 错误详情:", {
+          code: errorCode,
+          message: errorMessage,
+          responseData: (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data,
+          fullError: error
+        });
+        if (errorCode === 1003) {
+          if (errorMessage.includes("openid")) {
+            throw new Error('微信支付授权失败，请前往"我的"页面重新登录');
+          }
+        }
+        if (errorCode === 1007) {
+          throw new Error("余额不足，请先充值");
+        }
+        throw new Error(errorMessage);
       }
     });
   }
@@ -539,7 +566,18 @@ class GiftService {
    */
   static createProductOrder(params) {
     return __async(this, null, function* () {
+      var _a, _b, _c, _d, _e;
       try {
+        const strictUserId = getCurrentUserIdStrict();
+        if (!strictUserId) {
+          throw new Error("请先登录后再购买商品");
+        }
+        if (params.paymentMethod === "wechat") {
+          const userInfo = getCurrentUserInfo();
+          if (!(userInfo == null ? void 0 : userInfo.openid)) {
+            throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录');
+          }
+        }
         const product = this.getProductById(params.productId);
         if (!product) {
           throw new Error("商品不存在");
@@ -584,7 +622,23 @@ class GiftService {
         return response.data;
       } catch (error) {
         console.error("❌ 创建商品订单失败:", error);
-        throw new Error(error.message || "创建商品订单失败");
+        const errorCode = (error == null ? void 0 : error.code) || ((_b = (_a = error == null ? void 0 : error.response) == null ? void 0 : _a.data) == null ? void 0 : _b.code);
+        const errorMessage = ((_d = (_c = error == null ? void 0 : error.response) == null ? void 0 : _c.data) == null ? void 0 : _d.message) || (error == null ? void 0 : error.message) || "创建商品订单失败";
+        console.error("📋 错误详情:", {
+          code: errorCode,
+          message: errorMessage,
+          responseData: (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data,
+          fullError: error
+        });
+        if (errorCode === 1003) {
+          if (errorMessage.includes("openid")) {
+            throw new Error('微信支付授权失败，请前往"我的"页面重新登录');
+          }
+        }
+        if (errorCode === 1007) {
+          throw new Error("余额不足，请先充值");
+        }
+        throw new Error(errorMessage);
       }
     });
   }
@@ -2206,7 +2260,16 @@ class WalletService {
    */
   createRechargeOrder(amount, bonus = 0) {
     return __async(this, null, function* () {
+      var _a, _b, _c, _d, _e;
       try {
+        const strictUserId = getCurrentUserIdStrict();
+        if (!strictUserId) {
+          throw new Error("请先登录后再充值");
+        }
+        const userInfo = getCurrentUserInfo();
+        if (!(userInfo == null ? void 0 : userInfo.openid)) {
+          throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录');
+        }
         const userId = this.getCurrentUserId();
         const userPhone = getCurrentUserPhone();
         const amountInCents = amount * 100;
@@ -2252,7 +2315,20 @@ class WalletService {
         return response.data;
       } catch (error) {
         console.error("❌ 创建充值订单失败:", error);
-        throw new Error(error.message || "创建充值订单失败");
+        const errorCode = (error == null ? void 0 : error.code) || ((_b = (_a = error == null ? void 0 : error.response) == null ? void 0 : _a.data) == null ? void 0 : _b.code);
+        const errorMessage = ((_d = (_c = error == null ? void 0 : error.response) == null ? void 0 : _c.data) == null ? void 0 : _d.message) || (error == null ? void 0 : error.message) || "创建充值订单失败";
+        console.error("📋 错误详情:", {
+          code: errorCode,
+          message: errorMessage,
+          responseData: (_e = error == null ? void 0 : error.response) == null ? void 0 : _e.data,
+          fullError: error
+        });
+        if (errorCode === 1003) {
+          if (errorMessage.includes("openid")) {
+            throw new Error('微信支付授权失败，请前往"我的"页面重新登录');
+          }
+        }
+        throw new Error(errorMessage);
       }
     });
   }

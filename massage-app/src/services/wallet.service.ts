@@ -1,6 +1,6 @@
 import { get, post } from '@/utils/request'
 import Taro from '@tarojs/taro'
-import { getCurrentUserId, getCurrentUserPhone, getCurrentUserIdStrict } from '@/utils/user'
+import { getCurrentUserId, getCurrentUserPhone, getCurrentUserIdStrict, getCurrentUserInfo } from '@/utils/user'
 
 /**
  * 交易记录类型
@@ -152,6 +152,18 @@ class WalletService {
    */
   async createRechargeOrder(amount: number, bonus: number = 0) {
     try {
+      // ✅ 严格检查用户是否已登录
+      const strictUserId = getCurrentUserIdStrict()
+      if (!strictUserId) {
+        throw new Error('请先登录后再充值')
+      }
+
+      // ✅ 充值只支持微信支付，检查用户是否有openid
+      const userInfo = getCurrentUserInfo()
+      if (!userInfo?.openid) {
+        throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录')
+      }
+
       const userId = this.getCurrentUserId()
       const userPhone = getCurrentUserPhone()
 
@@ -200,7 +212,29 @@ class WalletService {
       return response.data
     } catch (error: any) {
       console.error('❌ 创建充值订单失败:', error)
-      throw new Error(error.message || '创建充值订单失败')
+
+      // ✅ 提取完整的错误信息
+      const errorCode = error?.code || error?.response?.data?.code
+      const errorMessage = error?.response?.data?.message
+        || error?.message
+        || '创建充值订单失败'
+
+      // ✅ 详细日志，便于调试
+      console.error('📋 错误详情:', {
+        code: errorCode,
+        message: errorMessage,
+        responseData: error?.response?.data,
+        fullError: error
+      })
+
+      // ✅ 针对特定错误码提供更友好的提示
+      if (errorCode === 1003) {
+        if (errorMessage.includes('openid')) {
+          throw new Error('微信支付授权失败，请前往"我的"页面重新登录')
+        }
+      }
+
+      throw new Error(errorMessage)
     }
   }
 

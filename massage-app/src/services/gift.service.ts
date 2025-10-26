@@ -6,7 +6,7 @@ import {
 } from '@/types'
 import { post } from '@/utils/request'
 import { ASSETS_CONFIG } from '@/config/assets'
-import { getCurrentUserId } from '@/utils/user'
+import { getCurrentUserId, getCurrentUserIdStrict, getCurrentUserInfo } from '@/utils/user'
 
 // 静态礼卡数据（替代mock）
 const GIFT_CARDS: GiftCard[] = [
@@ -182,6 +182,20 @@ export class GiftService {
     customMessage?: string
   }): Promise<OrderResponse> {
     try {
+      // ✅ 严格检查用户是否已登录（参考预约订单）
+      const strictUserId = getCurrentUserIdStrict()
+      if (!strictUserId) {
+        throw new Error('请先登录后再购买礼卡')
+      }
+
+      // ✅ 如果是微信支付，检查用户是否有openid
+      if (params.paymentMethod === 'wechat') {
+        const userInfo = getCurrentUserInfo()
+        if (!userInfo?.openid) {
+          throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录')
+        }
+      }
+
       const userId = getCurrentUserId()
       const orderData: CreateOrderRequest = {
         orderType: 'product',
@@ -228,7 +242,33 @@ export class GiftService {
       return response.data
     } catch (error: any) {
       console.error('❌ 创建礼卡订单失败:', error)
-      throw new Error(error.message || '创建礼卡订单失败')
+
+      // ✅ 提取完整的错误信息
+      const errorCode = error?.code || error?.response?.data?.code
+      const errorMessage = error?.response?.data?.message
+        || error?.message
+        || '创建礼卡订单失败'
+
+      // ✅ 详细日志，便于调试
+      console.error('📋 错误详情:', {
+        code: errorCode,
+        message: errorMessage,
+        responseData: error?.response?.data,
+        fullError: error
+      })
+
+      // ✅ 针对特定错误码提供更友好的提示
+      if (errorCode === 1003) {
+        if (errorMessage.includes('openid')) {
+          throw new Error('微信支付授权失败，请前往"我的"页面重新登录')
+        }
+      }
+
+      if (errorCode === 1007) {
+        throw new Error('余额不足，请先充值')
+      }
+
+      throw new Error(errorMessage)
     }
   }
 
@@ -241,6 +281,20 @@ export class GiftService {
     paymentMethod: 'wechat' | 'balance'
   }): Promise<OrderResponse> {
     try {
+      // ✅ 严格检查用户是否已登录（参考预约订单）
+      const strictUserId = getCurrentUserIdStrict()
+      if (!strictUserId) {
+        throw new Error('请先登录后再购买商品')
+      }
+
+      // ✅ 如果是微信支付，检查用户是否有openid
+      if (params.paymentMethod === 'wechat') {
+        const userInfo = getCurrentUserInfo()
+        if (!userInfo?.openid) {
+          throw new Error('微信支付需要先完成微信登录授权，请前往"我的"页面登录')
+        }
+      }
+
       const product = this.getProductById(params.productId)
       if (!product) {
         throw new Error('商品不存在')
@@ -289,7 +343,33 @@ export class GiftService {
       return response.data
     } catch (error: any) {
       console.error('❌ 创建商品订单失败:', error)
-      throw new Error(error.message || '创建商品订单失败')
+
+      // ✅ 提取完整的错误信息
+      const errorCode = error?.code || error?.response?.data?.code
+      const errorMessage = error?.response?.data?.message
+        || error?.message
+        || '创建商品订单失败'
+
+      // ✅ 详细日志，便于调试
+      console.error('📋 错误详情:', {
+        code: errorCode,
+        message: errorMessage,
+        responseData: error?.response?.data,
+        fullError: error
+      })
+
+      // ✅ 针对特定错误码提供更友好的提示
+      if (errorCode === 1003) {
+        if (errorMessage.includes('openid')) {
+          throw new Error('微信支付授权失败，请前往"我的"页面重新登录')
+        }
+      }
+
+      if (errorCode === 1007) {
+        throw new Error('余额不足，请先充值')
+      }
+
+      throw new Error(errorMessage)
     }
   }
 
