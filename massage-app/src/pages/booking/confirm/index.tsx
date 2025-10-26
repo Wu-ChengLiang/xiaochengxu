@@ -161,13 +161,13 @@ const OrderConfirmPage: React.FC = () => {
   const fetchUserBalance = async () => {
     try {
       setBalanceLoading(true)
-      const balance = await walletService.getBalance()  // 返回值是元
-      setUserBalance(balance)
+      const balance = await walletService.getBalance()  // 返回分为单位
+      setUserBalance(balance / 100)  // ✅ 转换为元存储
 
       // 如果余额充足，默认选择余额支付
-      // ✅ getTotalPrice()返回元，balance也是元，直接比较
+      // ✅ 两个都是元，直接比较
       const totalPrice = getTotalPrice()  // 元
-      if (balance >= totalPrice) { // balance(元) >= totalPrice(元)
+      if (balance / 100 >= totalPrice) { // balance(元) >= totalPrice(元)
         setPaymentMethod('balance')
       }
     } catch (error) {

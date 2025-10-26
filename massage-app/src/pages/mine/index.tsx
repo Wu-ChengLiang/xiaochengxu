@@ -104,8 +104,8 @@ const Mine: React.FC = () => {
 
   const fetchBalance = async () => {
     try {
-      const currentBalance = await walletService.getBalance()
-      setBalance(currentBalance)
+      const currentBalance = await walletService.getBalance()  // 返回分为单位
+      setBalance(currentBalance / 100)  // ✅ 转换为元存储
     } catch (error) {
       console.error('获取余额失败:', error)
     }

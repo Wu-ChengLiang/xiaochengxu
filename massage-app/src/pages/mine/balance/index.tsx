@@ -31,8 +31,8 @@ const Balance: React.FC = () => {
   })
 
   const fetchBalance = async () => {
-    const currentBalance = await walletService.getBalance()
-    setBalance(currentBalance)
+    const currentBalance = await walletService.getBalance()  // 返回分为单位
+    setBalance(currentBalance / 100)  // ✅ 转换为元存储
   }
 
   const fetchTransactions = async (pageNum: number = 1) => {
@@ -108,7 +108,9 @@ const Balance: React.FC = () => {
   }
 
   const formatAmount = (amount: number) => {
-    return amount > 0 ? `+${amount.toFixed(2)}` : amount.toFixed(2)
+    // ✅ amount是分为单位，先转换为元
+    const yuan = amount / 100
+    return yuan > 0 ? `+${yuan.toFixed(2)}` : yuan.toFixed(2)
   }
 
   return (
@@ -158,7 +160,7 @@ const Balance: React.FC = () => {
                   >
                     {formatAmount(transaction.amount)}
                   </Text>
-                  <Text className="balance">余额: {transaction.balance.toFixed(2)}</Text>
+                  <Text className="balance">余额: {(transaction.balance / 100).toFixed(2)}</Text>
                 </View>
               </View>
             ))}
