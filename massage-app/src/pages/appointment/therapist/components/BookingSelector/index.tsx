@@ -248,24 +248,30 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
 
   const handleTimeSelect = (time: string, available: boolean) => {
     if (!available || !selectedDate || !selectedService) return
-    
-    // 检查选择的时间段是否足够
+
+    // 获取所有时间槽
+    const allSlots = timeSlots.flat()
+
+    // 检查整个时间段内所有时间点的可用性
     const timeToMinutes = (timeStr: string) => {
       const [hour, minute] = timeStr.split(':').map(Number)
       return hour * 60 + minute
     }
-    
+
     const startMinutes = timeToMinutes(time)
     const endMinutes = startMinutes + selectedService.duration
-    
-    // 检查是否超过营业时间
-    if (endMinutes > 22 * 60) { // 22:00
-      return
+
+    for (let minute = startMinutes; minute < endMinutes; minute += 10) {
+      const hours = Math.floor(minute / 60)
+      const mins = minute % 60
+      const checkTime = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`
+      const slot = allSlots.find(s => s.time === checkTime)
+      if (!slot?.available) return
     }
-    
+
     setSelectedTime(time)
     onTimeSelect(selectedDate, time)
-    
+
     // 自动弹出购物车
     setTimeout(() => {
       const cartBtn = document.querySelector('.checkout-btn:not(.disabled)')
