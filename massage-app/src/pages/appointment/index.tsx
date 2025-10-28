@@ -120,10 +120,22 @@ const Appointment: React.FC = () => {
   }
 
   // 打开更多技师弹出层
-  const handleMoreTherapists = () => {
+  const handleMoreTherapists = async () => {
     setShowTherapistSheet(true)
     setTherapistSearchValue('')
-    setSearchedTherapists([])
+    setTherapistLoading(true)
+
+    try {
+      // 直接加载全部技师
+      const result = await therapistService.getRecommendedTherapistsWithDistance(1, 100)
+      const therapistsWithDistance = await calculateTherapistDistances(result.list || [])
+      setSearchedTherapists(therapistsWithDistance)
+    } catch (error) {
+      console.error('获取全部技师失败:', error)
+      setSearchedTherapists([])
+    } finally {
+      setTherapistLoading(false)
+    }
   }
 
   // 计算技师的距离
@@ -317,18 +329,13 @@ const Appointment: React.FC = () => {
         {/* 搜索结果列表 */}
         {!therapistLoading && (
           <View className="therapist-sheet-list">
-            {therapistSearchValue === '' ? (
-              // 未搜索时的提示
-              <View className="empty-state">
-                <Text>请输入推拿师名称进行搜索</Text>
-              </View>
-            ) : searchedTherapists.length === 0 ? (
-              // 搜索无结果
+            {searchedTherapists.length === 0 ? (
+              // 无结果
               <View className="empty-state">
                 <Text>未找到匹配的推拿师</Text>
               </View>
             ) : (
-              // 搜索结果
+              // 搜索结果或全部列表
               searchedTherapists.map((therapist) => (
                 <TherapistCard
                   key={therapist.id}
