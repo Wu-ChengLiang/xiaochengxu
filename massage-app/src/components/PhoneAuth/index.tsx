@@ -129,7 +129,7 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
         if (type === 'change' && error.response?.data?.errorCode === 1003) {
           const currentUser = getCurrentUserInfo()
           Taro.showToast({
-            title: '该技师傅已被预约',
+            title: '该技师已被预约',
             icon: 'none'
           })
           return
