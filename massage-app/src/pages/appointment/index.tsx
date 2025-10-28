@@ -20,6 +20,13 @@ const Appointment: React.FC = () => {
   const [showStoreSheet, setShowStoreSheet] = useState(false)  // 控制门店弹出层
   const [searchValue, setSearchValue] = useState('')  // 搜索框值
 
+  // 更多技师相关状态
+  const [showTherapistSheet, setShowTherapistSheet] = useState(false)  // 控制技师弹出层
+  const [therapistSearchValue, setTherapistSearchValue] = useState('')  // 技师搜索框值
+  const [searchedTherapists, setSearchedTherapists] = useState<Therapist[]>([])  // 搜索结果
+  const [therapistLoading, setTherapistLoading] = useState(false)  // 技师搜索加载状态
+  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)  // 用户位置
+
 
   useEffect(() => {
     loadData()
@@ -31,6 +38,7 @@ const Appointment: React.FC = () => {
 
       // 获取用户位置
       const location = await getLocationService.getCurrentLocation()
+      setUserLocation(location)  // 保存用户位置，供搜索时使用
 
       // 获取附近门店（只显示最近的2家）
       try {
@@ -111,7 +119,85 @@ const Appointment: React.FC = () => {
     setShowStoreSheet(true)
   }
 
+  // 打开更多技师弹出层
+  const handleMoreTherapists = () => {
+    setShowTherapistSheet(true)
+    setTherapistSearchValue('')
+    setSearchedTherapists([])
+  }
 
+  // 计算技师的距离
+  const calculateTherapistDistances = async (therapists: Therapist[]) => {
+    if (!userLocation) return therapists
+
+    try {
+      const therapistsWithDistance = await Promise.all(
+        therapists.map(async (therapist) => {
+          try {
+            const storeData = await storeService.getStoreDetail(therapist.storeId)
+            const store = storeData?.data || storeData
+
+            let distance: number | null = null
+            if (store?.latitude && store?.longitude) {
+              distance = getLocationService.calculateDistance(
+                userLocation.latitude,
+                userLocation.longitude,
+                store.latitude,
+                store.longitude
+              )
+            }
+
+            return { ...therapist, distance }
+          } catch (error) {
+            console.warn(`获取技师 ${therapist.id} 门店信息失败:`, error)
+            return { ...therapist, distance: null }
+          }
+        })
+      )
+
+      return therapistsWithDistance
+    } catch (error) {
+      console.error('计算距离失败:', error)
+      return therapists
+    }
+  }
+
+  // 搜索技师
+  const handleTherapistSearch = async (keyword: string) => {
+    setTherapistSearchValue(keyword)
+
+    if (keyword.trim() === '') {
+      setSearchedTherapists([])
+      return
+    }
+
+    try {
+      setTherapistLoading(true)
+
+      // 调用搜索 API，获取前 10 个结果
+      const result = await therapistService.searchTherapists(
+        keyword,
+        1,    // page
+        10    // pageSize - 只获取前 10 个
+      )
+
+      console.log('✅ 搜索技师结果:', result)
+
+      // 补充距离信息
+      const therapistsWithDistance = await calculateTherapistDistances(result.list || [])
+
+      setSearchedTherapists(therapistsWithDistance)
+    } catch (error) {
+      console.error('搜索技师失败:', error)
+      Taro.showToast({
+        title: '搜索失败，请重试',
+        icon: 'none'
+      })
+      setSearchedTherapists([])
+    } finally {
+      setTherapistLoading(false)
+    }
+  }
 
   return (
     <View className="appointment-page">
@@ -139,11 +225,15 @@ const Appointment: React.FC = () => {
       <View className="therapists-section">
         <View className="section-header">
           <Text className="section-title">推拿师预约</Text>
+          <Text className="more-link" onClick={handleMoreTherapists}>
+            更多技师
+            <AtIcon value="chevron-right" size="14" color="#a40035" />
+          </Text>
         </View>
         <View className="therapist-list">
           {therapists.map((therapist) => (
-            <TherapistCard 
-              key={therapist.id} 
+            <TherapistCard
+              key={therapist.id}
               therapist={therapist}
               onClick={() => handleTherapistClick(therapist)}
             />
@@ -195,6 +285,63 @@ const Appointment: React.FC = () => {
             ))
           }
         </View>
+      </BottomSheet>
+
+      {/* 更多技师弹出层 */}
+      <BottomSheet
+        visible={showTherapistSheet}
+        title="更多技师"
+        onClose={() => setShowTherapistSheet(false)}
+        height="80%"
+      >
+        {/* 搜索框 */}
+        <View className="therapist-sheet-header">
+          <View className="search-box">
+            <AtIcon value="search" size="16" color="#999" />
+            <Input
+              className="search-input"
+              placeholder="搜索推拿师"
+              value={therapistSearchValue}
+              onInput={(e) => handleTherapistSearch(e.detail.value)}
+            />
+          </View>
+        </View>
+
+        {/* 加载状态 */}
+        {therapistLoading && (
+          <View className="therapist-sheet-list loading">
+            <Text>搜索中...</Text>
+          </View>
+        )}
+
+        {/* 搜索结果列表 */}
+        {!therapistLoading && (
+          <View className="therapist-sheet-list">
+            {therapistSearchValue === '' ? (
+              // 未搜索时的提示
+              <View className="empty-state">
+                <Text>请输入推拿师名称进行搜索</Text>
+              </View>
+            ) : searchedTherapists.length === 0 ? (
+              // 搜索无结果
+              <View className="empty-state">
+                <Text>未找到匹配的推拿师</Text>
+              </View>
+            ) : (
+              // 搜索结果
+              searchedTherapists.map((therapist) => (
+                <TherapistCard
+                  key={therapist.id}
+                  therapist={therapist}
+                  onClick={() => {
+                    handleTherapistClick(therapist)
+                    setShowTherapistSheet(false)
+                  }}
+                />
+              ))
+            )}
+          </View>
+        )}
       </BottomSheet>
     </View>
   )

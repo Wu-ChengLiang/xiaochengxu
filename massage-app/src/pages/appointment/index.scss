@@ -102,6 +102,71 @@
     }
   }
 
+  // 更多技师弹出层样式
+  .therapist-sheet-header {
+    padding: 24rpx 32rpx;
+    background: #fff;
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      border-radius: var(--radius-full);
+      padding: 16rpx 24rpx;
+      box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+
+      .at-icon {
+        margin-right: 12rpx;
+      }
+
+      .search-input {
+        flex: 1;
+        font-size: 28rpx;
+        color: var(--text-primary);
+
+        &::placeholder {
+          color: var(--text-weak);
+        }
+      }
+    }
+  }
+
+  .therapist-sheet-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom);
+
+    &.loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+
+      text {
+        color: var(--text-secondary);
+        font-size: 28rpx;
+      }
+    }
+
+    .therapist-card {
+      &:first-child {
+        padding-top: 24rpx;
+      }
+    }
+
+    .empty-state {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+
+      text {
+        color: var(--text-weak);
+        font-size: 28rpx;
+      }
+    }
+  }
+
   // 动画定义
   @keyframes pulse {
     0%, 100% {
