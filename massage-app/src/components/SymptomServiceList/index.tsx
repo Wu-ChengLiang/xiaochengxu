@@ -55,17 +55,38 @@ const SymptomServiceList: React.FC<SymptomServiceListProps> = ({
 }) => {
   // 检查技师在指定日期/时间是否有空
   const isTherapistAvailable = (therapist: Therapist): boolean => {
-    if (!therapist.availability || !selectedDate || !selectedTime) {
-      return true // 无排班数据时，默认可用
+    // 检查必要数据
+    if (!therapist.availability) {
+      console.warn('技师排班数据缺失:', therapist.id)
+      return true // 无排班数据，无法判断，标记为可用（用户可尝试预约）
     }
 
+    if (!selectedDate || !selectedTime) {
+      console.warn('未选择日期或时间', { selectedDate, selectedTime })
+      return true // 参数缺失，无法判断，标记为可用
+    }
+
+    // 查找指定日期的排班
     const dayAvailability = therapist.availability.find(a => a.date === selectedDate)
     if (!dayAvailability) {
-      return true // 没有该日期数据，默认可用
+      console.warn(`技师 ${therapist.id} 在 ${selectedDate} 无排班数据`)
+      return true // 没有该日期数据，表示无排班或休息，标记为可用（提示用户）
     }
 
+    // 查找指定时段
     const slot = dayAvailability.slots.find(s => s.time === selectedTime)
-    return slot?.available ?? true // 默认可用
+
+    // 关键修改：不再有默认值
+    // - 如果找到时段，返回其可用状态
+    // - 如果找不到时段，说明该时段不在排班范围内，返回 false（不可用）
+    if (!slot) {
+      console.warn(`技师 ${therapist.id} 在 ${selectedDate} ${selectedTime} 无此时段`, {
+        availableSlots: dayAvailability.slots.map(s => s.time)
+      })
+      return false // 时段不存在，标记为不可用
+    }
+
+    return slot.available
   }
 
   // 按服务显示，每个服务显示所有可选推拿师
