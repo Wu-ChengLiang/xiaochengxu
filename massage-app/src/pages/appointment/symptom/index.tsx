@@ -53,10 +53,10 @@ const SymptomPage = () => {
 
           // 合并基本信息和排班数据
           const merged = basicInfo.list.map(therapist => {
-            const availability = availabilityData.find((a: any) => a.id === therapist.id)
+            const availabilityTherapist = availabilityData.find((a: any) => a.id === therapist.id)
             return {
               ...therapist,
-              availability: availability?.availability || []
+              availability: availabilityTherapist?.availability || []
             }
           })
 
