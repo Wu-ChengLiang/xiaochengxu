@@ -339,16 +339,16 @@ const OrderConfirmPage: React.FC = () => {
       console.error('❌ 支付流程错误:', error)
       Taro.hideLoading()
 
-      // 优化错误提示：将通用错误码转换为用户友好的提示
+      // 错误提示：将"请求的资源不存在"转换为"该技师傅已被预约"
       let errorMessage = error.message || error.errMsg || '支付失败'
 
-      // 检查是否是"已经预约"错误 (errorCode 1004)
-      if (error.response?.data?.errorCode === 1004 || error.message?.includes('已经预约') || error.message?.includes('重复')) {
-        errorMessage = '您已经预约过这个时段，请选择其他时间'
-      }
-      // 检查是否是"请求的资源不存在"错误，转换为更友好的提示
-      else if (error.response?.data?.errorCode === 1003 && error.message?.includes('资源')) {
-        errorMessage = '预约信息无法找到，请刷新重试'
+      // 检查是否是"请求的资源不存在"或"已经预约"相关的错误，统一显示为"该技师傅已被预约"
+      if (error.response?.data?.errorCode === 1003 ||
+          error.response?.data?.errorCode === 1004 ||
+          error.message?.includes('资源不存在') ||
+          error.message?.includes('已经预约') ||
+          error.message?.includes('重复')) {
+        errorMessage = '该技师傅已被预约'
       }
 
       Taro.showModal({

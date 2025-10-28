@@ -129,10 +129,9 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
         if (type === 'change' && error.response?.data?.errorCode === 1003) {
           const currentUser = getCurrentUserInfo()
           Taro.showToast({
-            title: '您已成功绑定',
-            icon: 'success'
+            title: '该技师傅已被预约',
+            icon: 'none'
           })
-          onSuccess?.(currentUser?.phone || '')
           return
         }
 
