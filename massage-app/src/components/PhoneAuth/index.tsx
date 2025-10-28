@@ -125,6 +125,17 @@ const PhoneAuth: React.FC<PhoneAuthProps> = ({
           data: error.response?.data
         })
 
+        // 临时处理：换绑时如果返回NOT_FOUND(1003)错误，视为换绑成同一手机号，显示成功提示
+        if (type === 'change' && error.response?.data?.errorCode === 1003) {
+          const currentUser = getCurrentUserInfo()
+          Taro.showToast({
+            title: '您已成功绑定',
+            icon: 'success'
+          })
+          onSuccess?.(currentUser?.phone || '')
+          return
+        }
+
         // 显示具体错误信息
         const errorMsg = error.message || (type === 'bind' ? '绑定失败' : '换绑失败')
         Taro.showToast({

@@ -335,13 +335,24 @@ const OrderConfirmPage: React.FC = () => {
         // 模式1：新预约 - 创建订单后支付
         await handleNewAppointmentPayment()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ 支付流程错误:', error)
       Taro.hideLoading()
 
-      const errorMessage = error.message || error.errMsg || '支付失败'
+      // 优化错误提示：将通用错误码转换为用户友好的提示
+      let errorMessage = error.message || error.errMsg || '支付失败'
+
+      // 检查是否是"已经预约"错误 (errorCode 1004)
+      if (error.response?.data?.errorCode === 1004 || error.message?.includes('已经预约') || error.message?.includes('重复')) {
+        errorMessage = '您已经预约过这个时段，请选择其他时间'
+      }
+      // 检查是否是"请求的资源不存在"错误，转换为更友好的提示
+      else if (error.response?.data?.errorCode === 1003 && error.message?.includes('资源')) {
+        errorMessage = '预约信息无法找到，请刷新重试'
+      }
+
       Taro.showModal({
-        title: '支付失败',
+        title: '提示',
         content: errorMessage,
         showCancel: false,
         confirmText: '知道了'
