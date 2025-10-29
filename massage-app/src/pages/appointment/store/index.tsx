@@ -8,6 +8,7 @@ import TimePickerScroller from './components/TimePickerScroller'
 import type { Store } from '@/types'
 import { ASSETS_CONFIG } from '@/config/assets'
 import { normalizeImageUrl } from '@/utils/image'
+import { getTodayString } from '@/utils/date'
 import './index.scss'
 
 
@@ -15,7 +16,7 @@ const StoreAppointmentPage: React.FC = () => {
   const router = useRouter()
   const { id } = router.params
   const [store, setStore] = useState<Store | null>(null)
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [selectedDate, setSelectedDate] = useState(getTodayString())  // ✅ 使用正确的北京时间生成方法
   const [selectedHour, setSelectedHour] = useState('10点')  // 默认10点
   const [selectedMinute, setSelectedMinute] = useState('00分')  // 默认00分
   const [loading, setLoading] = useState(true)
@@ -115,11 +116,11 @@ const StoreAppointmentPage: React.FC = () => {
     if (!selectedDate || !selectedHour || !selectedMinute) {
       return '请选择时间'
     }
-    
-    const dateText = selectedDate === new Date().toISOString().split('T')[0] ? '今天' : selectedDate
+
+    const dateText = selectedDate === getTodayString() ? '今天' : selectedDate  // ✅ 使用正确的北京时间生成方法
     const hourText = selectedHour.replace('点', '')
     const minuteText = selectedMinute.replace('分', '')
-    
+
     return `${dateText} ${hourText}:${minuteText}`
   }
 

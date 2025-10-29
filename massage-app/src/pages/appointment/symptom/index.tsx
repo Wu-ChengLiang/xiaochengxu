@@ -7,6 +7,7 @@ import SymptomServiceList from '../../../components/SymptomServiceList'
 import ShoppingCart from '../therapist/components/ShoppingCart'
 import { symptomService } from '../../../services/symptom'
 import { therapistService } from '../../../services/therapist'
+import { getTodayString } from '../../../utils/date'
 import './index.scss'
 
 interface CartItem {
@@ -123,7 +124,7 @@ const SymptomPage = () => {
       duration: service.duration,
       price: service.price,
       discountPrice: service.discountPrice,
-      date: selectedDate as string || new Date().toISOString().split('T')[0],
+      date: selectedDate as string || getTodayString(),  // ✅ 使用正确的北京时间生成方法
       time: decodedTime || '10:00',  // 使用解码后的时间，默认10:00
       therapistId: therapist.id,
       therapistName: therapist.name,

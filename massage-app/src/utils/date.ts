@@ -89,3 +89,39 @@ export const formatDate = (
     .replace('mm', minutes)
     .replace('ss', seconds)
 }
+
+/**
+ * 获取本地日期字符串（北京时间），格式：YYYY-MM-DD
+ *
+ * 修复时区问题：new Date().toISOString() 会转换为 UTC 时区
+ * 导致如下问题：
+ * - 北京时间 2025-10-29 07:20 →（转换）→ UTC 2025-10-28 23:20
+ * - 分割后得到 "2025-10-28" 而非 "2025-10-29"
+ *
+ * 解决方案：使用本地时间的 getFullYear/getMonth/getDate
+ *
+ * @param date 可选的 Date 对象，默认使用当前时间
+ * @returns 本地日期字符串，格式：YYYY-MM-DD
+ *
+ * @example
+ * // 北京时间 2025-10-29 07:20
+ * getLocalDateString() // 返回 "2025-10-29" ✅
+ * new Date().toISOString().split('T')[0] // 可能返回 "2025-10-28" ❌
+ */
+export const getLocalDateString = (date: Date = new Date()): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
+ * 获取今天的本地日期字符串（北京时间）
+ * @returns 今天的日期字符串，格式：YYYY-MM-DD
+ *
+ * @example
+ * getTodayString() // 返回 "2025-10-29"
+ */
+export const getTodayString = (): string => {
+  return getLocalDateString()
+}

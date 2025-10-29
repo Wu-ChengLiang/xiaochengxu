@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
+import { getLocalDateString } from '@/utils/date'
 import './index.scss'
 
 interface Service {
@@ -158,23 +159,23 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
   const generateDateList = () => {
     const dates = []
     const today = new Date()
-    
+
     for (let i = 0; i < 5; i++) {
       const date = new Date(today)
       date.setDate(today.getDate() + i)
-      
+
       const month = date.getMonth() + 1
       const day = date.getDate()
       const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
       const weekDay = weekDays[date.getDay()]
-      
+
       dates.push({
-        key: date.toISOString().split('T')[0],
+        key: getLocalDateString(date),  // ✅ 使用正确的北京时间生成方法
         display: i === 0 ? '今天' : `${month}月${day}日`,
         weekDay: i === 0 ? '' : weekDay
       })
     }
-    
+
     return dates
   }
 
