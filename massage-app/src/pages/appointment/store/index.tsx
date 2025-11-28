@@ -185,13 +185,13 @@ const StoreAppointmentPage: React.FC = () => {
         <Text className="selected-time">
           预约时间: {getFormattedDateTime()}
         </Text>
-        <AtButton 
+        <AtButton
           className="submit-btn"
           type="primary"
           onClick={handleSubmit}
           disabled={!selectedHour || !selectedMinute}
         >
-          选症状
+          选项目
         </AtButton>
       </View>
     </View>
