@@ -588,11 +588,11 @@ const OrderConfirmPage: React.FC = () => {
         </View>
       </View>
 
-      {/* 客户备注 */}
-      <View className="customer-note">
+      {/* 客户备注 - 暂时隐藏，等后端支持 notes 参数后再启用 */}
+      {/* <View className="customer-note">
         <Text className="note-title">客户备注</Text>
         <Text className="note-hint">您对茶水、房间、按摩服等是否有特殊需求，我们将提前为您做好准备</Text>
-      </View>
+      </View> */}
 
       {/* 支付方式 */}
       <View className="payment-section">
