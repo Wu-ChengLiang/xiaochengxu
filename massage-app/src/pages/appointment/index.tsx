@@ -64,7 +64,7 @@ const Appointment: React.FC = () => {
           location.latitude,
           location.longitude,
           1,
-          20  // 获取更多数据
+          80  // 获取更多数据
         )
         setAllStores(allStoresData.list)
       } catch (error) {
