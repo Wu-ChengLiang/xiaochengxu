@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView } from '@tarojs/components'
 import Taro, { useDidShow, usePullDownRefresh } from '@tarojs/taro'
 import { AtTabs, AtTabsPane, AtIcon } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
+import { getDefaultShareConfig } from '@/utils/share'
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import { parseDate } from '@/utils/date'  // ✅ iOS 兼容日期处理
 import './index.scss'
@@ -32,6 +33,18 @@ const OrderListPage: React.FC = () => {
     setPage(1)
     fetchOrders(1)
   })
+
+  useEffect(() => {
+    // 配置分享功能
+    const shareConfig = getDefaultShareConfig()
+    Taro.useShareAppMessage(() => {
+      return {
+        title: shareConfig.title,
+        path: shareConfig.path,
+        imageUrl: shareConfig.imageUrl
+      }
+    })
+  }, [])
 
   useEffect(() => {
     setPage(1)

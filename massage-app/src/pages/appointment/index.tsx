@@ -5,6 +5,7 @@ import { AtButton, AtIcon } from 'taro-ui'
 import { getLocationService } from '@/services/location'
 import { storeService } from '@/services/store'
 import { therapistService } from '@/services/therapist'
+import { getAppointmentShareConfig } from '@/utils/share'
 import StoreCard from '@/components/StoreCard'
 import TherapistCard from '@/components/TherapistCard'
 import BottomSheet from '@/components/BottomSheet'
@@ -30,6 +31,16 @@ const Appointment: React.FC = () => {
 
   useEffect(() => {
     loadData()
+
+    // 配置分享功能
+    const shareConfig = getAppointmentShareConfig()
+    Taro.useShareAppMessage(() => {
+      return {
+        title: shareConfig.title,
+        path: shareConfig.path,
+        imageUrl: shareConfig.imageUrl
+      }
+    })
   }, [])
 
   const loadData = async () => {

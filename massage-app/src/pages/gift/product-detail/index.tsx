@@ -3,6 +3,7 @@ import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { GiftService } from '@/services/gift.service'
 import { paymentService } from '@/services/payment.service'
+import { getProductDetailShareConfig } from '@/utils/share'
 import { Product } from '@/types'
 import './index.scss'
 
@@ -23,6 +24,24 @@ const ProductDetail: React.FC = () => {
       setLoading(false)
     }
   }, [id])
+
+  // 配置分享功能
+  useEffect(() => {
+    if (productInfo && id) {
+      const shareConfig = getProductDetailShareConfig(
+        id as string,
+        productInfo.name || '商品',
+        productInfo.image
+      )
+      Taro.useShareAppMessage(() => {
+        return {
+          title: shareConfig.title,
+          path: shareConfig.path,
+          imageUrl: shareConfig.imageUrl
+        }
+      })
+    }
+  }, [productInfo, id])
 
   const handleQuantityChange = (type: 'increase' | 'decrease') => {
     if (type === 'increase') {

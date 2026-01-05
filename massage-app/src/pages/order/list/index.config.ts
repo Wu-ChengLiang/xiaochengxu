@@ -1,5 +1,6 @@
 export default {
   navigationBarTitleText: '我的订单',
   enablePullDownRefresh: true,
-  backgroundTextStyle: 'dark'
+  backgroundTextStyle: 'dark',
+  enableShareAppMessage: true
 }

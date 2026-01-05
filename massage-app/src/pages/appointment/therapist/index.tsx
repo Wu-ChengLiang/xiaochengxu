@@ -6,6 +6,7 @@ import { storeService } from '@/services/store'
 import { getLocationService } from '@/services/location'
 import { reviewService, ReviewData, ReviewStats } from '@/services/review'
 import { symptomService } from '@/services/symptom'
+import { getTherapistShareConfig } from '@/utils/share'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
@@ -62,6 +63,19 @@ const TherapistBookingPage: React.FC = () => {
       loadReviews()
     }
   }, [therapistId])
+
+  // 配置分享功能
+  useEffect(() => {
+    if (therapist && therapistId) {
+      const shareConfig = getTherapistShareConfig(therapistId, therapist.name || '技师')
+      Taro.useShareAppMessage(() => {
+        return {
+          title: shareConfig.title,
+          path: shareConfig.path
+        }
+      })
+    }
+  }, [therapist, therapistId])
 
   const loadData = async () => {
     try {

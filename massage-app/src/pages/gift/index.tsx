@@ -2,10 +2,23 @@ import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { GiftService } from '@/services/gift.service'
+import { getGiftShareConfig } from '@/utils/share'
 import './index.scss'
 
 const Gift: React.FC = () => {
   const giftCards = GiftService.getAllGiftCards()
+
+  // 配置分享功能
+  React.useEffect(() => {
+    const shareConfig = getGiftShareConfig()
+    Taro.useShareAppMessage(() => {
+      return {
+        title: shareConfig.title,
+        path: shareConfig.path,
+        imageUrl: shareConfig.imageUrl
+      }
+    })
+  }, [])
 
   const handleCardClick = (cardId: string) => {
     Taro.navigateTo({

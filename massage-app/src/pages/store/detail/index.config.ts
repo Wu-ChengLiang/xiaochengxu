@@ -1,4 +1,4 @@
 export default {
-  navigationBarTitleText: '商品详情',
+  navigationBarTitleText: '门店详情',
   enableShareAppMessage: true
 }

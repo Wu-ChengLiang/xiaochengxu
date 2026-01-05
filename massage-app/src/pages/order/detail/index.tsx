@@ -4,6 +4,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon, AtSteps } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
 import { reviewService } from '@/services/review'
+import { getOrderDetailShareConfig } from '@/utils/share'
 import { ReviewModal } from '@/components/Review'
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import './index.scss'
@@ -19,6 +20,19 @@ const OrderDetailPage: React.FC = () => {
   useEffect(() => {
     fetchOrderDetail()
   }, [orderNo])
+
+  // 配置分享功能
+  useEffect(() => {
+    if (orderInfo && orderNo) {
+      const shareConfig = getOrderDetailShareConfig(orderNo)
+      Taro.useShareAppMessage(() => {
+        return {
+          title: shareConfig.title,
+          path: shareConfig.path
+        }
+      })
+    }
+  }, [orderInfo, orderNo])
 
   const fetchOrderDetail = async () => {
     if (!orderNo) {
