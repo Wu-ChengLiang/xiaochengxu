@@ -4,7 +4,7 @@ import Taro, { useRouter } from '@tarojs/taro'
 import { AtIcon, AtSteps } from 'taro-ui'
 import { orderService, OrderData } from '@/services/order'
 import { reviewService } from '@/services/review'
-import { getOrderDetailShareConfig } from '@/utils/share'
+import { getOrderDetailShareConfig, getOrderDetailShareTimelineConfig } from '@/utils/share'
 import { ReviewModal } from '@/components/Review'
 import { formatAmount } from '@/utils/amount'  // ✅ 新增导入
 import './index.scss'
@@ -29,6 +29,15 @@ const OrderDetailPage: React.FC = () => {
         return {
           title: shareConfig.title,
           path: shareConfig.path
+        }
+      })
+
+      // 配置分享到朋友圈功能
+      const shareTimelineConfig = getOrderDetailShareTimelineConfig()
+      Taro.useShareTimeline(() => {
+        return {
+          title: shareTimelineConfig.title,
+          imageUrl: shareTimelineConfig.imageUrl
         }
       })
     }

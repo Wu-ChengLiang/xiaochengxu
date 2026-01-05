@@ -44,6 +44,14 @@ const OrderListPage: React.FC = () => {
         imageUrl: shareConfig.imageUrl
       }
     })
+
+    // 配置分享到朋友圈功能
+    Taro.useShareTimeline(() => {
+      return {
+        title: shareConfig.title,
+        imageUrl: shareConfig.imageUrl
+      }
+    })
   }, [])
 
   useEffect(() => {

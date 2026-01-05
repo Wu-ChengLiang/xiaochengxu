@@ -6,7 +6,7 @@ import { storeService } from '@/services/store'
 import { getLocationService } from '@/services/location'
 import { reviewService, ReviewData, ReviewStats } from '@/services/review'
 import { symptomService } from '@/services/symptom'
-import { getTherapistShareConfig } from '@/utils/share'
+import { getTherapistShareConfig, getTherapistShareTimelineConfig } from '@/utils/share'
 import TherapistInfo from './components/TherapistInfo'
 import StoreInfo from './components/StoreInfo'
 import BookingSelector, { BookingSelectorHandle } from './components/BookingSelector'
@@ -72,6 +72,15 @@ const TherapistBookingPage: React.FC = () => {
         return {
           title: shareConfig.title,
           path: shareConfig.path
+        }
+      })
+
+      // 配置分享到朋友圈功能
+      const shareTimelineConfig = getTherapistShareTimelineConfig(therapist.name || '技师')
+      Taro.useShareTimeline(() => {
+        return {
+          title: shareTimelineConfig.title,
+          imageUrl: shareTimelineConfig.imageUrl
         }
       })
     }

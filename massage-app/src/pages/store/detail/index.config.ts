@@ -1,4 +1,5 @@
 export default {
   navigationBarTitleText: '门店详情',
-  enableShareAppMessage: true
+  enableShareAppMessage: true,
+  enableShareTimeline: true
 }

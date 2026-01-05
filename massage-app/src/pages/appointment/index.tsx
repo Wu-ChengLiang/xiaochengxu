@@ -5,7 +5,7 @@ import { AtButton, AtIcon } from 'taro-ui'
 import { getLocationService } from '@/services/location'
 import { storeService } from '@/services/store'
 import { therapistService } from '@/services/therapist'
-import { getAppointmentShareConfig } from '@/utils/share'
+import { getAppointmentShareConfig, getAppointmentShareTimelineConfig } from '@/utils/share'
 import StoreCard from '@/components/StoreCard'
 import TherapistCard from '@/components/TherapistCard'
 import BottomSheet from '@/components/BottomSheet'
@@ -32,13 +32,22 @@ const Appointment: React.FC = () => {
   useEffect(() => {
     loadData()
 
-    // 配置分享功能
+    // 配置分享给好友功能
     const shareConfig = getAppointmentShareConfig()
     Taro.useShareAppMessage(() => {
       return {
         title: shareConfig.title,
         path: shareConfig.path,
         imageUrl: shareConfig.imageUrl
+      }
+    })
+
+    // 配置分享到朋友圈功能
+    const shareTimelineConfig = getAppointmentShareTimelineConfig()
+    Taro.useShareTimeline(() => {
+      return {
+        title: shareTimelineConfig.title,
+        imageUrl: shareTimelineConfig.imageUrl
       }
     })
   }, [])

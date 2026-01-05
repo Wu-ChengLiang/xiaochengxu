@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import { GiftService } from '@/services/gift.service'
-import { getGiftShareConfig } from '@/utils/share'
+import { getGiftShareConfig, getGiftShareTimelineConfig } from '@/utils/share'
 import './index.scss'
 
 const Gift: React.FC = () => {
@@ -16,6 +16,15 @@ const Gift: React.FC = () => {
         title: shareConfig.title,
         path: shareConfig.path,
         imageUrl: shareConfig.imageUrl
+      }
+    })
+
+    // 配置分享到朋友圈功能
+    const shareTimelineConfig = getGiftShareTimelineConfig()
+    Taro.useShareTimeline(() => {
+      return {
+        title: shareTimelineConfig.title,
+        imageUrl: shareTimelineConfig.imageUrl
       }
     })
   }, [])

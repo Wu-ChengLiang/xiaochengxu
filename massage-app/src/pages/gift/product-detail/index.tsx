@@ -3,7 +3,7 @@ import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
 import { GiftService } from '@/services/gift.service'
 import { paymentService } from '@/services/payment.service'
-import { getProductDetailShareConfig } from '@/utils/share'
+import { getProductDetailShareConfig, getProductDetailShareTimelineConfig } from '@/utils/share'
 import { Product } from '@/types'
 import './index.scss'
 
@@ -38,6 +38,18 @@ const ProductDetail: React.FC = () => {
           title: shareConfig.title,
           path: shareConfig.path,
           imageUrl: shareConfig.imageUrl
+        }
+      })
+
+      // 配置分享到朋友圈功能
+      const shareTimelineConfig = getProductDetailShareTimelineConfig(
+        productInfo.name || '商品',
+        productInfo.image
+      )
+      Taro.useShareTimeline(() => {
+        return {
+          title: shareTimelineConfig.title,
+          imageUrl: shareTimelineConfig.imageUrl
         }
       })
     }
