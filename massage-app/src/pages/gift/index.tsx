@@ -1,11 +1,27 @@
 import React from 'react'
 import { View, Text, Image } from '@tarojs/components'
-import Taro from '@tarojs/taro'
+import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { GiftService } from '@/services/gift.service'
 import './index.scss'
 
 const Gift: React.FC = () => {
   const giftCards = GiftService.getAllGiftCards()
+
+  // 分享功能
+  useShareAppMessage(() => {
+    return {
+      title: '名医堂礼品卡-享受推拿好礼',
+      path: '/pages/gift/index',
+      imageUrl: require('@/assets/icons/logo.png')
+    }
+  })
+
+  useShareTimeline(() => {
+    return {
+      title: '名医堂礼品卡-享受推拿好礼',
+      imageUrl: require('@/assets/icons/logo.png')
+    }
+  })
 
   const handleCardClick = (cardId: string) => {
     Taro.navigateTo({

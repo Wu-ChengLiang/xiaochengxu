@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Taro from '@tarojs/taro'
+import Taro, { useShareAppMessage, useShareTimeline } from '@tarojs/taro'
 import { View, Text, Input } from '@tarojs/components'
 import { AtButton, AtIcon } from 'taro-ui'
 import { getLocationService } from '@/services/location'
@@ -26,6 +26,22 @@ const Appointment: React.FC = () => {
   const [searchedTherapists, setSearchedTherapists] = useState<Therapist[]>([])  // 搜索结果
   const [therapistLoading, setTherapistLoading] = useState(false)  // 技师搜索加载状态
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)  // 用户位置
+
+  // 分享功能
+  useShareAppMessage(() => {
+    return {
+      title: '推拿预约-名医堂',
+      path: '/pages/appointment/index',
+      imageUrl: require('@/assets/icons/logo.png')
+    }
+  })
+
+  useShareTimeline(() => {
+    return {
+      title: '推拿预约-名医堂',
+      imageUrl: require('@/assets/icons/logo.png')
+    }
+  })
 
 
   useEffect(() => {
