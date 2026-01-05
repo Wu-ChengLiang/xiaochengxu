@@ -16,7 +16,7 @@ export const getAppointmentShareConfig = (): ShareConfig => {
   return {
     title: '发现名医堂，预约专业按摩师',
     path: '/pages/appointment/index',
-    imageUrl: '' // 可选：添加品牌宣传图
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
 
@@ -28,7 +28,8 @@ export const getAppointmentShareConfig = (): ShareConfig => {
 export const getTherapistShareConfig = (therapistId: string, therapistName: string): ShareConfig => {
   return {
     title: `这个技师超棒！推荐你预约 ${therapistName}`,
-    path: `/pages/appointment/therapist/index?id=${therapistId}`
+    path: `/pages/appointment/therapist/index?id=${therapistId}`,
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
 
@@ -38,7 +39,8 @@ export const getTherapistShareConfig = (therapistId: string, therapistName: stri
 export const getGiftShareConfig = (): ShareConfig => {
   return {
     title: '名医堂礼卡 - 健康好礼送朋友',
-    path: '/pages/gift/index'
+    path: '/pages/gift/index',
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
 
@@ -67,7 +69,8 @@ export const getProductDetailShareConfig = (
 export const getOrderDetailShareConfig = (orderId: string): ShareConfig => {
   return {
     title: '我在名医堂预约了按摩，效果真的不错！',
-    path: `/pages/order/detail/index?id=${orderId}`
+    path: `/pages/order/detail/index?id=${orderId}`,
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
 
@@ -79,7 +82,8 @@ export const getOrderDetailShareConfig = (orderId: string): ShareConfig => {
 export const getStoreDetailShareConfig = (storeId: string, storeName: string): ShareConfig => {
   return {
     title: `来名医堂${storeName}预约，专业技师等你`,
-    path: `/pages/store/detail/index?id=${storeId}`
+    path: `/pages/store/detail/index?id=${storeId}`,
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
 
@@ -89,6 +93,7 @@ export const getStoreDetailShareConfig = (storeId: string, storeName: string): S
 export const getDefaultShareConfig = (): ShareConfig => {
   return {
     title: '疲劳酸痛，到名医堂',
-    path: '/pages/appointment/index'
+    path: '/pages/appointment/index',
+    imageUrl: require('@/assets/icons/logo.png')
   }
 }
