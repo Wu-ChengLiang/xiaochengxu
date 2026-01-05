@@ -311,7 +311,7 @@ const Mine: React.FC = () => {
                 size="mini"
                 type="primary"
               >
-                {loading ? '登录中...' : '微信登录'}
+                {loading ? '登录中...' : '快速登录'}
               </Button>
             )}
           </View>
@@ -392,7 +392,7 @@ const Mine: React.FC = () => {
         <AtModalContent>
           <View className="bind-phone-content">
             <Text className="bind-phone-tips">
-              使用微信绑定的手机号快速登录
+              使用手机号快速登录
             </Text>
             <View className="phone-auth-wrapper">
               <PhoneAuth
@@ -415,7 +415,7 @@ const Mine: React.FC = () => {
               />
             </View>
             <Text className="bind-phone-privacy">
-              授权后将获取您的微信手机号用于账号登录
+              授权后将获取您的手机号用于账号登录
             </Text>
           </View>
         </AtModalContent>
