@@ -18,7 +18,9 @@ export default {
     'pages/mine/about/index',
     'pages/mine/recharge/index',
     'pages/mine/balance/index',
-    'pages/mine/vouchers/index'
+    'pages/mine/vouchers/index',
+    'pages/agreement/privacy-policy/index',
+    'pages/agreement/terms-of-service/index'
   ],
   window: {
     backgroundTextStyle: 'light',

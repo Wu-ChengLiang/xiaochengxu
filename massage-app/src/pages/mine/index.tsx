@@ -36,7 +36,7 @@ const Mine: React.FC = () => {
   const [phoneInput, setPhoneInput] = useState('')
   const [bindingPhone, setBingingPhone] = useState(false)
   const [currentOpenid, setCurrentOpenid] = useState('')
-  const [agreedToPolicy, setAgreedToPolicy] = useState(true)  // 默认打勾
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false)  // 用户必须主动勾选
 
   // 用于标记是否需要刷新余额（避免多重渲染）
   const isInitialLoad = React.useRef(true)
@@ -200,6 +200,15 @@ const Mine: React.FC = () => {
     if (!phoneRegex.test(phoneInput.trim())) {
       Taro.showToast({
         title: '手机号格式不正确',
+        icon: 'error'
+      })
+      return
+    }
+
+    // 验证用户是否同意隐私政策
+    if (!agreedToPolicy) {
+      Taro.showToast({
+        title: '请先阅读并同意隐私政策',
         icon: 'error'
       })
       return
