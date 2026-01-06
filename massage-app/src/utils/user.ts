@@ -322,6 +322,16 @@ export const checkAndAutoLogin = async (): Promise<UserInfo | null> => {
     // 1. 先检查本地缓存
     const localUserInfo = getCurrentUserInfo()
     if (localUserInfo && localUserInfo.phone) {
+      // 即使有本地缓存，也需要进行微信登录以获取微信的 session 信息
+      // 这样才能让微信支付等模块正常工作
+      try {
+        await wechatLogin()
+        // 微信登录成功，返回本地缓存或尝试刷新的用户信息
+      } catch (wechatLoginError) {
+        // 微信登录失败，但有本地缓存，继续使用本地缓存
+        console.warn('后台微信登录失败，使用本地缓存:', wechatLoginError)
+      }
+
       // 尝试刷新用户信息
       const freshUserInfo = await fetchUserInfo(localUserInfo.phone)
       return freshUserInfo || localUserInfo
