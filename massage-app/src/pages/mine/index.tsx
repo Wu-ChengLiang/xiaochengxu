@@ -36,6 +36,7 @@ const Mine: React.FC = () => {
   const [phoneInput, setPhoneInput] = useState('')
   const [bindingPhone, setBingingPhone] = useState(false)
   const [currentOpenid, setCurrentOpenid] = useState('')
+  const [agreedToPolicy, setAgreedToPolicy] = useState(true)  // 默认打勾
 
   // 用于标记是否需要刷新余额（避免多重渲染）
   const isInitialLoad = React.useRef(true)
@@ -417,6 +418,48 @@ const Mine: React.FC = () => {
             <Text className="bind-phone-privacy">
               授权后将获取您的手机号用于账号登录
             </Text>
+
+            {/* 协议同意checkbox */}
+            <View className="agreement-checkbox">
+              <View className="checkbox-group">
+                <Text
+                  className={`checkbox ${agreedToPolicy ? 'checked' : ''}`}
+                  onClick={() => setAgreedToPolicy(!agreedToPolicy)}
+                >
+                  {agreedToPolicy ? '✓' : ''}
+                </Text>
+                <Text className="agreement-text">
+                  我已阅读并同意
+                </Text>
+              </View>
+              <View className="agreement-links">
+                <Text
+                  className="agreement-link"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: '/pages/agreement/privacy-policy/index'
+                    }).catch(() => {
+                      Taro.showToast({ title: '页面不存在', icon: 'none' })
+                    })
+                  }}
+                >
+                  《隐私政策》
+                </Text>
+                <Text className="agreement-divider">和</Text>
+                <Text
+                  className="agreement-link"
+                  onClick={() => {
+                    Taro.navigateTo({
+                      url: '/pages/agreement/terms-of-service/index'
+                    }).catch(() => {
+                      Taro.showToast({ title: '页面不存在', icon: 'none' })
+                    })
+                  }}
+                >
+                  《用户服务协议》
+                </Text>
+              </View>
+            </View>
           </View>
         </AtModalContent>
         <AtModalAction>

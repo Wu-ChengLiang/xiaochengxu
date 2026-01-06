@@ -247,6 +247,73 @@
       margin-top: 16px;
     }
 
+    // 协议同意checkbox样式
+    .agreement-checkbox {
+      margin-top: 24px;
+      padding: 16px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+
+      .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .checkbox {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 32px;
+          border: 2px solid #a40035;
+          border-radius: 4px;
+          margin-right: 12px;
+          cursor: pointer;
+          font-size: 24px;
+          color: #a40035;
+          font-weight: bold;
+          flex-shrink: 0;
+
+          &.checked {
+            background-color: #a40035;
+            color: #fff;
+          }
+        }
+
+        .agreement-text {
+          font-size: 24px;
+          color: #333;
+          line-height: 1.4;
+        }
+      }
+
+      .agreement-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        margin-left: 44px;
+
+        .agreement-link {
+          font-size: 22px;
+          color: #a40035;
+          text-decoration: underline;
+          cursor: pointer;
+
+          &:active {
+            opacity: 0.7;
+          }
+        }
+
+        .agreement-divider {
+          font-size: 22px;
+          color: #999;
+          margin: 0 4px;
+        }
+      }
+    }
+
     .phone-input {
       width: 100%;
       border: 1px solid #ddd;
