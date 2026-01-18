@@ -89,26 +89,21 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
         // 使用API返回的数据
         const grid = []
 
-        // 创建一个映射，方便查找整点的可用性
-        const hourAvailability = new Map()
+        // 创建一个映射，方便查找具体时间点的可用性
+        const slotMap = new Map()
         result.slots.forEach(slot => {
-          const hour = slot.time.split(':')[0]
-          hourAvailability.set(hour, { available: slot.available, status: slot.status })
+          slotMap.set(slot.time, { available: slot.available, status: slot.status })
         })
 
         for (let hour = 9; hour <= 21; hour++) {
           const hourStr = hour.toString().padStart(2, '0')
           const hourSlots = []
 
-          // 获取该小时的可用性（从整点数据推断）
-          const hourData = hourAvailability.get(hourStr) || { available: true, status: 'available' }
-
           for (let minute = 0; minute < 60; minute += 10) {
             const time = `${hourStr}:${minute.toString().padStart(2, '0')}`
 
-            // 如果是整点，直接使用API返回的数据
-            // 如果不是整点，使用该小时整点的可用性
-            const slot = result.slots.find(s => s.time === time)
+            // 查找该时间点的数据
+            const slot = slotMap.get(time)
 
             if (slot) {
               // 如果API返回了这个具体时间点的数据，使用它
@@ -118,11 +113,11 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
                 status: slot.status
               })
             } else {
-              // 否则使用该小时整点的可用性
+              // 否则默认为可用（API没有返回说明没有冲突）
               hourSlots.push({
                 time,
-                available: hourData.available,
-                status: hourData.status
+                available: true,
+                status: 'available'
               })
             }
           }

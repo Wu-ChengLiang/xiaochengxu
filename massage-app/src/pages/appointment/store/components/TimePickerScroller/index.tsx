@@ -66,11 +66,11 @@ const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({
     // 生成日期列表 (前2天 + 今天 + 后2天)
     const dates: TimeSlot[] = []
     const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
-    
+
     for (let i = -2; i <= 2; i++) {
       const date = dayjs().add(i, 'day')
       const isToday = i === 0
-      
+
       dates.push({
         date: isToday ? '今天' : `${date.month() + 1}月${date.date()}日`,
         weekday: isToday ? '' : weekdays[date.day()],
@@ -97,28 +97,28 @@ const TimePickerScroller: React.FC<TimePickerScrollerProps> = ({
     // 计算默认选择的时间（当前时间的下一个整点）
     const now = dayjs()
     const currentHour = now.hour()
-    const nextHour = currentHour + 1
+    const nextHour = currentHour < 21 ? currentHour + 1 : 21
 
     // 默认选择计算
     let defaultDateIndex = 2 // 今天的索引
-    let defaultHourIndex = 1 // 默认10点的索引 (9点是索引0，10点是索引1)
+    let defaultHourIndex = 0 // 默认9点的索引
     let defaultMinuteIndex = 0 // 默认00分
 
     // 如果下一个整点在营业时间内 (9-21点)
     if (nextHour >= 9 && nextHour <= 21) {
       // 在今天选择下一个整点
       defaultHourIndex = nextHour - 9 // 小时数组的索引 (9点对应索引0)
-    } else if (nextHour > 21) {
-      // 如果下一个整点超过21点，选择明天9点
+    } else if (currentHour >= 21) {
+      // 如果当前时间已经是21点或之后，选择明天9点
       defaultDateIndex = 3 // 明天的索引
       defaultHourIndex = 0 // 9点的索引
-    } else {
+    } else if (currentHour < 9) {
       // 如果当前时间早于9点，选择今天9点
       defaultHourIndex = 0 // 9点的索引
     }
 
     // 使用传入的defaultValue或计算出的默认值
-    const finalIndices = defaultValue 
+    const finalIndices = defaultValue
       ? [defaultValue.date, defaultValue.hour, defaultValue.minute]
       : [defaultDateIndex, defaultHourIndex, defaultMinuteIndex]
 
