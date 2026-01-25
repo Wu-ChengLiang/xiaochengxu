@@ -2,6 +2,7 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'rea
 import { View, Text, ScrollView } from '@tarojs/components'
 import { therapistService } from '@/services/therapist'
 import { getLocalDateString } from '@/utils/date'
+import { groupSlotsByHour } from './timeSlotUtils'
 import './index.scss'
 
 interface Service {
@@ -86,43 +87,9 @@ const BookingSelector = forwardRef<BookingSelectorHandle, BookingSelectorProps>(
 
       // 如果API返回了有效的slots数据
       if (result && result.slots && result.slots.length > 0) {
-        // 使用API返回的数据
-        const grid = []
-
-        // 创建一个映射，方便查找具体时间点的可用性
-        const slotMap = new Map()
-        result.slots.forEach(slot => {
-          slotMap.set(slot.time, { available: slot.available, status: slot.status })
-        })
-
-        for (let hour = 9; hour <= 21; hour++) {
-          const hourStr = hour.toString().padStart(2, '0')
-          const hourSlots = []
-
-          for (let minute = 0; minute < 60; minute += 10) {
-            const time = `${hourStr}:${minute.toString().padStart(2, '0')}`
-
-            // 查找该时间点的数据
-            const slot = slotMap.get(time)
-
-            if (slot) {
-              // 如果API返回了这个具体时间点的数据，使用它
-              hourSlots.push({
-                time,
-                available: slot.available,
-                status: slot.status
-              })
-            } else {
-              // 否则默认为可用（API没有返回说明没有冲突）
-              hourSlots.push({
-                time,
-                available: true,
-                status: 'available'
-              })
-            }
-          }
-          grid.push(hourSlots)
-        }
+        // API 已经返回了完整的 10 分钟粒度的时段
+        // 直接按小时分组显示即可
+        const grid = groupSlotsByHour(result.slots)
         setTimeSlots(grid)
       } else {
         // 如果API返回了有效响应但没有时段数据，说明该时段已满
